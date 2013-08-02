@@ -10,6 +10,7 @@ import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,6 +44,11 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onRenderEntity(RenderPlayerEvent.Pre event)
 	{
+		if(Morph.proxy.tickHandlerClient.renderingMorph)
+		{
+			event.setCanceled(true);
+			return;
+		}
 		if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.username))
 		{
 			event.setCanceled(true);
@@ -68,9 +74,18 @@ public class EventHandler
 	        
 	        if(info != null)
 	        {
-	        	System.out.println(info.prevEntModel);
-//	        	System.out.println(info.prevEntModel.entRender);
-//	        	info.prevEntModel.entRender.doRender(info.prevEntInstance, 0.0D, 0.0D, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        	Morph.proxy.tickHandlerClient.renderingMorph = true;
+	        	GL11.glPushMatrix();
+//	        	GL11.glTranslated(-2 * (d0 - RenderManager.renderPosX), -2 * (d1 - RenderManager.renderPosY), -2 * (d2 - RenderManager.renderPosZ));
+	        	
+//	        	GL11.glScalef(1.0F, -1.0F, -1.0F);
+	        	
+//	        	info.prevEntModel.modelParent.setRotationAngles(0.0F, 0.0F, 0.0F, event.entityPlayer.rotationPitch, event.entityPlayer.rotationYaw, 0.625F, info.prevEntInstance);
+//	        	info.prevEntModel.modelParent.render(info.prevEntInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
+	        	info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, 0.0D, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        	
+	        	GL11.glPopMatrix();
+	        	Morph.proxy.tickHandlerClient.renderingMorph = false;
 	        }
 		}
 	}

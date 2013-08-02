@@ -8,6 +8,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -23,6 +24,7 @@ public class ClientProxy extends CommonProxy
 		for(int i = compatibleEntities.size() - 1; i >= 0; i--)
 		{
 			Render rend = RenderManager.instance.getEntityClassRenderObject(compatibleEntities.get(i));
+			System.out.println(rend);
 			if(!(rend instanceof RendererLivingEntity))
 			{
 				compatibleEntities.remove(i);

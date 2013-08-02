@@ -10,17 +10,19 @@ import morph.common.morph.MorphInfo;
 public class MorphInfoClient extends MorphInfo 
 {
 
-	public ModelInfo prevEntModel;
+	public ModelInfo prevEntInfo;
+	public ModelBase prevEntModel;
 	
-	public ModelInfo nextEntModel;
+	public ModelInfo nextEntInfo;
+	public ModelBase nextEntModel;
 	
 	public ModelRenderer interimModel;
 
 	public MorphInfoClient(EntityLivingBase prev, EntityLivingBase next) 
 	{
 		super(prev, next);
-		prevEntModel = ModelList.getModelInfo(prev.getClass());
-		nextEntModel = ModelList.getModelInfo(next.getClass());
+		prevEntInfo = ModelList.getModelInfo(prev.getClass());
+		nextEntInfo = ModelList.getModelInfo(next.getClass());
 	}
 	
 }

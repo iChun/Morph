@@ -119,4 +119,6 @@ public class TickHandlerClient
 	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
 
 	public float renderTick;
+	
+	public boolean renderingMorph;
 }
