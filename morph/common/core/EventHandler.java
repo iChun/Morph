@@ -57,8 +57,9 @@ public class EventHandler
 			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.entityPlayer.username);
 			
 			
-			if(!event.target.addEntityID(new NBTTagCompound()) || event.target instanceof EntityPlayer)
+			if(!(event.target.addEntityID(new NBTTagCompound()) && !(event.target instanceof EntityPlayer) || event.target instanceof EntityPlayer))
 			{
+				System.out.println("stop");
 				return;
 			}
 			
@@ -68,13 +69,15 @@ public class EventHandler
 			}
 			else if(info.getMorphing() || info.nextEntInstance == event.target)
 			{
+				System.out.println("stop1");
 				return;
 			}
 			
 			byte isPlayer = (byte)((info.nextEntInstance instanceof EntityPlayer && event.target instanceof EntityPlayer) ? 3 : info.nextEntInstance instanceof EntityPlayer ? 1 : event.target instanceof EntityPlayer ? 2 : 0);
 			
-			if(!info.nextEntInstance.addEntityID(new NBTTagCompound()) || isPlayer > 0)
+			if(!(info.nextEntInstance instanceof EntityPlayer) && !info.nextEntInstance.addEntityID(new NBTTagCompound()))
 			{
+				System.out.println("stop2");
 				return;
 			}
 			

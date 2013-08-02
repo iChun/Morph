@@ -4,9 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -37,9 +40,42 @@ public class PacketHandlerClient
 					NBTTagCompound prevTag = Morph.readNBTTagCompound(stream);
 					NBTTagCompound nextTag = Morph.readNBTTagCompound(stream);
 
-					System.out.println(EntityList.createEntityFromNBT(prevTag, Minecraft.getMinecraft().theWorld));
-					System.out.println(EntityList.createEntityFromNBT(nextTag, Minecraft.getMinecraft().theWorld));
+					EntityLivingBase prevEnt;
+					EntityLivingBase nextEnt;
 					
+					if(username1.equalsIgnoreCase(""))
+					{
+						prevEnt = (EntityLivingBase)EntityList.createEntityFromNBT(prevTag, Minecraft.getMinecraft().theWorld);
+					}
+					else if(username1.equalsIgnoreCase(mc.thePlayer.username))
+					{
+						prevEnt = mc.thePlayer;
+					}
+					else
+					{
+						prevEnt = new EntityOtherPlayerMP(mc.theWorld, username1);
+					}
+					
+					if(username2.equalsIgnoreCase(""))
+					{
+						nextEnt = (EntityLivingBase)EntityList.createEntityFromNBT(nextTag, Minecraft.getMinecraft().theWorld);
+					}
+					else if(username2.equalsIgnoreCase(mc.thePlayer.username))
+					{
+						nextEnt = mc.thePlayer;
+					}
+					else
+					{
+						nextEnt = new EntityOtherPlayerMP(mc.theWorld, username2);
+					}
+					
+//					System.out.println(prevEnt);
+//					System.out.println(nextEnt);
+					
+					MorphInfoClient info = new MorphInfoClient(prevEnt, nextEnt);
+					info.setMorphing(true);
+					Morph.proxy.tickHandlerClient.playerMorphInfo.put(name, info);
+
 					break;
 				}
 			}
