@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import morph.common.Morph;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
@@ -36,6 +37,7 @@ public class ConnectionHandler
 
 	public void onClientConnected()
 	{
+		Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
 	}
 
 	@Override

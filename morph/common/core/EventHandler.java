@@ -8,7 +8,9 @@ import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -52,19 +54,31 @@ public class EventHandler
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.target instanceof EntityLivingBase)
 		{
-			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
-			//event.entityPlayer event.target
-			
 			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.entityPlayer.username);
+			
+			
+			if(!event.target.addEntityID(new NBTTagCompound()) || event.target instanceof EntityPlayer)
+			{
+				return;
+			}
 			
 			if(info == null)
 			{
 				info = new MorphInfo((EntityLivingBase)event.target, event.entityPlayer);
 			}
-			else if(info.getMorphing())
+			else if(info.getMorphing() || info.nextEntInstance == event.target)
 			{
 				return;
 			}
+			
+			byte isPlayer = (byte)((info.nextEntInstance instanceof EntityPlayer && event.target instanceof EntityPlayer) ? 3 : info.nextEntInstance instanceof EntityPlayer ? 1 : event.target instanceof EntityPlayer ? 2 : 0);
+			
+			if(!info.nextEntInstance.addEntityID(new NBTTagCompound()) || isPlayer > 0)
+			{
+				return;
+			}
+			
+			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
 			
 			MorphInfo info2 = new MorphInfo(info.nextEntInstance, (EntityLivingBase)event.target);
 			info2.setMorphing(true);
@@ -75,12 +89,23 @@ public class EventHandler
 			DataOutputStream stream = new DataOutputStream(bytes);
 			try
 			{
+				stream.writeByte(0); //id
 				stream.writeUTF(event.entityPlayer.username);
 				
-				stream.writeUTF(info.nextEntClass.getName());
-				stream.writeUTF(event.target.getClass().getName());
+				stream.writeByte(isPlayer);
+				stream.writeUTF((isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextEntInstance).username : "");
+				stream.writeUTF((isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)event.target).username : "");
 				
-				PacketDispatcher.sendPacketToAllPlayers(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
+				NBTTagCompound prevTag = new NBTTagCompound();
+				NBTTagCompound nextTag = new NBTTagCompound();
+
+				info.nextEntInstance.addEntityID(prevTag);
+				event.target.addEntityID(nextTag);
+				
+				Morph.writeNBTTagCompound(prevTag, stream);
+				Morph.writeNBTTagCompound(nextTag, stream);
+				
+				PacketDispatcher.sendPacketToAllPlayers(new Packet250CustomPayload("Morph", bytes.toByteArray()));
 			}
 			catch(IOException e)
 			{

@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import morph.common.Morph;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityList;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.common.network.IPacketHandler;
@@ -14,9 +17,9 @@ public class PacketHandlerClient
 	implements IPacketHandler
 {
 	@Override
-	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player plyr) 
+	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) 
 	{
-		EntityPlayerMP player = (EntityPlayerMP)plyr;
+		Minecraft mc = Minecraft.getMinecraft();
 		DataInputStream stream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		try
 		{
@@ -25,6 +28,18 @@ public class PacketHandlerClient
 			{
 				case 0:
 				{
+					String name = stream.readUTF();
+					
+					byte isPlayer = stream.readByte();
+					String username1 = stream.readUTF();
+					String username2 = stream.readUTF();
+					
+					NBTTagCompound prevTag = Morph.readNBTTagCompound(stream);
+					NBTTagCompound nextTag = Morph.readNBTTagCompound(stream);
+
+					System.out.println(EntityList.createEntityFromNBT(prevTag, Minecraft.getMinecraft().theWorld));
+					System.out.println(EntityList.createEntityFromNBT(nextTag, Minecraft.getMinecraft().theWorld));
+					
 					break;
 				}
 			}
