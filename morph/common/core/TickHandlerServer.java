@@ -59,6 +59,7 @@ public class TickHandlerServer
 					if(info.morphProgress > 80)
 					{
 						info.morphProgress = 80;
+						info.setMorphing(false);
 					}
 				}
 			}

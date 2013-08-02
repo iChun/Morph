@@ -64,7 +64,19 @@ public class MapPacketHandler
 			{
 				case 0:
 				{
-					stream.readByte();
+					String user = stream.readUTF();
+					
+					try
+					{
+						Class prevClz = Class.forName(stream.readUTF());
+						Class nextClz = Class.forName(stream.readUTF());
+						
+						
+					}
+					catch(Exception e)
+					{
+					}
+					
 					break;
 				}
 			}
