@@ -16,23 +16,19 @@ public class MorphInfoClient extends MorphInfo
 	public EntityPlayer player;
 	
 	public ModelInfo prevEntInfo;
-	public ModelMorph prevEntModel;
 	
 	public ModelInfo nextEntInfo;
-	public ModelMorph nextEntModel;
 	
-	public ModelRenderer interimModel;
+	public ModelMorph interimModel;
 
 	public MorphInfoClient(EntityLivingBase prev, EntityLivingBase next) 
 	{
 		super(prev, next);
 		prevEntInfo = ModelList.getModelInfo(prev.getClass());
-		prevEntModel = new ModelMorph(this, prevEntInfo.modelParent);
-		prevEntModel.modelList = ModelHelper.getModelCubesCopy(prevEntInfo, prevEntModel);
 		
 		nextEntInfo = ModelList.getModelInfo(next.getClass());
-		nextEntModel = new ModelMorph(this, nextEntInfo.modelParent);
-		nextEntModel.modelList = ModelHelper.getModelCubesCopy(nextEntInfo, nextEntModel);
+		
+		interimModel = new ModelMorph(this);
 	}
 	
 }

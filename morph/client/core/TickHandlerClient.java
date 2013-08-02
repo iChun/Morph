@@ -10,7 +10,9 @@ import morph.client.render.RenderMorph;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;
@@ -22,7 +24,8 @@ public class TickHandlerClient
 	
 	public TickHandlerClient()
 	{
-//		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.5F);
+		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.5F);
+		renderMorphInstance.setRenderManager(RenderManager.instance);
 	}
 	
 	@Override

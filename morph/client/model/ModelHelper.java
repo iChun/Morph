@@ -84,7 +84,6 @@ public class ModelHelper
 		{
 			for(ModelRenderer child : getChildren(cube, true, 0))
 			{
-				//TODO check that this isn't broken
 //				cube.addChild(child);
 				if(!children.contains(child))
 				{
@@ -128,6 +127,34 @@ public class ModelHelper
 			}
 		}
 		return list;
+	}
+	
+	public static void createEmptyContents(ModelBase base, ModelRenderer ori, ModelRenderer copy)
+	{
+		if(copy.cubeList.size() < ori.cubeList.size())
+		{
+			for(int j = copy.cubeList.size(); j < ori.cubeList.size(); j++)
+			{
+				ModelBox box = (ModelBox)ori.cubeList.get(j);
+				float param7 = 0.0F;
+				
+				ModelBox randBox = (ModelBox)ori.cubeList.get(rand.nextInt(ori.cubeList.size()));
+				
+				float x = randBox.posX1 + ((randBox.posX2 - randBox.posX1) > 0F ? rand.nextInt((int)(randBox.posX2 - randBox.posX1)) : 0F);
+				float y = randBox.posY1 + ((randBox.posY2 - randBox.posY1) > 0F ? rand.nextInt((int)(randBox.posY2 - randBox.posY1)) : 0F);
+				float z = randBox.posZ1 + ((randBox.posZ2 - randBox.posZ1) > 0F ? rand.nextInt((int)(randBox.posZ2 - randBox.posZ1)) : 0F);
+				
+				copy.addBox(x, y, z, 0, 0, 0, param7);
+			}
+		}
+		
+		if(ori.childModels != null && (copy.childModels == null || copy.childModels.size() < ori.childModels.size()))
+		{
+			for(int i = 0; i < ori.childModels.size(); i++)
+			{
+				copy.addChild(buildCopy((ModelRenderer)ori.childModels.get(i), base, 0, false));
+			}
+		}
 	}
 	
 	public static ModelRenderer buildCopy(ModelRenderer original, ModelBase copyBase, int depth, boolean hasFullModelBox)

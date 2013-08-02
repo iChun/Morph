@@ -156,7 +156,12 @@ public class EventHandler
 	        	}
 	        	if(info.morphProgress >= 10 && info.morphProgress < 70)
 	        	{
+	        		info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        		info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        		
+	        		Morph.proxy.tickHandlerClient.renderMorphInstance.setMainModel(info.interimModel);
+	        		
+	        		Morph.proxy.tickHandlerClient.renderMorphInstance.doRender(event.entityPlayer, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	}
 	        	
 //	        	FloatBuffer bff = GLAllocation.createDirectFloatBuffer(16);

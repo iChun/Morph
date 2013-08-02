@@ -19,6 +19,7 @@ public class ObfHelper
 	public static final String[] textureOffsetY 	= new String[] { "s", "field_78813_p", "textureOffsetY" }; //ModelRenderer
 	public static final String[] resourceDomain		= new String[] { "a", "field_110626_a", "resourceDomain"}; //ResourceLocation
 	public static final String[] resourcePath 		= new String[] { "b", "field_110625_b", "resourcePath" 	}; //ResourceLocation
+	public static final String[] compiled 			= new String[] { "t", "field_78812_q", "compiled"	 	}; //ModelRenderer
 	
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
