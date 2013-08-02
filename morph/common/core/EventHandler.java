@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -36,16 +37,11 @@ public class EventHandler
 	
 	@SideOnly(Side.CLIENT)
 	@ForgeSubscribe
-	public void onRenderEntity(RenderLivingEvent.Pre event)
+	public void onRenderEntity(RenderPlayerEvent.Pre event)
 	{
-		if(event.entity instanceof EntityPlayer)
+		if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.username))
 		{
-			EntityPlayer player = (EntityPlayer)event.entity;
 			
-			if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(player.username))
-			{
-				
-			}
 		}
 	}
 	

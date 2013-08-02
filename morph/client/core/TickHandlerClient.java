@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import morph.client.morph.MorphInfoClient;
+import morph.client.render.RenderMorph;
 import morph.common.morph.MorphInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -16,6 +17,9 @@ import cpw.mods.fml.common.TickType;
 public class TickHandlerClient 
 	implements ITickHandler
 {
+	
+	
+	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
 	{
@@ -104,6 +108,8 @@ public class TickHandlerClient
 	}
 	
 	public long clock;
+	
+	public RenderMorph renderMorphInstance;
 	
 	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
 }
