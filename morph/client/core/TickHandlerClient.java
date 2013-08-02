@@ -98,11 +98,17 @@ public class TickHandlerClient
 				
 				if(info.morphProgress < 40)
 				{
-					info.prevEntInstance.onUpdate();
+					if(info.prevEntInstance != mc.thePlayer)
+					{
+						info.prevEntInstance.onUpdate();
+					}
 				}
 				else
 				{
-					info.nextEntInstance.onUpdate();
+					if(info.nextEntInstance != mc.thePlayer)
+					{
+						info.nextEntInstance.onUpdate();
+					}
 				}
 			}
 		}

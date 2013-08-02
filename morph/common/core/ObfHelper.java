@@ -2,8 +2,12 @@ package morph.common.core;
 
 import java.lang.reflect.Method;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
 import morph.common.Morph;
 
 public class ObfHelper 
@@ -13,15 +17,19 @@ public class ObfHelper
 	public static final String[] mainModel			= new String[] { "i", "field_77045_g", "mainModel" 		}; //RendererLivingEntity
 	public static final String[] textureOffsetX 	= new String[] { "r", "field_78803_o", "textureOffsetX" }; //ModelRenderer
 	public static final String[] textureOffsetY 	= new String[] { "s", "field_78813_p", "textureOffsetY" }; //ModelRenderer
+	public static final String[] resourceDomain		= new String[] { "a", "field_110626_a", "resourceDomain"}; //ResourceLocation
+	public static final String[] resourcePath 		= new String[] { "b", "field_110625_b", "resourcePath" 	}; //ResourceLocation
 	
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
 
 	public static final String updateEntityActionStateObf = "func_70626_be";
 	public static final String updateEntityActionStateDeobf = "updateEntityActionState";
+	
+	public static final String getEntityTextureObf = "func_110775_a";
 
-	public static Method setSize;
-	public static Method updateEntityActionState;
+	public static Method setSizeMethod;
+	public static Method updateEntityActionStateMethod;
 	
 	public static void obfWarning()
 	{
@@ -44,12 +52,12 @@ public class ObfHelper
 	
 	public static void forceSetSize(Entity ent, float width, float height)
 	{
-		if(setSize == null)
+		if(setSizeMethod == null)
 		{
 			try
 			{
 				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.setSizeObf : ObfHelper.setSizeDeobf, float.class, float.class);
-				setSize = m;
+				setSizeMethod = m;
 			}
 			catch(NoSuchMethodException e)
 			{
@@ -61,12 +69,12 @@ public class ObfHelper
 				e.printStackTrace();
 			}
 		}
-		if(setSize != null)
+		if(setSizeMethod != null)
 		{
 			try
 			{
-				setSize.setAccessible(true);
-				setSize.invoke(ent, width, height);				
+				setSizeMethod.setAccessible(true);
+				setSizeMethod.invoke(ent, width, height);				
 			}
 			catch(Exception e)
 			{
@@ -77,24 +85,24 @@ public class ObfHelper
 	
 	public static void forceUpdateEntityActionState(EntityLivingBase ent)
 	{
-		if(updateEntityActionState == null)
+		if(updateEntityActionStateMethod == null)
 		{
 			try
 			{
 				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.updateEntityActionStateObf : ObfHelper.updateEntityActionStateDeobf);
-				updateEntityActionState = m;
+				updateEntityActionStateMethod = m;
 			}
 			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
-		if(updateEntityActionState != null)
+		if(updateEntityActionStateMethod != null)
 		{
 			try
 			{
-				updateEntityActionState.setAccessible(true);
-				updateEntityActionState.invoke(ent);
+				updateEntityActionStateMethod.setAccessible(true);
+				updateEntityActionStateMethod.invoke(ent);
 			}
 			catch(Exception e)
 			{
@@ -103,4 +111,26 @@ public class ObfHelper
 		}
 	}
 
+	public static ResourceLocation invokeGetEntityTexture(Render rend, Class clz, EntityLivingBase ent)
+	{
+		try
+		{
+			Method m = clz.getDeclaredMethod(ObfHelper.getEntityTextureObf, Entity.class);
+			m.setAccessible(true);
+			return (ResourceLocation)m.invoke(rend, ent);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != RendererLivingEntity.class)
+			{
+				return invokeGetEntityTexture(rend, clz.getSuperclass(), ent);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return AbstractClientPlayer.field_110314_b;
+	}
+	
 }

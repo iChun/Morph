@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -28,6 +29,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -47,7 +49,7 @@ public class EventHandler
 	
 	@SideOnly(Side.CLIENT)
 	@ForgeSubscribe
-	public void onRenderEntity(RenderPlayerEvent.Pre event)
+	public void onRenderPlayer(RenderPlayerEvent.Pre event)
 	{
 		if(Morph.proxy.tickHandlerClient.renderingMorph)
 		{
@@ -93,10 +95,28 @@ public class EventHandler
 //	        	info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	
+	        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.entRender, info.nextEntInfo.entRender.getClass(), info.nextEntInstance);
+	        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+	        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+	        	
+	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+	        	
+	        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        	
+	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+	        	
 	        	GL11.glPopMatrix();
 	        	Morph.proxy.tickHandlerClient.renderingMorph = false;
 	        }
 		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onRenderPlayerSpecials(RenderPlayerEvent.Specials.Pre event)
+	{
 	}
 	
 	@ForgeSubscribe
@@ -105,7 +125,6 @@ public class EventHandler
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.target instanceof EntityLivingBase)
 		{
 			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.entityPlayer.username);
-			
 			
 			if(!(event.target.addEntityID(new NBTTagCompound()) && !(event.target instanceof EntityPlayer) || event.target instanceof EntityPlayer))
 			{
@@ -139,8 +158,6 @@ public class EventHandler
 			NBTTagCompound prevTag = new NBTTagCompound();
 			NBTTagCompound nextTag = new NBTTagCompound();
 
-			info.nextEntInstance.entityId = event.target.entityId = event.entityPlayer.entityId;
-			
 			info.nextEntInstance.addEntityID(prevTag);
 			event.target.addEntityID(nextTag);
 			
