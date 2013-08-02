@@ -52,7 +52,6 @@ public class MapPacketHandler
 
 	}
 	
-	
 	//TODO Side Split
 	
 	@SideOnly(Side.CLIENT)

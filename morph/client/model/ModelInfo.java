@@ -14,7 +14,7 @@ public class ModelInfo
 	public final ModelBase modelParent;
 	public final ArrayList<ModelRenderer> modelList;
 	
-	public ModelInfo(Class entityClass, RenderLiving render, ModelBase modelInstance)
+	public ModelInfo(Class entityClass, RendererLivingEntity render, ModelBase modelInstance)
 	{
 		entClass = entityClass;
 		entRender = render;

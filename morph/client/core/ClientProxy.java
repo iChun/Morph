@@ -1,11 +1,16 @@
 package morph.client.core;
 
+import morph.client.model.ModelInfo;
+import morph.client.model.ModelList;
+import morph.common.core.CommonProxy;
+import morph.common.core.ObfHelper;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-import morph.common.core.CommonProxy;
 
 public class ClientProxy extends CommonProxy
 {
@@ -21,6 +26,20 @@ public class ClientProxy extends CommonProxy
 			if(!(rend instanceof RendererLivingEntity))
 			{
 				compatibleEntities.remove(i);
+			}
+		}
+		
+		for(Class clz : compatibleEntities)
+		{
+			try
+			{
+				RendererLivingEntity rend = (RendererLivingEntity)RenderManager.instance.getEntityClassRenderObject(clz);
+				ModelList.addModelInfo(clz, new ModelInfo(clz, rend, (ModelBase)ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, rend, ObfHelper.mainModel)));
+			}
+			catch(Exception e)
+			{
+				ObfHelper.obfWarning();
+				e.printStackTrace();
 			}
 		}
 	}
