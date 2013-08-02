@@ -63,7 +63,21 @@ public class ModelHelper
 		
 		for(ModelRenderer cube : list)
 		{
-//			for(ModelRenderer child)
+			for(ModelRenderer child : getChildren(cube, true, 0))
+			{
+				//TODO check that this isn't broken
+				cube.addChild(child);
+				if(!children.contains(child))
+				{
+					children.add(child);
+				}
+			}
+		}
+		
+		//TODO hmm...... remove the children? or keep them?
+		for(ModelRenderer child : children)
+		{
+			list.remove(child);
 		}
 		
 		return list;
@@ -76,7 +90,24 @@ public class ModelHelper
 		{
 			for(int i = 0; i < parent.childModels.size(); i++)
 			{
+				ModelRenderer child = (ModelRenderer)parent.childModels.get(i);
+				if(recursive)
+				{
+					ArrayList<ModelRenderer> children = getChildren(child, recursive, depth + 1);
+					for(ModelRenderer child1 : children)
+					{
+						if(!list.contains(child1))
+						{
+							list.add(child1);
+						}
+					}
+				}
+				if(!list.contains(child))
+				{
+					list.add(child);
+				}
 			}
 		}
+		return list;
 	}
 }
