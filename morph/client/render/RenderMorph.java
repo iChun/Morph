@@ -19,7 +19,11 @@ public class RenderMorph extends RendererLivingEntity
 	@Override
 	protected ResourceLocation func_110775_a(Entity entity) 
 	{
-		return AbstractClientPlayer.field_110314_b;
+		return morphSkin;
 	}
 	
+	public void setMainModel(ModelBase base)
+	{
+		mainModel = base;
+	}
 }

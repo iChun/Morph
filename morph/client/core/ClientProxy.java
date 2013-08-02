@@ -17,9 +17,9 @@ public class ClientProxy extends CommonProxy
 {
 
 	@Override
-	public void initMod()
+	public void initPostMod()
 	{
-		super.initMod();
+		super.initPostMod();
 		
 		for(int i = compatibleEntities.size() - 1; i >= 0; i--)
 		{

@@ -13,7 +13,7 @@ import morph.client.core.TickHandlerClient;
 
 public class CommonProxy 
 {
-	public void initMod()
+	public void initPostMod()
 	{
 		Iterator ite = EntityList.classToStringMapping.entrySet().iterator();
 		while(ite.hasNext())

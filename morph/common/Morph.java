@@ -69,13 +69,13 @@ public class Morph
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
-		proxy.initMod();
 		proxy.initTickHandlers();
 	}
 	
 	@EventHandler
 	public void postLoad(FMLPostInitializationEvent event)
 	{
+		proxy.initPostMod();
 	}
 	
 	@EventHandler

@@ -30,20 +30,11 @@ public class ModelMorph extends ModelBase
 	@Override
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
 	{
-		modelParent.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		
-		modelParent.render(entity, f, f1, f2, f3, f4, f5);
-		
-//		Minecraft.getMinecraft().renderEngine.func_110577_a(RenderMorph.morphSkin);
-//		
-//		GL11.glScaled(1.001D, 1.001D, 1.001D);
-//		modelParent.render(entity, f, f1, f2, f3, f4, f5);
 	}
 	
 	@Override
     public void setLivingAnimations(EntityLivingBase par1EntityLivingBase, float par2, float par3, float par4) 
 	{
-		modelParent.setLivingAnimations(par1EntityLivingBase, par2, par3, par4);
 	}
 	
 	
