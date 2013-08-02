@@ -1,7 +1,10 @@
 package morph.common.core;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
+import morph.common.morph.MorphInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.ITickHandler;
@@ -45,6 +48,20 @@ public class TickHandlerServer
 		if(clock != world.getWorldTime())
 		{
 			clock = world.getWorldTime();
+			
+			for(Entry<String, MorphInfo> e : playerMorphInfo.entrySet())
+			{
+				MorphInfo info = e.getValue();
+				
+				if(info.getMorphing())
+				{
+					info.morphProgress++;
+					if(info.morphProgress > 80)
+					{
+						info.morphProgress = 80;
+					}
+				}
+			}
 		}
 	}
 
@@ -53,4 +70,6 @@ public class TickHandlerServer
 	}
 
 	public long clock;
+	
+	public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
 }

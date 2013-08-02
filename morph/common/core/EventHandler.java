@@ -18,6 +18,7 @@ public class EventHandler
 		for(int i = 1; i <= 6; i++)
 		{
 			event.manager.soundPoolSounds.addSound("morph:morph" + i + ".ogg");
+			
 		}
 	}
 	
