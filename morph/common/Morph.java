@@ -13,6 +13,7 @@ import morph.client.core.PacketHandlerClient;
 import morph.common.core.CommonProxy;
 import morph.common.core.ConnectionHandler;
 import morph.common.core.MapPacketHandler;
+import morph.common.core.ObfHelper;
 import morph.common.core.PacketHandlerServer;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
@@ -61,6 +62,8 @@ public class Morph
 		logger.setParent(FMLLog.getLogger());
 		
 		MinecraftForge.EVENT_BUS.register(new morph.common.core.EventHandler());
+		
+		ObfHelper.detectObfuscation();
 	}
 	
 	@EventHandler

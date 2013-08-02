@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
+import morph.common.core.ObfHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
@@ -68,6 +69,9 @@ public class PacketHandlerClient
 					{
 						nextEnt = new EntityOtherPlayerMP(mc.theWorld, username2);
 					}
+					
+					ObfHelper.forceSetSize(prevEnt, 0.0F, 0.0F);
+					ObfHelper.forceSetSize(nextEnt, 0.0F, 0.0F);
 					
 //					System.out.println(prevEnt);
 //					System.out.println(nextEnt);

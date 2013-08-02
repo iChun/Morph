@@ -21,7 +21,7 @@ public class TickHandlerClient
 	
 	public TickHandlerClient()
 	{
-		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.5F);
+//		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.5F);
 	}
 	
 	@Override
@@ -77,23 +77,53 @@ public class TickHandlerClient
 		{
 			clock = world.getWorldTime();
 			
-			if(clock != world.getWorldTime())
+			for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
 			{
-				clock = world.getWorldTime();
+				MorphInfoClient info = e.getValue();
 				
-				for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
+				if(info.getMorphing())
 				{
-					MorphInfo info = e.getValue();
-					
-					if(info.getMorphing())
+					info.morphProgress++;
+					if(info.morphProgress > 80)
 					{
-						info.morphProgress++;
-						if(info.morphProgress > 80)
-						{
-							info.morphProgress = 80;
-							info.setMorphing(false);
-						}
+						info.morphProgress = 80;
+						info.setMorphing(false);
 					}
+				}
+				if(info.player == null)
+				{
+					info.player = world.getPlayerEntityByName(e.getKey());
+				}
+				if(info.player != null)
+				{
+					info.prevEntInstance.prevRotationYawHead = info.nextEntInstance.prevRotationYawHead = info.player.prevRotationYawHead;
+					info.prevEntInstance.prevRotationYaw = info.nextEntInstance.prevRotationYaw = info.player.prevRotationYaw;
+					info.prevEntInstance.prevRotationPitch = info.nextEntInstance.prevRotationPitch = info.player.prevRotationPitch;
+					info.prevEntInstance.prevRenderYawOffset = info.nextEntInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
+					info.prevEntInstance.prevLimbYaw = info.nextEntInstance.prevLimbYaw = info.player.prevLimbYaw;
+					info.prevEntInstance.prevSwingProgress = info.nextEntInstance.prevSwingProgress = info.player.prevSwingProgress;
+					
+					info.prevEntInstance.rotationYawHead = info.nextEntInstance.rotationYawHead = info.player.rotationYawHead;
+					info.prevEntInstance.rotationYaw = info.nextEntInstance.rotationYaw = info.player.rotationYaw;
+					info.prevEntInstance.rotationPitch = info.nextEntInstance.rotationPitch = info.player.rotationPitch;
+					info.prevEntInstance.renderYawOffset = info.nextEntInstance.renderYawOffset = info.player.renderYawOffset;
+					info.prevEntInstance.limbYaw = info.nextEntInstance.limbYaw = info.player.limbYaw;
+					info.prevEntInstance.swingProgress = info.nextEntInstance.swingProgress = info.player.swingProgress;
+					info.prevEntInstance.limbSwing = info.nextEntInstance.limbSwing = info.player.limbSwing;
+					info.prevEntInstance.motionX = info.nextEntInstance.motionX = info.player.motionX;
+					info.prevEntInstance.motionY = info.nextEntInstance.motionY = info.player.motionY;
+					info.prevEntInstance.motionZ = info.nextEntInstance.motionZ = info.player.motionZ;
+					info.prevEntInstance.ticksExisted = info.nextEntInstance.ticksExisted = info.player.ticksExisted;
+					
+				}
+				
+				if(info.morphProgress < 40)
+				{
+					info.prevEntInstance.onUpdate();
+				}
+				else
+				{
+					info.nextEntInstance.onUpdate();
 				}
 			}
 		}

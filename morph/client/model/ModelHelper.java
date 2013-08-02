@@ -16,6 +16,19 @@ public class ModelHelper
 {
 	public static Random rand = new Random();
 	
+	public static ArrayList<ModelRenderer> getModelCubesCopy(ModelInfo info, ModelBase base)
+	{
+		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+		
+		for(int i = 0; i < info.modelList.size(); i++)
+		{
+			ModelRenderer cube = (ModelRenderer)info.modelList.get(i);
+			list.add(buildCopy(cube, base, 0, true));
+		}
+		
+		return list;
+	}
+	
 	public static ArrayList<ModelRenderer> getModelCubes(ModelBase parent)
 	{
 		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();

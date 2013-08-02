@@ -11,6 +11,7 @@ import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,6 +23,7 @@ import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -76,6 +78,9 @@ public class EventHandler
 	        {
 	        	Morph.proxy.tickHandlerClient.renderingMorph = true;
 	        	GL11.glPushMatrix();
+	        	
+//	        	ObfuscationReflectionHelper.setPrivateValue(RendererLivingEntity.class, info.prevEntInfo.entRender, info.prevEntModel, ObfHelper.mainModel);
+	        	
 //	        	GL11.glTranslated(-2 * (d0 - RenderManager.renderPosX), -2 * (d1 - RenderManager.renderPosY), -2 * (d2 - RenderManager.renderPosZ));
 	        	
 //	        	GL11.glScalef(1.0F, -1.0F, -1.0F);
