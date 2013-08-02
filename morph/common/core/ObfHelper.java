@@ -16,6 +16,12 @@ public class ObfHelper
 	
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
+
+	public static final String updateEntityActionStateObf = "func_70626_be";
+	public static final String updateEntityActionStateDeobf = "updateEntityActionState";
+
+	public static Method setSize;
+	public static Method updateEntityActionState;
 	
 	public static void obfWarning()
 	{
@@ -38,20 +44,63 @@ public class ObfHelper
 	
 	public static void forceSetSize(Entity ent, float width, float height)
 	{
-		try
+		if(setSize == null)
 		{
-			Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.setSizeObf : ObfHelper.setSizeDeobf, float.class, float.class);
-			m.setAccessible(true);
-			m.invoke(ent, width, height);
+			try
+			{
+				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.setSizeObf : ObfHelper.setSizeDeobf, float.class, float.class);
+				setSize = m;
+			}
+			catch(NoSuchMethodException e)
+			{
+				ent.width = width;
+				ent.height = height;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch(NoSuchMethodException e)
+		if(setSize != null)
 		{
-			ent.width = width;
-			ent.height = height;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
+			try
+			{
+				setSize.setAccessible(true);
+				setSize.invoke(ent, width, height);				
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
+	
+	public static void forceUpdateEntityActionState(EntityLivingBase ent)
+	{
+		if(updateEntityActionState == null)
+		{
+			try
+			{
+				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.updateEntityActionStateObf : ObfHelper.updateEntityActionStateDeobf);
+				updateEntityActionState = m;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		if(updateEntityActionState != null)
+		{
+			try
+			{
+				updateEntityActionState.setAccessible(true);
+				updateEntityActionState.invoke(ent);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

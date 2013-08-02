@@ -73,6 +73,15 @@ public class PacketHandlerClient
 					ObfHelper.forceSetSize(prevEnt, 0.0F, 0.0F);
 					ObfHelper.forceSetSize(nextEnt, 0.0F, 0.0F);
 					
+					if(prevEnt != mc.thePlayer)
+					{
+						prevEnt.noClip = true;
+					}
+					if(nextEnt != mc.thePlayer)
+					{
+						nextEnt.noClip = true;
+					}
+					
 //					System.out.println(prevEnt);
 //					System.out.println(nextEnt);
 					

@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
+import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -94,28 +95,6 @@ public class TickHandlerClient
 				{
 					info.player = world.getPlayerEntityByName(e.getKey());
 				}
-				if(info.player != null)
-				{
-					info.prevEntInstance.prevRotationYawHead = info.nextEntInstance.prevRotationYawHead = info.player.prevRotationYawHead;
-					info.prevEntInstance.prevRotationYaw = info.nextEntInstance.prevRotationYaw = info.player.prevRotationYaw;
-					info.prevEntInstance.prevRotationPitch = info.nextEntInstance.prevRotationPitch = info.player.prevRotationPitch;
-					info.prevEntInstance.prevRenderYawOffset = info.nextEntInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
-					info.prevEntInstance.prevLimbYaw = info.nextEntInstance.prevLimbYaw = info.player.prevLimbYaw;
-					info.prevEntInstance.prevSwingProgress = info.nextEntInstance.prevSwingProgress = info.player.prevSwingProgress;
-					
-					info.prevEntInstance.rotationYawHead = info.nextEntInstance.rotationYawHead = info.player.rotationYawHead;
-					info.prevEntInstance.rotationYaw = info.nextEntInstance.rotationYaw = info.player.rotationYaw;
-					info.prevEntInstance.rotationPitch = info.nextEntInstance.rotationPitch = info.player.rotationPitch;
-					info.prevEntInstance.renderYawOffset = info.nextEntInstance.renderYawOffset = info.player.renderYawOffset;
-					info.prevEntInstance.limbYaw = info.nextEntInstance.limbYaw = info.player.limbYaw;
-					info.prevEntInstance.swingProgress = info.nextEntInstance.swingProgress = info.player.swingProgress;
-					info.prevEntInstance.limbSwing = info.nextEntInstance.limbSwing = info.player.limbSwing;
-					info.prevEntInstance.motionX = info.nextEntInstance.motionX = info.player.motionX;
-					info.prevEntInstance.motionY = info.nextEntInstance.motionY = info.player.motionY;
-					info.prevEntInstance.motionZ = info.nextEntInstance.motionZ = info.player.motionZ;
-					info.prevEntInstance.ticksExisted = info.nextEntInstance.ticksExisted = info.player.ticksExisted;
-					
-				}
 				
 				if(info.morphProgress < 40)
 				{
@@ -136,6 +115,38 @@ public class TickHandlerClient
 	public void preRenderTick(Minecraft mc, World world, float renderTick)
 	{
 		this.renderTick = renderTick;
+		
+		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
+		{
+			MorphInfoClient info = e.getValue();
+			
+			if(info.player != null)
+			{
+				info.prevEntInstance.prevRotationYawHead = info.nextEntInstance.prevRotationYawHead = info.player.prevRotationYawHead;
+				info.prevEntInstance.prevRotationYaw = info.nextEntInstance.prevRotationYaw = info.player.prevRotationYaw;
+				info.prevEntInstance.prevRotationPitch = info.nextEntInstance.prevRotationPitch = info.player.prevRotationPitch;
+				info.prevEntInstance.prevRenderYawOffset = info.nextEntInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
+				info.prevEntInstance.prevLimbYaw = info.nextEntInstance.prevLimbYaw = info.player.prevLimbYaw;
+				info.prevEntInstance.prevSwingProgress = info.nextEntInstance.prevSwingProgress = info.player.prevSwingProgress;
+				
+				info.prevEntInstance.rotationYawHead = info.nextEntInstance.rotationYawHead = info.player.rotationYawHead;
+				info.prevEntInstance.rotationYaw = info.nextEntInstance.rotationYaw = info.player.rotationYaw;
+				info.prevEntInstance.rotationPitch = info.nextEntInstance.rotationPitch = info.player.rotationPitch;
+				info.prevEntInstance.renderYawOffset = info.nextEntInstance.renderYawOffset = info.player.renderYawOffset;
+				info.prevEntInstance.limbYaw = info.nextEntInstance.limbYaw = info.player.limbYaw;
+				info.prevEntInstance.swingProgress = info.nextEntInstance.swingProgress = info.player.swingProgress;
+				info.prevEntInstance.limbSwing = info.nextEntInstance.limbSwing = info.player.limbSwing;
+				info.prevEntInstance.motionX = info.nextEntInstance.motionX = info.player.motionX;
+				info.prevEntInstance.motionY = info.nextEntInstance.motionY = info.player.motionY;
+				info.prevEntInstance.motionZ = info.nextEntInstance.motionZ = info.player.motionZ;
+				info.prevEntInstance.ticksExisted = info.nextEntInstance.ticksExisted = info.player.ticksExisted;
+				info.prevEntInstance.onGround = info.nextEntInstance.onGround = info.player.onGround;
+				info.prevEntInstance.isAirBorne = info.nextEntInstance.isAirBorne = info.player.isAirBorne;
+				info.prevEntInstance.moveStrafing = info.nextEntInstance.moveStrafing = info.player.moveStrafing;
+				info.prevEntInstance.moveForward = info.nextEntInstance.moveForward = info.player.moveForward;
+			}
+		}
+
 	}
 
 	public void renderTick(Minecraft mc, World world, float renderTick)

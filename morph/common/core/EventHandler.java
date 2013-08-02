@@ -87,7 +87,7 @@ public class EventHandler
 	        	
 //	        	info.prevEntModel.modelParent.setRotationAngles(0.0F, 0.0F, 0.0F, event.entityPlayer.rotationPitch, event.entityPlayer.rotationYaw, 0.625F, info.prevEntInstance);
 //	        	info.prevEntModel.modelParent.render(info.prevEntInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
-	        	info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, 0.0D, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	
 	        	GL11.glPopMatrix();
 	        	Morph.proxy.tickHandlerClient.renderingMorph = false;

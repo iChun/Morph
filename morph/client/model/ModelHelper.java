@@ -85,7 +85,7 @@ public class ModelHelper
 			for(ModelRenderer child : getChildren(cube, true, 0))
 			{
 				//TODO check that this isn't broken
-				cube.addChild(child);
+//				cube.addChild(child);
 				if(!children.contains(child))
 				{
 					children.add(child);
