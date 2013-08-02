@@ -9,9 +9,12 @@ import org.lwjgl.opengl.GL11;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -81,12 +84,13 @@ public class EventHandler
 	        	
 //	        	ObfuscationReflectionHelper.setPrivateValue(RendererLivingEntity.class, info.prevEntInfo.entRender, info.prevEntModel, ObfHelper.mainModel);
 	        	
-//	        	GL11.glTranslated(-2 * (d0 - RenderManager.renderPosX), -2 * (d1 - RenderManager.renderPosY), -2 * (d2 - RenderManager.renderPosZ));
+	        	GL11.glTranslated(1 * (d0 - RenderManager.renderPosX), 1 * (d1 - RenderManager.renderPosY), 1 * (d2 - RenderManager.renderPosZ));
 	        	
 //	        	GL11.glScalef(1.0F, -1.0F, -1.0F);
 	        	
 //	        	info.prevEntModel.modelParent.setRotationAngles(0.0F, 0.0F, 0.0F, event.entityPlayer.rotationPitch, event.entityPlayer.rotationYaw, 0.625F, info.prevEntInstance);
 //	        	info.prevEntModel.modelParent.render(info.prevEntInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
+//	        	info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	
 	        	GL11.glPopMatrix();
@@ -129,7 +133,39 @@ public class EventHandler
 			
 			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
 			
-			MorphInfo info2 = new MorphInfo(info.nextEntInstance, (EntityLivingBase)event.target);
+			String username1 = (isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextEntInstance).username : "";
+			String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)event.target).username : "";
+			
+			NBTTagCompound prevTag = new NBTTagCompound();
+			NBTTagCompound nextTag = new NBTTagCompound();
+
+			info.nextEntInstance.entityId = event.target.entityId = event.entityPlayer.entityId;
+			
+			info.nextEntInstance.addEntityID(prevTag);
+			event.target.addEntityID(nextTag);
+			
+			EntityLivingBase prevEnt;
+			EntityLivingBase nextEnt;
+			
+			if(username1.equalsIgnoreCase(""))
+			{
+				prevEnt = (EntityLivingBase)EntityList.createEntityFromNBT(prevTag, event.entityPlayer.worldObj);
+			}
+			else
+			{
+				prevEnt = event.entityPlayer;
+			}
+			
+			if(username2.equalsIgnoreCase(""))
+			{
+				nextEnt = (EntityLivingBase)EntityList.createEntityFromNBT(nextTag, event.entityPlayer.worldObj);
+			}
+			else
+			{
+				nextEnt = event.entityPlayer;
+			}
+			
+			MorphInfo info2 = new MorphInfo(prevEnt, nextEnt);
 			info2.setMorphing(true);
 			
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(event.entityPlayer.username, info2);
@@ -142,14 +178,8 @@ public class EventHandler
 				stream.writeUTF(event.entityPlayer.username);
 				
 				stream.writeByte(isPlayer);
-				stream.writeUTF((isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextEntInstance).username : "");
-				stream.writeUTF((isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)event.target).username : "");
-				
-				NBTTagCompound prevTag = new NBTTagCompound();
-				NBTTagCompound nextTag = new NBTTagCompound();
-
-				info.nextEntInstance.addEntityID(prevTag);
-				event.target.addEntityID(nextTag);
+				stream.writeUTF(username1);
+				stream.writeUTF(username2);
 				
 				Morph.writeNBTTagCompound(prevTag, stream);
 				Morph.writeNBTTagCompound(nextTag, stream);
