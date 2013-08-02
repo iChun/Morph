@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.morph.MorphInfo;
@@ -18,7 +19,10 @@ public class TickHandlerClient
 	implements ITickHandler
 {
 	
-	
+	public TickHandlerClient()
+	{
+		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.5F);
+	}
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
@@ -101,6 +105,7 @@ public class TickHandlerClient
 
 	public void preRenderTick(Minecraft mc, World world, float renderTick)
 	{
+		this.renderTick = renderTick;
 	}
 
 	public void renderTick(Minecraft mc, World world, float renderTick)
@@ -112,4 +117,6 @@ public class TickHandlerClient
 	public RenderMorph renderMorphInstance;
 	
 	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
+
+	public float renderTick;
 }

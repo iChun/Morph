@@ -4,8 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.lwjgl.opengl.GL11;
+
+import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,7 +45,33 @@ public class EventHandler
 	{
 		if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.username))
 		{
+			event.setCanceled(true);
 			
+			double par2 = Morph.proxy.tickHandlerClient.renderTick;
+	        double d0 = event.entityPlayer.lastTickPosX + (event.entityPlayer.posX - event.entityPlayer.lastTickPosX) * (double)par2;
+	        double d1 = event.entityPlayer.lastTickPosY + (event.entityPlayer.posY - event.entityPlayer.lastTickPosY) * (double)par2;
+	        double d2 = event.entityPlayer.lastTickPosZ + (event.entityPlayer.posZ - event.entityPlayer.lastTickPosZ) * (double)par2;
+	        float f1 = event.entityPlayer.prevRotationYaw + (event.entityPlayer.rotationYaw - event.entityPlayer.prevRotationYaw) * (float)par2;
+	        int i = event.entityPlayer.getBrightnessForRender((float)par2);
+
+	        if (event.entityPlayer.isBurning())
+	        {
+	            i = 15728880;
+	        }
+
+	        int j = i % 65536;
+	        int k = i / 65536;
+	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+	        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(event.entityPlayer.username);
+	        
+	        if(info != null)
+	        {
+	        	System.out.println(info.prevEntModel);
+//	        	System.out.println(info.prevEntModel.entRender);
+//	        	info.prevEntModel.entRender.doRender(info.prevEntInstance, 0.0D, 0.0D, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        }
 		}
 	}
 	

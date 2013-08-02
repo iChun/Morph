@@ -9,6 +9,8 @@ import net.minecraft.util.ResourceLocation;
 public class RenderMorph extends RendererLivingEntity 
 {
 
+	public static final ResourceLocation morphSkin = new ResourceLocation("morph", "textures/skin/morphskin.png");
+	
 	public RenderMorph(ModelBase par1ModelBase, float par2) 
 	{
 		super(par1ModelBase, par2);

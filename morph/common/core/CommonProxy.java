@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import morph.client.core.TickHandlerClient;
@@ -24,6 +25,7 @@ public class CommonProxy
 				compatibleEntities.add(clz);
 			}
 		}
+		compatibleEntities.add(EntityPlayer.class);
 	}
 	
 	public void initTickHandlers()
