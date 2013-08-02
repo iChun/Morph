@@ -95,17 +95,17 @@ public class EventHandler
 //	        	info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	
-	        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.entRender, info.nextEntInfo.entRender.getClass(), info.nextEntInstance);
-	        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
-	        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
-	        	
-	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
-	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
-	        	
-	        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
-	        	
-	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
-	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+//	        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.entRender, info.nextEntInfo.entRender.getClass(), info.nextEntInstance);
+//	        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+//	        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+//	        	
+//	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+//	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+//	        	
+//	        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+//	        	
+//	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+//	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
 	        	
 	        	GL11.glPopMatrix();
 	        	Morph.proxy.tickHandlerClient.renderingMorph = false;
