@@ -23,6 +23,7 @@ import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.network.NetworkModHandler;
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 @Mod(modid = "Morph", name = "Morph",
 			version = "2.0.0",
@@ -57,7 +58,8 @@ public class Morph
 	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
-		
+		proxy.initMod();
+		proxy.initTickHandlers();
 	}
 	
 	@EventHandler
