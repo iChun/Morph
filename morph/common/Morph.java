@@ -3,6 +3,7 @@ package morph.common;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.minecraftforge.common.MinecraftForge;
 import morph.client.core.PacketHandlerClient;
 import morph.common.core.CommonProxy;
 import morph.common.core.ConnectionHandler;
@@ -53,6 +54,8 @@ public class Morph
 	{
 		logger = Logger.getLogger("Morph");
 		logger.setParent(FMLLog.getLogger());
+		
+		MinecraftForge.EVENT_BUS.register(new morph.common.core.EventHandler());
 	}
 	
 	@EventHandler
