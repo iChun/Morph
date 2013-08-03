@@ -209,7 +209,7 @@ public class EventHandler
 			entTarget = (EntityDragon)((EntityDragonPart)event.target).entityDragonObj;
 		}
 
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && entTarget instanceof EntityLivingBase && !((EntityLivingBase)entTarget).isChild())
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && entTarget instanceof EntityLivingBase && (Morph.childMorphs == 1 || Morph.childMorphs == 0 && !((EntityLivingBase)entTarget).isChild()))
 		{
 			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.entityPlayer.username);
 			

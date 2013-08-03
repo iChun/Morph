@@ -8,7 +8,10 @@ import java.util.logging.Logger;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Property;
+import morph.client.core.ClientProxy;
 import morph.client.core.PacketHandlerClient;
 import morph.common.core.CommonProxy;
 import morph.common.core.ConnectionHandler;
@@ -57,11 +60,24 @@ public class Morph
 	
 	private static Logger logger;
 	
+	public static int childMorphs;
+	
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
 	{
 		logger = Logger.getLogger("Morph");
 		logger.setParent(FMLLog.getLogger());
+		
+		boolean isClient = proxy instanceof ClientProxy;
+
+		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		config.load();
+		
+		config.addCustomCategoryComment("gameplay", "These options affect the gameplay while using the mod.");
+		
+		childMorphs = addCommentAndReturnInt(config, "gameplay", "childMorphs", "Can you morph into child mobs?\nDisabled by default due to improper morph transitions\n0 = No\n1 = Yes", 0);
+		
+		config.save();
 		
 		MinecraftForge.EVENT_BUS.register(new morph.common.core.EventHandler());
 		
@@ -127,6 +143,26 @@ public class Morph
             par1DataOutput.write(abyte);
         }
     }
+    
+	public static int addCommentAndReturnInt(Configuration config, String cat, String s, String comment, int i) //Taken from iChun Util
+	{
+		Property prop = config.get(cat, s, i);
+		if(!comment.equalsIgnoreCase(""))
+		{
+			prop.comment = comment;
+		}
+		return prop.getInt();
+	}
+
+	public static String addCommentAndReturnString(Configuration config, String cat, String s, String comment, String value)
+	{
+		Property prop = config.get(cat, s, value);
+		if(!comment.equalsIgnoreCase(""))
+		{
+			prop.comment = comment;
+		}
+		return prop.getString();
+	}
 	
     public static int getNetId()
     {

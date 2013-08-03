@@ -1,5 +1,7 @@
 package morph.client.core;
 
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map.Entry;
