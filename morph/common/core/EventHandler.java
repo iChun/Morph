@@ -57,6 +57,10 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onRenderPlayer(RenderPlayerEvent.Pre event)
 	{
+		if(Morph.proxy.tickHandlerClient.forceRender)
+		{
+			return;
+		}
 		if(Morph.proxy.tickHandlerClient.renderingMorph && Morph.proxy.tickHandlerClient.renderingPlayer > 1)
 		{
 			event.setCanceled(true);

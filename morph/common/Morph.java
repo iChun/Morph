@@ -80,6 +80,13 @@ public class Morph
 		
 		childMorphs = addCommentAndReturnInt(config, "gameplay", "childMorphs", "Can you morph into child mobs?\nDisabled by default due to improper morph transitions\n0 = No\n1 = Yes", 0);
 		
+		if(isClient)
+		{
+			config.addCustomCategoryComment("client", "These options are client only.");
+			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: Home", 199);
+			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: End", 207);
+		}
+		
 		config.save();
 		
 		MinecraftForge.EVENT_BUS.register(new morph.common.core.EventHandler());
