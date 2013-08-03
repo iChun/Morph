@@ -122,6 +122,7 @@ public class Morph
 	public void serverStopped(FMLServerStoppedEvent event)
 	{
 		proxy.tickHandlerServer.playerMorphInfo.clear();
+		proxy.tickHandlerServer.playerMorphs.clear();
 	}
 	
     public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException

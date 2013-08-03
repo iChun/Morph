@@ -9,6 +9,7 @@ import morph.client.model.ModelInfo;
 import morph.client.model.ModelList;
 import morph.client.model.ModelMorph;
 import morph.common.morph.MorphInfo;
+import morph.common.morph.MorphState;
 
 public class MorphInfoClient extends MorphInfo 
 {
@@ -21,16 +22,16 @@ public class MorphInfoClient extends MorphInfo
 	
 	public ModelMorph interimModel;
 
-	public MorphInfoClient(String name, EntityLivingBase prev, EntityLivingBase next) 
+	public MorphInfoClient(String name, MorphState prev, MorphState next) 
 	{
 		super(name, prev, next);
-		if(prev != null)
+		if(prev.entInstance != null)
 		{
-			prevEntInfo = ModelList.getModelInfo(prev.getClass());
+			prevEntInfo = ModelList.getModelInfo(prev.entInstance.getClass());
 		}
-		if(next != null)
+		if(next.entInstance != null)
 		{
-			nextEntInfo = ModelList.getModelInfo(next.getClass());
+			nextEntInfo = ModelList.getModelInfo(next.entInstance.getClass());
 		}
 		
 		interimModel = new ModelMorph(this);

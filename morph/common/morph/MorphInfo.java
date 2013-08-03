@@ -19,22 +19,22 @@ import net.minecraftforge.common.DimensionManager;
 public class MorphInfo 
 {
 	public String playerName;
-	public EntityLivingBase prevEntInstance;
+	public MorphState prevState;
 	
-	public EntityLivingBase nextEntInstance;
+	public MorphState nextState;
 	
 	private boolean morphing; //if true, increase progress
 	public int morphProgress; //up to 80, 3 sec sound files, 0.5 sec between sounds where the skin turns black
 	
 	public MorphInfo(){playerName="";}
 	
-	public MorphInfo(String name, EntityLivingBase prev, EntityLivingBase next)
+	public MorphInfo(String name, MorphState prev, MorphState next)
 	{
 		playerName = name;
 		
-		prevEntInstance = prev;
+		prevState = prev;
 		
-		nextEntInstance = next;
+		nextState = next;
 		
 		morphing = false;
 		morphProgress = 0;
@@ -52,23 +52,6 @@ public class MorphInfo
 	
 	public Packet250CustomPayload getMorphInfoAsPacket()
 	{
-		byte isPlayer = (byte)((prevEntInstance instanceof EntityPlayer && nextEntInstance instanceof EntityPlayer) ? 3 : prevEntInstance instanceof EntityPlayer ? 1 : nextEntInstance instanceof EntityPlayer ? 2 : 0);
-		
-		String username1 = (isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)prevEntInstance).username : "";
-		String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)nextEntInstance).username : "";
-		
-		NBTTagCompound prevTag = new NBTTagCompound();
-		NBTTagCompound nextTag = new NBTTagCompound();
-
-		if(prevEntInstance != null)
-		{
-			prevEntInstance.addEntityID(prevTag);
-		}
-		if(nextEntInstance != null)
-		{
-			nextEntInstance.addEntityID(nextTag);
-		}
-		
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		DataOutputStream stream = new DataOutputStream(bytes);
 		try
@@ -78,13 +61,17 @@ public class MorphInfo
 			
 			stream.writeBoolean(morphing);
 			stream.writeInt(morphProgress);
-			
-			stream.writeByte(isPlayer);
-			stream.writeUTF(username1);
-			stream.writeUTF(username2);
-			
-			Morph.writeNBTTagCompound(prevTag, stream);
-			Morph.writeNBTTagCompound(nextTag, stream);
+
+			stream.writeBoolean(prevState != null);
+			if(prevState != null)
+			{
+				Morph.writeNBTTagCompound(prevState.getTag(), stream);
+			}
+			stream.writeBoolean(nextState != null);
+			if(nextState != null)
+			{
+				Morph.writeNBTTagCompound(nextState.getTag(), stream);
+			}
 		}
 		catch(IOException e)
 		{
@@ -97,22 +84,9 @@ public class MorphInfo
 	{
 		tag.setString("playerName", playerName);
 		
-		tag.setInteger("dimension", nextEntInstance.dimension);
+		tag.setInteger("dimension", nextState.entInstance.dimension);
 		
-		byte isPlayer = (byte)((prevEntInstance instanceof EntityPlayer && nextEntInstance instanceof EntityPlayer) ? 3 : prevEntInstance instanceof EntityPlayer ? 1 : nextEntInstance instanceof EntityPlayer ? 2 : 0);
-		
-		String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)nextEntInstance).username : "";
-		
-		NBTTagCompound nextTag = new NBTTagCompound();
-
-		if(nextEntInstance != null)
-		{
-			nextEntInstance.addEntityID(nextTag);
-		}
-		
-		tag.setString("nextUsername", username2);
-		
-		tag.setCompoundTag("nextEntInstance", nextTag);
+		tag.setCompoundTag("nextState", nextState.getTag());
 	}
 	
 	public void readNBT(NBTTagCompound tag)
@@ -121,22 +95,9 @@ public class MorphInfo
 		
 		World dimension = DimensionManager.getWorld(tag.getInteger("dimension"));
 		
-		String nextUsername = tag.getString("nextUsername");
+		nextState = new MorphState(dimension, playerName, playerName, null, false);
 		
-		if(nextUsername.equalsIgnoreCase(""))
-		{
-			nextEntInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag.getCompoundTag("nextEntInstance"), dimension);
-		}
-		else
-		{
-			nextEntInstance = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), dimension, nextUsername, new ItemInWorldManager(dimension));
-		}
-		
-		if(nextEntInstance == null)
-		{
-			Morph.console("Invalid morph form! Creating generic pig as replacement.", true);
-			nextEntInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", dimension);
-		}
+		nextState.readTag(dimension, tag.getCompoundTag("nextState"));
 		
 		morphing = true;
 		morphProgress = 80;

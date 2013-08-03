@@ -7,6 +7,8 @@ import java.io.IOException;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.core.ObfHelper;
+import morph.common.morph.MorphHandler;
+import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
@@ -14,6 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -37,57 +40,49 @@ public class PacketHandlerClient
 					boolean morphing = stream.readBoolean();
 					int morphProg = stream.readInt();
 
-					byte isPlayer = stream.readByte();
-					
-					String username1 = stream.readUTF();
-					String username2 = stream.readUTF();
-					
-					NBTTagCompound prevTag = Morph.readNBTTagCompound(stream);
-					NBTTagCompound nextTag = Morph.readNBTTagCompound(stream);
-
-					EntityLivingBase prevEnt;
-					EntityLivingBase nextEnt;
-					
-					if(username1.equalsIgnoreCase(""))
+					NBTTagCompound prevTag = new NBTTagCompound();
+					NBTTagCompound nextTag = new NBTTagCompound();
+					if(stream.readBoolean())
 					{
-						prevEnt = (EntityLivingBase)EntityList.createEntityFromNBT(prevTag, Minecraft.getMinecraft().theWorld);
+						prevTag = Morph.readNBTTagCompound(stream);
 					}
-					else
+					if(stream.readBoolean())
 					{
-						prevEnt = new EntityOtherPlayerMP(mc.theWorld, username1);
+						nextTag = Morph.readNBTTagCompound(stream);
 					}
 					
-					if(username2.equalsIgnoreCase(""))
-					{
-						nextEnt = (EntityLivingBase)EntityList.createEntityFromNBT(nextTag, Minecraft.getMinecraft().theWorld);
-					}
-					else
-					{
-						nextEnt = new EntityOtherPlayerMP(mc.theWorld, username2);
-					}
+					MorphState prevState = new MorphState(mc.theWorld, mc.thePlayer.username, "", null, true);
+					MorphState nextState = new MorphState(mc.theWorld, mc.thePlayer.username, "", null, true);
 					
-					if(prevEnt != null)
+					prevState.readTag(mc.theWorld, prevTag);
+					nextState.readTag(mc.theWorld, nextTag);
+					
+					//TODO check for mc.theplayer morphstate
+//					prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), prevState);
+//					nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), nextState);
+					
+					if(prevState.entInstance != null)
 					{
-						ObfHelper.forceSetSize(prevEnt, 0.0F, 0.0F);
-						if(prevEnt != mc.thePlayer)
+						ObfHelper.forceSetSize(prevState.entInstance, 0.0F, 0.0F);
+						if(prevState.entInstance != mc.thePlayer)
 						{
-							prevEnt.noClip = true;
+							prevState.entInstance.noClip = true;
 						}
 					}
 					
-					if(nextEnt != null)
+					if(nextState.entInstance != null)
 					{
-						ObfHelper.forceSetSize(nextEnt, 0.0F, 0.0F);
-						if(nextEnt != mc.thePlayer)
+						ObfHelper.forceSetSize(nextState.entInstance, 0.0F, 0.0F);
+						if(nextState.entInstance != mc.thePlayer)
 						{
-							nextEnt.noClip = true;
+							nextState.entInstance.noClip = true;
 						}
 					}
 					
 //					System.out.println(prevEnt);
 //					System.out.println(nextEnt);
 					
-					MorphInfoClient info = new MorphInfoClient(name, prevEnt, nextEnt);
+					MorphInfoClient info = new MorphInfoClient(name, prevState, nextState);
 					info.setMorphing(morphing);
 					info.morphProgress = morphProg;
 					Morph.proxy.tickHandlerClient.playerMorphInfo.put(name, info);

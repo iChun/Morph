@@ -160,23 +160,23 @@ public class TickHandlerClient
 				{
 					info.player = world.getPlayerEntityByName(e.getKey());
 				}
-				if(info.prevEntInstance == null)
+				if(info.prevState.entInstance == null)
 				{
-					info.prevEntInstance = info.player;
+					info.prevState.entInstance = info.player;
 				}
 				
 				if(info.morphProgress < 10)
 				{
-					if(info.prevEntInstance != mc.thePlayer)
+					if(info.prevState.entInstance != mc.thePlayer)
 					{
-						info.prevEntInstance.onUpdate();
+						info.prevState.entInstance.onUpdate();
 					}
 				}
 				else if(info.morphProgress > 70)
 				{
-					if(info.nextEntInstance != mc.thePlayer)
+					if(info.nextState.entInstance != mc.thePlayer)
 					{
-						info.nextEntInstance.onUpdate();
+						info.nextState.entInstance.onUpdate();
 					}
 				}
 			}
@@ -249,43 +249,43 @@ public class TickHandlerClient
 		{
 			MorphInfoClient info = e.getValue();
 			
-			if(info.prevEntInstance != null && info.nextEntInstance != null && info.player != null)
+			if(info.prevState.entInstance != null && info.nextState.entInstance != null && info.player != null)
 			{
-				info.prevEntInstance.prevRotationYawHead = info.nextEntInstance.prevRotationYawHead = info.player.prevRotationYawHead;
-				info.prevEntInstance.prevRotationYaw = info.nextEntInstance.prevRotationYaw = info.player.prevRotationYaw;
-				info.prevEntInstance.prevRotationPitch = info.nextEntInstance.prevRotationPitch = info.player.prevRotationPitch;
-				info.prevEntInstance.prevRenderYawOffset = info.nextEntInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
-				info.prevEntInstance.prevLimbYaw = info.nextEntInstance.prevLimbYaw = info.player.prevLimbYaw;
-				info.prevEntInstance.prevSwingProgress = info.nextEntInstance.prevSwingProgress = info.player.prevSwingProgress;
-				info.prevEntInstance.prevPosX = info.nextEntInstance.prevPosX = info.player.prevPosX;
-				info.prevEntInstance.prevPosY = info.nextEntInstance.prevPosY = info.player.prevPosY;
-				info.prevEntInstance.prevPosZ = info.nextEntInstance.prevPosZ = info.player.prevPosZ;
+				info.prevState.entInstance.prevRotationYawHead = info.nextState.entInstance.prevRotationYawHead = info.player.prevRotationYawHead;
+				info.prevState.entInstance.prevRotationYaw = info.nextState.entInstance.prevRotationYaw = info.player.prevRotationYaw;
+				info.prevState.entInstance.prevRotationPitch = info.nextState.entInstance.prevRotationPitch = info.player.prevRotationPitch;
+				info.prevState.entInstance.prevRenderYawOffset = info.nextState.entInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
+				info.prevState.entInstance.prevLimbYaw = info.nextState.entInstance.prevLimbYaw = info.player.prevLimbYaw;
+				info.prevState.entInstance.prevSwingProgress = info.nextState.entInstance.prevSwingProgress = info.player.prevSwingProgress;
+				info.prevState.entInstance.prevPosX = info.nextState.entInstance.prevPosX = info.player.prevPosX;
+				info.prevState.entInstance.prevPosY = info.nextState.entInstance.prevPosY = info.player.prevPosY;
+				info.prevState.entInstance.prevPosZ = info.nextState.entInstance.prevPosZ = info.player.prevPosZ;
 				
-				info.prevEntInstance.rotationYawHead = info.nextEntInstance.rotationYawHead = info.player.rotationYawHead;
-				info.prevEntInstance.rotationYaw = info.nextEntInstance.rotationYaw = info.player.rotationYaw;
-				info.prevEntInstance.rotationPitch = info.nextEntInstance.rotationPitch = info.player.rotationPitch;
-				info.prevEntInstance.renderYawOffset = info.nextEntInstance.renderYawOffset = info.player.renderYawOffset;
-				info.prevEntInstance.limbYaw = info.nextEntInstance.limbYaw = info.player.limbYaw;
-				info.prevEntInstance.swingProgress = info.nextEntInstance.swingProgress = info.player.swingProgress;
-				info.prevEntInstance.limbSwing = info.nextEntInstance.limbSwing = info.player.limbSwing;
-				info.prevEntInstance.posX = info.nextEntInstance.posX = info.player.posX;
-				info.prevEntInstance.posY = info.nextEntInstance.posY = info.player.posY;
-				info.prevEntInstance.posZ = info.nextEntInstance.posZ = info.player.posZ;
-				info.prevEntInstance.motionX = info.nextEntInstance.motionX = info.player.motionX;
-				info.prevEntInstance.motionY = info.nextEntInstance.motionY = info.player.motionY;
-				info.prevEntInstance.motionZ = info.nextEntInstance.motionZ = info.player.motionZ;
-				info.prevEntInstance.ticksExisted = info.nextEntInstance.ticksExisted = info.player.ticksExisted;
-				info.prevEntInstance.onGround = info.nextEntInstance.onGround = info.player.onGround;
-				info.prevEntInstance.isAirBorne = info.nextEntInstance.isAirBorne = info.player.isAirBorne;
-				info.prevEntInstance.moveStrafing = info.nextEntInstance.moveStrafing = info.player.moveStrafing;
-				info.prevEntInstance.moveForward = info.nextEntInstance.moveForward = info.player.moveForward;
-				info.prevEntInstance.dimension = info.nextEntInstance.dimension = info.player.dimension;
-				info.prevEntInstance.worldObj = info.nextEntInstance.worldObj = info.player.worldObj;
-				info.prevEntInstance.ridingEntity = info.nextEntInstance.ridingEntity = info.player.ridingEntity;
-				info.prevEntInstance.setSneaking(info.player.isSneaking());
-				info.nextEntInstance.setSneaking(info.player.isSneaking());
-				info.prevEntInstance.setSprinting(info.player.isSprinting());
-				info.nextEntInstance.setSprinting(info.player.isSprinting());
+				info.prevState.entInstance.rotationYawHead = info.nextState.entInstance.rotationYawHead = info.player.rotationYawHead;
+				info.prevState.entInstance.rotationYaw = info.nextState.entInstance.rotationYaw = info.player.rotationYaw;
+				info.prevState.entInstance.rotationPitch = info.nextState.entInstance.rotationPitch = info.player.rotationPitch;
+				info.prevState.entInstance.renderYawOffset = info.nextState.entInstance.renderYawOffset = info.player.renderYawOffset;
+				info.prevState.entInstance.limbYaw = info.nextState.entInstance.limbYaw = info.player.limbYaw;
+				info.prevState.entInstance.swingProgress = info.nextState.entInstance.swingProgress = info.player.swingProgress;
+				info.prevState.entInstance.limbSwing = info.nextState.entInstance.limbSwing = info.player.limbSwing;
+				info.prevState.entInstance.posX = info.nextState.entInstance.posX = info.player.posX;
+				info.prevState.entInstance.posY = info.nextState.entInstance.posY = info.player.posY;
+				info.prevState.entInstance.posZ = info.nextState.entInstance.posZ = info.player.posZ;
+				info.prevState.entInstance.motionX = info.nextState.entInstance.motionX = info.player.motionX;
+				info.prevState.entInstance.motionY = info.nextState.entInstance.motionY = info.player.motionY;
+				info.prevState.entInstance.motionZ = info.nextState.entInstance.motionZ = info.player.motionZ;
+				info.prevState.entInstance.ticksExisted = info.nextState.entInstance.ticksExisted = info.player.ticksExisted;
+				info.prevState.entInstance.onGround = info.nextState.entInstance.onGround = info.player.onGround;
+				info.prevState.entInstance.isAirBorne = info.nextState.entInstance.isAirBorne = info.player.isAirBorne;
+				info.prevState.entInstance.moveStrafing = info.nextState.entInstance.moveStrafing = info.player.moveStrafing;
+				info.prevState.entInstance.moveForward = info.nextState.entInstance.moveForward = info.player.moveForward;
+				info.prevState.entInstance.dimension = info.nextState.entInstance.dimension = info.player.dimension;
+				info.prevState.entInstance.worldObj = info.nextState.entInstance.worldObj = info.player.worldObj;
+				info.prevState.entInstance.ridingEntity = info.nextState.entInstance.ridingEntity = info.player.ridingEntity;
+				info.prevState.entInstance.setSneaking(info.player.isSneaking());
+				info.nextState.entInstance.setSneaking(info.player.isSneaking());
+				info.prevState.entInstance.setSprinting(info.player.isSprinting());
+				info.nextState.entInstance.setSprinting(info.player.isSprinting());
 			}
 		}
 		
@@ -353,7 +353,7 @@ public class TickHandlerClient
 	        gap += 36;
 	        
 			drawEntityOnScreen(mc.thePlayer, 20, gap, 16, 2, 2, renderTick);
-			drawEntityOnScreen(playerMorphInfo.get(mc.thePlayer.username).nextEntInstance, 20, gap + 42, 16, 2, 2, renderTick);
+			drawEntityOnScreen(playerMorphInfo.get(mc.thePlayer.username).nextState.entInstance, 20, gap + 42, 16, 2, 2, renderTick);
 			
 			int x = 0;
 			for(int i = 0; i < world.loadedEntityList.size(); i++)
@@ -384,6 +384,14 @@ public class TickHandlerClient
 	        GL11.glDisable(GL11.GL_ALPHA_TEST);
 
 	        GL11.glTranslatef((float)posX, (float)posY, 50.0F);
+	        
+	        GL11.glEnable(3042 /*GL_BLEND*/);
+	        GL11.glBlendFunc(770, 771);
+
+	        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(ent.getEntityName(), 26, -32, 16777215);
+	        
+	        GL11.glDisable(3042 /*GL_BLEND*/);
+	        
 	        GL11.glScalef((float)(-scale), (float)scale, (float)scale);
 	        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 	        float f2 = ent.renderYawOffset;

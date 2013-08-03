@@ -9,7 +9,9 @@ import java.util.Map.Entry;
 
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
+import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
+import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -21,6 +23,8 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -115,7 +119,7 @@ public class EventHandler
 	        	{
 	        		if(info.morphProgress < 10)
 	        		{
-			        	info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+			        	info.prevEntInfo.entRender.func_130000_a(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -126,14 +130,14 @@ public class EventHandler
 				        	
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, progress);
 				        	
-				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevEntInfo.entRender, info.prevEntInfo.entRender.getClass(), info.prevEntInstance);
+				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevEntInfo.entRender, info.prevEntInfo.entRender.getClass(), info.prevState.entInstance);
 				        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
 				        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+				        	info.prevEntInfo.entRender.func_130000_a(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -147,7 +151,7 @@ public class EventHandler
 	        	{
 	        		if(info.morphProgress >= 70)
 	        		{
-			        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+			        	info.nextEntInfo.entRender.func_130000_a(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -162,14 +166,14 @@ public class EventHandler
 				        	}
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F - progress);
 				        	
-				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.entRender, info.nextEntInfo.entRender.getClass(), info.nextEntInstance);
+				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.entRender, info.nextEntInfo.entRender.getClass(), info.nextState.entInstance);
 				        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
 				        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+				        	info.nextEntInfo.entRender.func_130000_a(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -181,8 +185,8 @@ public class EventHandler
 	        	}
 	        	if(info.morphProgress >= 10 && info.morphProgress < 70)
 	        	{
-	        		info.prevEntInfo.entRender.func_130000_a(info.prevEntInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
-	        		info.nextEntInfo.entRender.func_130000_a(info.nextEntInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        		info.prevEntInfo.entRender.func_130000_a(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        		info.nextEntInfo.entRender.func_130000_a(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        		
 	        		Morph.proxy.tickHandlerClient.renderMorphInstance.setMainModel(info.interimModel);
 	        		
@@ -229,55 +233,37 @@ public class EventHandler
 			
 			if(info == null)
 			{
-				info = new MorphInfo(event.entityPlayer.username, (EntityLivingBase)entTarget, event.entityPlayer);
+				info = new MorphInfo(event.entityPlayer.username, null, Morph.proxy.tickHandlerServer.getSelfState(event.entityPlayer.worldObj, event.entityPlayer.username));
 			}
-			else if(info.getMorphing() || info.nextEntInstance == entTarget)
+			else if(info.getMorphing() || info.nextState.entInstance == entTarget)
 			{
 				System.out.println("stop1");
 				return;
 			}
 			
-			byte isPlayer = (byte)((info.nextEntInstance instanceof EntityPlayer && entTarget instanceof EntityPlayer) ? 3 : info.nextEntInstance instanceof EntityPlayer ? 1 : entTarget instanceof EntityPlayer ? 2 : 0);
+			byte isPlayer = (byte)((info.nextState.entInstance instanceof EntityPlayer && entTarget instanceof EntityPlayer) ? 3 : info.nextState.entInstance instanceof EntityPlayer ? 1 : entTarget instanceof EntityPlayer ? 2 : 0);
 			
-			if(!(info.nextEntInstance instanceof EntityPlayer) && !info.nextEntInstance.addEntityID(new NBTTagCompound()))
+			if(!(info.nextState.entInstance instanceof EntityPlayer) && !info.nextState.entInstance.addEntityID(new NBTTagCompound()))
 			{
 				System.out.println("stop2");
 				return;
 			}
 			
-			event.entityLiving.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
+			event.entityPlayer.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
 			
-			String username1 = (isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextEntInstance).username : "";
+			String username1 = (isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextState.entInstance).username : "";
 			String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)entTarget).username : "";
 			
 			NBTTagCompound prevTag = new NBTTagCompound();
 			NBTTagCompound nextTag = new NBTTagCompound();
 
-			info.nextEntInstance.addEntityID(prevTag);
+			info.nextState.entInstance.addEntityID(prevTag);
 			entTarget.addEntityID(nextTag);
 			
-			EntityLivingBase prevEnt;
-			EntityLivingBase nextEnt;
+			MorphState prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), new MorphState(event.entityPlayer.worldObj, event.entityPlayer.username, username1, prevTag, false));
+			MorphState nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), new MorphState(event.entityPlayer.worldObj, event.entityPlayer.username, username2, nextTag, false));
 			
-			if(username1.equalsIgnoreCase(""))
-			{
-				prevEnt = (EntityLivingBase)EntityList.createEntityFromNBT(prevTag, event.entityPlayer.worldObj);
-			}
-			else
-			{
-				prevEnt = (EntityPlayer)info.nextEntInstance;
-			}
-			
-			if(username2.equalsIgnoreCase(""))
-			{
-				nextEnt = (EntityLivingBase)EntityList.createEntityFromNBT(nextTag, event.entityPlayer.worldObj);
-			}
-			else
-			{
-				nextEnt = (EntityPlayer)entTarget;
-			}
-			
-			MorphInfo info2 = new MorphInfo(event.entityPlayer.username, prevEnt, nextEnt);
+			MorphInfo info2 = new MorphInfo(event.entityPlayer.username, prevState, nextState);
 			info2.setMorphing(true);
 			
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(event.entityPlayer.username, info2);
