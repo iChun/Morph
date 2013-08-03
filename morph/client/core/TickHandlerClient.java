@@ -110,6 +110,12 @@ public class TickHandlerClient
 					info.prevEntInstance = info.player;
 				}
 				
+				if(mc.thePlayer.username.equalsIgnoreCase("Notch") && info.player != null && info.player.username.equalsIgnoreCase("ohaiiChun"))
+				{
+//					System.out.println(mc.thePlayer);
+//					System.out.println(info.nextEntInstance);
+				}
+				
 				if(info.morphProgress < 10)
 				{
 					if(info.prevEntInstance != mc.thePlayer)
@@ -206,4 +212,5 @@ public class TickHandlerClient
 	public float renderTick;
 	
 	public boolean renderingMorph;
+	public byte renderingPlayer;
 }

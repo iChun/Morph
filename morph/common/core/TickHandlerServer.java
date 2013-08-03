@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import morph.common.morph.MorphInfo;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.ITickHandler;
@@ -48,6 +49,14 @@ public class TickHandlerServer
 		if(clock != world.getWorldTime())
 		{
 			clock = world.getWorldTime();
+			
+//			for(int i = 0 ; i < world.loadedEntityList.size(); i++)
+//			{
+//				if(world.loadedEntityList.get(i) instanceof EntityCow)
+//				{
+//					((EntityCow)world.loadedEntityList.get(i)).setDead();
+//				}
+//			}
 			
 			for(Entry<String, MorphInfo> e : playerMorphInfo.entrySet())
 			{

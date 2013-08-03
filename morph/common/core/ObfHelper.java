@@ -56,35 +56,36 @@ public class ObfHelper
 	
 	public static void forceSetSize(Entity ent, float width, float height)
 	{
-		if(setSizeMethod == null)
-		{
-			try
-			{
-				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.setSizeObf : ObfHelper.setSizeDeobf, float.class, float.class);
-				setSizeMethod = m;
-			}
-			catch(NoSuchMethodException e)
-			{
-				ent.width = width;
-				ent.height = height;
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-		if(setSizeMethod != null)
-		{
-			try
-			{
-				setSizeMethod.setAccessible(true);
-				setSizeMethod.invoke(ent, width, height);				
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
+		return;
+//		if(setSizeMethod == null)
+//		{
+//			try
+//			{
+//				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.setSizeObf : ObfHelper.setSizeDeobf, float.class, float.class);
+//				setSizeMethod = m;
+//			}
+//			catch(NoSuchMethodException e)
+//			{
+//				ent.width = width;
+//				ent.height = height;
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//		}
+//		if(setSizeMethod != null)
+//		{
+//			try
+//			{
+//				setSizeMethod.setAccessible(true);
+//				setSizeMethod.invoke(ent, width, height);				
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//		}
 	}
 	
 	public static void forceUpdateEntityActionState(EntityLivingBase ent)

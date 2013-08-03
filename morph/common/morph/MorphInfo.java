@@ -4,12 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.FMLCommonHandler;
 import morph.common.Morph;
-import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
@@ -98,19 +99,19 @@ public class MorphInfo
 		
 		tag.setInteger("dimension", nextEntInstance.dimension);
 		
-		NBTTagCompound prevTag = new NBTTagCompound();
+		byte isPlayer = (byte)((prevEntInstance instanceof EntityPlayer && nextEntInstance instanceof EntityPlayer) ? 3 : prevEntInstance instanceof EntityPlayer ? 1 : nextEntInstance instanceof EntityPlayer ? 2 : 0);
+		
+		String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)nextEntInstance).username : "";
+		
 		NBTTagCompound nextTag = new NBTTagCompound();
 
-		if(prevEntInstance != null)
-		{
-			prevEntInstance.addEntityID(prevTag);
-		}
 		if(nextEntInstance != null)
 		{
 			nextEntInstance.addEntityID(nextTag);
 		}
 		
-		tag.setCompoundTag("prevEntInstance", prevTag);
+		tag.setString("nextUsername", username2);
+		
 		tag.setCompoundTag("nextEntInstance", nextTag);
 	}
 	
@@ -120,8 +121,16 @@ public class MorphInfo
 		
 		World dimension = DimensionManager.getWorld(tag.getInteger("dimension"));
 		
-		prevEntInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag.getCompoundTag("prevEntInstance"), dimension);
-		nextEntInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag.getCompoundTag("nextEntInstance"), dimension);
+		String nextUsername = tag.getString("nextUsername");
+		
+		if(nextUsername.equalsIgnoreCase(""))
+		{
+			nextEntInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag.getCompoundTag("nextEntInstance"), dimension);
+		}
+		else
+		{
+			nextEntInstance = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), dimension, nextUsername, new ItemInWorldManager(dimension));
+		}
 		
 		if(nextEntInstance == null)
 		{
@@ -133,3 +142,4 @@ public class MorphInfo
 		morphProgress = 80;
 	}
 }
+

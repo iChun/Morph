@@ -10,8 +10,10 @@ import java.util.Map.Entry;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,14 +57,25 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onRenderPlayer(RenderPlayerEvent.Pre event)
 	{
-		if(Morph.proxy.tickHandlerClient.renderingMorph)
+		if(Morph.proxy.tickHandlerClient.renderingMorph && Morph.proxy.tickHandlerClient.renderingPlayer > 1)
 		{
 			event.setCanceled(true);
 			return;
 		}
+		
+		Morph.proxy.tickHandlerClient.renderingPlayer++;
+
 		if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.username))
 		{
-			event.setCanceled(true);
+			if(Morph.proxy.tickHandlerClient.renderingPlayer != 2)
+			{
+				event.setCanceled(true);
+			}
+			else
+			{
+				Morph.proxy.tickHandlerClient.renderingPlayer--;
+				return;
+			}
 			
 			double par2 = Morph.proxy.tickHandlerClient.renderTick;
 	        double d0 = event.entityPlayer.lastTickPosX + (event.entityPlayer.posX - event.entityPlayer.lastTickPosX) * (double)par2;
@@ -176,6 +189,7 @@ public class EventHandler
 	        	Morph.proxy.tickHandlerClient.renderingMorph = false;
 	        }
 		}
+		Morph.proxy.tickHandlerClient.renderingPlayer--;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -247,7 +261,7 @@ public class EventHandler
 			}
 			else
 			{
-				prevEnt = event.entityPlayer;
+				prevEnt = (EntityPlayer)info.nextEntInstance;
 			}
 			
 			if(username2.equalsIgnoreCase(""))
@@ -256,7 +270,7 @@ public class EventHandler
 			}
 			else
 			{
-				nextEnt = event.entityPlayer;
+				nextEnt = (EntityPlayer)entTarget;
 			}
 			
 			MorphInfo info2 = new MorphInfo(event.entityPlayer.username, prevEnt, nextEnt);
@@ -281,7 +295,6 @@ public class EventHandler
 	    		if(file.exists())
 	    		{
 	    			tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
-	    			System.out.println(tag);
 	    		}
 	    	}
 	    	catch(EOFException e)
@@ -312,8 +325,6 @@ public class EventHandler
 	    		Morph.console("Failed to read save data!", true);
 	    	}
 	    	
-	    	System.out.println(tag);
-	    	
 	    	if(tag != null)
 	    	{
 	    		//read data
@@ -325,7 +336,6 @@ public class EventHandler
 	    			MorphInfo info = new MorphInfo();
 	    			info.readNBT(tag1);
 	    			Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
-	    			System.out.println(info);
 	    		}
 	    	}
 		}
@@ -378,11 +388,7 @@ public class EventHandler
 	                	NBTTagCompound tag1 = new NBTTagCompound();
 	                	e.getValue().writeNBT(tag1);
 	                	tag.setCompoundTag("morphData" + count, tag1);
-	                	System.out.println("doop");
 	                }
-	                System.out.println("Asdasd");
-	                
-	                System.out.println(tag);
 	                //end write data
 	                
 	                CompressedStreamTools.writeCompressed(tag, new FileOutputStream(file));

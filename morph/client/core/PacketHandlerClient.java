@@ -52,10 +52,6 @@ public class PacketHandlerClient
 					{
 						prevEnt = (EntityLivingBase)EntityList.createEntityFromNBT(prevTag, Minecraft.getMinecraft().theWorld);
 					}
-					else if(username1.equalsIgnoreCase(mc.thePlayer.username))
-					{
-						prevEnt = mc.thePlayer;
-					}
 					else
 					{
 						prevEnt = new EntityOtherPlayerMP(mc.theWorld, username1);
@@ -64,10 +60,6 @@ public class PacketHandlerClient
 					if(username2.equalsIgnoreCase(""))
 					{
 						nextEnt = (EntityLivingBase)EntityList.createEntityFromNBT(nextTag, Minecraft.getMinecraft().theWorld);
-					}
-					else if(username2.equalsIgnoreCase(mc.thePlayer.username))
-					{
-						nextEnt = mc.thePlayer;
 					}
 					else
 					{
