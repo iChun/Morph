@@ -209,7 +209,7 @@ public class EventHandler
 			
 			if(info == null)
 			{
-				info = new MorphInfo((EntityLivingBase)entTarget, event.entityPlayer);
+				info = new MorphInfo(event.entityPlayer.username, (EntityLivingBase)entTarget, event.entityPlayer);
 			}
 			else if(info.getMorphing() || info.nextEntInstance == entTarget)
 			{
@@ -257,31 +257,12 @@ public class EventHandler
 				nextEnt = event.entityPlayer;
 			}
 			
-			MorphInfo info2 = new MorphInfo(prevEnt, nextEnt);
+			MorphInfo info2 = new MorphInfo(event.entityPlayer.username, prevEnt, nextEnt);
 			info2.setMorphing(true);
 			
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(event.entityPlayer.username, info2);
 			
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			DataOutputStream stream = new DataOutputStream(bytes);
-			try
-			{
-				stream.writeByte(0); //id
-				stream.writeUTF(event.entityPlayer.username);
-				
-				stream.writeByte(isPlayer);
-				stream.writeUTF(username1);
-				stream.writeUTF(username2);
-				
-				Morph.writeNBTTagCompound(prevTag, stream);
-				Morph.writeNBTTagCompound(nextTag, stream);
-				
-				PacketDispatcher.sendPacketToAllPlayers(new Packet250CustomPayload("Morph", bytes.toByteArray()));
-			}
-			catch(IOException e)
-			{
-				
-			}
+			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
 		}
 	}
 	

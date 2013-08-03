@@ -106,7 +106,7 @@ public class TickHandlerClient
 					info.player = world.getPlayerEntityByName(e.getKey());
 				}
 				
-				if(info.morphProgress < 40)
+				if(info.morphProgress < 10)
 				{
 					if(info.prevEntInstance != mc.thePlayer)
 					{
@@ -117,7 +117,7 @@ public class TickHandlerClient
 						info.prevEntInstance.onUpdate();
 					}
 				}
-				else
+				else if(info.morphProgress > 70)
 				{
 					if(info.nextEntInstance != mc.thePlayer)
 					{

@@ -1,15 +1,13 @@
 package morph.common.core;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.util.Map.Entry;
 
 import morph.common.Morph;
+import morph.common.morph.MorphInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
-import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -70,6 +68,10 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
 	{
+		for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
+		{
+			PacketDispatcher.sendPacketToPlayer(e.getValue().getMorphInfoAsPacket(), (Player)player);
+		}
 	}
 
 	@Override

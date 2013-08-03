@@ -34,7 +34,11 @@ public class PacketHandlerClient
 				{
 					String name = stream.readUTF();
 					
+					boolean morphing = stream.readBoolean();
+					int morphProg = stream.readInt();
+
 					byte isPlayer = stream.readByte();
+					
 					String username1 = stream.readUTF();
 					String username2 = stream.readUTF();
 					
@@ -85,8 +89,9 @@ public class PacketHandlerClient
 //					System.out.println(prevEnt);
 //					System.out.println(nextEnt);
 					
-					MorphInfoClient info = new MorphInfoClient(prevEnt, nextEnt);
-					info.setMorphing(true);
+					MorphInfoClient info = new MorphInfoClient(name, prevEnt, nextEnt);
+					info.setMorphing(morphing);
+					info.morphProgress = morphProg;
 					Morph.proxy.tickHandlerClient.playerMorphInfo.put(name, info);
 
 					break;

@@ -21,9 +21,9 @@ public class MorphInfoClient extends MorphInfo
 	
 	public ModelMorph interimModel;
 
-	public MorphInfoClient(EntityLivingBase prev, EntityLivingBase next) 
+	public MorphInfoClient(String name, EntityLivingBase prev, EntityLivingBase next) 
 	{
-		super(prev, next);
+		super(name, prev, next);
 		prevEntInfo = ModelList.getModelInfo(prev.getClass());
 		
 		nextEntInfo = ModelList.getModelInfo(next.getClass());

@@ -31,6 +31,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.network.NetworkModHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "Morph", name = "Morph",
 			version = "2.0.0",
@@ -62,6 +63,8 @@ public class Morph
 		logger.setParent(FMLLog.getLogger());
 		
 		MinecraftForge.EVENT_BUS.register(new morph.common.core.EventHandler());
+		
+		GameRegistry.registerPlayerTracker(new ConnectionHandler());
 		
 		ObfHelper.detectObfuscation();
 	}
