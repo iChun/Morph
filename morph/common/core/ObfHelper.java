@@ -28,6 +28,9 @@ public class ObfHelper
 	public static final String updateEntityActionStateDeobf = "updateEntityActionState";
 	
 	public static final String getEntityTextureObf = "func_110775_a";
+	
+	public static final String preRenderCallbackObf = "func_77041_b";
+	public static final String preRenderCallbackDeobf = "preRenderCallback";
 
 	public static Method setSizeMethod;
 	public static Method updateEntityActionStateMethod;
@@ -133,5 +136,27 @@ public class ObfHelper
 		}
 		return AbstractClientPlayer.field_110314_b;
 	}
+	
+	public static void invokePreRenderCallback(Render rend, Class clz, EntityLivingBase ent, float rendTick)
+	{
+		try
+		{
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.preRenderCallbackObf : ObfHelper.preRenderCallbackDeobf, EntityLivingBase.class, float.class);
+			m.setAccessible(true);
+			m.invoke(rend, ent, rendTick);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != RendererLivingEntity.class)
+			{
+				invokePreRenderCallback(rend, clz.getSuperclass(), ent, rendTick);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	
 }

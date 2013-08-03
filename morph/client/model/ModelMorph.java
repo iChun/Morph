@@ -1,14 +1,19 @@
 package morph.client.model;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.lwjgl.opengl.GL11;
+
 import morph.client.morph.MorphInfoClient;
+import morph.common.Morph;
 import morph.common.core.ObfHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
@@ -42,15 +47,154 @@ public class ModelMorph extends ModelBase
 			
 			ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy); 			
 		}
+		
+		if(modelList.size() < morphInfo.nextEntInfo.modelList.size())
+		{
+			for(int i = modelList.size(); i < morphInfo.nextEntInfo.modelList.size(); i++)
+			{
+				ModelRenderer parentCube = morphInfo.nextEntInfo.modelList.get(i);
+				try
+				{
+					int txOffsetX = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetX);
+					int txOffsetY = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetY);
+					ModelRenderer cubeCopy = new ModelRenderer(this, txOffsetX, txOffsetY);
+					cubeCopy.mirror = parentCube.mirror;
+					cubeCopy.textureHeight = parentCube.textureHeight;
+					cubeCopy.textureWidth = cubeCopy.textureWidth;
+					
+					for(int j = 0; j < parentCube.cubeList.size(); j++)
+					{
+						ModelBox box = (ModelBox)parentCube.cubeList.get(j);
+						float param7 = 0.0F;
+						
+						ModelBox randBox;
+						if(modelList.size() > 0)
+						{
+							ModelRenderer randCube = modelList.get(rand.nextInt(modelList.size()));
+							randBox = (ModelBox)randCube.cubeList.get(rand.nextInt(randCube.cubeList.size()));
+						}
+						else
+						{
+							ModelRenderer randParentCube = morphInfo.nextEntInfo.modelList.get(rand.nextInt(morphInfo.nextEntInfo.modelList.size()));
+							randBox = (ModelBox)randParentCube.cubeList.get(rand.nextInt(randParentCube.cubeList.size()));
+						}
+						
+						float x = randBox.posX1 + ((randBox.posX2 - randBox.posX1) > 0F ? rand.nextInt((int)(randBox.posX2 - randBox.posX1)) : 0F);
+						float y = randBox.posY1 + ((randBox.posY2 - randBox.posY1) > 0F ? rand.nextInt((int)(randBox.posY2 - randBox.posY1)) : 0F);
+						float z = randBox.posZ1 + ((randBox.posZ2 - randBox.posZ1) > 0F ? rand.nextInt((int)(randBox.posZ2 - randBox.posZ1)) : 0F);
+						
+						cubeCopy.addBox(x, y, z, 0, 0, 0, param7);
+					}
+
+					cubeCopy.setRotationPoint(parentCube.rotationPointX, parentCube.rotationPointY, parentCube.rotationPointZ);
+					
+					cubeCopy.rotateAngleX = parentCube.rotateAngleX;
+					cubeCopy.rotateAngleY = parentCube.rotateAngleY;
+					cubeCopy.rotateAngleZ = parentCube.rotateAngleZ;
+					
+					modelList.add(cubeCopy);
+				}
+				catch(Exception e)
+				{
+					ObfHelper.obfWarning();
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 	
 	@Override
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
 	{
+		GL11.glPushMatrix();
+
+		ArrayList<ModelRenderer> prevCubes = morphInfo.prevEntInfo.modelList;
+		ArrayList<ModelRenderer> nextCubes = morphInfo.nextEntInfo.modelList;
+		
+		for(int i = 0; i < nextCubes.size(); i++)
+		{
+			ModelRenderer cube = modelList.get(i);
+			if(i < prevCubes.size() && morphInfo.morphProgress <= 40)
+			{
+				ModelRenderer currentMorphCube = prevCubes.get(i);
+				ModelRenderer nextMorphCube = nextCubes.get(i);
+				float mag = (float)Math.pow((morphInfo.morphProgress - 10F + Morph.proxy.tickHandlerClient.renderTick) / 30F, 2);
+				cube.rotateAngleX = currentMorphCube.rotateAngleX + (nextMorphCube.rotateAngleX - currentMorphCube.rotateAngleX) * mag;
+				cube.rotateAngleY = currentMorphCube.rotateAngleY + (nextMorphCube.rotateAngleY - currentMorphCube.rotateAngleY) * mag;
+				cube.rotateAngleZ = currentMorphCube.rotateAngleZ + (nextMorphCube.rotateAngleZ - currentMorphCube.rotateAngleZ) * mag;
+			}
+			else
+			{
+				ModelRenderer nextMorphCube = nextCubes.get(i);
+				cube.rotateAngleX = nextMorphCube.rotateAngleX;
+				cube.rotateAngleY = nextMorphCube.rotateAngleY;
+				cube.rotateAngleZ = nextMorphCube.rotateAngleZ;
+			}
+			if(i < prevCubes.size() && morphInfo.morphProgress <= 60)
+			{
+				ModelRenderer parentCube = prevCubes.get(i);
+				ModelRenderer newParentCube = nextCubes.get(i);
+				float mag = (float)Math.pow((morphInfo.morphProgress - 10F + Morph.proxy.tickHandlerClient.renderTick) / 50F, 2D);
+				
+				cube.rotationPointX = parentCube.rotationPointX + (newParentCube.rotationPointX - parentCube.rotationPointX) * mag;
+				cube.rotationPointY = parentCube.rotationPointY + (newParentCube.rotationPointY - parentCube.rotationPointY) * mag;
+				cube.rotationPointZ = parentCube.rotationPointZ + (newParentCube.rotationPointZ - parentCube.rotationPointZ) * mag;
+			}
+			else
+			{
+				ModelRenderer nextMorphCube = nextCubes.get(i);
+				cube.rotationPointX = nextMorphCube.rotationPointX;
+				cube.rotationPointY = nextMorphCube.rotationPointY;
+				cube.rotationPointZ = nextMorphCube.rotationPointZ;
+			}
+		}
+
+		if(morphInfo.morphProgress <= 60)
+		{
+			float param7 = 0.0F;
+			float mag = (float)Math.pow((morphInfo.morphProgress - 10F + Morph.proxy.tickHandlerClient.renderTick) / 50F, 2);
+			
+			updateCubeMorph(modelList, prevCubes, nextCubes, param7, mag, 0);
+		}
+		
+		FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
+		FloatBuffer buffer1 = GLAllocation.createDirectFloatBuffer(16);
+		
+		GL11.glPushMatrix();
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+		ObfHelper.invokePreRenderCallback(morphInfo.prevEntInfo.entRender, morphInfo.prevEntInfo.entRender.getClass(), morphInfo.prevEntInstance, Morph.proxy.tickHandlerClient.renderTick);
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
+		GL11.glPopMatrix();
+		
+		float prevScaleX = buffer1.get(0) / buffer.get(0);
+		float prevScaleY = buffer1.get(1) / buffer.get(1);
+		float prevScaleZ = buffer1.get(2) / buffer.get(2);
+
+		GL11.glPushMatrix();
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+		ObfHelper.invokePreRenderCallback(morphInfo.nextEntInfo.entRender, morphInfo.nextEntInfo.entRender.getClass(), morphInfo.nextEntInstance, Morph.proxy.tickHandlerClient.renderTick);
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
+		GL11.glPopMatrix();
+		
+		float nextScaleX = buffer1.get(0) / buffer.get(0);
+		float nextScaleY = buffer1.get(1) / buffer.get(1);
+		float nextScaleZ = buffer1.get(2) / buffer.get(2);
+		
+		float progress = ((float)morphInfo.morphProgress - 10F + Morph.proxy.tickHandlerClient.renderTick) / 60F;
+
+		float scaleX = prevScaleX + (nextScaleX - prevScaleX) * progress;
+		float scaleY = prevScaleY + (nextScaleY - prevScaleY) * progress;
+		float scaleZ = prevScaleZ + (nextScaleZ - prevScaleZ) * progress;
+		
+		GL11.glScalef(scaleX, scaleY, scaleZ);
+		
 		for(ModelRenderer cube : modelList)
 		{
 			cube.render(f5);
 		}
+		
+		GL11.glPopMatrix();
 	}
 	
 	@Override

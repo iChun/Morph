@@ -48,7 +48,7 @@ public class ModelHelper
 						f.setAccessible(true);
 						if(f.getType() == ModelRenderer.class)
 						{
-							if(clz == ModelBiped.class && !(f.getName().equalsIgnoreCase("bipedCloak") || f.getName().equalsIgnoreCase("k") || f.getName().equalsIgnoreCase("field_78122_k")) || true)
+							if(clz == ModelBiped.class && !(f.getName().equalsIgnoreCase("bipedCloak") || f.getName().equalsIgnoreCase("k") || f.getName().equalsIgnoreCase("field_78122_k")) || clz != ModelBiped.class)
 							{
 								list.add((ModelRenderer)f.get(parent)); // Add normal parent fields
 							}

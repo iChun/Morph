@@ -13,7 +13,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -94,6 +97,10 @@ public class TickHandlerClient
 						info.setMorphing(false);
 					}
 				}
+				if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive()))
+				{
+					info.player = null;
+				}
 				if(info.player == null)
 				{
 					info.player = world.getPlayerEntityByName(e.getKey());
@@ -103,6 +110,10 @@ public class TickHandlerClient
 				{
 					if(info.prevEntInstance != mc.thePlayer)
 					{
+//						if(info.player != null && info.prevEntInstance.dimension != info.player.dimension)
+//						{
+//							info.prevEntInstance.travelToDimension(info.player.dimension);
+//						}
 						info.prevEntInstance.onUpdate();
 					}
 				}
@@ -110,6 +121,13 @@ public class TickHandlerClient
 				{
 					if(info.nextEntInstance != mc.thePlayer)
 					{
+//						if(info.player != null && info.nextEntInstance.dimension != info.player.dimension)
+//						{
+//							NBTTagCompound tag = new NBTTagCompound();
+//							info.nextEntInstance.addEntityID(tag);
+//							tag.setInteger("Dimension", info.player.dimension);
+//							info.nextEntInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag, Minecraft.getMinecraft().theWorld);
+//						}
 						info.nextEntInstance.onUpdate();
 					}
 				}
@@ -137,6 +155,9 @@ public class TickHandlerClient
 				info.prevEntInstance.prevRenderYawOffset = info.nextEntInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
 				info.prevEntInstance.prevLimbYaw = info.nextEntInstance.prevLimbYaw = info.player.prevLimbYaw;
 				info.prevEntInstance.prevSwingProgress = info.nextEntInstance.prevSwingProgress = info.player.prevSwingProgress;
+				info.prevEntInstance.prevPosX = info.nextEntInstance.prevPosX = info.player.prevPosX;
+				info.prevEntInstance.prevPosY = info.nextEntInstance.prevPosY = info.player.prevPosY;
+				info.prevEntInstance.prevPosZ = info.nextEntInstance.prevPosZ = info.player.prevPosZ;
 				
 				info.prevEntInstance.rotationYawHead = info.nextEntInstance.rotationYawHead = info.player.rotationYawHead;
 				info.prevEntInstance.rotationYaw = info.nextEntInstance.rotationYaw = info.player.rotationYaw;
@@ -145,6 +166,9 @@ public class TickHandlerClient
 				info.prevEntInstance.limbYaw = info.nextEntInstance.limbYaw = info.player.limbYaw;
 				info.prevEntInstance.swingProgress = info.nextEntInstance.swingProgress = info.player.swingProgress;
 				info.prevEntInstance.limbSwing = info.nextEntInstance.limbSwing = info.player.limbSwing;
+				info.prevEntInstance.posX = info.nextEntInstance.posX = info.player.posX;
+				info.prevEntInstance.posY = info.nextEntInstance.posY = info.player.posY;
+				info.prevEntInstance.posZ = info.nextEntInstance.posZ = info.player.posZ;
 				info.prevEntInstance.motionX = info.nextEntInstance.motionX = info.player.motionX;
 				info.prevEntInstance.motionY = info.nextEntInstance.motionY = info.player.motionY;
 				info.prevEntInstance.motionZ = info.nextEntInstance.motionZ = info.player.motionZ;
@@ -153,6 +177,12 @@ public class TickHandlerClient
 				info.prevEntInstance.isAirBorne = info.nextEntInstance.isAirBorne = info.player.isAirBorne;
 				info.prevEntInstance.moveStrafing = info.nextEntInstance.moveStrafing = info.player.moveStrafing;
 				info.prevEntInstance.moveForward = info.nextEntInstance.moveForward = info.player.moveForward;
+				info.prevEntInstance.dimension = info.nextEntInstance.dimension = info.player.dimension;
+				info.prevEntInstance.worldObj = info.nextEntInstance.worldObj = info.player.worldObj;
+				info.prevEntInstance.setSneaking(info.player.isSneaking());
+				info.nextEntInstance.setSneaking(info.player.isSneaking());
+				info.prevEntInstance.setSprinting(info.player.isSprinting());
+				info.nextEntInstance.setSprinting(info.player.isSprinting());
 			}
 		}
 
