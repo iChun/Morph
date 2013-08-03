@@ -62,6 +62,9 @@ public class Morph
 	
 	public static int childMorphs;
 	
+	public static int keySelectorBack;
+	public static int keySelectorForward;
+	
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
 	{
