@@ -7,36 +7,33 @@ import java.io.IOException;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import morph.common.Morph;
 import net.minecraft.entity.DataWatcher;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 public class MorphInfo 
 {
 	public String playerName;
-	public Class prevEntClass;
 	public EntityLivingBase prevEntInstance;
-	public DataWatcher prevEntDataWatcher;
 	
-	public Class nextEntClass;
 	public EntityLivingBase nextEntInstance;
-	public DataWatcher nextEntDataWatcher;
 	
 	private boolean morphing; //if true, increase progress
 	public int morphProgress; //up to 80, 3 sec sound files, 0.5 sec between sounds where the skin turns black
+	
+	public MorphInfo(){playerName="";}
 	
 	public MorphInfo(String name, EntityLivingBase prev, EntityLivingBase next)
 	{
 		playerName = name;
 		
-		prevEntClass = prev.getClass();
 		prevEntInstance = prev;
-		prevEntDataWatcher = prev.getDataWatcher();
 		
-		nextEntClass = next.getClass();
 		nextEntInstance = next;
-		nextEntDataWatcher = next.getDataWatcher();
 		
 		morphing = false;
 		morphProgress = 0;
@@ -62,8 +59,14 @@ public class MorphInfo
 		NBTTagCompound prevTag = new NBTTagCompound();
 		NBTTagCompound nextTag = new NBTTagCompound();
 
-		prevEntInstance.addEntityID(prevTag);
-		nextEntInstance.addEntityID(nextTag);
+		if(prevEntInstance != null)
+		{
+			prevEntInstance.addEntityID(prevTag);
+		}
+		if(nextEntInstance != null)
+		{
+			nextEntInstance.addEntityID(nextTag);
+		}
 		
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		DataOutputStream stream = new DataOutputStream(bytes);
@@ -89,4 +92,44 @@ public class MorphInfo
 		return new Packet250CustomPayload("Morph", bytes.toByteArray());
 	}
 	
+	public void writeNBT(NBTTagCompound tag)
+	{
+		tag.setString("playerName", playerName);
+		
+		tag.setInteger("dimension", nextEntInstance.dimension);
+		
+		NBTTagCompound prevTag = new NBTTagCompound();
+		NBTTagCompound nextTag = new NBTTagCompound();
+
+		if(prevEntInstance != null)
+		{
+			prevEntInstance.addEntityID(prevTag);
+		}
+		if(nextEntInstance != null)
+		{
+			nextEntInstance.addEntityID(nextTag);
+		}
+		
+		tag.setCompoundTag("prevEntInstance", prevTag);
+		tag.setCompoundTag("nextEntInstance", nextTag);
+	}
+	
+	public void readNBT(NBTTagCompound tag)
+	{
+		playerName = tag.getString("playerName");
+		
+		World dimension = DimensionManager.getWorld(tag.getInteger("dimension"));
+		
+		prevEntInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag.getCompoundTag("prevEntInstance"), dimension);
+		nextEntInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag.getCompoundTag("nextEntInstance"), dimension);
+		
+		if(nextEntInstance == null)
+		{
+			Morph.console("Invalid morph form! Creating generic pig as replacement.", true);
+			nextEntInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", dimension);
+		}
+		
+		morphing = true;
+		morphProgress = 80;
+	}
 }

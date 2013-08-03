@@ -1,38 +1,37 @@
 package morph.common.core;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.FloatBuffer;
-
-import org.lwjgl.opengl.GL11;
+import java.util.Map.Entry;
 
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
+import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet131MapData;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.world.WorldEvent;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -200,6 +199,9 @@ public class EventHandler
 		{
 			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.entityPlayer.username);
 			
+//			EntityGiantZombie zomb = new EntityGiantZombie(entTarget.worldObj);
+//			zomb.setLocationAndAngles(entTarget.posX, entTarget.posY, entTarget.posZ, entTarget.rotationYaw, entTarget.rotationPitch);
+//			entTarget.worldObj.spawnEntityInWorld(zomb);
 			
 			if(!(entTarget.addEntityID(new NBTTagCompound()) && !(entTarget instanceof EntityPlayer) || entTarget instanceof EntityPlayer))
 			{
@@ -263,6 +265,134 @@ public class EventHandler
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(event.entityPlayer.username, info2);
 			
 			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onWorldLoad(WorldEvent.Load event)
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.world.provider.dimensionId == 0)
+		{
+			WorldServer world = (WorldServer)event.world;
+			NBTTagCompound tag = null;
+	    	try
+	    	{
+	    		File file = new File(world.getChunkSaveLocation(), "morph.dat");
+	    		if(file.exists())
+	    		{
+	    			tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
+	    			System.out.println(tag);
+	    		}
+	    	}
+	    	catch(EOFException e)
+	    	{
+	    		Morph.console("Save data is corrupted! Attempting to read from backup.", true);
+	    		try
+	    		{
+		    		File file = new File(world.getChunkSaveLocation(), "morph_backup.dat");
+		    		if(!file.exists())
+		    		{
+		    			Morph.console("No backup detected!", true);
+		    			return;
+		    		}
+		    		tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
+
+		    		File file1 = new File(world.getChunkSaveLocation(), "morph.dat");
+		    		file1.delete();
+		    		file.renameTo(file1);
+		    		Morph.console("Restoring data from backup.", false);
+	    		}
+	    		catch(Exception e1)
+	    		{
+	    			Morph.console("Even your backup data is corrupted. What have you been doing?!", true);
+	    		}
+	    	}
+	    	catch(IOException e)
+	    	{
+	    		Morph.console("Failed to read save data!", true);
+	    	}
+	    	
+	    	System.out.println(tag);
+	    	
+	    	if(tag != null)
+	    	{
+	    		//read data
+	    		int morphDataCount = tag.getInteger("morphDataCount");
+	    		Morph.proxy.tickHandlerServer.playerMorphInfo.clear();
+	    		for(int i = 1; i <= morphDataCount; i++)
+	    		{
+	    			NBTTagCompound tag1 = tag.getCompoundTag("morphData" + i);
+	    			MorphInfo info = new MorphInfo();
+	    			info.readNBT(tag1);
+	    			Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
+	    			System.out.println(info);
+	    		}
+	    	}
+		}
+	}
+
+	@ForgeSubscribe
+	public void onWorldSave(WorldEvent.Save event)
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.world.provider.dimensionId == 0)
+		{
+			WorldServer world = (WorldServer)event.world;
+            try
+            {
+            	if(world.getChunkSaveLocation().exists())
+            	{
+	                File file = new File(world.getChunkSaveLocation(), "morph.dat");
+	                if(file.exists())
+	                {
+	                	File file1 = new File(world.getChunkSaveLocation(), "morph_backup.dat");
+	                	if(file1.exists())
+	                	{
+	                		if(file1.delete())
+	                		{
+	                			file.renameTo(file1);
+	                		}
+	                		else
+	                		{
+	                			Morph.console("Failed to delete mod backup data!", true);
+	                		}
+	                	}
+	                	else
+	                	{
+	                		file.renameTo(file1);
+	                	}
+	                }
+	                
+	                //write data
+	                
+	    			NBTTagCompound tag = new NBTTagCompound();
+
+	                int morphDataCount = Morph.proxy.tickHandlerServer.playerMorphInfo.size();
+	                
+	                tag.setInteger("morphDataCount", morphDataCount);
+	                
+	                int count = 0;
+	                
+	                for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
+	                {
+	                	count++;
+	                	NBTTagCompound tag1 = new NBTTagCompound();
+	                	e.getValue().writeNBT(tag1);
+	                	tag.setCompoundTag("morphData" + count, tag1);
+	                	System.out.println("doop");
+	                }
+	                System.out.println("Asdasd");
+	                
+	                System.out.println(tag);
+	                //end write data
+	                
+	                CompressedStreamTools.writeCompressed(tag, new FileOutputStream(file));
+            	}
+            }
+            catch(IOException ioexception)
+            {
+                ioexception.printStackTrace();
+                throw new RuntimeException("Failed to save morph data");
+            }
 		}
 	}
 	

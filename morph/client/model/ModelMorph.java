@@ -32,76 +32,78 @@ public class ModelMorph extends ModelBase
 	public ModelMorph(MorphInfoClient info)
 	{
 		morphInfo = info;
-		modelList = ModelHelper.getModelCubesCopy(info.prevEntInfo, this);
-		rand = new Random();
-		
-		for(int i = 0; i < modelList.size(); i++)
+		if(info.morphProgress < 80 && info.prevEntInfo != null)
 		{
-			if(i >= morphInfo.nextEntInfo.modelList.size())
+			modelList = ModelHelper.getModelCubesCopy(info.prevEntInfo, this);
+			rand = new Random();
+			
+			for(int i = 0; i < modelList.size(); i++)
 			{
-				break;
+				if(i >= morphInfo.nextEntInfo.modelList.size())
+				{
+					break;
+				}
+				
+				ModelRenderer cubeCopy = modelList.get(i);
+				ModelRenderer cubeNewParent = morphInfo.nextEntInfo.modelList.get(i);
+				
+				ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy); 			
 			}
 			
-			ModelRenderer cubeCopy = modelList.get(i);
-			ModelRenderer cubeNewParent = morphInfo.nextEntInfo.modelList.get(i);
-			
-			ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy); 			
-		}
-		
-		if(modelList.size() < morphInfo.nextEntInfo.modelList.size())
-		{
-			for(int i = modelList.size(); i < morphInfo.nextEntInfo.modelList.size(); i++)
+			if(modelList.size() < morphInfo.nextEntInfo.modelList.size())
 			{
-				ModelRenderer parentCube = morphInfo.nextEntInfo.modelList.get(i);
-				try
+				for(int i = modelList.size(); i < morphInfo.nextEntInfo.modelList.size(); i++)
 				{
-					int txOffsetX = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetX);
-					int txOffsetY = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetY);
-					ModelRenderer cubeCopy = new ModelRenderer(this, txOffsetX, txOffsetY);
-					cubeCopy.mirror = parentCube.mirror;
-					cubeCopy.textureHeight = parentCube.textureHeight;
-					cubeCopy.textureWidth = cubeCopy.textureWidth;
-					
-					for(int j = 0; j < parentCube.cubeList.size(); j++)
+					ModelRenderer parentCube = morphInfo.nextEntInfo.modelList.get(i);
+					try
 					{
-						ModelBox box = (ModelBox)parentCube.cubeList.get(j);
-						float param7 = 0.0F;
+						int txOffsetX = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetX);
+						int txOffsetY = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetY);
+						ModelRenderer cubeCopy = new ModelRenderer(this, txOffsetX, txOffsetY);
+						cubeCopy.mirror = parentCube.mirror;
+						cubeCopy.textureHeight = parentCube.textureHeight;
+						cubeCopy.textureWidth = cubeCopy.textureWidth;
 						
-						ModelBox randBox;
-						if(modelList.size() > 0)
+						for(int j = 0; j < parentCube.cubeList.size(); j++)
 						{
-							ModelRenderer randCube = modelList.get(rand.nextInt(modelList.size()));
-							randBox = (ModelBox)randCube.cubeList.get(rand.nextInt(randCube.cubeList.size()));
+							ModelBox box = (ModelBox)parentCube.cubeList.get(j);
+							float param7 = 0.0F;
+							
+							ModelBox randBox;
+							if(modelList.size() > 0)
+							{
+								ModelRenderer randCube = modelList.get(rand.nextInt(modelList.size()));
+								randBox = (ModelBox)randCube.cubeList.get(rand.nextInt(randCube.cubeList.size()));
+							}
+							else
+							{
+								ModelRenderer randParentCube = morphInfo.nextEntInfo.modelList.get(rand.nextInt(morphInfo.nextEntInfo.modelList.size()));
+								randBox = (ModelBox)randParentCube.cubeList.get(rand.nextInt(randParentCube.cubeList.size()));
+							}
+							
+							float x = randBox.posX1 + ((randBox.posX2 - randBox.posX1) > 0F ? rand.nextInt((int)(randBox.posX2 - randBox.posX1)) : 0F);
+							float y = randBox.posY1 + ((randBox.posY2 - randBox.posY1) > 0F ? rand.nextInt((int)(randBox.posY2 - randBox.posY1)) : 0F);
+							float z = randBox.posZ1 + ((randBox.posZ2 - randBox.posZ1) > 0F ? rand.nextInt((int)(randBox.posZ2 - randBox.posZ1)) : 0F);
+							
+							cubeCopy.addBox(x, y, z, 0, 0, 0, param7);
 						}
-						else
-						{
-							ModelRenderer randParentCube = morphInfo.nextEntInfo.modelList.get(rand.nextInt(morphInfo.nextEntInfo.modelList.size()));
-							randBox = (ModelBox)randParentCube.cubeList.get(rand.nextInt(randParentCube.cubeList.size()));
-						}
+	
+						cubeCopy.setRotationPoint(parentCube.rotationPointX, parentCube.rotationPointY, parentCube.rotationPointZ);
 						
-						float x = randBox.posX1 + ((randBox.posX2 - randBox.posX1) > 0F ? rand.nextInt((int)(randBox.posX2 - randBox.posX1)) : 0F);
-						float y = randBox.posY1 + ((randBox.posY2 - randBox.posY1) > 0F ? rand.nextInt((int)(randBox.posY2 - randBox.posY1)) : 0F);
-						float z = randBox.posZ1 + ((randBox.posZ2 - randBox.posZ1) > 0F ? rand.nextInt((int)(randBox.posZ2 - randBox.posZ1)) : 0F);
+						cubeCopy.rotateAngleX = parentCube.rotateAngleX;
+						cubeCopy.rotateAngleY = parentCube.rotateAngleY;
+						cubeCopy.rotateAngleZ = parentCube.rotateAngleZ;
 						
-						cubeCopy.addBox(x, y, z, 0, 0, 0, param7);
+						modelList.add(cubeCopy);
 					}
-
-					cubeCopy.setRotationPoint(parentCube.rotationPointX, parentCube.rotationPointY, parentCube.rotationPointZ);
-					
-					cubeCopy.rotateAngleX = parentCube.rotateAngleX;
-					cubeCopy.rotateAngleY = parentCube.rotateAngleY;
-					cubeCopy.rotateAngleZ = parentCube.rotateAngleZ;
-					
-					modelList.add(cubeCopy);
-				}
-				catch(Exception e)
-				{
-					ObfHelper.obfWarning();
-					e.printStackTrace();
+					catch(Exception e)
+					{
+						ObfHelper.obfWarning();
+						e.printStackTrace();
+					}
 				}
 			}
 		}
-
 	}
 	
 	@Override

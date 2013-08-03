@@ -74,16 +74,22 @@ public class PacketHandlerClient
 						nextEnt = new EntityOtherPlayerMP(mc.theWorld, username2);
 					}
 					
-					ObfHelper.forceSetSize(prevEnt, 0.0F, 0.0F);
-					ObfHelper.forceSetSize(nextEnt, 0.0F, 0.0F);
-					
-					if(prevEnt != mc.thePlayer)
+					if(prevEnt != null)
 					{
-						prevEnt.noClip = true;
+						ObfHelper.forceSetSize(prevEnt, 0.0F, 0.0F);
+						if(prevEnt != mc.thePlayer)
+						{
+							prevEnt.noClip = true;
+						}
 					}
-					if(nextEnt != mc.thePlayer)
+					
+					if(nextEnt != null)
 					{
-						nextEnt.noClip = true;
+						ObfHelper.forceSetSize(nextEnt, 0.0F, 0.0F);
+						if(nextEnt != mc.thePlayer)
+						{
+							nextEnt.noClip = true;
+						}
 					}
 					
 //					System.out.println(prevEnt);

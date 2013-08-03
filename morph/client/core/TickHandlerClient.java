@@ -105,6 +105,10 @@ public class TickHandlerClient
 				{
 					info.player = world.getPlayerEntityByName(e.getKey());
 				}
+				if(info.prevEntInstance == null)
+				{
+					info.prevEntInstance = info.player;
+				}
 				
 				if(info.morphProgress < 10)
 				{
@@ -147,7 +151,7 @@ public class TickHandlerClient
 		{
 			MorphInfoClient info = e.getValue();
 			
-			if(info.player != null)
+			if(info.prevEntInstance != null && info.nextEntInstance != null && info.player != null)
 			{
 				info.prevEntInstance.prevRotationYawHead = info.nextEntInstance.prevRotationYawHead = info.player.prevRotationYawHead;
 				info.prevEntInstance.prevRotationYaw = info.nextEntInstance.prevRotationYaw = info.player.prevRotationYaw;
@@ -179,6 +183,7 @@ public class TickHandlerClient
 				info.prevEntInstance.moveForward = info.nextEntInstance.moveForward = info.player.moveForward;
 				info.prevEntInstance.dimension = info.nextEntInstance.dimension = info.player.dimension;
 				info.prevEntInstance.worldObj = info.nextEntInstance.worldObj = info.player.worldObj;
+				info.prevEntInstance.ridingEntity = info.nextEntInstance.ridingEntity = info.player.ridingEntity;
 				info.prevEntInstance.setSneaking(info.player.isSneaking());
 				info.nextEntInstance.setSneaking(info.player.isSneaking());
 				info.prevEntInstance.setSprinting(info.player.isSprinting());
