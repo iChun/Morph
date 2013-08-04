@@ -12,6 +12,7 @@ import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
+import morph.common.core.ObfHelper;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -184,6 +185,11 @@ public class TickHandlerClient
 					{
 						info.morphProgress = 80;
 						info.setMorphing(false);
+						if(info.player != null)
+						{
+							ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+							info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
+						}
 					}
 				}
 				if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive()))
@@ -193,10 +199,20 @@ public class TickHandlerClient
 				if(info.player == null)
 				{
 					info.player = world.getPlayerEntityByName(e.getKey());
+					if(info.player != null)
+					{
+						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
+					}
 				}
 				if(info.prevState.entInstance == null)
 				{
 					info.prevState.entInstance = info.player;
+					if(info.player != null)
+					{
+						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
+					}
 				}
 				
 				if(info.morphProgress < 10)

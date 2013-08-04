@@ -58,22 +58,14 @@ public class MapPacketHandler
 						break;
 					}
 					
-					MorphState old = info != null ? info.nextState : null;
+					MorphState old = info != null ? info.nextState : Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username);
 					
 					MorphState state = MorphHandler.getMorphState(player, identifier);
 					
 					if(state != null)
 					{
 						MorphInfo info2 = new MorphInfo(player.username, old, state);
-						if(old == null)
-						{
-							info2.setMorphing(false);
-							info2.morphProgress = 80;
-						}
-						else
-						{
-							info2.setMorphing(true);
-						}
+						info2.setMorphing(true);
 						
 						Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
 						
@@ -119,6 +111,14 @@ public class MapPacketHandler
 				case 1:
 				{
 					String name = stream.readUTF();
+					Entity ent = mc.theWorld.getPlayerEntityByName(name);
+					if(ent != null)
+					{
+						MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+						ObfHelper.forceSetSize(ent, info.nextState.entInstance.width, info.nextState.entInstance.height);
+						ent.setPosition(ent.posX, ent.posY, ent.posZ);
+						System.out.println("asdasd");
+					}
 					Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
 					break;
 				}

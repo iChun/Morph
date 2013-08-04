@@ -63,7 +63,6 @@ public class PacketHandlerClient
 					
 					if(prevState.entInstance != null)
 					{
-						ObfHelper.forceSetSize(prevState.entInstance, 0.0F, 0.0F);
 						if(prevState.entInstance != mc.thePlayer)
 						{
 							prevState.entInstance.noClip = true;
@@ -72,7 +71,6 @@ public class PacketHandlerClient
 					
 					if(nextState.entInstance != null)
 					{
-						ObfHelper.forceSetSize(nextState.entInstance, 0.0F, 0.0F);
 						if(nextState.entInstance != mc.thePlayer)
 						{
 							nextState.entInstance.noClip = true;
