@@ -115,6 +115,7 @@ public class MapPacketHandler
 					EntityPlayer player = mc.theWorld.getPlayerEntityByName(name);
 					if(player != null)
 					{
+						player.ignoreFrustumCheck = true;
 						MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
 						if(info != null)
 						{

@@ -12,17 +12,13 @@ import java.util.Map.Entry;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
-import net.minecraft.block.Block;
-import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -32,6 +28,14 @@ public class TickHandlerServer
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
 	{
+        if (type.equals(EnumSet.of(TickType.WORLD)))
+        {
+        	preWorldTick((WorldServer)tickData[0]);
+        }
+        else if (type.equals(EnumSet.of(TickType.PLAYER)))
+        {
+        	prePlayerTick((WorldServer)((EntityPlayerMP)tickData[0]).worldObj, (EntityPlayerMP)tickData[0]);
+        }
 	}
 
 	@Override
@@ -59,6 +63,10 @@ public class TickHandlerServer
 		return "TickHandlerServerMorph";
 	}
 
+	public void preWorldTick(WorldServer world)
+	{
+	}
+	
 	public void worldTick(WorldServer world)
 	{
 		if(clock != world.getWorldTime())
@@ -81,6 +89,8 @@ public class TickHandlerServer
 					Entry<String, MorphInfo> e = ite.next();
 					MorphInfo info = e.getValue();
 					
+					EntityPlayer player = world.getPlayerEntityByName(info.playerName);
+					
 					if(info.getMorphing())
 					{
 						info.morphProgress++;
@@ -88,8 +98,6 @@ public class TickHandlerServer
 						{
 							info.morphProgress = 80;
 							info.setMorphing(false);
-							
-							EntityPlayer player = world.getPlayerEntityByName(info.playerName);
 							
 							if(player != null)
 							{
@@ -132,8 +140,36 @@ public class TickHandlerServer
 		}
 	}
 
+	public void prePlayerTick(WorldServer world, EntityPlayerMP player)
+	{
+		MorphInfo info = playerMorphInfo.get(player.username);
+		if(info != null)
+		{
+		}
+
+	}
+	
 	public void playerTick(WorldServer world, EntityPlayerMP player)
 	{
+		MorphInfo info = playerMorphInfo.get(player.username);
+		if(info != null)
+		{
+			float prog = info.morphProgress > 10 ? (((float)info.morphProgress) / 60F) : 0.0F;
+			if(prog > 1.0F)
+			{
+				prog = 1.0F;
+			}
+			
+			prog = (float)Math.pow(prog, 2);
+			
+			float prev = info.prevState != null && !(info.prevState.entInstance instanceof EntityPlayer) ? info.prevState.entInstance.getEyeHeight() : player.yOffset;
+			float next = info.nextState != null && !(info.nextState.entInstance instanceof EntityPlayer) ? info.nextState.entInstance.getEyeHeight() : player.yOffset;
+			double ySize = player.yOffset - (prev + (next - prev) * prog);
+			player.lastTickPosY += ySize;
+			player.prevPosY += ySize;
+			player.posY += ySize;
+		}
+
 	}
 	
 	public MorphState getSelfState(World world, String name)

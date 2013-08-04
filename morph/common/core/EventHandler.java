@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -96,7 +97,19 @@ public class EventHandler
 	        double d1 = event.entityPlayer.lastTickPosY + (event.entityPlayer.posY - event.entityPlayer.lastTickPosY) * (double)par2;
 	        double d2 = event.entityPlayer.lastTickPosZ + (event.entityPlayer.posZ - event.entityPlayer.lastTickPosZ) * (double)par2;
 	        float f1 = event.entityPlayer.prevRotationYaw + (event.entityPlayer.rotationYaw - event.entityPlayer.prevRotationYaw) * (float)par2;
-	        int i = event.entityPlayer.getBrightnessForRender((float)par2);
+	        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(event.entityPlayer.username);
+	        
+	        int br1 = info.prevState != null ? info.prevState.entInstance.getBrightnessForRender((float)par2) : event.entityPlayer.getBrightnessForRender((float)par2);
+	        int br2 = info.nextState.entInstance.getBrightnessForRender((float)par2);
+	        
+	        float prog = (float)(info.morphProgress + par2) / 80F;
+	        
+	        if(prog > 1.0F)
+	        {
+	        	prog = 1.0F;
+	        }
+	        
+	        int i = br1 + (int)((float)(br2 - br1) * prog);
 
 	        if (event.entityPlayer.isBurning())
 	        {
@@ -108,8 +121,6 @@ public class EventHandler
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
 	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-	        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(event.entityPlayer.username);
-	        
 	        if(info != null)
 	        {
 	        	Morph.proxy.tickHandlerClient.renderingMorph = true;
@@ -117,7 +128,9 @@ public class EventHandler
 	        	
 //	        	ObfuscationReflectionHelper.setPrivateValue(RendererLivingEntity.class, info.prevEntInfo.entRender, info.prevEntModel, ObfHelper.mainModel);
 	        	
-	        	GL11.glTranslated(1 * (d0 - RenderManager.renderPosX), 1 * (d1 - RenderManager.renderPosY), 1 * (d2 - RenderManager.renderPosZ));
+//	        	event.entityPlayer.yOffset -= Morph.proxy.tickHandlerClient.ySize;
+	        	
+	        	GL11.glTranslated(1 * (d0 - RenderManager.renderPosX), 1 * (d1 - RenderManager.renderPosY) + Morph.proxy.tickHandlerClient.ySize, 1 * (d2 - RenderManager.renderPosZ));
 	        	
 //	        	GL11.glScalef(1.0F, -1.0F, -1.0F);
 	        	
@@ -199,6 +212,8 @@ public class EventHandler
 	        		Morph.proxy.tickHandlerClient.renderMorphInstance.doRender(event.entityPlayer, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	}
 	        	
+//	        	event.entityPlayer.yOffset += Morph.proxy.tickHandlerClient.ySize;
+	        	
 	        	GL11.glPopMatrix();
 	        	Morph.proxy.tickHandlerClient.renderingMorph = false;
 	        }
@@ -212,6 +227,43 @@ public class EventHandler
 	{
 	}
 	
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onDrawBlockHighlight(DrawBlockHighlightEvent event)
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.renderViewEntity == mc.thePlayer)
+		{
+	        MorphInfo info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
+			if(info1 != null && mc.renderViewEntity == mc.thePlayer)
+			{
+//				float prog = info1.morphProgress > 10 ? (((float)info1.morphProgress + event.partialTicks) / 60F) : 0.0F;
+//				if(prog > 1.0F)
+//				{
+//					prog = 1.0F;
+//				}
+//				
+//				prog = (float)Math.pow(prog, 2);
+//				
+//				float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+//				float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+//				float ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
+//				mc.thePlayer.lastTickPosY -= ySize;
+//				mc.thePlayer.prevPosY -= ySize;
+//				mc.thePlayer.posY -= ySize;
+//				
+//                double d0 = (double)mc.playerController.getBlockReachDistance();
+//				event.context.drawSelectionBox(mc.thePlayer, mc.thePlayer.rayTrace(d0, (float)event.partialTicks), 0, event.partialTicks);
+//				
+//				mc.thePlayer.lastTickPosY += ySize;
+//				mc.thePlayer.prevPosY += ySize;
+//				mc.thePlayer.posY += ySize;
+				
+				event.setCanceled(true);
+			}
+		}
+	}
+	
 	@ForgeSubscribe
 	public void onLivingDeath(LivingDeathEvent event)
 	{
@@ -221,9 +273,9 @@ public class EventHandler
 			
 			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
 			
-//				EntityGiantZombie zomb = new EntityGiantZombie(entTarget.worldObj);
-//				zomb.setLocationAndAngles(entTarget.posX, entTarget.posY, entTarget.posZ, entTarget.rotationYaw, entTarget.rotationPitch);
-//				entTarget.worldObj.spawnEntityInWorld(zomb);
+//				EntityGiantZombie zomb = new EntityGiantZombie(event.entityLiving.worldObj);
+//				zomb.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, event.entityLiving.rotationYaw, event.entityLiving.rotationPitch);
+//				event.entityLiving.worldObj.spawnEntityInWorld(zomb);
 			
 			if(!(event.entityLiving.addEntityID(new NBTTagCompound()) && !(event.entityLiving instanceof EntityPlayer) || event.entityLiving instanceof EntityPlayer))
 			{

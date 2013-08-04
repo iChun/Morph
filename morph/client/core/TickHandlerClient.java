@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
+import morph.client.render.EntityRendererProxy;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.core.ObfHelper;
@@ -19,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -110,9 +112,11 @@ public class TickHandlerClient
 	public void preWorldTick(Minecraft mc, WorldClient world)
 	{
 		MorphInfo info = playerMorphInfo.get(mc.thePlayer.username);
-		if(info != null && mc.thePlayer.height < playerHeight)
+		if(info != null)
 		{
-			
+            double d0 = (double)mc.playerController.getBlockReachDistance();
+            mc.objectMouseOver = mc.renderViewEntity.rayTrace(d0, renderTick);
+
 //			motionMaintained[0] = mc.thePlayer.motionX;
 //			motionMaintained[1] = mc.thePlayer.motionZ;
 //			
@@ -382,13 +386,32 @@ public class TickHandlerClient
 
 	public void preRenderTick(Minecraft mc, World world, float renderTick)
 	{
+		if(mc.entityRenderer instanceof EntityRenderer && !(mc.entityRenderer instanceof EntityRendererProxy))
+		{
+			mc.entityRenderer = new EntityRendererProxy(mc);
+		}
+		
 		this.renderTick = renderTick;
 		
-		ySize = 00F;
-		
-		mc.thePlayer.lastTickPosY += ySize;
-		mc.thePlayer.prevPosY += ySize;
-		mc.thePlayer.posY += ySize;
+		MorphInfoClient info1 = playerMorphInfo.get(mc.thePlayer.username);
+		if(info1 != null )
+		{
+			float prog = info1.morphProgress > 10 ? (((float)info1.morphProgress + renderTick) / 60F) : 0.0F;
+			if(prog > 1.0F)
+			{
+				prog = 1.0F;
+			}
+			
+			prog = (float)Math.pow(prog, 2);
+			
+			float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+			float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+			ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
+			mc.thePlayer.lastTickPosY -= ySize;
+			mc.thePlayer.prevPosY -= ySize;
+			mc.thePlayer.posY -= ySize;
+			
+		}
 		
 		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
 		{
@@ -396,6 +419,8 @@ public class TickHandlerClient
 			
 			if(info.prevState.entInstance != null && info.nextState.entInstance != null && info.player != null)
 			{
+				info.player.ignoreFrustumCheck = true;
+				
 				info.prevState.entInstance.prevRotationYawHead = info.nextState.entInstance.prevRotationYawHead = info.player.prevRotationYawHead;
 				info.prevState.entInstance.prevRotationYaw = info.nextState.entInstance.prevRotationYaw = info.player.prevRotationYaw;
 				info.prevState.entInstance.prevRotationPitch = info.nextState.entInstance.prevRotationPitch = info.player.prevRotationPitch;
@@ -438,9 +463,13 @@ public class TickHandlerClient
 
 	public void renderTick(Minecraft mc, World world, float renderTick)
 	{
-		mc.thePlayer.lastTickPosY -= ySize;
-		mc.thePlayer.prevPosY -= ySize;
-		mc.thePlayer.posY -= ySize;
+		MorphInfoClient info1 = playerMorphInfo.get(mc.thePlayer.username);
+		if(info1 != null)
+		{
+			mc.thePlayer.lastTickPosY += ySize;
+			mc.thePlayer.prevPosY += ySize;
+			mc.thePlayer.posY += ySize;
+		}
 		
 		if(selectorTimer > 0 || selectorShow)
 		{
