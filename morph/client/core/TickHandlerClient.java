@@ -43,7 +43,7 @@ public class TickHandlerClient
 	
 	public TickHandlerClient()
 	{
-		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.5F);
+		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.0F);
 		renderMorphInstance.setRenderManager(RenderManager.instance);
 	}
 	

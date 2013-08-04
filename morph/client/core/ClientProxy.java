@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import morph.client.entity.EntityMorphAcquisition;
 import morph.client.model.ModelInfo;
 import morph.client.model.ModelList;
+import morph.common.Morph;
 import morph.common.core.CommonProxy;
 import morph.common.core.ObfHelper;
 import net.minecraft.client.model.ModelBase;
@@ -22,6 +24,12 @@ import cpw.mods.fml.relauncher.Side;
 public class ClientProxy extends CommonProxy
 {
 
+	@Override
+	public void initMod()
+	{
+		RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, Morph.proxy.tickHandlerClient.renderMorphInstance);
+	}
+	
 	@Override
 	public void initPostMod()
 	{

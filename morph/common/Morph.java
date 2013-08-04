@@ -100,6 +100,7 @@ public class Morph
 	public void load(FMLInitializationEvent event)
 	{
 		proxy.initTickHandlers();
+		proxy.initMod();
 	}
 	
 	@EventHandler

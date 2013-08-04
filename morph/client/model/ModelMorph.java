@@ -33,10 +33,11 @@ public class ModelMorph extends ModelBase
 	public ModelMorph(MorphInfoClient info)
 	{
 		morphInfo = info;
-		if(info.morphProgress < 80 && info.prevEntInfo != null)
+		rand = new Random();
+		
+		if(info != null && info.morphProgress < 80 && info.prevEntInfo != null)
 		{
 			modelList = ModelHelper.getModelCubesCopy(info.prevEntInfo, this);
-			rand = new Random();
 			
 			for(int i = 0; i < modelList.size(); i++)
 			{

@@ -1,20 +1,27 @@
 package morph.common.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
+import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TickHandlerServer 
 	implements ITickHandler
@@ -65,8 +72,10 @@ public class TickHandlerServer
 			
 			if(world.provider.dimensionId == 0)
 			{
-				for(Entry<String, MorphInfo> e : playerMorphInfo.entrySet())
+				Iterator<Entry<String, MorphInfo>> ite = playerMorphInfo.entrySet().iterator();
+				while(ite.hasNext())
 				{
+					Entry<String, MorphInfo> e = ite.next();
 					MorphInfo info = e.getValue();
 					
 					if(info.getMorphing())
@@ -76,6 +85,23 @@ public class TickHandlerServer
 						{
 							info.morphProgress = 80;
 							info.setMorphing(false);
+							
+							if(info.nextState.playerMorph.equalsIgnoreCase(e.getKey()))
+							{
+								ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+								DataOutputStream stream = new DataOutputStream(bytes);
+								try
+								{
+									stream.writeUTF(e.getKey());
+									
+									PacketDispatcher.sendPacketToAllPlayers(new Packet131MapData((short)Morph.getNetId(), (short)1, bytes.toByteArray()));
+								}
+								catch(IOException e1)
+								{
+									
+								}
+								ite.remove();
+							}
 						}
 					}
 				}

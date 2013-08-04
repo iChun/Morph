@@ -4,11 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import morph.client.entity.EntityMorphAcquisition;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.NetClientHandler;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.NetHandler;
@@ -93,6 +97,7 @@ public class MapPacketHandler
 	@SideOnly(Side.CLIENT)
 	public void handleClientPacket(NetClientHandler handler, short id, byte[] data)
 	{
+		Minecraft mc = Minecraft.getMinecraft();
 		DataInputStream stream = new DataInputStream(new ByteArrayInputStream(data));
 		try
 		{
@@ -100,17 +105,21 @@ public class MapPacketHandler
 			{
 				case 0:
 				{
-					String user = stream.readUTF();
+					Entity ent = mc.theWorld.getEntityByID(stream.readInt());
+					Entity ent1 = mc.theWorld.getEntityByID(stream.readInt());
 					
-					try
+					if(ent instanceof EntityLivingBase && ent1 instanceof EntityLivingBase)
 					{
-						
-						
-					}
-					catch(Exception e)
-					{
+						mc.theWorld.spawnEntityInWorld(new EntityMorphAcquisition(mc.theWorld, (EntityLivingBase)ent, (EntityLivingBase)ent1));
+						ent.setDead();
 					}
 					
+					break;
+				}
+				case 1:
+				{
+					String name = stream.readUTF();
+					Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
 					break;
 				}
 			}

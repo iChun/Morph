@@ -1,5 +1,6 @@
 package morph.client.render;
 
+import morph.client.entity.EntityMorphAcquisition;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
@@ -21,6 +22,10 @@ public class RenderMorph extends RendererLivingEntity
 	@Override
 	protected ResourceLocation func_110775_a(Entity entity) 
 	{
+		if(entity instanceof EntityMorphAcquisition)
+		{
+			setMainModel(((EntityMorphAcquisition)entity).model);
+		}
 		return morphSkin;
 	}
 	

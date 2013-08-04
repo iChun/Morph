@@ -1,5 +1,7 @@
 package morph.common.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import morph.client.entity.EntityMorphAcquisition;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
@@ -28,11 +31,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -208,25 +213,19 @@ public class EventHandler
 	}
 	
 	@ForgeSubscribe
-	public void onInteract(EntityInteractEvent event)
+	public void onLivingDeath(LivingDeathEvent event)
 	{
-		//TODO config for child entities
-		Entity entTarget = event.target;
-		
-		if(event.target instanceof EntityDragonPart)
+		if(event.source.getEntity() instanceof EntityPlayer && FMLCommonHandler.instance().getEffectiveSide().isServer() && (Morph.childMorphs == 1 || Morph.childMorphs == 0 && !event.entityLiving.isChild()))
 		{
-			entTarget = (EntityDragon)((EntityDragonPart)event.target).entityDragonObj;
-		}
-
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && entTarget instanceof EntityLivingBase && (Morph.childMorphs == 1 || Morph.childMorphs == 0 && !((EntityLivingBase)entTarget).isChild()))
-		{
-			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.entityPlayer.username);
+			EntityPlayer player = (EntityPlayer)event.source.getEntity();
 			
-//			EntityGiantZombie zomb = new EntityGiantZombie(entTarget.worldObj);
-//			zomb.setLocationAndAngles(entTarget.posX, entTarget.posY, entTarget.posZ, entTarget.rotationYaw, entTarget.rotationPitch);
-//			entTarget.worldObj.spawnEntityInWorld(zomb);
+			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
 			
-			if(!(entTarget.addEntityID(new NBTTagCompound()) && !(entTarget instanceof EntityPlayer) || entTarget instanceof EntityPlayer))
+//				EntityGiantZombie zomb = new EntityGiantZombie(entTarget.worldObj);
+//				zomb.setLocationAndAngles(entTarget.posX, entTarget.posY, entTarget.posZ, entTarget.rotationYaw, entTarget.rotationPitch);
+//				entTarget.worldObj.spawnEntityInWorld(zomb);
+			
+			if(!(event.entityLiving.addEntityID(new NBTTagCompound()) && !(event.entityLiving instanceof EntityPlayer) || event.entityLiving instanceof EntityPlayer))
 			{
 				System.out.println("stop");
 				return;
@@ -234,15 +233,15 @@ public class EventHandler
 			
 			if(info == null)
 			{
-				info = new MorphInfo(event.entityPlayer.username, null, Morph.proxy.tickHandlerServer.getSelfState(event.entityPlayer.worldObj, event.entityPlayer.username));
+				info = new MorphInfo(player.username, null, Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username));
 			}
-			else if(info.getMorphing() || info.nextState.entInstance == entTarget)
+			else if(info.getMorphing() || info.nextState.entInstance == event.entityLiving)
 			{
 				System.out.println("stop1");
 				return;
 			}
 			
-			byte isPlayer = (byte)((info.nextState.entInstance instanceof EntityPlayer && entTarget instanceof EntityPlayer) ? 3 : info.nextState.entInstance instanceof EntityPlayer ? 1 : entTarget instanceof EntityPlayer ? 2 : 0);
+			byte isPlayer = (byte)((info.nextState.entInstance instanceof EntityPlayer && event.entityLiving instanceof EntityPlayer) ? 3 : info.nextState.entInstance instanceof EntityPlayer ? 1 : event.entityLiving instanceof EntityPlayer ? 2 : 0);
 			
 			if(!(info.nextState.entInstance instanceof EntityPlayer) && !info.nextState.entInstance.addEntityID(new NBTTagCompound()))
 			{
@@ -251,16 +250,16 @@ public class EventHandler
 			}
 			
 			String username1 = (isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextState.entInstance).username : "";
-			String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)entTarget).username : "";
+			String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)event.entityLiving).username : "";
 			
 			NBTTagCompound prevTag = new NBTTagCompound();
 			NBTTagCompound nextTag = new NBTTagCompound();
 
 			info.nextState.entInstance.addEntityID(prevTag);
-			entTarget.addEntityID(nextTag);
+			event.entityLiving.addEntityID(nextTag);
 			
-			MorphState prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), new MorphState(event.entityPlayer.worldObj, event.entityPlayer.username, username1, prevTag, false));
-			MorphState nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), new MorphState(event.entityPlayer.worldObj, event.entityPlayer.username, username2, nextTag, false));
+			MorphState prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username), new MorphState(player.worldObj, player.username, username1, prevTag, false));
+			MorphState nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username), new MorphState(player.worldObj, player.username, username2, nextTag, false));
 			
 			if(nextState.identifier.equalsIgnoreCase(info.nextState.identifier))
 			{
@@ -268,16 +267,49 @@ public class EventHandler
 				return;
 			}
 			
-			MorphInfo info2 = new MorphInfo(event.entityPlayer.username, prevState, nextState);
+			event.entityLiving.setDead();
+			
+			MorphInfo info2 = new MorphInfo(player.username, prevState, nextState);
 			info2.setMorphing(true);
 			
-			Morph.proxy.tickHandlerServer.playerMorphInfo.put(event.entityPlayer.username, info2);
+			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
 			
-			MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)event.entityPlayer, nextState);
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			DataOutputStream stream = new DataOutputStream(bytes);
+			try
+			{
+				stream.writeInt(event.entityLiving.entityId);
+				stream.writeInt(player.entityId);
+				
+				PacketDispatcher.sendPacketToAllInDimension(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()), player.dimension);
+			}
+			catch(IOException e)
+			{
+				
+			}
+			
+			MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, nextState);
 			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
 			
-			event.entityPlayer.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
+			player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 		}
+	}
+	
+	@ForgeSubscribe
+	public void onInteract(EntityInteractEvent event)
+	{
+//		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+//		{
+//			System.out.println("asdasdasdsad");
+//			if(event.target instanceof EntityLivingBase && !(event.target instanceof EntityMorphAcquisition))
+//			{
+//				event.entityPlayer.worldObj.spawnEntityInWorld(new EntityMorphAcquisition(event.entityPlayer.worldObj, (EntityLivingBase)event.target, event.entityPlayer));
+//			}
+//		}
+//		else
+//		{
+//			return;
+//		}
 	}
 	
 	@ForgeSubscribe

@@ -58,6 +58,12 @@ public class MorphState
 		
 		NBTTagCompound tag1 = new NBTTagCompound();
 		entInstance.addEntityID(tag1);
+		tag1.setFloat("HealF", entInstance.func_110138_aP());
+		tag1.setShort("Health", (short)entInstance.func_110138_aP());
+		tag1.setShort("HurtTime", (short)0);
+		tag1.setShort("DeathTime", (short)0);
+		tag1.setShort("AttackTime", (short)0);
+		tag1.setTag("ActiveEffects", new NBTTagList());
 		
 		tag.setCompoundTag("entInstanceTag", tag1);
 		
