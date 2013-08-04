@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.core.ObfHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -188,6 +189,10 @@ public class ModelMorph extends ModelBase
 		float scaleX = prevScaleX + (nextScaleX - prevScaleX) * progress;
 		float scaleY = prevScaleY + (nextScaleY - prevScaleY) * progress;
 		float scaleZ = prevScaleZ + (nextScaleZ - prevScaleZ) * progress;
+
+		double offset = (1.0F - scaleY) * Minecraft.getMinecraft().thePlayer.yOffset;
+		
+		GL11.glTranslated(0.0F, offset, 0.0F);
 		
 		GL11.glScalef(scaleX, scaleY, scaleZ);
 		

@@ -4,12 +4,17 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import morph.common.Morph;
+import morph.common.morph.MorphHandler;
+import morph.common.morph.MorphInfo;
+import morph.common.morph.MorphState;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet131MapData;
 import cpw.mods.fml.common.network.ITinyPacketHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -41,7 +46,38 @@ public class MapPacketHandler
 			{
 				case 0:
 				{
-					byte key = stream.readByte();
+					String identifier = stream.readUTF();
+					
+					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+					if(info != null && info.getMorphing())
+					{
+						break;
+					}
+					
+					MorphState old = info != null ? info.nextState : null;
+					
+					MorphState state = MorphHandler.getMorphState(player, identifier);
+					
+					if(state != null)
+					{
+						MorphInfo info2 = new MorphInfo(player.username, old, state);
+						if(old == null)
+						{
+							info2.setMorphing(false);
+							info2.morphProgress = 80;
+						}
+						else
+						{
+							info2.setMorphing(true);
+						}
+						
+						Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
+						
+						PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
+						
+						player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+					}
+					
 					break;
 				}
 			}
@@ -68,8 +104,6 @@ public class MapPacketHandler
 					
 					try
 					{
-						Class prevClz = Class.forName(stream.readUTF());
-						Class nextClz = Class.forName(stream.readUTF());
 						
 						
 					}

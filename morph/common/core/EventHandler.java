@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import morph.client.morph.MorphInfoClient;
@@ -285,14 +286,16 @@ public class EventHandler
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.world.provider.dimensionId == 0)
 		{
 			WorldServer world = (WorldServer)event.world;
-			NBTTagCompound tag = null;
 	    	try
 	    	{
 	    		File file = new File(world.getChunkSaveLocation(), "morph.dat");
-	    		if(file.exists())
+	    		if(!file.exists())
 	    		{
-	    			tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
+	    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
+	    			Morph.console("Save data does not exist!", true);
+	    			return;
 	    		}
+	    		Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
 	    	}
 	    	catch(EOFException e)
 	    	{
@@ -302,10 +305,11 @@ public class EventHandler
 		    		File file = new File(world.getChunkSaveLocation(), "morph_backup.dat");
 		    		if(!file.exists())
 		    		{
+		    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
 		    			Morph.console("No backup detected!", true);
 		    			return;
 		    		}
-		    		tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
+		    		Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
 
 		    		File file1 = new File(world.getChunkSaveLocation(), "morph.dat");
 		    		file1.delete();
@@ -314,13 +318,19 @@ public class EventHandler
 	    		}
 	    		catch(Exception e1)
 	    		{
+	    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
 	    			Morph.console("Even your backup data is corrupted. What have you been doing?!", true);
+	    			return;
 	    		}
 	    	}
 	    	catch(IOException e)
 	    	{
+	    		Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
 	    		Morph.console("Failed to read save data!", true);
+	    		return;
 	    	}
+	    	
+	    	NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
 	    	
 	    	if(tag != null)
 	    	{
@@ -345,6 +355,10 @@ public class EventHandler
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.world.provider.dimensionId == 0)
 		{
 			WorldServer world = (WorldServer)event.world;
+			if(Morph.proxy.tickHandlerServer.saveData == null)
+			{
+				Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
+			}
             try
             {
             	if(world.getChunkSaveLocation().exists())
@@ -386,6 +400,16 @@ public class EventHandler
 	                	NBTTagCompound tag1 = new NBTTagCompound();
 	                	e.getValue().writeNBT(tag1);
 	                	tag.setCompoundTag("morphData" + count, tag1);
+	                }
+	                for(Entry<String, ArrayList<MorphState>> e : Morph.proxy.tickHandlerServer.playerMorphs.entrySet())
+	                {
+	                	String name = e.getKey();
+	                	ArrayList<MorphState> states = e.getValue();
+	                	tag.setInteger(name + "_morphStatesCount", states.size());
+	                	for(int i = 0; i < states.size(); i++)
+	                	{
+	                		tag.setCompoundTag(name + "_morphState" + i, states.get(i).getTag());
+	                	}
 	                }
 	                //end write data
 	                

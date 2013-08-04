@@ -10,6 +10,7 @@ import morph.common.morph.MorphState;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.ITickHandler;
@@ -134,6 +135,8 @@ public class TickHandlerServer
 	}
 
 	public long clock;
+	
+	public NBTTagCompound saveData;
 	
 	public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
 	public HashMap<String, ArrayList<MorphState>> playerMorphs = new HashMap<String, ArrayList<MorphState>>();

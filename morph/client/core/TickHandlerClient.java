@@ -1,5 +1,8 @@
 package morph.client.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -31,6 +35,7 @@ import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TickHandlerClient 
 	implements ITickHandler
@@ -284,7 +289,21 @@ public class TickHandlerClient
 				{
 					selectorShow = false;
 					selectorTimer = selectorShowTime - selectorTimer;
-					//MORPH
+
+					ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+					DataOutputStream stream = new DataOutputStream(bytes);
+					try
+					{
+						stream.writeUTF(playerMorphStates.get(selectorSelected).identifier);
+						
+						PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
+					}
+					catch(IOException e)
+					{
+						
+					}
+
+					
 				}
 			}
 			if(!keySelectorReturnDown && (isPressed(Keyboard.KEY_ESCAPE) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))

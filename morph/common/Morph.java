@@ -123,6 +123,7 @@ public class Morph
 	{
 		proxy.tickHandlerServer.playerMorphInfo.clear();
 		proxy.tickHandlerServer.playerMorphs.clear();
+		Morph.proxy.tickHandlerServer.saveData = null;
 	}
 	
     public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException

@@ -70,5 +70,19 @@ public class MorphHandler
 		}
 		PacketDispatcher.sendPacketToPlayer(new Packet250CustomPayload("Morph", bytes.toByteArray()), (Player)player);
 	}
+
+	public static MorphState getMorphState(EntityPlayerMP player, String identifier) 
+	{
+		ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username);
+		
+		for(MorphState state : states)
+		{
+			if(state.identifier.equalsIgnoreCase(identifier))
+			{
+				return state;
+			}
+		}
+		return null;
+	}
 	
 }

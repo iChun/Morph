@@ -1,12 +1,15 @@
 package morph.common.core;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
+import morph.common.morph.MorphState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
@@ -73,6 +76,28 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
 	{
+		ArrayList list = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username);
+		
+		if(Morph.proxy.tickHandlerServer.saveData != null)
+		{
+			NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
+			int count = tag.getInteger(player.username + "_morphStatesCount");
+			if(count > 0)
+			{
+				list.clear();
+				
+				for(int i = 0; i < count; i++)
+				{
+					MorphState state = new MorphState(player.worldObj, player.username, player.username, null, false);
+					state.readTag(player.worldObj, tag.getCompoundTag(player.username + "_morphState" + i));
+					if(!state.identifier.equalsIgnoreCase(""))
+					{
+						MorphHandler.addOrGetMorphState(list, state);
+					}
+				}
+			}
+		}
+		
 		MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null);
 		for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
 		{
