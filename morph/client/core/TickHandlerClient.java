@@ -33,6 +33,7 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -349,19 +350,22 @@ public class TickHandlerClient
 					selectorShow = false;
 					selectorTimer = selectorShowTime - selectorTimer;
 
-					ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-					DataOutputStream stream = new DataOutputStream(bytes);
-					try
+					MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
+					if(info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) || info == null)
 					{
-						stream.writeUTF(playerMorphStates.get(selectorSelected).identifier);
-						
-						PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
+						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+						DataOutputStream stream = new DataOutputStream(bytes);
+						try
+						{
+							stream.writeUTF(playerMorphStates.get(selectorSelected).identifier);
+							
+							PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
+						}
+						catch(IOException e)
+						{
+							
+						}
 					}
-					catch(IOException e)
-					{
-						
-					}
-
 					
 				}
 			}
@@ -547,7 +551,7 @@ public class TickHandlerClient
 	        
 	        	MorphState state = playerMorphStates.get(i);
 	        	
-				drawEntityOnScreen(state.entInstance, 20, height1, 16, 2, 2, renderTick);
+				drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick);
 	        }
 	        
 	        GL11.glPopMatrix();
@@ -577,7 +581,7 @@ public class TickHandlerClient
 		}
 	}
 	
-    public void drawEntityOnScreen(EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick)
+    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick)
     {
     	forceRender = true;
     	if(ent != null)
@@ -596,7 +600,9 @@ public class TickHandlerClient
 	        GL11.glEnable(3042 /*GL_BLEND*/);
 	        GL11.glBlendFunc(770, 771);
 
-	        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(ent.getEntityName(), 26, -32, 16777215);
+	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
+	        
+	        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(((info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.YELLOW : "") + ent.getEntityName(), 26, -32, 16777215);
 	        
 	        GL11.glDisable(3042 /*GL_BLEND*/);
 	        

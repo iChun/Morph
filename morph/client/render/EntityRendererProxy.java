@@ -33,6 +33,8 @@ public class EntityRendererProxy extends EntityRenderer
                 this.mc.pointedEntityLiving = null;
                 double d0 = (double)this.mc.playerController.getBlockReachDistance();
                 
+                float ySize = 0.0F;
+                
                 MorphInfo info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
         		if(info1 != null && mc.renderViewEntity == mc.thePlayer)
         		{
@@ -46,19 +48,15 @@ public class EntityRendererProxy extends EntityRenderer
         			
         			float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
         			float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
-        			float ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
-        			mc.thePlayer.lastTickPosY -= ySize;
-        			mc.thePlayer.prevPosY -= ySize;
-        			mc.thePlayer.posY -= ySize;
-        			this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(d0, par1);
-        			mc.thePlayer.lastTickPosY += ySize;
-        			mc.thePlayer.prevPosY += ySize;
-        			mc.thePlayer.posY += ySize;
-        		}
-        		else
-        		{
+        			ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
         			this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(d0, par1);
         		}
+        		
+    			mc.thePlayer.lastTickPosY -= ySize;
+    			mc.thePlayer.prevPosY -= ySize;
+    			mc.thePlayer.posY -= ySize;
+
+       			this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(d0, par1);
                 
                 
                 double d1 = d0;
@@ -141,6 +139,10 @@ public class EntityRendererProxy extends EntityRenderer
                         this.mc.pointedEntityLiving = (EntityLivingBase)this.pointedEntity;
                     }
                 }
+                
+    			mc.thePlayer.lastTickPosY += ySize;
+    			mc.thePlayer.prevPosY += ySize;
+    			mc.thePlayer.posY += ySize;
             }
         }
     }
