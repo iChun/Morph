@@ -3,10 +3,12 @@ package morph.common.core;
 import java.lang.reflect.Method;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import morph.common.Morph;
 
@@ -31,9 +33,13 @@ public class ObfHelper
 	
 	public static final String preRenderCallbackObf = "func_77041_b";
 	public static final String preRenderCallbackDeobf = "preRenderCallback";
+	
+	public static final String pushOutOfBlocksObf = "func_70048_i";
+	public static final String pushOutOfBlocksDeobf = "pushOutOfBlocks";
 
 	public static Method setSizeMethod;
 	public static Method updateEntityActionStateMethod;
+	public static Method pushOutOfBlocksMethod;
 	
 	public static void obfWarning()
 	{
@@ -107,6 +113,34 @@ public class ObfHelper
 			{
 				updateEntityActionStateMethod.setAccessible(true);
 				updateEntityActionStateMethod.invoke(ent);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void forcePushOutOfBlocks(EntityPlayer ent, double d, double d1, double d2)
+	{
+		if(pushOutOfBlocksMethod == null)
+		{
+			try
+			{
+				Method m = EntityPlayerSP.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.pushOutOfBlocksObf : ObfHelper.pushOutOfBlocksDeobf, double.class, double.class, double.class);
+				pushOutOfBlocksMethod = m;
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		if(pushOutOfBlocksMethod != null)
+		{
+			try
+			{
+				pushOutOfBlocksMethod.setAccessible(true);
+				pushOutOfBlocksMethod.invoke(ent, d, d1, d2);
 			}
 			catch(Exception e)
 			{

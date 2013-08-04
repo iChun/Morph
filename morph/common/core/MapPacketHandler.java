@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.NetHandler;
@@ -111,13 +112,15 @@ public class MapPacketHandler
 				case 1:
 				{
 					String name = stream.readUTF();
-					Entity ent = mc.theWorld.getPlayerEntityByName(name);
-					if(ent != null)
+					EntityPlayer player = mc.theWorld.getPlayerEntityByName(name);
+					if(player != null)
 					{
 						MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
-						ObfHelper.forceSetSize(ent, info.nextState.entInstance.width, info.nextState.entInstance.height);
-						ent.setPosition(ent.posX, ent.posY, ent.posZ);
-						System.out.println("asdasd");
+						if(info != null)
+						{
+							ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+							player.setPosition(player.posX, player.posY, player.posZ);
+						}
 					}
 					Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
 					break;

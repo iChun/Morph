@@ -12,14 +12,17 @@ import java.util.Map.Entry;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
+import net.minecraft.block.Block;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -86,6 +89,14 @@ public class TickHandlerServer
 							info.morphProgress = 80;
 							info.setMorphing(false);
 							
+							EntityPlayer player = world.getPlayerEntityByName(info.playerName);
+							
+							if(player != null)
+							{
+								ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+								player.setPosition(player.posX, player.posY, player.posZ);
+							}
+							
 							if(info.nextState.playerMorph.equalsIgnoreCase(e.getKey()))
 							{
 								ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -100,6 +111,12 @@ public class TickHandlerServer
 								{
 									
 								}
+								catch(Exception e1)
+								{
+									ObfHelper.obfWarning();
+									e1.printStackTrace();
+								}
+								
 								ite.remove();
 							}
 						}

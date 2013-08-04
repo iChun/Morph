@@ -13,6 +13,7 @@ import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.core.ObfHelper;
+import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -23,8 +24,12 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -51,7 +56,14 @@ public class TickHandlerClient
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
 	{
-		if (type.equals(EnumSet.of(TickType.RENDER)))
+		if (type.equals(EnumSet.of(TickType.CLIENT)))
+		{
+			if(Minecraft.getMinecraft().theWorld != null)
+			{      		
+				preWorldTick(Minecraft.getMinecraft(), Minecraft.getMinecraft().theWorld);
+			}
+		}
+		else if (type.equals(EnumSet.of(TickType.RENDER)))
 		{
 			if(Minecraft.getMinecraft().theWorld != null)
 			{
@@ -95,8 +107,35 @@ public class TickHandlerClient
 		return "TickHandlerClientMorph";
 	}
 
+	public void preWorldTick(Minecraft mc, WorldClient world)
+	{
+		MorphInfo info = playerMorphInfo.get(mc.thePlayer.username);
+		if(info != null && mc.thePlayer.height < playerHeight)
+		{
+			
+//			motionMaintained[0] = mc.thePlayer.motionX;
+//			motionMaintained[1] = mc.thePlayer.motionZ;
+//			
+//			ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX - (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ + (double)mc.thePlayer.width * 0.35D);
+//            ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX - (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ - (double)mc.thePlayer.width * 0.35D);
+//            ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX + (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ - (double)mc.thePlayer.width * 0.35D);
+//            ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX + (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ + (double)mc.thePlayer.width * 0.35D);
+//            
+//			motionMaintained[2] = mc.thePlayer.motionX;
+//			motionMaintained[3] = mc.thePlayer.motionZ;
+//            
+//           	maintainMotion = mc.thePlayer.motionX != motionMaintained[0] || mc.thePlayer.motionZ != motionMaintained[1];
+		}
+	}
+	
 	public void worldTick(Minecraft mc, WorldClient world)
 	{
+//		if(maintainMotion)
+//		{
+//			mc.thePlayer.moveEntity(motionMaintained[0] - motionMaintained[2], 0D, motionMaintained[1] - motionMaintained[3]);
+//			mc.thePlayer.motionX = motionMaintained[0] - motionMaintained[2];
+//			mc.thePlayer.motionZ = motionMaintained[1] - motionMaintained[3];
+//		}
 		if(mc.currentScreen != null && selectorShow)
 		{
 			if(mc.currentScreen instanceof GuiIngameMenu)
@@ -345,6 +384,12 @@ public class TickHandlerClient
 	{
 		this.renderTick = renderTick;
 		
+		ySize = 00F;
+		
+		mc.thePlayer.lastTickPosY += ySize;
+		mc.thePlayer.prevPosY += ySize;
+		mc.thePlayer.posY += ySize;
+		
 		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
 		{
 			MorphInfoClient info = e.getValue();
@@ -393,6 +438,10 @@ public class TickHandlerClient
 
 	public void renderTick(Minecraft mc, World world, float renderTick)
 	{
+		mc.thePlayer.lastTickPosY -= ySize;
+		mc.thePlayer.prevPosY -= ySize;
+		mc.thePlayer.posY -= ySize;
+		
 		if(selectorTimer > 0 || selectorShow)
 		{
 			GL11.glPushMatrix();
@@ -587,6 +636,11 @@ public class TickHandlerClient
 	public ArrayList<MorphState> playerMorphStates = new ArrayList<MorphState>();
 
 	public float renderTick;
+	
+//	public double[] motionMaintained = new double[4];
+//	public boolean maintainMotion;
+	public float playerHeight = 1.8F;
+	public float ySize;
 	
 	public boolean forceRender;
 	public boolean renderingMorph;

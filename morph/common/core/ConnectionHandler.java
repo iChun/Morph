@@ -17,6 +17,7 @@ import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -102,6 +103,14 @@ public class ConnectionHandler
 		for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
 		{
 			PacketDispatcher.sendPacketToPlayer(e.getValue().getMorphInfoAsPacket(), (Player)player);
+		}
+		
+		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+
+		if(info != null)
+		{
+			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+			player.setPosition(player.posX, player.posY, player.posZ);
 		}
 	}
 
