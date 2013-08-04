@@ -1,5 +1,6 @@
 package morph.client.core;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -8,7 +9,9 @@ import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
+import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -90,6 +93,10 @@ public class TickHandlerClient
 	{
 		if(mc.currentScreen != null && selectorShow)
 		{
+			if(mc.currentScreen instanceof GuiIngameMenu)
+			{
+				mc.displayGuiScreen(null);
+			}
 			selectorShow = false;
 			selectorTimer = selectorShowTime - selectorTimer;
 		}
@@ -99,7 +106,24 @@ public class TickHandlerClient
 			if(selectorTimer == 0 && !selectorShow)
 			{
 				selectorSelected = 0;
+				
+				MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
+				if(info != null)
+				{
+					MorphState state = info.nextState;
+					for(int i = 0; i < playerMorphStates.size(); i++)
+					{
+						if(playerMorphStates.get(i).identifier.equalsIgnoreCase(state.identifier))
+						{
+							selectorSelected = i;
+						}
+					}
+				}
 			}
+		}
+		if(scrollTimer > 0)
+		{
+			scrollTimer--;
 		}
 		
 		if(selectorShow)
@@ -109,16 +133,22 @@ public class TickHandlerClient
 			{
 				if(k > 0)
 				{
+					selectorSelectedPrev = selectorSelected;
+					scrollTimer = scrollTime;
+
 					selectorSelected--;
 					if(selectorSelected < 0)
 					{
-						selectorSelected = selectorSize;
+						selectorSelected = playerMorphStates.size() - 1;
 					}
 				}
 				else
 				{
+					selectorSelectedPrev = selectorSelected;
+					scrollTimer = scrollTime;
+
 					selectorSelected++;
-					if(selectorSelected > selectorSize)
+					if(selectorSelected > playerMorphStates.size() - 1)
 					{
 						selectorSelected = 0;
 					}
@@ -133,7 +163,6 @@ public class TickHandlerClient
 				mc.thePlayer.inventory.currentItem = currentItem;
 			}
 		}
-
 		
 		if(clock != world.getWorldTime())
 		{
@@ -187,13 +216,31 @@ public class TickHandlerClient
 				{
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
+					
+					selectorSelected = 0;
+					
+					MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
+					if(info != null)
+					{
+						MorphState state = info.nextState;
+						for(int i = 0; i < playerMorphStates.size(); i++)
+						{
+							if(playerMorphStates.get(i).identifier.equalsIgnoreCase(state.identifier))
+							{
+								selectorSelected = i;
+							}
+						}
+					}
 				}
 				else
 				{
+					selectorSelectedPrev = selectorSelected;
+					scrollTimer = scrollTime;
+					
 					selectorSelected--;
 					if(selectorSelected < 0)
 					{
-						selectorSelected = selectorSize;
+						selectorSelected = playerMorphStates.size() - 1;
 					}
 				}
 			}
@@ -203,11 +250,29 @@ public class TickHandlerClient
 				{
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
+					
+					selectorSelected = 0;
+					
+					MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
+					if(info != null)
+					{
+						MorphState state = info.nextState;
+						for(int i = 0; i < playerMorphStates.size(); i++)
+						{
+							if(playerMorphStates.get(i).identifier.equalsIgnoreCase(state.identifier))
+							{
+								selectorSelected = i;
+							}
+						}
+					}
 				}
 				else
 				{
+					selectorSelectedPrev = selectorSelected;
+					scrollTimer = scrollTime;
+
 					selectorSelected++;
-					if(selectorSelected > selectorSize)
+					if(selectorSelected > playerMorphStates.size() - 1)
 					{
 						selectorSelected = 0;
 					}
@@ -320,19 +385,31 @@ public class TickHandlerClient
 	        double size = 42D;
 	        double width1 = 0.0D;
 	        
-			GL11.glPushMatrix();
-	        GL11.glEnable(3042 /*GL_BLEND*/);
+	        GL11.glPushMatrix();
+	        
+	        float progressV = (float)(scrollTime - (scrollTimer - renderTick)) / (float)scrollTime;
+	        
+	        progressV = (float)Math.pow(progressV, 2);
+	        
+	        if(progressV > 1.0F)
+	        {
+	        	progressV = 1.0F;
+	        	selectorSelectedPrev = selectorSelected;
+	        }
+	        
+	        
+	        GL11.glTranslatef(0.0F, ((selectorSelected - selectorSelectedPrev) * 42F) * (1.0F - progressV), 0.0F);
+	        
 	        GL11.glDisable(2929 /*GL_DEPTH_TEST*/);
 	        GL11.glDepthMask(false);
-	        GL11.glBlendFunc(770, 771);
 	        GL11.glColor4f(1f,1f,1f,1f);
 	        GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
 	        
-	        for(int i = 0 ; i < 5; i++)
+	        for(int i = 0 ; i < playerMorphStates.size(); i++)
 	        {
-	        	double height1 = gap + size * i;
+	        	double height1 = gap + size * (i - selectorSelected);
 	        
-		        mc.func_110434_K().func_110577_a(selectorSelected == i ? rlSelected : rlUnselected);
+		        mc.func_110434_K().func_110577_a(rlUnselected);
 		        Tessellator tessellator = Tessellator.instance;
 		        tessellator.startDrawingQuads();
 				tessellator.setColorOpaque_F(1f,1f,1f);
@@ -343,32 +420,46 @@ public class TickHandlerClient
 		        tessellator.draw();
 	        }
 	        
+        	int height1 = gap;
+	        
 	        GL11.glDepthMask(true);
 	        GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
 	        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-	        GL11.glDisable(3042 /*GL_BLEND*/);
-	        GL11.glColor4f(1f,1f,1f,1f);
-	        GL11.glPopMatrix();
 			
 	        gap += 36;
 	        
-			drawEntityOnScreen(mc.thePlayer, 20, gap, 16, 2, 2, renderTick);
-			drawEntityOnScreen(playerMorphInfo.get(mc.thePlayer.username).nextState.entInstance, 20, gap + 42, 16, 2, 2, renderTick);
-			
-			int x = 0;
-			for(int i = 0; i < world.loadedEntityList.size(); i++)
-			{
-				Entity ent = (Entity)world.loadedEntityList.get(i);
-				if(ent instanceof EntityLivingBase)
-				{
-					x++;
-					drawEntityOnScreen((EntityLivingBase)ent, 20, gap + 42 + (x * 42), 16, 2, 2, renderTick);
-					if(x >= 3)
-					{
-						break;
-					}
-				}
-			}
+	        for(int i = 0 ; i < playerMorphStates.size(); i++)
+	        {
+	        	height1 = gap + (int)size * (i - selectorSelected);
+	        
+	        	MorphState state = playerMorphStates.get(i);
+	        	
+				drawEntityOnScreen(state.entInstance, 20, height1, 16, 2, 2, renderTick);
+	        }
+	        
+	        GL11.glPopMatrix();
+	        
+	        if(selectorShow)
+	        {
+		        GL11.glEnable(3042 /*GL_BLEND*/);
+		        GL11.glBlendFunc(770, 771);
+		        
+		        gap -= 36;
+		        
+		        height1 = gap;
+		        
+		        mc.func_110434_K().func_110577_a(rlSelected);
+		        Tessellator tessellator = Tessellator.instance;
+		        tessellator.startDrawingQuads();
+				tessellator.setColorOpaque_F(1f,1f,1f);
+		        tessellator.addVertexWithUV(width1, height1 + size, -90.0D, 0.0D, 1.0D);
+		        tessellator.addVertexWithUV(width1 + size, height1 + size, -90.0D, 1.0D, 1.0D);
+		        tessellator.addVertexWithUV(width1 + size, height1, -90.0D, 1.0D, 0.0D);
+		        tessellator.addVertexWithUV(width1, height1, -90.0D, 0.0D, 0.0D);
+		        tessellator.draw();
+	
+		        GL11.glDisable(3042 /*GL_BLEND*/);
+	        }
 			GL11.glPopMatrix();
 		}
 	}
@@ -378,6 +469,10 @@ public class TickHandlerClient
     	forceRender = true;
     	if(ent != null)
     	{
+        	boolean hideGui = Minecraft.getMinecraft().gameSettings.hideGUI;
+        	
+        	Minecraft.getMinecraft().gameSettings.hideGUI = true;
+        	
 	        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 	        GL11.glPushMatrix();
 
@@ -433,6 +528,8 @@ public class TickHandlerClient
 	        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 	        GL11.glDisable(GL11.GL_TEXTURE_2D);
 	        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+	        
+	        Minecraft.getMinecraft().gameSettings.hideGUI = hideGui;
     	}
     	forceRender = false;
     }
@@ -451,6 +548,8 @@ public class TickHandlerClient
 	public RenderMorph renderMorphInstance;
 	
 	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
+	
+	public ArrayList<MorphState> playerMorphStates = new ArrayList<MorphState>();
 
 	public float renderTick;
 	
@@ -465,12 +564,14 @@ public class TickHandlerClient
 	
 	public boolean selectorShow;
 	public int selectorTimer;
-	public int selectorSelected; //0 to 4;
+	public int selectorSelectedPrev;
+	public int selectorSelected;
 	public long systemTime;
 	public int currentItem;
+	public int scrollTimer;
 	
 	public final int selectorShowTime = 10;
-	public final int selectorSize = 4;
+	public final int scrollTime = 3;
 	
 	public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
 	public static final ResourceLocation rlUnselected= new ResourceLocation("morph", "textures/gui/guiUnselected.png");

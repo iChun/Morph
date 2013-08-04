@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
 public class MorphState 
@@ -36,7 +37,15 @@ public class MorphState
 		
 		if(entInstance != null)
 		{
-			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + entInstance.getDataWatcher().toString();
+			NBTTagCompound fakeTag = new NBTTagCompound();
+			entInstance.writeEntityToNBT(fakeTag);
+			fakeTag.setFloat("HealF", entInstance.func_110138_aP());
+			fakeTag.setShort("Health", (short)entInstance.func_110138_aP());
+			fakeTag.setShort("HurtTime", (short)0);
+			fakeTag.setShort("DeathTime", (short)0);
+			fakeTag.setShort("AttackTime", (short)0);
+			fakeTag.setTag("ActiveEffects", new NBTTagList());
+			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 	}
 
@@ -72,7 +81,15 @@ public class MorphState
 		if(invalid)
 		{
 			entInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", world);
-			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + entInstance.getDataWatcher().toString();
+			NBTTagCompound fakeTag = new NBTTagCompound();
+			entInstance.writeEntityToNBT(fakeTag);
+			fakeTag.setFloat("HealF", entInstance.func_110138_aP());
+			fakeTag.setShort("Health", (short)entInstance.func_110138_aP());
+			fakeTag.setShort("HurtTime", (short)0);
+			fakeTag.setShort("DeathTime", (short)0);
+			fakeTag.setShort("AttackTime", (short)0);
+			fakeTag.setTag("ActiveEffects", new NBTTagList());
+			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 		else
 		{

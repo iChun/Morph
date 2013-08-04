@@ -249,8 +249,6 @@ public class EventHandler
 				return;
 			}
 			
-			event.entityPlayer.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
-			
 			String username1 = (isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextState.entInstance).username : "";
 			String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)entTarget).username : "";
 			
@@ -263,12 +261,21 @@ public class EventHandler
 			MorphState prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), new MorphState(event.entityPlayer.worldObj, event.entityPlayer.username, username1, prevTag, false));
 			MorphState nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), new MorphState(event.entityPlayer.worldObj, event.entityPlayer.username, username2, nextTag, false));
 			
+			if(nextState.identifier.equalsIgnoreCase(info.nextState.identifier))
+			{
+				System.out.println("stop3");
+				return;
+			}
+			
 			MorphInfo info2 = new MorphInfo(event.entityPlayer.username, prevState, nextState);
 			info2.setMorphing(true);
 			
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(event.entityPlayer.username, info2);
 			
+			MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)event.entityPlayer, nextState);
 			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
+			
+			event.entityPlayer.worldObj.playSoundAtEntity(event.entityLiving, "morph:morph", 1.0F, 1.0F);
 		}
 	}
 	
@@ -326,6 +333,7 @@ public class EventHandler
 	    			MorphInfo info = new MorphInfo();
 	    			info.readNBT(tag1);
 	    			Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
+	    			MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.world, info.playerName), info.nextState);
 	    		}
 	    	}
 		}

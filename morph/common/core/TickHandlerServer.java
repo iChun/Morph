@@ -62,19 +62,28 @@ public class TickHandlerServer
 //				}
 //			}
 			
-			for(Entry<String, MorphInfo> e : playerMorphInfo.entrySet())
+			if(world.provider.dimensionId == 0)
 			{
-				MorphInfo info = e.getValue();
-				
-				if(info.getMorphing())
+				for(Entry<String, MorphInfo> e : playerMorphInfo.entrySet())
 				{
-					info.morphProgress++;
-					if(info.morphProgress > 80)
+					MorphInfo info = e.getValue();
+					
+					if(info.getMorphing())
 					{
-						info.morphProgress = 80;
-						info.setMorphing(false);
+						info.morphProgress++;
+						if(info.morphProgress > 80)
+						{
+							info.morphProgress = 80;
+							info.setMorphing(false);
+						}
 					}
 				}
+				
+//				ArrayList<MorphState> states = getPlayerMorphs(world, "ohaiiChun");
+//				for(MorphState state : states)
+//				{
+//					System.out.println(state.identifier);
+//				}
 			}
 		}
 	}

@@ -3,8 +3,10 @@ package morph.common.core;
 import java.util.Map.Entry;
 
 import morph.common.Morph;
+import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
@@ -36,6 +38,7 @@ public class ConnectionHandler
 	public void onClientConnected()
 	{
 		Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
+		Morph.proxy.tickHandlerClient.playerMorphStates.clear();
 	}
 
 	@Override
@@ -60,6 +63,8 @@ public class ConnectionHandler
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 		{
+			Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
+			Morph.proxy.tickHandlerClient.playerMorphStates.clear();
 		}
 	}
 
@@ -68,6 +73,7 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
 	{
+		MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null);
 		for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
 		{
 			PacketDispatcher.sendPacketToPlayer(e.getValue().getMorphInfoAsPacket(), (Player)player);

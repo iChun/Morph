@@ -89,6 +89,23 @@ public class PacketHandlerClient
 
 					break;
 				}
+				case 1:
+				{
+					while(stream.readUTF().equalsIgnoreCase("state"))
+					{
+						MorphState state = new MorphState(mc.theWorld, mc.thePlayer.username, "", null, true);
+						
+						NBTTagCompound tag = Morph.readNBTTagCompound(stream);
+						
+						if(tag != null)
+						{
+							state.readTag(mc.theWorld, tag);
+							
+							System.out.println(MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.playerMorphStates, state));
+						}
+					}
+					break;
+				}
 			}
 		}
 		catch(IOException e)
