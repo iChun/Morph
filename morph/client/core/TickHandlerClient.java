@@ -351,7 +351,7 @@ public class TickHandlerClient
 					selectorTimer = selectorShowTime - selectorTimer;
 
 					MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
-					if(!playerMorphStates.isEmpty() && (info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) || info == null))
+					if(!playerMorphStates.isEmpty() && (info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) || info == null && !playerMorphStates.get(selectorSelected).playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
 					{
 						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 						DataOutputStream stream = new DataOutputStream(bytes);
@@ -383,7 +383,7 @@ public class TickHandlerClient
 				if(selectorShow)
 				{
 					MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
-					if(!playerMorphStates.isEmpty() && (info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) && !playerMorphStates.get(selectorSelected).playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
+					if(!playerMorphStates.isEmpty() && ((info == null || info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier)) && !playerMorphStates.get(selectorSelected).playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
 					{
 						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 						DataOutputStream stream = new DataOutputStream(bytes);

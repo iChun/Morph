@@ -68,7 +68,7 @@ public class MapPacketHandler
 					{
 						if(delete)
 						{
-							if(info.nextState.identifier.equalsIgnoreCase(state.identifier))
+							if(info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || state.playerMorph.equalsIgnoreCase(player.username))
 							{
 								break;
 							}

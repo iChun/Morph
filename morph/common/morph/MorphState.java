@@ -43,13 +43,7 @@ public class MorphState
 		{
 			NBTTagCompound fakeTag = new NBTTagCompound();
 			entInstance.writeEntityToNBT(fakeTag);
-			fakeTag.setFloat("HealF", entInstance.func_110138_aP());
-			fakeTag.setShort("Health", (short)entInstance.func_110138_aP());
-			fakeTag.setShort("HurtTime", (short)0);
-			fakeTag.setShort("DeathTime", (short)0);
-			fakeTag.setShort("AttackTime", (short)0);
-			fakeTag.setTag("ActiveEffects", new NBTTagList());
-			fakeTag.setShort("Fire", (short)0);
+			writeFakeTags(fakeTag);
 			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 	}
@@ -65,13 +59,7 @@ public class MorphState
 		if(entInstance != null)
 		{
 			entInstance.addEntityID(tag1);
-			tag1.setFloat("HealF", entInstance.func_110138_aP());
-			tag1.setShort("Health", (short)entInstance.func_110138_aP());
-			tag1.setShort("HurtTime", (short)0);
-			tag1.setShort("DeathTime", (short)0);
-			tag1.setShort("AttackTime", (short)0);
-			tag1.setTag("ActiveEffects", new NBTTagList());
-			tag1.setShort("Fire", (short)0);
+			writeFakeTags(tag1);
 		}
 		
 		tag.setCompoundTag("entInstanceTag", tag1);
@@ -99,13 +87,7 @@ public class MorphState
 			entInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", world);
 			NBTTagCompound fakeTag = new NBTTagCompound();
 			entInstance.writeEntityToNBT(fakeTag);
-			fakeTag.setFloat("HealF", entInstance.func_110138_aP());
-			fakeTag.setShort("Health", (short)entInstance.func_110138_aP());
-			fakeTag.setShort("HurtTime", (short)0);
-			fakeTag.setShort("DeathTime", (short)0);
-			fakeTag.setShort("AttackTime", (short)0);
-			fakeTag.setTag("ActiveEffects", new NBTTagList());
-			fakeTag.setShort("Fire", (short)0);
+			writeFakeTags(fakeTag);
 			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 		else
@@ -128,5 +110,16 @@ public class MorphState
 		return new EntityOtherPlayerMP(world, player);
 	}
 
+	public void writeFakeTags(NBTTagCompound fakeTag)
+	{
+		fakeTag.setFloat("HealF", entInstance.func_110138_aP());
+		fakeTag.setShort("Health", (short)entInstance.func_110138_aP());
+		fakeTag.setShort("HurtTime", (short)0);
+		fakeTag.setShort("DeathTime", (short)0);
+		fakeTag.setShort("AttackTime", (short)0);
+		fakeTag.setTag("ActiveEffects", new NBTTagList());
+		fakeTag.setShort("Fire", (short)0);
+		fakeTag.setShort("Anger", (short)0);
+	}
 	
 }

@@ -21,7 +21,7 @@ public class MorphHandler
 		for(int i = states.size() - 1; i >= 0; i--)
 		{
 			MorphState mState = states.get(i);
-			if(mState.identifier.equalsIgnoreCase(state.identifier))
+			if(mState.identifier.equalsIgnoreCase(state.identifier) || !state.playerMorph.equalsIgnoreCase("") && mState.playerMorph.equalsIgnoreCase(state.playerMorph))
 			{
 				states.remove(i);
 				pos = i;
