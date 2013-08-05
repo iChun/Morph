@@ -351,7 +351,7 @@ public class TickHandlerClient
 					selectorTimer = selectorShowTime - selectorTimer;
 
 					MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
-					if(info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) || info == null)
+					if(!playerMorphStates.isEmpty() && (info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) || info == null))
 					{
 						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 						DataOutputStream stream = new DataOutputStream(bytes);
