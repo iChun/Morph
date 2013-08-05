@@ -66,8 +66,13 @@ public class EntityMorphAcquisition extends EntityLivingBase
 		posX = acquired.posX + (acquirer.posX - acquired.posX) * prog;
 		posY = acquired.boundingBox.minY + (acquirer.boundingBox.minY - acquired.boundingBox.minY) * prog + yOffset;
 		posZ = acquired.posZ + (acquirer.posZ - acquired.posZ) * prog;
-		
 	}
+	
+	@Override
+    public boolean isEntityAlive()
+    {
+        return !this.isDead;
+    }
 	
 	@Override
     public void setEntityHealth(float par1)
