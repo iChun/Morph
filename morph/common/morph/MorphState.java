@@ -49,6 +49,7 @@ public class MorphState
 			fakeTag.setShort("DeathTime", (short)0);
 			fakeTag.setShort("AttackTime", (short)0);
 			fakeTag.setTag("ActiveEffects", new NBTTagList());
+			fakeTag.setShort("Fire", (short)0);
 			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 	}
@@ -70,6 +71,7 @@ public class MorphState
 			tag1.setShort("DeathTime", (short)0);
 			tag1.setShort("AttackTime", (short)0);
 			tag1.setTag("ActiveEffects", new NBTTagList());
+			tag1.setShort("Fire", (short)0);
 		}
 		
 		tag.setCompoundTag("entInstanceTag", tag1);
@@ -103,6 +105,7 @@ public class MorphState
 			fakeTag.setShort("DeathTime", (short)0);
 			fakeTag.setShort("AttackTime", (short)0);
 			fakeTag.setTag("ActiveEffects", new NBTTagList());
+			fakeTag.setShort("Fire", (short)0);
 			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 		else

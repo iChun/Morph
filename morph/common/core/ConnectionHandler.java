@@ -99,7 +99,7 @@ public class ConnectionHandler
 			}
 		}
 		
-		MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null);
+		MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
 		for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
 		{
 			PacketDispatcher.sendPacketToPlayer(e.getValue().getMorphInfoAsPacket(), (Player)player);

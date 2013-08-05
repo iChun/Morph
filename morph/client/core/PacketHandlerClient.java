@@ -3,6 +3,7 @@ package morph.client.core;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
@@ -13,9 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
@@ -49,10 +53,27 @@ public class PacketHandlerClient
 					if(stream.readBoolean())
 					{
 						nextTag = Morph.readNBTTagCompound(stream);
+						
+						EntityPlayer player1 = mc.theWorld.getPlayerEntityByName(name);
+						if(player1 != null)
+						{
+					        if (!player1.getActivePotionEffects().isEmpty())
+					        {
+					            NBTTagList nbttaglist = new NBTTagList();
+					            Iterator iterator = player1.getActivePotionEffects().iterator();
+
+					            while (iterator.hasNext())
+					            {
+					                PotionEffect potioneffect = (PotionEffect)iterator.next();
+					                nbttaglist.appendTag(potioneffect.writeCustomPotionEffectToNBT(new NBTTagCompound()));
+					            }
+					            nextTag.setTag("ActiveEffects", nbttaglist);
+					        }
+						}
 					}
 					
-					MorphState prevState = new MorphState(mc.theWorld, mc.thePlayer.username, "", null, true);
-					MorphState nextState = new MorphState(mc.theWorld, mc.thePlayer.username, "", null, true);
+					MorphState prevState = new MorphState(mc.theWorld, name, "", null, true);
+					MorphState nextState = new MorphState(mc.theWorld, name, "", null, true);
 					
 					prevState.readTag(mc.theWorld, prevTag);
 					nextState.readTag(mc.theWorld, nextTag);
@@ -89,6 +110,13 @@ public class PacketHandlerClient
 				}
 				case 1:
 				{
+					boolean clear = stream.readBoolean();
+					
+					if(clear)
+					{
+						Morph.proxy.tickHandlerClient.playerMorphStates.clear();
+					}
+					
 					while(stream.readUTF().equalsIgnoreCase("state"))
 					{
 						MorphState state = new MorphState(mc.theWorld, mc.thePlayer.username, "", null, true);

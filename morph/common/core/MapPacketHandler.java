@@ -3,6 +3,7 @@ package morph.common.core;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import morph.client.entity.EntityMorphAcquisition;
 import morph.common.Morph;
@@ -51,6 +52,8 @@ public class MapPacketHandler
 			{
 				case 0:
 				{
+					boolean delete = stream.readBoolean();
+					
 					String identifier = stream.readUTF();
 					
 					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
@@ -59,20 +62,34 @@ public class MapPacketHandler
 						break;
 					}
 					
-					MorphState old = info != null ? info.nextState : Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username);
-					
 					MorphState state = MorphHandler.getMorphState(player, identifier);
 					
 					if(state != null)
 					{
-						MorphInfo info2 = new MorphInfo(player.username, old, state);
-						info2.setMorphing(true);
-						
-						Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
-						
-						PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
-						
-						player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+						if(delete)
+						{
+							if(info.nextState.identifier.equalsIgnoreCase(state.identifier))
+							{
+								break;
+							}
+							ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username);
+							states.remove(state);
+							
+							MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
+						}
+						else
+						{
+							MorphState old = info != null ? info.nextState : Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username);
+							
+							MorphInfo info2 = new MorphInfo(player.username, old, state);
+							info2.setMorphing(true);
+							
+							Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
+							
+							PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
+							
+							player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+						}
 					}
 					
 					break;

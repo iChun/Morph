@@ -210,6 +210,16 @@ public class TickHandlerServer
 				}
 			}
 		}
+		else
+		{
+			for(MorphState mState : states)
+			{
+				if(mState.identifier.equalsIgnoreCase(state.identifier))
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 

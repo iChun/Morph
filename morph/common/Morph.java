@@ -60,9 +60,12 @@ public class Morph
 	private static Logger logger;
 	
 	public static int childMorphs;
+	public static int playerMorphs;
+	public static int loseMorphsOnDeath;
 	
 	public static int keySelectorBack;
 	public static int keySelectorForward;
+	public static int keySelectorRemoveMorph;
 	
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
@@ -78,12 +81,15 @@ public class Morph
 		config.addCustomCategoryComment("gameplay", "These options affect the gameplay while using the mod.");
 		
 		childMorphs = addCommentAndReturnInt(config, "gameplay", "childMorphs", "Can you morph into child mobs?\nDisabled by default due to improper morph transitions\n0 = No\n1 = Yes", 0);
+		playerMorphs = addCommentAndReturnInt(config, "gameplay", "playerMorphs", "Can you morph into players?\n0 = No\n1 = Yes", 1);
+		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		
 		if(isClient)
 		{
 			config.addCustomCategoryComment("client", "These options are client only.");
 			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: 199 (Home)", 199);
 			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: 207 (End)", 207);
+			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);
 		}
 		
 		config.save();

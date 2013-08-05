@@ -38,7 +38,7 @@ public class MorphHandler
 		return state;
 	}
 	
-	public static void updatePlayerOfMorphStates(EntityPlayerMP player, MorphState morphState)
+	public static void updatePlayerOfMorphStates(EntityPlayerMP player, MorphState morphState, boolean clear)
 	{
 		ArrayList<MorphState> states;
 		if(morphState == null)
@@ -56,6 +56,8 @@ public class MorphHandler
 		try
 		{
 			stream.writeByte(1); //id
+			
+			stream.writeBoolean(clear);
 			
 			for(MorphState state : states)
 			{

@@ -357,6 +357,7 @@ public class TickHandlerClient
 						DataOutputStream stream = new DataOutputStream(bytes);
 						try
 						{
+							stream.writeBoolean(false);
 							stream.writeUTF(playerMorphStates.get(selectorSelected).identifier);
 							
 							PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
@@ -377,10 +378,40 @@ public class TickHandlerClient
 					selectorTimer = selectorShowTime - selectorTimer;
 				}
 			}
+			if(!keySelectorDeleteDown && (isPressed(Keyboard.KEY_DELETE) || isPressed(Morph.keySelectorRemoveMorph)))
+			{
+				if(selectorShow)
+				{
+					MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
+					if(!playerMorphStates.isEmpty() && (info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) && !playerMorphStates.get(selectorSelected).playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
+					{
+						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+						DataOutputStream stream = new DataOutputStream(bytes);
+						try
+						{
+							stream.writeBoolean(true);
+							stream.writeUTF(playerMorphStates.get(selectorSelected).identifier);
+							
+							PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
+							selectorSelected--;
+							if(selectorSelected < 0)
+							{
+								selectorSelected = playerMorphStates.size() - 1;
+							}
+						}
+						catch(IOException e)
+						{
+							
+						}
+					}
+					
+				}
+			}
 			keySelectorBackDown = isPressed(Morph.keySelectorBack);
 			keySelectorForwardDown = isPressed(Morph.keySelectorForward);
 			keySelectorChooseDown = isPressed(Keyboard.KEY_RETURN) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
 			keySelectorReturnDown = isPressed(Keyboard.KEY_ESCAPE) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
+			keySelectorDeleteDown = isPressed(Keyboard.KEY_DELETE) || isPressed(Morph.keySelectorRemoveMorph);
 		}
 	}
 
@@ -466,10 +497,18 @@ public class TickHandlerClient
 					info.nextState.entInstance.setSneaking(info.player.isSneaking());
 					info.prevState.entInstance.setSprinting(info.player.isSprinting());
 					info.nextState.entInstance.setSprinting(info.player.isSprinting());
+					info.prevState.entInstance.setInvisible(info.player.isInvisible());
+					info.nextState.entInstance.setInvisible(info.player.isInvisible());
 					
-					if(info.nextState.entInstance.getCurrentItemOrArmor(0) != info.player.getCurrentEquippedItem())
+					for(int i = 0; i < 5; i++)
 					{
-						info.nextState.entInstance.setCurrentItemOrArmor(0, info.player.getCurrentEquippedItem() != null ? info.player.getCurrentEquippedItem().copy() : null);
+						if(info.nextState.entInstance.getCurrentItemOrArmor(i) == null && info.player.getCurrentItemOrArmor(i) != null || 
+								info.nextState.entInstance.getCurrentItemOrArmor(i) != null && info.player.getCurrentItemOrArmor(i) == null || 
+										info.nextState.entInstance.getCurrentItemOrArmor(i) != null && info.player.getCurrentItemOrArmor(i) != null && 
+											!info.nextState.entInstance.getCurrentItemOrArmor(i).isItemEqual(info.player.getCurrentItemOrArmor(i)))
+						{
+							info.nextState.entInstance.setCurrentItemOrArmor(i, info.player.getCurrentItemOrArmor(i) != null ? info.player.getCurrentItemOrArmor(i).copy() : null);
+						}
 					}
 				}
 			}
@@ -534,7 +573,7 @@ public class TickHandlerClient
 	        GL11.glColor4f(1f,1f,1f,1f);
 	        GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
 	        
-	        for(int i = 0 ; i < playerMorphStates.size(); i++)
+	        for(int i = playerMorphStates.size() - 1 ; i >= 0; i--)
 	        {
 	        	double height1 = gap + size * (i - selectorSelected);
 	        
@@ -557,13 +596,14 @@ public class TickHandlerClient
 			
 	        gap += 36;
 	        
-	        for(int i = 0 ; i < playerMorphStates.size(); i++)
+	        for(int i = playerMorphStates.size() - 1 ; i >= 0; i--)
 	        {
 	        	height1 = gap + (int)size * (i - selectorSelected);
 	        
 	        	MorphState state = playerMorphStates.get(i);
 	        	
-				drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick);
+	        	GL11.glTranslatef(0.0F, 0.0F, 50F);
+				drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick, selectorSelected == i);
 	        }
 	        
 	        GL11.glPopMatrix();
@@ -593,7 +633,7 @@ public class TickHandlerClient
 		}
 	}
 	
-    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick)
+    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick, boolean selected)
     {
     	forceRender = true;
     	if(ent != null)
@@ -614,7 +654,7 @@ public class TickHandlerClient
 
 	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
 	        
-	        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(((info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.YELLOW : "") + ent.getEntityName(), 26, -32, 16777215);
+	        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
 	        
 	        GL11.glDisable(3042 /*GL_BLEND*/);
 	        
@@ -699,6 +739,7 @@ public class TickHandlerClient
 	public boolean keySelectorForwardDown;
 	public boolean keySelectorChooseDown;
 	public boolean keySelectorReturnDown;
+	public boolean keySelectorDeleteDown;
 	
 	public boolean selectorShow;
 	public int selectorTimer;
