@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import morph.client.core.TickHandlerClient;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemInWorldManager;
+import net.minecraft.world.World;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-import morph.client.core.TickHandlerClient;
 
 public class CommonProxy 
 {
@@ -39,5 +43,5 @@ public class CommonProxy
 	public TickHandlerClient tickHandlerClient;
 	public TickHandlerServer tickHandlerServer;
 	
-	public ArrayList<Class> compatibleEntities = new ArrayList<Class>(); 
+	public ArrayList<Class> compatibleEntities = new ArrayList<Class>();
 }

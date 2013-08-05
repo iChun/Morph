@@ -37,6 +37,9 @@ public class ObfHelper
 	public static final String pushOutOfBlocksObf = "func_70048_i";
 	public static final String pushOutOfBlocksDeobf = "pushOutOfBlocks";
 
+	public static final String getHurtSoundObf = "func_70621_aR";
+	public static final String getHurtSoundDeobf = "getHurtSound";
+	
 	public static Method setSizeMethod;
 	public static Method updateEntityActionStateMethod;
 	public static Method pushOutOfBlocksMethod;
@@ -192,5 +195,27 @@ public class ObfHelper
 		}
 	}
 
+	public static String invokeGetHurtSound(Class clz, EntityLivingBase ent)
+	{
+		try
+		{
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getHurtSoundObf : ObfHelper.getHurtSoundDeobf);
+			m.setAccessible(true);
+			return (String)m.invoke(ent);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != EntityLivingBase.class)
+			{
+				return invokeGetHurtSound(clz.getSuperclass(), ent);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return "damage.hit";
+	}
+	
 	
 }

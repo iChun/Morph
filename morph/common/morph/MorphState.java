@@ -1,14 +1,18 @@
 package morph.common.morph;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MorphState 
 {
@@ -28,7 +32,7 @@ public class MorphState
 		
 		if(!player.equalsIgnoreCase(""))
 		{
-			entInstance = !isRemote ? new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, player, new ItemInWorldManager(world)) : new EntityOtherPlayerMP(world, player);
+			entInstance = isRemote ? createPlayer(world, player) : new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, player, new ItemInWorldManager(world));
 		}
 		else if(tag != null)
 		{
@@ -57,13 +61,16 @@ public class MorphState
 		tag.setString("playerMorph", playerMorph);
 		
 		NBTTagCompound tag1 = new NBTTagCompound();
-		entInstance.addEntityID(tag1);
-		tag1.setFloat("HealF", entInstance.func_110138_aP());
-		tag1.setShort("Health", (short)entInstance.func_110138_aP());
-		tag1.setShort("HurtTime", (short)0);
-		tag1.setShort("DeathTime", (short)0);
-		tag1.setShort("AttackTime", (short)0);
-		tag1.setTag("ActiveEffects", new NBTTagList());
+		if(entInstance != null)
+		{
+			entInstance.addEntityID(tag1);
+			tag1.setFloat("HealF", entInstance.func_110138_aP());
+			tag1.setShort("Health", (short)entInstance.func_110138_aP());
+			tag1.setShort("HurtTime", (short)0);
+			tag1.setShort("DeathTime", (short)0);
+			tag1.setShort("AttackTime", (short)0);
+			tag1.setTag("ActiveEffects", new NBTTagList());
+		}
 		
 		tag.setCompoundTag("entInstanceTag", tag1);
 		
@@ -75,14 +82,15 @@ public class MorphState
 	public void readTag(World world, NBTTagCompound tag)
 	{
 		playerName = tag.getString("playerName");
+		playerMorph = tag.getString("playerMorph");
+		
+		NBTTagCompound tag1 = tag.getCompoundTag("entInstanceTag");
 		
 		boolean invalid = false;
-		if(playerName.equalsIgnoreCase(""))
+		if(playerName.equalsIgnoreCase("") || playerMorph.equalsIgnoreCase("") && tag1.getString("id").equalsIgnoreCase(""))
 		{
 			invalid = true;
 		}
-		
-		playerMorph = tag.getString("playerMorph");
 		
 		if(invalid)
 		{
@@ -99,11 +107,9 @@ public class MorphState
 		}
 		else
 		{
-			NBTTagCompound tag1 = tag.getCompoundTag("entInstanceTag");
-			
 			if(!playerMorph.equalsIgnoreCase(""))
 			{
-				entInstance = !isRemote ? new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, playerMorph, new ItemInWorldManager(world)) : new EntityOtherPlayerMP(world, playerMorph);
+				entInstance = isRemote ? createPlayer(world, playerMorph) : new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, playerMorph, new ItemInWorldManager(world));
 			}
 			else
 			{
@@ -112,5 +118,12 @@ public class MorphState
 			identifier = tag.getString("identifier");
 		}
 	}
+	
+	@SideOnly(Side.CLIENT)
+	private EntityPlayer createPlayer(World world, String player) 
+	{
+		return new EntityOtherPlayerMP(world, player);
+	}
+
 	
 }

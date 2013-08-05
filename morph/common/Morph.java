@@ -38,8 +38,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "Morph", name = "Morph",
-			version = "2.0.0",
-			dependencies = "required-after:Forge@[9.10.0.812,)"
+			version = "2.0.0"
 				)
 @NetworkMod(clientSideRequired = true,
 			serverSideRequired = false,
@@ -83,8 +82,8 @@ public class Morph
 		if(isClient)
 		{
 			config.addCustomCategoryComment("client", "These options are client only.");
-			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: Home", 199);
-			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: End", 207);
+			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: 199 (Home)", 199);
+			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: 207 (End)", 207);
 		}
 		
 		config.save();

@@ -29,6 +29,58 @@ public class ModelHelper
 		return list;
 	}
 	
+	public static ArrayList<ModelRenderer> getPotentialArm(ModelBase parent)
+	{
+		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+		
+		ArrayList<ModelRenderer[]> list1 = new ArrayList<ModelRenderer[]>();
+		
+		if(parent != null)
+		{
+			Class clz = parent.getClass();
+			while(clz != ModelBase.class && ModelBase.class.isAssignableFrom(clz))
+			{
+				try
+				{
+					Field[] fields = clz.getDeclaredFields();
+					for(Field f : fields)
+					{
+						f.setAccessible(true);
+						if(f.getType() == ModelRenderer.class)
+						{
+							if(clz == ModelBiped.class && (f.getName().equalsIgnoreCase("bipedRightArm") || f.getName().equalsIgnoreCase("f") || f.getName().equalsIgnoreCase("field_78112_f")) || clz != ModelBiped.class && (f.getName().contains("Right") || f.getName().contains("right")) && (f.getName().contains("arm") || f.getName().contains("hand") || f.getName().contains("Arm") || f.getName().contains("Hand")))
+							{
+								list.add((ModelRenderer)f.get(parent)); // Add normal parent fields
+							}
+						}
+						else if(f.getType() == ModelRenderer[].class && (f.getName().contains("Right") || f.getName().contains("right")) && (f.getName().contains("arm") || f.getName().contains("hand") || f.getName().contains("Arm") || f.getName().contains("Hand")))
+						{
+							list1.add((ModelRenderer[])f.get(parent));
+						}
+					}
+					clz = clz.getSuperclass();
+				}
+				catch(Exception e)
+				{
+					throw new UnableToAccessFieldException(new String[0], e);
+				}
+			}
+		}
+
+		for(ModelRenderer[] renderers : list1)
+		{
+			for(ModelRenderer renderer : renderers)
+			{
+				if(!list.contains(renderer))
+				{
+					list.add(renderer);
+				}
+			}
+		}
+		
+		return list;
+	}
+	
 	public static ArrayList<ModelRenderer> getModelCubes(ModelBase parent)
 	{
 		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();

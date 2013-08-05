@@ -11,11 +11,14 @@ import morph.client.model.ModelList;
 import morph.common.Morph;
 import morph.common.core.CommonProxy;
 import morph.common.core.ObfHelper;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -107,4 +110,5 @@ public class ClientProxy extends CommonProxy
 		tickHandlerClient = new TickHandlerClient();
 		TickRegistry.registerTickHandler(tickHandlerClient, Side.CLIENT);
 	}
+
 }

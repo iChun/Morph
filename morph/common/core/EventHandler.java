@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import morph.client.entity.EntityMorphAcquisition;
+import morph.client.model.ModelList;
 import morph.client.morph.MorphInfoClient;
+import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
@@ -34,10 +36,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -130,9 +135,11 @@ public class EventHandler
 	        	
 //	        	event.entityPlayer.yOffset -= Morph.proxy.tickHandlerClient.ySize;
 	        	
-	        	GL11.glTranslated(1 * (d0 - RenderManager.renderPosX), 1 * (d1 - RenderManager.renderPosY) + Morph.proxy.tickHandlerClient.ySize, 1 * (d2 - RenderManager.renderPosZ));
+	        	GL11.glTranslated(1 * (d0 - RenderManager.renderPosX), 1 * (d1 - RenderManager.renderPosY) + (event.entityPlayer == Minecraft.getMinecraft().thePlayer ? Morph.proxy.tickHandlerClient.ySize : 0D), 1 * (d2 - RenderManager.renderPosZ));
 	        	
 //	        	GL11.glScalef(1.0F, -1.0F, -1.0F);
+	        	
+	        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        	
 	        	if(info.morphProgress <= 40)
 	        	{
@@ -206,6 +213,8 @@ public class EventHandler
 	        	{
 	        		info.prevEntInfo.entRender.func_130000_a(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        		info.nextEntInfo.entRender.func_130000_a(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        	
+	        		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        		
 	        		Morph.proxy.tickHandlerClient.renderMorphInstance.setMainModel(info.interimModel);
 	        		
@@ -224,6 +233,12 @@ public class EventHandler
 	@SideOnly(Side.CLIENT)
 	@ForgeSubscribe
 	public void onRenderPlayerSpecials(RenderPlayerEvent.Specials.Pre event)
+	{
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onRenderWorldLast(RenderWorldLastEvent event)
 	{
 	}
 	
@@ -260,6 +275,25 @@ public class EventHandler
 //				mc.thePlayer.posY += ySize;
 				
 				event.setCanceled(true);
+			}
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onPlaySoundAtEntity(PlaySoundAtEntityEvent event)
+	{
+		if(event.entity instanceof EntityPlayer && event.name.equalsIgnoreCase("damage.hit"))
+		{
+			EntityPlayer player = (EntityPlayer)event.entity;
+			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.username))
+			{
+				MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+				event.name = ObfHelper.invokeGetHurtSound(info.nextState.entInstance.getClass(), info.nextState.entInstance);
+			}
+			else if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(player.username))
+			{
+				MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.username);
+				event.name = ObfHelper.invokeGetHurtSound(info.nextState.entInstance.getClass(), info.nextState.entInstance);
 			}
 		}
 	}
@@ -470,7 +504,7 @@ public class EventHandler
 	                
 	                //write data
 	                
-	    			NBTTagCompound tag = new NBTTagCompound();
+	    			NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
 
 	                int morphDataCount = Morph.proxy.tickHandlerServer.playerMorphInfo.size();
 	                

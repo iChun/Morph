@@ -24,6 +24,7 @@ public class EntityMorphAcquisition extends EntityLivingBase
 		yOffset = -0.5F;
 		setSize(0.1F, 0.1F);
 		noClip = true;
+		renderDistanceWeight = 10D;
 	}
 	
 	public EntityMorphAcquisition(World par1World, EntityLivingBase ac, EntityLivingBase ar) 
@@ -36,6 +37,7 @@ public class EntityMorphAcquisition extends EntityLivingBase
 		yOffset = -0.5F;
 		setSize(0.1F, 0.1F);
 		noClip = true;
+		renderDistanceWeight = 10D;
 		setLocationAndAngles(acquired.posX, acquired.posY, acquired.posZ, acquired.rotationYaw, acquired.rotationPitch);
 	}
 
