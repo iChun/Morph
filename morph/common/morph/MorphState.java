@@ -122,7 +122,6 @@ public class MorphState
 		tag.setShort("Fire", (short)0);
 		tag.setShort("Anger", (short)0);
 		tag.setInteger("Age", living.isChild() ? -24000 : 0);
-		tag.setBoolean("CanPickUpLoot", true);
 		
 		if(living instanceof EntityLiving)
 		{
@@ -135,6 +134,7 @@ public class MorphState
 	            tagList.appendTag(new NBTTagCompound());
 	        }
 	        
+			tag.setBoolean("CanPickUpLoot", true);
 			tag.setTag("Equipment", tagList);
 			tag.setBoolean("Leashed", false);
 		}

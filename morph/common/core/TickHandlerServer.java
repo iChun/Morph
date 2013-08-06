@@ -129,6 +129,12 @@ public class TickHandlerServer
 							}
 						}
 					}
+//					if(info.morphProgress > 70)
+//					{
+//						info.nextState.entInstance.isDead = false;
+//						info.nextState.entInstance.setLocationAndAngles(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+//						info.nextState.entInstance.onUpdate();
+//					}
 				}
 				
 //				ArrayList<MorphState> states = getPlayerMorphs(world, "ohaiiChun");
