@@ -3,6 +3,7 @@ package morph.common.morph;
 import morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,7 +44,7 @@ public class MorphState
 		{
 			NBTTagCompound fakeTag = new NBTTagCompound();
 			entInstance.writeEntityToNBT(fakeTag);
-			writeFakeTags(fakeTag);
+			writeFakeTags(entInstance, fakeTag);
 			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 	}
@@ -59,7 +60,7 @@ public class MorphState
 		if(entInstance != null)
 		{
 			entInstance.addEntityID(tag1);
-			writeFakeTags(tag1);
+			writeFakeTags(entInstance, tag1);
 		}
 		
 		tag.setCompoundTag("entInstanceTag", tag1);
@@ -87,7 +88,7 @@ public class MorphState
 			entInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", world);
 			NBTTagCompound fakeTag = new NBTTagCompound();
 			entInstance.writeEntityToNBT(fakeTag);
-			writeFakeTags(fakeTag);
+			writeFakeTags(entInstance, fakeTag);
 			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 		else
@@ -110,16 +111,33 @@ public class MorphState
 		return new EntityOtherPlayerMP(world, player);
 	}
 
-	public void writeFakeTags(NBTTagCompound fakeTag)
+	public void writeFakeTags(EntityLivingBase living, NBTTagCompound tag)
 	{
-		fakeTag.setFloat("HealF", entInstance.func_110138_aP());
-		fakeTag.setShort("Health", (short)entInstance.func_110138_aP());
-		fakeTag.setShort("HurtTime", (short)0);
-		fakeTag.setShort("DeathTime", (short)0);
-		fakeTag.setShort("AttackTime", (short)0);
-		fakeTag.setTag("ActiveEffects", new NBTTagList());
-		fakeTag.setShort("Fire", (short)0);
-		fakeTag.setShort("Anger", (short)0);
+		tag.setFloat("HealF", entInstance.func_110138_aP());
+		tag.setShort("Health", (short)entInstance.func_110138_aP());
+		tag.setShort("HurtTime", (short)0);
+		tag.setShort("DeathTime", (short)0);
+		tag.setShort("AttackTime", (short)0);
+		tag.setTag("ActiveEffects", new NBTTagList());
+		tag.setShort("Fire", (short)0);
+		tag.setShort("Anger", (short)0);
+		tag.setInteger("Age", living.isChild() ? -24000 : 0);
+		tag.setBoolean("CanPickUpLoot", true);
+		
+		if(living instanceof EntityLiving)
+		{
+			EntityLiving living1 = (EntityLiving)living;
+			
+			NBTTagList tagList = new NBTTagList();
+			
+	        for (int i = 0; i < living1.getLastActiveItems().length; ++i)
+	        {
+	            tagList.appendTag(new NBTTagCompound());
+	        }
+	        
+			tag.setTag("Equipment", tagList);
+			tag.setBoolean("Leashed", false);
+		}
 	}
 	
 }

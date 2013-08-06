@@ -122,11 +122,25 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerChangedDimension(EntityPlayer player) 
 	{
+		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+
+		if(info != null)
+		{
+			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+			player.setPosition(player.posX, player.posY, player.posZ);
+		}
 	}
 
 	@Override
 	public void onPlayerRespawn(EntityPlayer player) 
 	{
+		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+
+		if(info != null)
+		{
+			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+			player.setPosition(player.posX, player.posY, player.posZ);
+		}
 	}
 
 }

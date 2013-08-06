@@ -1,5 +1,6 @@
 package morph.common.core;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -23,21 +24,21 @@ public class ObfHelper
 	public static final String[] resourcePath 		= new String[] { "b", "field_110625_b", "resourcePath" 	}; //ResourceLocation
 	public static final String[] compiled 			= new String[] { "t", "field_78812_q", "compiled"	 	}; //ModelRenderer
 	
-	public static final String setSizeObf = "func_70105_a";
+	public static final String setSizeObf = "func_70105_a"; //func_70105_a
 	public static final String setSizeDeobf = "setSize";
 
-	public static final String updateEntityActionStateObf = "func_70626_be";
+	public static final String updateEntityActionStateObf = "func_70626_be"; //func_70626_be
 	public static final String updateEntityActionStateDeobf = "updateEntityActionState";
 	
-	public static final String getEntityTextureObf = "func_110775_a";
+	public static final String getEntityTextureObf = "func_110775_a"; //func_110775_a
 	
-	public static final String preRenderCallbackObf = "func_77041_b";
+	public static final String preRenderCallbackObf = "func_77041_b"; //func_77041_b
 	public static final String preRenderCallbackDeobf = "preRenderCallback";
 	
-	public static final String pushOutOfBlocksObf = "func_70048_i";
+	public static final String pushOutOfBlocksObf = "func_70048_i"; //func_70048_i
 	public static final String pushOutOfBlocksDeobf = "pushOutOfBlocks";
 
-	public static final String getHurtSoundObf = "func_70621_aR";
+	public static final String getHurtSoundObf = "func_70621_aR"; //func_70621_aR
 	public static final String getHurtSoundDeobf = "getHurtSound";
 	
 	public static Method setSizeMethod;
@@ -51,16 +52,23 @@ public class ObfHelper
 	
     public static void detectObfuscation()
     {
+        obfuscation = true;
         try
         {
-            Class.forName("net.minecraft.world.World");
-            obfuscation = false;
+            Field[] fields = Class.forName("net.minecraft.world.World").getDeclaredFields();
+            for(Field f : fields)
+            {
+            	f.setAccessible(true);
+            	if(f.getName().equalsIgnoreCase("loadedEntityList"))
+            	{
+            		obfuscation = false;
+            		return;
+            	}
+            }
         }
         catch (Exception e)
         {
-            obfuscation = true;
         }
-
     }
 	
 	public static void forceSetSize(Entity ent, float width, float height)

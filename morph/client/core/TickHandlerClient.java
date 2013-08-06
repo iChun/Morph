@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityHorse;
@@ -502,6 +503,9 @@ public class TickHandlerClient
 					info.nextState.entInstance.setSprinting(info.player.isSprinting());
 					info.prevState.entInstance.setInvisible(info.player.isInvisible());
 					info.nextState.entInstance.setInvisible(info.player.isInvisible());
+					
+//					System.out.println(info.prevState.identifier);
+//					System.out.println(info.nextState.identifier);
 					
 					for(int i = 0; i < 5; i++)
 					{
