@@ -2,6 +2,13 @@ package morph.client.model;
 
 import java.util.HashMap;
 
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import morph.common.Morph;
+import morph.common.core.ObfHelper;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,6 +43,17 @@ public class ModelList
 			catch(Exception e)
 			{
 				e.printStackTrace();
+			}
+			if(info == null)
+			{
+				Morph.console("Cannot find ModelInfo for " + clz.getName() + ". Attempting to generate one.", true);
+				Render rend = RenderManager.instance.getEntityClassRenderObject(clz);
+				ModelBase base = ModelHelper.getPossibleModel(rend);
+				info = new ModelInfo(clz, rend, base);
+				System.out.println(rend);
+				System.out.println(base);
+				System.out.println(info);
+				ModelList.addModelInfo(clz, info);
 			}
 		}
 		return info;

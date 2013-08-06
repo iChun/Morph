@@ -9,6 +9,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.Render;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
 
@@ -151,6 +152,59 @@ public class ModelHelper
 		}
 		
 		return list;
+	}
+	
+	public static ModelBase getPossibleModel(Render rend)
+	{
+		ArrayList<ModelBase> models = new ArrayList<ModelBase>();
+		
+		if(rend != null)
+		{
+			try
+			{
+				Class clz = rend.getClass();
+				while(clz != Render.class)
+				{
+					Field[] fields = clz.getDeclaredFields();
+					for(Field f : fields)
+					{
+						f.setAccessible(true);
+						if(f.getType() == ModelBase.class)
+						{
+							models.add((ModelBase)f.get(rend)); // Add normal parent fields
+						}
+						else if(f.getType() == ModelBase[].class)
+						{
+							ModelBase[] modelBases = (ModelBase[])f.get(rend);
+							for(ModelBase base : modelBases)
+							{
+								models.add(base);
+							}
+						}
+					}
+					clz = clz.getSuperclass();
+				}
+			}
+			catch(Exception e)
+			{
+				throw new UnableToAccessFieldException(new String[0], e);
+			}
+		}
+		
+		ModelBase base1 = null;
+		int size = -1;
+		
+		for(ModelBase base : models)
+		{
+			ArrayList<ModelRenderer> mrs = getModelCubes(base);
+			if(mrs.size() > size)
+			{
+				size = mrs.size();
+				base1 = base;
+			}
+		}
+		
+		return base1;
 	}
 	
 	public static ArrayList<ModelRenderer> getChildren(ModelRenderer parent, boolean recursive, int depth)

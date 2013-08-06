@@ -167,7 +167,7 @@ public class ModelMorph extends ModelBase
 		
 		GL11.glPushMatrix();
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
-		ObfHelper.invokePreRenderCallback(morphInfo.prevEntInfo.entRender, morphInfo.prevEntInfo.entRender.getClass(), morphInfo.prevState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
+		ObfHelper.invokePreRenderCallback(morphInfo.prevEntInfo.getRenderer(), morphInfo.prevEntInfo.getRenderer().getClass(), morphInfo.prevState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
 		GL11.glPopMatrix();
 		
@@ -177,7 +177,7 @@ public class ModelMorph extends ModelBase
 
 		GL11.glPushMatrix();
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
-		ObfHelper.invokePreRenderCallback(morphInfo.nextEntInfo.entRender, morphInfo.nextEntInfo.entRender.getClass(), morphInfo.nextState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
+		ObfHelper.invokePreRenderCallback(morphInfo.nextEntInfo.getRenderer(), morphInfo.nextEntInfo.getRenderer().getClass(), morphInfo.nextState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
 		GL11.glPopMatrix();
 		

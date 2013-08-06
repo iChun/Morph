@@ -137,7 +137,7 @@ public class EventHandler
 	        	{
 	        		if(info.prevEntInfo != null && info.morphProgress < 10)
 	        		{
-			        	info.prevEntInfo.entRender.func_130000_a(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+			        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -148,14 +148,14 @@ public class EventHandler
 				        	
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, progress);
 				        	
-				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevEntInfo.entRender, info.prevEntInfo.entRender.getClass(), info.prevState.entInstance);
+				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevEntInfo.getRenderer(), info.prevEntInfo.getRenderer().getClass(), info.prevState.entInstance);
 				        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
 				        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.prevEntInfo.entRender.func_130000_a(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+				        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -169,7 +169,7 @@ public class EventHandler
 	        	{
 	        		if(info.nextEntInfo != null && info.morphProgress >= 70)
 	        		{
-			        	info.nextEntInfo.entRender.func_130000_a(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+			        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -184,14 +184,14 @@ public class EventHandler
 				        	}
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F - progress);
 				        	
-				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.entRender, info.nextEntInfo.entRender.getClass(), info.nextState.entInstance);
+				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.getRenderer(), info.nextEntInfo.getRenderer().getClass(), info.nextState.entInstance);
 				        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
 				        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.nextEntInfo.entRender.func_130000_a(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+				        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -203,8 +203,8 @@ public class EventHandler
 	        	}
 	        	if(info.prevEntInfo != null && info.nextEntInfo != null && info.morphProgress >= 10 && info.morphProgress < 70)
 	        	{
-	        		info.prevEntInfo.entRender.func_130000_a(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
-	        		info.nextEntInfo.entRender.func_130000_a(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        		info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        		info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
 	        	
 	        		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        		

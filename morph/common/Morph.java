@@ -86,7 +86,7 @@ public class Morph
 		
 		if(isClient)
 		{
-			config.addCustomCategoryComment("client", "These options are client only.");
+			config.addCustomCategoryComment("client", "These options are client only.Check here: http://www.minecraftwiki.net/wiki/Key_codes\nI would recommend binding keySelectorForward to -98 (Middle Mouse) to allow full use of the selector with the mouse.");
 			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: 199 (Home)", 199);
 			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: 207 (End)", 207);
 			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);

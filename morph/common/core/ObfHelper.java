@@ -182,8 +182,12 @@ public class ObfHelper
 		return AbstractClientPlayer.field_110314_b;
 	}
 	
-	public static void invokePreRenderCallback(Render rend, Class clz, EntityLivingBase ent, float rendTick)
+	public static void invokePreRenderCallback(Render rend, Class clz, Entity ent, float rendTick)
 	{
+		if(!(rend instanceof RendererLivingEntity) || !(ent instanceof EntityLivingBase))
+		{
+			return;
+		}
 		try
 		{
 			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.preRenderCallbackObf : ObfHelper.preRenderCallbackDeobf, EntityLivingBase.class, float.class);
