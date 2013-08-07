@@ -55,6 +55,8 @@ public class TickHandlerClient
 	{
 		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.0F);
 		renderMorphInstance.setRenderManager(RenderManager.instance);
+		
+		showWarning = ObfHelper.obfuscation;
 	}
 	
 	@Override
@@ -142,6 +144,12 @@ public class TickHandlerClient
 //			mc.thePlayer.motionX = motionMaintained[0] - motionMaintained[2];
 //			mc.thePlayer.motionZ = motionMaintained[1] - motionMaintained[3];
 //		}
+		if(showWarning)
+		{
+			showWarning = false;
+			mc.thePlayer.addChatMessage("Alert - You are using an unfinished build of Morph! Please report any issues on the GitHub");
+		}
+		
 		if(mc.currentScreen != null && selectorShow)
 		{
 			if(mc.currentScreen instanceof GuiIngameMenu)
@@ -726,6 +734,8 @@ public class TickHandlerClient
     }
 	
 	public long clock;
+	
+	public boolean showWarning;
 	
 	public RenderMorph renderMorphInstance;
 	

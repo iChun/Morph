@@ -49,7 +49,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 				)
 public class Morph 
 {
-	public static final String version = "2.0.0";
+	public static final String version = "0.0.5";
 	
 	@Instance("Morph")
 	public static Morph instance;
