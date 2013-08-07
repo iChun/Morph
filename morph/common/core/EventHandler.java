@@ -17,6 +17,8 @@ import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -127,17 +129,37 @@ public class EventHandler
 	        	
 //	        	event.entityPlayer.yOffset -= Morph.proxy.tickHandlerClient.ySize;
 	        	
-	        	GL11.glTranslated(1 * (d0 - RenderManager.renderPosX), 1 * (d1 - RenderManager.renderPosY) + (event.entityPlayer == Minecraft.getMinecraft().thePlayer ? Morph.proxy.tickHandlerClient.ySize : 0D), 1 * (d2 - RenderManager.renderPosZ));
+	        	GL11.glTranslated(1 * (d0 - RenderManager.renderPosX), 1 * (d1 - RenderManager.renderPosY) + (event.entityPlayer == Minecraft.getMinecraft().thePlayer && !((Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiContainerCreative) && RenderManager.instance.playerViewY == 180.0F) ? Morph.proxy.tickHandlerClient.ySize : 0D), 1 * (d2 - RenderManager.renderPosZ));
 	        	
 //	        	GL11.glScalef(1.0F, -1.0F, -1.0F);
 	        	
 	        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+	        	float renderTick = Morph.proxy.tickHandlerClient.renderTick;
 	        	
 	        	if(info.morphProgress <= 40)
 	        	{
 	        		if(info.prevEntInfo != null && info.morphProgress < 10)
 	        		{
-			        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+    		            float ff2 = info.prevState.entInstance.renderYawOffset;
+    		            float ff3 = info.prevState.entInstance.rotationYaw;
+    		            float ff4 = info.prevState.entInstance.rotationPitch;
+    		            float ff5 = info.prevState.entInstance.prevRotationYawHead;
+    		            float ff6 = info.prevState.entInstance.rotationYawHead;
+	        			
+	    	        	if((Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiContainerCreative) && RenderManager.instance.playerViewY == 180.0F)
+	    	        	{
+	    	        		EntityLivingBase renderView = Minecraft.getMinecraft().renderViewEntity;
+	    	        		
+	    	        		info.prevState.entInstance.renderYawOffset = renderView.renderYawOffset;
+	    	        		info.prevState.entInstance.rotationYaw = renderView.rotationYaw;
+	    	        		info.prevState.entInstance.rotationPitch = renderView.rotationPitch;
+	    	        		info.prevState.entInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+	    	        		info.prevState.entInstance.rotationYawHead = renderView.rotationYawHead;
+	    	        		renderTick = 1.0F;
+	    	        	}
+	        			
+			        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -155,7 +177,7 @@ public class EventHandler
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+				        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -163,13 +185,37 @@ public class EventHandler
 				        	GL11.glDisable(GL11.GL_BLEND);
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			        	}
+			        	
+    	        		info.prevState.entInstance.renderYawOffset = ff2;
+    	        		info.prevState.entInstance.rotationYaw = ff3;
+    	        		info.prevState.entInstance.rotationPitch = ff4;
+    	        		info.prevState.entInstance.prevRotationYawHead = ff5;
+    	        		info.prevState.entInstance.rotationYawHead = ff6;
 	        		}
 	        	}
 	        	else
 	        	{
 	        		if(info.nextEntInfo != null && info.morphProgress >= 70)
 	        		{
-			        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+    		            float ff2 = info.nextState.entInstance.renderYawOffset;
+    		            float ff3 = info.nextState.entInstance.rotationYaw;
+    		            float ff4 = info.nextState.entInstance.rotationPitch;
+    		            float ff5 = info.nextState.entInstance.prevRotationYawHead;
+    		            float ff6 = info.nextState.entInstance.rotationYawHead;
+	        			
+	    	        	if((Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiContainerCreative) && RenderManager.instance.playerViewY == 180.0F)
+	    	        	{
+	    	        		EntityLivingBase renderView = Minecraft.getMinecraft().renderViewEntity;
+	    	        		
+	    	        		info.nextState.entInstance.prevRenderYawOffset = info.nextState.entInstance.renderYawOffset = renderView.renderYawOffset;
+	    	        		info.nextState.entInstance.rotationYaw = renderView.rotationYaw;
+	    	        		info.nextState.entInstance.rotationPitch = renderView.rotationPitch;
+	    	        		info.nextState.entInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+	    	        		info.nextState.entInstance.rotationYawHead = renderView.rotationYawHead;
+	    	        		renderTick = 1.0F;
+	    	        	}
+
+			        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -191,7 +237,7 @@ public class EventHandler
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+				        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -199,18 +245,60 @@ public class EventHandler
 				        	GL11.glDisable(GL11.GL_BLEND);
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			        	}
+			        	
+    	        		info.nextState.entInstance.renderYawOffset = ff2;
+    	        		info.nextState.entInstance.rotationYaw = ff3;
+    	        		info.nextState.entInstance.rotationPitch = ff4;
+    	        		info.nextState.entInstance.prevRotationYawHead = ff5;
+    	        		info.nextState.entInstance.rotationYawHead = ff6;
 	        		}
 	        	}
 	        	if(info.prevEntInfo != null && info.nextEntInfo != null && info.morphProgress >= 10 && info.morphProgress < 70)
 	        	{
-	        		info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
-	        		info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+		            float ff2 = info.prevState.entInstance.renderYawOffset;
+		            float ff3 = info.prevState.entInstance.rotationYaw;
+		            float ff4 = info.prevState.entInstance.rotationPitch;
+		            float ff5 = info.prevState.entInstance.prevRotationYawHead;
+		            float ff6 = info.prevState.entInstance.rotationYawHead;
+ 
+		            float fff2 = info.nextState.entInstance.renderYawOffset;
+		            float fff3 = info.nextState.entInstance.rotationYaw;
+		            float fff4 = info.nextState.entInstance.rotationPitch;
+		            float fff5 = info.nextState.entInstance.prevRotationYawHead;
+		            float fff6 = info.nextState.entInstance.rotationYawHead;
+
+    	        	if((Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiContainerCreative) && RenderManager.instance.playerViewY == 180.0F)
+    	        	{
+    	        		EntityLivingBase renderView = Minecraft.getMinecraft().renderViewEntity;
+    	        		
+    	        		info.nextState.entInstance.renderYawOffset = info.prevState.entInstance.renderYawOffset = renderView.renderYawOffset;
+    	        		info.nextState.entInstance.rotationYaw = info.prevState.entInstance.rotationYaw = renderView.rotationYaw;
+    	        		info.nextState.entInstance.rotationPitch = info.prevState.entInstance.rotationPitch = renderView.rotationPitch;
+    	        		info.nextState.entInstance.prevRotationYawHead = info.prevState.entInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+    	        		info.nextState.entInstance.rotationYawHead = info.prevState.entInstance.rotationYawHead = renderView.rotationYawHead;
+    	        		renderTick = 1.0F;
+    	        	}
+
+	        		info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
+	        		info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 	        	
+   	        		info.prevState.entInstance.renderYawOffset = ff2;
+	        		info.prevState.entInstance.rotationYaw = ff3;
+	        		info.prevState.entInstance.rotationPitch = ff4;
+	        		info.prevState.entInstance.prevRotationYawHead = ff5;
+	        		info.prevState.entInstance.rotationYawHead = ff6;
+	        		
+	        		info.nextState.entInstance.renderYawOffset = fff2;
+	        		info.nextState.entInstance.rotationYaw = fff3;
+	        		info.nextState.entInstance.rotationPitch = fff4;
+	        		info.nextState.entInstance.prevRotationYawHead = fff5;
+	        		info.nextState.entInstance.rotationYawHead = fff6;
+	        		
 	        		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        		
 	        		Morph.proxy.tickHandlerClient.renderMorphInstance.setMainModel(info.interimModel);
 	        		
-	        		Morph.proxy.tickHandlerClient.renderMorphInstance.doRender(event.entityPlayer, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, Morph.proxy.tickHandlerClient.renderTick);
+	        		Morph.proxy.tickHandlerClient.renderMorphInstance.doRender(event.entityPlayer, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 	        	}
 	        	
 //	        	event.entityPlayer.yOffset += Morph.proxy.tickHandlerClient.ySize;
