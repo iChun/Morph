@@ -603,13 +603,15 @@ public class TickHandlerClient
 			
 	        gap += 36;
 	        
-	        for(int i = playerMorphStates.size() - 1 ; i >= 0; i--)
+	        GL11.glTranslatef(0.0F, 0.0F, 700F);
+	        
+	        for(int i = 0; i < playerMorphStates.size(); i++)
 	        {
 	        	height1 = gap + (int)size * (i - selectorSelected);
 	        
 	        	MorphState state = playerMorphStates.get(i);
 	        	
-	        	GL11.glTranslatef(0.0F, 0.0F, 50F);
+	        	GL11.glTranslatef(0.0F, 0.0F, -20F);
 				drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick, selectorSelected == i);
 	        }
 	        

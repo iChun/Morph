@@ -137,6 +137,7 @@ public class MorphState
 			tag.setBoolean("CanPickUpLoot", true);
 			tag.setTag("Equipment", tagList);
 			tag.setBoolean("Leashed", false);
+			tag.setBoolean("PersistenceRequired", true);
 		}
 	}
 	

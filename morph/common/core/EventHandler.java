@@ -379,6 +379,8 @@ public class EventHandler
 				MorphState prevState = new MorphState(player.worldObj, player.username, username1, prevTag, false);
 				MorphState nextState = new MorphState(player.worldObj, player.username, username2, nextTag, false);
 				
+				System.out.println(nextState.identifier);
+				
 				if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
 				{
 					System.out.println("stop4");

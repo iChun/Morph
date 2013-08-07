@@ -25,6 +25,7 @@ public class EntityMorphAcquisition extends EntityLivingBase
 		setSize(0.1F, 0.1F);
 		noClip = true;
 		renderDistanceWeight = 10D;
+		ignoreFrustumCheck = true;
 	}
 	
 	public EntityMorphAcquisition(World par1World, EntityLivingBase ac, EntityLivingBase ar) 
@@ -38,6 +39,7 @@ public class EntityMorphAcquisition extends EntityLivingBase
 		setSize(0.1F, 0.1F);
 		noClip = true;
 		renderDistanceWeight = 10D;
+		ignoreFrustumCheck = true;
 		setLocationAndAngles(acquired.posX, acquired.posY, acquired.posZ, acquired.rotationYaw, acquired.rotationPitch);
 	}
 
