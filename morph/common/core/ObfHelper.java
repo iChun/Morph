@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
@@ -29,28 +30,29 @@ public class ObfHelper
     public static final String[] cameraZoom				= new String[] { "Y", "field_78503_V", "cameraZoom"				}; //EntityRenderer
     public static final String[] modelBipedMain			= new String[] { "f", "field_77109_a", "modelBipedMain"			}; //RenderPlayer
 
-	public static final String setSizeObf = "func_70105_a"; //func_70105_a
+	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
 
-	public static final String updateEntityActionStateObf = "func_70626_be"; //func_70626_be
+	public static final String updateEntityActionStateObf = "func_70626_be";
 	public static final String updateEntityActionStateDeobf = "updateEntityActionState";
 	
-	public static final String getEntityTextureObf = "func_110775_a"; //func_110775_a
+	public static final String getEntityTextureObf = "func_110775_a";
 	
-	public static final String preRenderCallbackObf = "func_77041_b"; //func_77041_b
+	public static final String preRenderCallbackObf = "func_77041_b";
 	public static final String preRenderCallbackDeobf = "preRenderCallback";
 	
-	public static final String pushOutOfBlocksObf = "func_70048_i"; //func_70048_i
+	public static final String pushOutOfBlocksObf = "func_70048_i";
 	public static final String pushOutOfBlocksDeobf = "pushOutOfBlocks";
 
-	public static final String getHurtSoundObf = "func_70621_aR"; //func_70621_aR
+	public static final String getHurtSoundObf = "func_70621_aR";
 	public static final String getHurtSoundDeobf = "getHurtSound";
 	
 	public static final String renderHandObf = "func_78476_b";
 	public static final String renderHandDeobf = "renderHand";
 	
+	public static final String alterSquishAmountObf = "func_70808_l";
+	
 	public static Method setSizeMethod;
-	public static Method updateEntityActionStateMethod;
 	public static Method pushOutOfBlocksMethod;
 	
 	public static void obfWarning()
@@ -112,31 +114,24 @@ public class ObfHelper
 		}
 	}
 	
-	public static void forceUpdateEntityActionState(EntityLivingBase ent)
+	public static void forceUpdateEntityActionState(Class clz, EntityLivingBase ent)
 	{
-		if(updateEntityActionStateMethod == null)
+		try
 		{
-			try
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.updateEntityActionStateObf : ObfHelper.updateEntityActionStateDeobf);
+			m.setAccessible(true);
+			m.invoke(ent);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != EntityLivingBase.class)
 			{
-				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.updateEntityActionStateObf : ObfHelper.updateEntityActionStateDeobf);
-				updateEntityActionStateMethod = m;
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
+				forceUpdateEntityActionState(clz.getSuperclass(), ent);
 			}
 		}
-		if(updateEntityActionStateMethod != null)
+		catch(Exception e)
 		{
-			try
-			{
-				updateEntityActionStateMethod.setAccessible(true);
-				updateEntityActionStateMethod.invoke(ent);
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 	}
 	
@@ -250,6 +245,27 @@ public class ObfHelper
 		catch(NoSuchMethodException e)
 		{
 			Morph.console("Cannot find render hand method!", true);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static void forceResquish(Class clz, EntitySlime slime) 
+	{
+		try
+		{
+			Method m = clz.getDeclaredMethod(ObfHelper.alterSquishAmountObf);
+			m.setAccessible(true);
+			m.invoke(slime);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != EntitySlime.class)
+			{
+				forceUpdateEntityActionState(clz.getSuperclass(), slime);
+			}
 		}
 		catch(Exception e)
 		{

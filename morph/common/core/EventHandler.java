@@ -704,23 +704,6 @@ public class EventHandler
 	    		Morph.console("Failed to read save data!", true);
 	    		return;
 	    	}
-	    	
-	    	NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
-	    	
-	    	if(tag != null)
-	    	{
-	    		//read data
-	    		int morphDataCount = tag.getInteger("morphDataCount");
-	    		Morph.proxy.tickHandlerServer.playerMorphInfo.clear();
-	    		for(int i = 1; i <= morphDataCount; i++)
-	    		{
-	    			NBTTagCompound tag1 = tag.getCompoundTag("morphData" + i);
-	    			MorphInfo info = new MorphInfo();
-	    			info.readNBT(tag1);
-	    			Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
-	    			MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(event.world, info.playerName), info.nextState);
-	    		}
-	    	}
 		}
 	}
 
@@ -739,24 +722,18 @@ public class EventHandler
             
 			NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
 
-            int morphDataCount = Morph.proxy.tickHandlerServer.playerMorphInfo.size();
-            
-            tag.setInteger("morphDataCount", morphDataCount);
-            
-            int count = 0;
-            
             for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
             {
-            	count++;
             	NBTTagCompound tag1 = new NBTTagCompound();
             	e.getValue().writeNBT(tag1);
-            	tag.setCompoundTag("morphData" + count, tag1);
+            	tag.setCompoundTag(e.getKey() + "_morphData", tag1);
             }
             for(Entry<String, ArrayList<MorphState>> e : Morph.proxy.tickHandlerServer.playerMorphs.entrySet())
             {
             	String name = e.getKey();
             	ArrayList<MorphState> states = e.getValue();
             	tag.setInteger(name + "_morphStatesCount", states.size());
+            	System.out.println(name + "_morphStatesCount");
             	for(int i = 0; i < states.size(); i++)
             	{
             		tag.setCompoundTag(name + "_morphState" + i, states.get(i).getTag());

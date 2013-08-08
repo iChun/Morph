@@ -82,10 +82,14 @@ public class ConnectionHandler
 		if(Morph.proxy.tickHandlerServer.saveData != null)
 		{
 			NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
+			
+			list.clear();
+			
+			list.add(0, new MorphState(player.worldObj, player.username, player.username, null, player.worldObj.isRemote));
+			
 			int count = tag.getInteger(player.username + "_morphStatesCount");
 			if(count > 0)
 			{
-				list.clear();
 				
 				for(int i = 0; i < count; i++)
 				{
@@ -96,6 +100,15 @@ public class ConnectionHandler
 						MorphHandler.addOrGetMorphState(list, state);
 					}
 				}
+			}
+			
+			NBTTagCompound tag1 = tag.getCompoundTag(player.username + "_morphData");
+			if(tag1.hasKey("playerName"))
+			{
+				MorphInfo info = new MorphInfo();
+				info.readNBT(tag1);
+				Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
+				MorphHandler.addOrGetMorphState(list, info.nextState);
 			}
 		}
 		

@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
 
-import morph.common.Morph;
 import morph.common.core.ObfHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;

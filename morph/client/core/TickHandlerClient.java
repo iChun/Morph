@@ -30,6 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
@@ -284,6 +285,71 @@ public class TickHandlerClient
 					if(info.nextState.entInstance != mc.thePlayer)
 					{
 						info.nextState.entInstance.onUpdate();
+//						ObfHelper.forceUpdateEntityActionState(info.nextState.entInstance.getClass(), info.nextState.entInstance);
+					}
+				}
+				
+				if(info.player != null)
+				{
+					if(info.prevState.entInstance == null)
+					{
+						info.prevState.entInstance = info.player;
+					}
+					if(info.prevState.entInstance != null && info.nextState.entInstance != null)
+					{
+						info.player.ignoreFrustumCheck = true;
+						
+						info.prevState.entInstance.prevRotationYawHead = info.nextState.entInstance.prevRotationYawHead = info.player.prevRotationYawHead;
+						info.prevState.entInstance.prevRotationYaw = info.nextState.entInstance.prevRotationYaw = info.player.prevRotationYaw;
+						info.prevState.entInstance.prevRotationPitch = info.nextState.entInstance.prevRotationPitch = info.player.prevRotationPitch;
+						info.prevState.entInstance.prevRenderYawOffset = info.nextState.entInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
+						info.prevState.entInstance.prevLimbYaw = info.nextState.entInstance.prevLimbYaw = info.player.prevLimbYaw;
+						info.prevState.entInstance.prevSwingProgress = info.nextState.entInstance.prevSwingProgress = info.player.prevSwingProgress;
+						info.prevState.entInstance.prevPosX = info.nextState.entInstance.prevPosX = info.player.prevPosX;
+						info.prevState.entInstance.prevPosY = info.nextState.entInstance.prevPosY = info.player.prevPosY;
+						info.prevState.entInstance.prevPosZ = info.nextState.entInstance.prevPosZ = info.player.prevPosZ;
+						
+						info.prevState.entInstance.rotationYawHead = info.nextState.entInstance.rotationYawHead = info.player.rotationYawHead;
+						info.prevState.entInstance.rotationYaw = info.nextState.entInstance.rotationYaw = info.player.rotationYaw;
+						info.prevState.entInstance.rotationPitch = info.nextState.entInstance.rotationPitch = info.player.rotationPitch;
+						info.prevState.entInstance.renderYawOffset = info.nextState.entInstance.renderYawOffset = info.player.renderYawOffset;
+						info.prevState.entInstance.limbYaw = info.nextState.entInstance.limbYaw = info.player.limbYaw;
+						info.prevState.entInstance.swingProgress = info.nextState.entInstance.swingProgress = info.player.swingProgress;
+						info.prevState.entInstance.limbSwing = info.nextState.entInstance.limbSwing = info.player.limbSwing;
+						info.prevState.entInstance.posX = info.nextState.entInstance.posX = info.player.posX;
+						info.prevState.entInstance.posY = info.nextState.entInstance.posY = info.player.posY;
+						info.prevState.entInstance.posZ = info.nextState.entInstance.posZ = info.player.posZ;
+						info.prevState.entInstance.motionX = info.nextState.entInstance.motionX = info.player.motionX;
+						info.prevState.entInstance.motionY = info.nextState.entInstance.motionY = info.player.motionY;
+						info.prevState.entInstance.motionZ = info.nextState.entInstance.motionZ = info.player.motionZ;
+						info.prevState.entInstance.ticksExisted = info.nextState.entInstance.ticksExisted = info.player.ticksExisted;
+						info.prevState.entInstance.onGround = info.nextState.entInstance.onGround = info.player.onGround;
+						info.prevState.entInstance.isAirBorne = info.nextState.entInstance.isAirBorne = info.player.isAirBorne;
+						info.prevState.entInstance.moveStrafing = info.nextState.entInstance.moveStrafing = info.player.moveStrafing;
+						info.prevState.entInstance.moveForward = info.nextState.entInstance.moveForward = info.player.moveForward;
+						info.prevState.entInstance.dimension = info.nextState.entInstance.dimension = info.player.dimension;
+						info.prevState.entInstance.worldObj = info.nextState.entInstance.worldObj = info.player.worldObj;
+						info.prevState.entInstance.ridingEntity = info.nextState.entInstance.ridingEntity = info.player.ridingEntity;
+						info.prevState.entInstance.hurtTime = info.nextState.entInstance.hurtTime = info.player.hurtTime;
+						info.prevState.entInstance.deathTime = info.nextState.entInstance.deathTime = info.player.deathTime;
+						
+						info.prevState.entInstance.setSneaking(info.player.isSneaking());
+						info.nextState.entInstance.setSneaking(info.player.isSneaking());
+						info.prevState.entInstance.setSprinting(info.player.isSprinting());
+						info.nextState.entInstance.setSprinting(info.player.isSprinting());
+						info.prevState.entInstance.setInvisible(info.player.isInvisible());
+						info.nextState.entInstance.setInvisible(info.player.isInvisible());
+						
+						for(int i = 0; i < 5; i++)
+						{
+							if(info.nextState.entInstance.getCurrentItemOrArmor(i) == null && info.player.getCurrentItemOrArmor(i) != null || 
+									info.nextState.entInstance.getCurrentItemOrArmor(i) != null && info.player.getCurrentItemOrArmor(i) == null || 
+											info.nextState.entInstance.getCurrentItemOrArmor(i) != null && info.player.getCurrentItemOrArmor(i) != null && 
+												!info.nextState.entInstance.getCurrentItemOrArmor(i).isItemEqual(info.player.getCurrentItemOrArmor(i)))
+							{
+								info.nextState.entInstance.setCurrentItemOrArmor(i, info.player.getCurrentItemOrArmor(i) != null ? info.player.getCurrentItemOrArmor(i).copy() : null);
+							}
+						}
 					}
 				}
 			}
@@ -292,6 +358,7 @@ public class TickHandlerClient
 			{
 				if(!selectorShow)
 				{
+					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
 					
@@ -326,6 +393,7 @@ public class TickHandlerClient
 			{
 				if(!selectorShow)
 				{
+					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
 					
@@ -461,77 +529,10 @@ public class TickHandlerClient
 			
 		}
 		
-		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
-		{
-			MorphInfoClient info = e.getValue();
-			
-			if(info.player != null)
-			{
-				if(info.prevState.entInstance == null)
-				{
-					info.prevState.entInstance = info.player;
-				}
-				if(info.prevState.entInstance != null && info.nextState.entInstance != null)
-				{
-					info.player.ignoreFrustumCheck = true;
-					
-					info.prevState.entInstance.prevRotationYawHead = info.nextState.entInstance.prevRotationYawHead = info.player.prevRotationYawHead;
-					info.prevState.entInstance.prevRotationYaw = info.nextState.entInstance.prevRotationYaw = info.player.prevRotationYaw;
-					info.prevState.entInstance.prevRotationPitch = info.nextState.entInstance.prevRotationPitch = info.player.prevRotationPitch;
-					info.prevState.entInstance.prevRenderYawOffset = info.nextState.entInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
-					info.prevState.entInstance.prevLimbYaw = info.nextState.entInstance.prevLimbYaw = info.player.prevLimbYaw;
-					info.prevState.entInstance.prevSwingProgress = info.nextState.entInstance.prevSwingProgress = info.player.prevSwingProgress;
-					info.prevState.entInstance.prevPosX = info.nextState.entInstance.prevPosX = info.player.prevPosX;
-					info.prevState.entInstance.prevPosY = info.nextState.entInstance.prevPosY = info.player.prevPosY;
-					info.prevState.entInstance.prevPosZ = info.nextState.entInstance.prevPosZ = info.player.prevPosZ;
-					
-					info.prevState.entInstance.rotationYawHead = info.nextState.entInstance.rotationYawHead = info.player.rotationYawHead;
-					info.prevState.entInstance.rotationYaw = info.nextState.entInstance.rotationYaw = info.player.rotationYaw;
-					info.prevState.entInstance.rotationPitch = info.nextState.entInstance.rotationPitch = info.player.rotationPitch;
-					info.prevState.entInstance.renderYawOffset = info.nextState.entInstance.renderYawOffset = info.player.renderYawOffset;
-					info.prevState.entInstance.limbYaw = info.nextState.entInstance.limbYaw = info.player.limbYaw;
-					info.prevState.entInstance.swingProgress = info.nextState.entInstance.swingProgress = info.player.swingProgress;
-					info.prevState.entInstance.limbSwing = info.nextState.entInstance.limbSwing = info.player.limbSwing;
-					info.prevState.entInstance.posX = info.nextState.entInstance.posX = info.player.posX;
-					info.prevState.entInstance.posY = info.nextState.entInstance.posY = info.player.posY;
-					info.prevState.entInstance.posZ = info.nextState.entInstance.posZ = info.player.posZ;
-					info.prevState.entInstance.motionX = info.nextState.entInstance.motionX = info.player.motionX;
-					info.prevState.entInstance.motionY = info.nextState.entInstance.motionY = info.player.motionY;
-					info.prevState.entInstance.motionZ = info.nextState.entInstance.motionZ = info.player.motionZ;
-					info.prevState.entInstance.ticksExisted = info.nextState.entInstance.ticksExisted = info.player.ticksExisted;
-					info.prevState.entInstance.onGround = info.nextState.entInstance.onGround = info.player.onGround;
-					info.prevState.entInstance.isAirBorne = info.nextState.entInstance.isAirBorne = info.player.isAirBorne;
-					info.prevState.entInstance.moveStrafing = info.nextState.entInstance.moveStrafing = info.player.moveStrafing;
-					info.prevState.entInstance.moveForward = info.nextState.entInstance.moveForward = info.player.moveForward;
-					info.prevState.entInstance.dimension = info.nextState.entInstance.dimension = info.player.dimension;
-					info.prevState.entInstance.worldObj = info.nextState.entInstance.worldObj = info.player.worldObj;
-					info.prevState.entInstance.ridingEntity = info.nextState.entInstance.ridingEntity = info.player.ridingEntity;
-					info.prevState.entInstance.hurtTime = info.nextState.entInstance.hurtTime = info.player.hurtTime;
-					info.prevState.entInstance.deathTime = info.nextState.entInstance.deathTime = info.player.deathTime;
-					
-					info.prevState.entInstance.setSneaking(info.player.isSneaking());
-					info.nextState.entInstance.setSneaking(info.player.isSneaking());
-					info.prevState.entInstance.setSprinting(info.player.isSprinting());
-					info.nextState.entInstance.setSprinting(info.player.isSprinting());
-					info.prevState.entInstance.setInvisible(info.player.isInvisible());
-					info.nextState.entInstance.setInvisible(info.player.isInvisible());
-					
-//					System.out.println(info.prevState.identifier);
-//					System.out.println(info.nextState.identifier);
-					
-					for(int i = 0; i < 5; i++)
-					{
-						if(info.nextState.entInstance.getCurrentItemOrArmor(i) == null && info.player.getCurrentItemOrArmor(i) != null || 
-								info.nextState.entInstance.getCurrentItemOrArmor(i) != null && info.player.getCurrentItemOrArmor(i) == null || 
-										info.nextState.entInstance.getCurrentItemOrArmor(i) != null && info.player.getCurrentItemOrArmor(i) != null && 
-											!info.nextState.entInstance.getCurrentItemOrArmor(i).isItemEqual(info.player.getCurrentItemOrArmor(i)))
-						{
-							info.nextState.entInstance.setCurrentItemOrArmor(i, info.player.getCurrentItemOrArmor(i) != null ? info.player.getCurrentItemOrArmor(i).copy() : null);
-						}
-					}
-				}
-			}
-		}
+//		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
+//		{
+//			MorphInfoClient info = e.getValue();
+//		}
 		
 	}
 

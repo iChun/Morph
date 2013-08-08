@@ -198,7 +198,7 @@ public class TickHandlerServer
 		{
 			list = new ArrayList<MorphState>();
 			playerMorphs.put(name, list);
-			list.add(new MorphState(world, name, name, null, world.isRemote));
+			list.add(0, new MorphState(world, name, name, null, world.isRemote));
 		}
 		return list;
 	}
