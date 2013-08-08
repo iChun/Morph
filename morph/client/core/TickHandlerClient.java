@@ -12,6 +12,7 @@ import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.EntityRendererProxy;
 import morph.client.render.RenderMorph;
+import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
@@ -55,6 +56,9 @@ public class TickHandlerClient
 	{
 		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.0F);
 		renderMorphInstance.setRenderManager(RenderManager.instance);
+		
+		renderHandInstance = new RenderPlayerHand();
+		renderHandInstance.setRenderManager(RenderManager.instance);
 		
 		showWarning = ObfHelper.obfuscation;
 	}
@@ -738,6 +742,7 @@ public class TickHandlerClient
 	public boolean showWarning;
 	
 	public RenderMorph renderMorphInstance;
+	public RenderPlayerHand renderHandInstance;
 	
 	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
 	

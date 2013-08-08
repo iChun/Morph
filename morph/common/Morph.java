@@ -66,6 +66,7 @@ public class Morph
 	public static int keySelectorBack;
 	public static int keySelectorForward;
 	public static int keySelectorRemoveMorph;
+	public static int handRenderOverride;
 	
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
@@ -90,6 +91,7 @@ public class Morph
 			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: 199 (Home)", 199);
 			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: 207 (End)", 207);
 			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);
+			handRenderOverride = addCommentAndReturnInt(config, "client", "handRenderOverride", "Allow the mod to override player hand rendering?\n0 = No\n1 = Yes", 1);
 		}
 		
 		config.save();

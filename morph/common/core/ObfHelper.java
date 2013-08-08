@@ -3,27 +3,32 @@ package morph.common.core;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import morph.common.Morph;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import morph.common.Morph;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ObfHelper 
 {
 	public static boolean obfuscation;
 	
-	public static final String[] mainModel			= new String[] { "i", "field_77045_g", "mainModel" 		}; //RendererLivingEntity
-	public static final String[] textureOffsetX 	= new String[] { "r", "field_78803_o", "textureOffsetX" }; //ModelRenderer
-	public static final String[] textureOffsetY 	= new String[] { "s", "field_78813_p", "textureOffsetY" }; //ModelRenderer
-	public static final String[] resourceDomain		= new String[] { "a", "field_110626_a", "resourceDomain"}; //ResourceLocation
-	public static final String[] resourcePath 		= new String[] { "b", "field_110625_b", "resourcePath" 	}; //ResourceLocation
-	public static final String[] compiled 			= new String[] { "t", "field_78812_q", "compiled"	 	}; //ModelRenderer
-	
+	public static final String[] mainModel				= new String[] { "i", "field_77045_g", "mainModel" 				}; //RendererLivingEntity
+	public static final String[] textureOffsetX 		= new String[] { "r", "field_78803_o", "textureOffsetX" 		}; //ModelRenderer
+	public static final String[] textureOffsetY 		= new String[] { "s", "field_78813_p", "textureOffsetY" 		}; //ModelRenderer
+	public static final String[] resourceDomain			= new String[] { "a", "field_110626_a", "resourceDomain"		}; //ResourceLocation
+	public static final String[] resourcePath 			= new String[] { "b", "field_110625_b", "resourcePath" 			}; //ResourceLocation
+	public static final String[] compiled 				= new String[] { "t", "field_78812_q", "compiled"	 			}; //ModelRenderer
+    public static final String[] cameraZoom				= new String[] { "Y", "field_78503_V", "cameraZoom"				}; //EntityRenderer
+    public static final String[] modelBipedMain			= new String[] { "f", "field_77109_a", "modelBipedMain"			}; //RenderPlayer
+
 	public static final String setSizeObf = "func_70105_a"; //func_70105_a
 	public static final String setSizeDeobf = "setSize";
 
@@ -40,6 +45,9 @@ public class ObfHelper
 
 	public static final String getHurtSoundObf = "func_70621_aR"; //func_70621_aR
 	public static final String getHurtSoundDeobf = "getHurtSound";
+	
+	public static final String renderHandObf = "func_78476_b";
+	public static final String renderHandDeobf = "renderHand";
 	
 	public static Method setSizeMethod;
 	public static Method updateEntityActionStateMethod;
@@ -229,5 +237,23 @@ public class ObfHelper
 		return "damage.hit";
 	}
 	
-	
+	@SideOnly(Side.CLIENT)
+	public static void invokeRenderHand(EntityRenderer renderer, float renderTick)
+	{
+		try
+		{
+			Method m = EntityRenderer.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.renderHandObf : ObfHelper.renderHandDeobf, float.class, int.class);
+			m.setAccessible(true);
+			m.invoke(renderer, renderTick, 0);
+			return;
+		}
+		catch(NoSuchMethodException e)
+		{
+			Morph.console("Cannot find render hand method!", true);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

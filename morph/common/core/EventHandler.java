@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import morph.client.entity.EntityMorphAcquisition;
+import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
+import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
@@ -19,8 +21,12 @@ import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -44,6 +50,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -139,7 +146,7 @@ public class EventHandler
 	        	
 	        	if(info.morphProgress <= 40)
 	        	{
-	        		if(info.prevEntInfo != null && info.morphProgress < 10)
+	        		if(info.prevModelInfo != null && info.morphProgress < 10)
 	        		{
     		            float ff2 = info.prevState.entInstance.renderYawOffset;
     		            float ff3 = info.prevState.entInstance.rotationYaw;
@@ -159,7 +166,7 @@ public class EventHandler
 	    	        		renderTick = 1.0F;
 	    	        	}
 	        			
-			        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
+			        	info.prevModelInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -170,14 +177,14 @@ public class EventHandler
 				        	
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, progress);
 				        	
-				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevEntInfo.getRenderer(), info.prevEntInfo.getRenderer().getClass(), info.prevState.entInstance);
+				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevModelInfo.getRenderer(), info.prevModelInfo.getRenderer().getClass(), info.prevState.entInstance);
 				        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
 				        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
+				        	info.prevModelInfo.forceRender(info.prevState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -195,7 +202,7 @@ public class EventHandler
 	        	}
 	        	else
 	        	{
-	        		if(info.nextEntInfo != null && info.morphProgress >= 70)
+	        		if(info.nextModelInfo != null && info.morphProgress >= 70)
 	        		{
     		            float ff2 = info.nextState.entInstance.renderYawOffset;
     		            float ff3 = info.nextState.entInstance.rotationYaw;
@@ -215,7 +222,7 @@ public class EventHandler
 	    	        		renderTick = 1.0F;
 	    	        	}
 
-			        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
+			        	info.nextModelInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 			        	
 			        	if(info.getMorphing())
 			        	{
@@ -230,14 +237,14 @@ public class EventHandler
 				        	}
 				        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F - progress);
 				        	
-				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextEntInfo.getRenderer(), info.nextEntInfo.getRenderer().getClass(), info.nextState.entInstance);
+				        	ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextModelInfo.getRenderer(), info.nextModelInfo.getRenderer().getClass(), info.nextState.entInstance);
 				        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
 				        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 				        	
-				        	info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
+				        	info.nextModelInfo.forceRender(info.nextState.entInstance, 0.0D, 0.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 				        	
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
 				        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -253,7 +260,7 @@ public class EventHandler
     	        		info.nextState.entInstance.rotationYawHead = ff6;
 	        		}
 	        	}
-	        	if(info.prevEntInfo != null && info.nextEntInfo != null && info.morphProgress >= 10 && info.morphProgress < 70)
+	        	if(info.prevModelInfo != null && info.nextModelInfo != null && info.morphProgress >= 10 && info.morphProgress < 70)
 	        	{
 		            float ff2 = info.prevState.entInstance.renderYawOffset;
 		            float ff3 = info.prevState.entInstance.rotationYaw;
@@ -279,8 +286,8 @@ public class EventHandler
     	        		renderTick = 1.0F;
     	        	}
 
-	        		info.prevEntInfo.forceRender(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
-	        		info.nextEntInfo.forceRender(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
+	        		info.prevModelInfo.forceRender(info.prevState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
+	        		info.nextModelInfo.forceRender(info.nextState.entInstance, 0.0D, -500.0D - event.entityPlayer.yOffset, 0.0D, f1, renderTick);
 	        	
    	        		info.prevState.entInstance.renderYawOffset = ff2;
 	        		info.prevState.entInstance.rotationYaw = ff3;
@@ -320,6 +327,124 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onRenderWorldLast(RenderWorldLastEvent event)
 	{
+		if(Morph.handRenderOverride == 1)
+		{
+			Minecraft mc = Minecraft.getMinecraft();
+			if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(mc.thePlayer.username))
+			{
+				if(!retoggleHandRender)
+				{
+					ObfuscationReflectionHelper.setPrivateValue(EntityRenderer.class, mc.entityRenderer, 0.999D, ObfHelper.cameraZoom);
+				}
+				retoggleHandRender = true;
+
+				MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
+				
+                GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+				
+	        	if(info.morphProgress <= 40)
+	        	{
+	        		if(info.prevModelInfo != null && info.morphProgress < 10)
+	        		{
+	        			RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+	        			
+	        			ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevModelInfo.getRenderer(), info.prevModelInfo.getRenderer().getClass(), info.prevState.entInstance);
+	        			
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F;
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.setParent(rend);
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.resourceLoc = resourceLoc;
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.prevModelInfo.assumedArm;
+	        			RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
+	        			
+	        			ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+	        			
+			        	if(info.getMorphing())
+			        	{
+				        	float progress = ((float)info.morphProgress + Morph.proxy.tickHandlerClient.renderTick) / 10F;
+		        			Morph.proxy.tickHandlerClient.renderHandInstance.progress = progress;
+				        	
+		    	        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+		    	        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+	
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+		    	        	
+		    	        	ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+		    	        	
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+		    	        	
+			        	}
+	    	        	RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
+	        		}
+	        	}
+	        	else
+	        	{
+	        		if(info.nextModelInfo != null && info.morphProgress >= 70)
+	        		{
+	        			RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+	        			
+	        			ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextModelInfo.getRenderer(), info.nextModelInfo.getRenderer().getClass(), info.nextState.entInstance);
+	        			
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F;
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.setParent(rend);
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.resourceLoc = resourceLoc;
+	        			Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.nextModelInfo.assumedArm;
+	        			RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
+	        			
+	        			ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+	        			
+			        	if(info.getMorphing())
+			        	{
+				        	float progress = ((float)info.morphProgress - 70 + Morph.proxy.tickHandlerClient.renderTick) / 10F;
+				        	
+				        	if(progress > 1.0F)
+				        	{
+				        		progress = 1.0F;
+				        	}
+		        			Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F - progress;
+				        	
+		    	        	String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+		    	        	String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+	
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+		    	        	
+		    	        	ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+		    	        	
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+		    	        	ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+			        	}
+	    	        	RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
+	        		}
+	        	}
+	        	if(info.prevModelInfo != null && info.nextModelInfo != null && info.morphProgress >= 10 && info.morphProgress < 70)
+	        	{
+        			RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+        			
+        			ResourceLocation resourceLoc = RenderMorph.morphSkin;
+        			
+        			Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F;
+        			Morph.proxy.tickHandlerClient.renderHandInstance.setParent(rend);
+        			Morph.proxy.tickHandlerClient.renderHandInstance.resourceLoc = resourceLoc;
+        			Morph.proxy.tickHandlerClient.renderHandInstance.replacement = ModelHelper.createMorphArm(info.interimModel, info.prevModelInfo.assumedArm, info.nextModelInfo.assumedArm, info.morphProgress, Morph.proxy.tickHandlerClient.renderTick); 
+        			
+        			RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
+        			
+        			ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+
+    	        	RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
+	        	}
+			}
+			else
+			{
+				if(retoggleHandRender)
+				{
+					retoggleHandRender = false;
+					ObfuscationReflectionHelper.setPrivateValue(EntityRenderer.class, mc.entityRenderer, 1.0D, ObfHelper.cameraZoom);
+				}
+			}
+		}
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -674,5 +799,7 @@ public class EventHandler
             }
 		}
 	}
+	
+	public boolean retoggleHandRender;
 	
 }

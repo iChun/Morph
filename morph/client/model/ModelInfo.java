@@ -15,7 +15,7 @@ public class ModelInfo
 	private final Render entRender;
 	public final ModelBase modelParent;
 	public final ArrayList<ModelRenderer> modelList;
-	public final ArrayList<ModelRenderer> potentialArms;
+	public final ModelRenderer assumedArm;
 	
 	public ModelInfo(Class entityClass, Render render, ModelBase modelInstance)
 	{
@@ -23,11 +23,10 @@ public class ModelInfo
 		entRender = render;
 		modelParent = modelInstance;
 		modelList = ModelHelper.getModelCubes(modelInstance);
-		potentialArms = ModelHelper.getPotentialArm(modelInstance);
+		assumedArm = ModelHelper.getPotentialArm(modelInstance);
 
 		System.out.println("arms!");
-		System.out.println(modelInstance);
-		System.out.println(potentialArms.size());
+		System.out.println(assumedArm);
 	}
 	
 	public Render getRenderer()

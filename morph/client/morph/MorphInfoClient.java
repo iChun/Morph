@@ -16,9 +16,9 @@ public class MorphInfoClient extends MorphInfo
 
 	public EntityPlayer player;
 	
-	public ModelInfo prevEntInfo;
+	public ModelInfo prevModelInfo;
 	
-	public ModelInfo nextEntInfo;
+	public ModelInfo nextModelInfo;
 	
 	public ModelMorph interimModel;
 
@@ -27,11 +27,11 @@ public class MorphInfoClient extends MorphInfo
 		super(name, prev, next);
 		if(prev.entInstance != null)
 		{
-			prevEntInfo = ModelList.getModelInfo(prev.entInstance.getClass());
+			prevModelInfo = ModelList.getModelInfo(prev.entInstance.getClass());
 		}
 		if(next.entInstance != null)
 		{
-			nextEntInfo = ModelList.getModelInfo(next.entInstance.getClass());
+			nextModelInfo = ModelList.getModelInfo(next.entInstance.getClass());
 		}
 		
 		interimModel = new ModelMorph(this);
