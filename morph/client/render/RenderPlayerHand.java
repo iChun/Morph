@@ -48,6 +48,10 @@ public class RenderPlayerHand extends RenderPlayer
     		float rotY = replacement.rotationPointY;
     		float rotZ = replacement.rotationPointZ;
     		
+    		float angX = replacement.rotateAngleX;
+    		float angY = replacement.rotateAngleY;
+    		float angZ = replacement.rotateAngleZ;
+    		
 	        replacement.rotationPointX = arm.rotationPointX;
 	        replacement.rotationPointY = arm.rotationPointY + heightDiff;
 	        replacement.rotationPointZ = arm.rotationPointZ;
@@ -61,6 +65,10 @@ public class RenderPlayerHand extends RenderPlayer
 	        replacement.rotationPointX = rotX;
 	        replacement.rotationPointY = rotY;
 	        replacement.rotationPointZ = rotZ;
+	        
+	        replacement.rotateAngleX = angX;
+	        replacement.rotateAngleY = angY;
+	        replacement.rotateAngleZ = angZ;
 	        
 	    	GL11.glDisable(GL11.GL_BLEND);
 	
