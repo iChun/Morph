@@ -92,12 +92,17 @@ public class ModelHelper
 						{
 							if(clz == ModelBiped.class && !(f.getName().equalsIgnoreCase("bipedCloak") || f.getName().equalsIgnoreCase("k") || f.getName().equalsIgnoreCase("field_78122_k")) || clz != ModelBiped.class)
 							{
-								list.add((ModelRenderer)f.get(parent)); // Add normal parent fields
+								ModelRenderer rend = (ModelRenderer)f.get(parent);
+								if(rend != null)
+								{
+									list.add(rend); // Add normal parent fields
+								}
 							}
 						}
 						else if(f.getType() == ModelRenderer[].class)
 						{
-							list1.add((ModelRenderer[])f.get(parent));
+							ModelRenderer[] rend = (ModelRenderer[])f.get(parent);
+							list1.add(rend);
 						}
 					}
 					clz = clz.getSuperclass();
