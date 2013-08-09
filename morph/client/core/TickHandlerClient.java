@@ -227,8 +227,8 @@ public class TickHandlerClient
 				mc.thePlayer.inventory.currentItem = currentItem;
 			}
 		}
-		
-		if(clock != world.getWorldTime())
+
+		if(clock != world.getWorldTime() || !world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
 		{
 			clock = world.getWorldTime();
 			

@@ -107,8 +107,11 @@ public class ConnectionHandler
 			{
 				MorphInfo info = new MorphInfo();
 				info.readNBT(tag1);
-				Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
-				MorphHandler.addOrGetMorphState(list, info.nextState);
+				if(!info.nextState.playerName.equals(info.nextState.playerMorph))
+				{
+					Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
+					MorphHandler.addOrGetMorphState(list, info.nextState);
+				}
 			}
 		}
 		

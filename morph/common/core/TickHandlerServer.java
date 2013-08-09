@@ -69,7 +69,7 @@ public class TickHandlerServer
 	
 	public void worldTick(WorldServer world)
 	{
-		if(clock != world.getWorldTime())
+		if(clock != world.getWorldTime() || !world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
 		{
 			clock = world.getWorldTime();
 			
