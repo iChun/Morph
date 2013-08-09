@@ -36,11 +36,11 @@ public class ModelInfo
 	
 	public void forceRender(Entity ent, double d, double d1, double d2, float f, float f1)
 	{
-		if(entRender instanceof RendererLivingEntity && ent instanceof EntityLivingBase)
-		{
-			((RendererLivingEntity)entRender).func_130000_a((EntityLivingBase)ent, d, d1, d2, f, f1);
-		}
-		else
+//		if(entRender instanceof RendererLivingEntity && ent instanceof EntityLivingBase)
+//		{
+//			((RendererLivingEntity)entRender).func_130000_a((EntityLivingBase)ent, d, d1, d2, f, f1);
+//		}
+//		else
 		{
 			entRender.doRender(ent, d, d1, d2, f, f1);
 		}

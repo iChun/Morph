@@ -200,6 +200,19 @@ public class TickHandlerServer
 			playerMorphs.put(name, list);
 			list.add(0, new MorphState(world, name, name, null, world.isRemote));
 		}
+		boolean found = false;
+		for(MorphState state : list)
+		{
+			if(state.playerMorph.equals(name))
+			{
+				found = true;
+				break;
+			}
+		}
+		if(!found)
+		{
+			list.add(0, new MorphState(world, name, name, null, world.isRemote));
+		}
 		return list;
 	}
 	
