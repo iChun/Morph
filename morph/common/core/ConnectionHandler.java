@@ -83,9 +83,7 @@ public class ConnectionHandler
 		{
 			NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
 			
-			list.clear();
-			
-			list.add(0, new MorphState(player.worldObj, player.username, player.username, null, player.worldObj.isRemote));
+			MorphHandler.addOrGetMorphState(list, new MorphState(player.worldObj, player.username, player.username, null, player.worldObj.isRemote));
 			
 			int count = tag.getInteger(player.username + "_morphStatesCount");
 			if(count > 0)

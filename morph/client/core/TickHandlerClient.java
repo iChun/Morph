@@ -332,6 +332,7 @@ public class TickHandlerClient
 						info.prevState.entInstance.ridingEntity = info.nextState.entInstance.ridingEntity = info.player.ridingEntity;
 						info.prevState.entInstance.hurtTime = info.nextState.entInstance.hurtTime = info.player.hurtTime;
 						info.prevState.entInstance.deathTime = info.nextState.entInstance.deathTime = info.player.deathTime;
+						info.prevState.entInstance.isSwingInProgress = info.nextState.entInstance.isSwingInProgress = info.player.isSwingInProgress;
 						
 						info.prevState.entInstance.setSneaking(info.player.isSneaking());
 						info.nextState.entInstance.setSneaking(info.player.isSneaking());

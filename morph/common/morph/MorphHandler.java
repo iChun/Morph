@@ -27,6 +27,10 @@ public class MorphHandler
 				pos = i;
 			}
 		}
+		if(state.playerName.equalsIgnoreCase(state.playerMorph) && !state.playerMorph.equalsIgnoreCase(""))
+		{
+			pos = 0;
+		}
 		if(pos != -1)
 		{
 			states.add(pos, state);
