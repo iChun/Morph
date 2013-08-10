@@ -257,7 +257,7 @@ public class TickHandlerClient
 				if(info.player == null)
 				{
 					info.player = world.getPlayerEntityByName(e.getKey());
-					if(info.player != null)
+					if(info.player != null && !info.getMorphing())
 					{
 						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
@@ -266,7 +266,7 @@ public class TickHandlerClient
 				if(info.prevState.entInstance == null)
 				{
 					info.prevState.entInstance = info.player;
-					if(info.player != null)
+					if(info.player != null && !info.getMorphing())
 					{
 						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
