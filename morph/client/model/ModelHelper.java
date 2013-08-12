@@ -111,7 +111,10 @@ public class ModelHelper
 						else if(f.getType() == ModelRenderer[].class)
 						{
 							ModelRenderer[] rend = (ModelRenderer[])f.get(parent);
-							list1.add(rend);
+							if(rend != null)
+							{
+								list1.add(rend);
+							}
 						}
 					}
 					clz = clz.getSuperclass();
@@ -174,14 +177,21 @@ public class ModelHelper
 						f.setAccessible(true);
 						if(f.getType() == ModelBase.class)
 						{
-							models.add((ModelBase)f.get(rend)); // Add normal parent fields
+							ModelBase base = (ModelBase)f.get(rend);
+							if(base != null)
+							{
+								models.add(base); // Add normal parent fields
+							}
 						}
 						else if(f.getType() == ModelBase[].class)
 						{
 							ModelBase[] modelBases = (ModelBase[])f.get(rend);
-							for(ModelBase base : modelBases)
+							if(modelBases != null)
 							{
-								models.add(base);
+								for(ModelBase base : modelBases)
+								{
+									models.add(base);
+								}
 							}
 						}
 					}
