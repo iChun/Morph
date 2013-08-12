@@ -67,6 +67,20 @@ public class MorphHandler
 			{
 				stream.writeUTF("state");
 				Morph.writeNBTTagCompound(state.getTag(), stream);
+				
+				if(bytes.toByteArray().length > 24000)
+				{
+					stream.writeUTF("##end");
+					
+					PacketDispatcher.sendPacketToPlayer(new Packet250CustomPayload("Morph", bytes.toByteArray()), (Player)player);
+					
+					bytes = new ByteArrayOutputStream();
+					stream = new DataOutputStream(bytes);
+					
+					stream.writeByte(1); //id
+					
+					stream.writeBoolean(false);
+				}
 			}
 			
 			stream.writeUTF("##end");
