@@ -319,12 +319,6 @@ public class EventHandler
 	
 	@SideOnly(Side.CLIENT)
 	@ForgeSubscribe
-	public void onRenderPlayerSpecials(RenderPlayerEvent.Specials.Pre event)
-	{
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@ForgeSubscribe
 	public void onRenderWorldLast(RenderWorldLastEvent event)
 	{
 		if(Morph.handRenderOverride == 1)

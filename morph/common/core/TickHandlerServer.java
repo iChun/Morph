@@ -125,6 +125,11 @@ public class TickHandlerServer
 									e1.printStackTrace();
 								}
 								
+								NBTTagCompound tag = new NBTTagCompound();
+								info.writeNBT(tag);
+								
+								saveData.setCompoundTag(e.getKey() + "_morphData", tag);
+								
 								ite.remove();
 							}
 						}
