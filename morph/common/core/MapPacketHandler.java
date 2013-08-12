@@ -138,6 +138,7 @@ public class MapPacketHandler
 						{
 							ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 							player.setPosition(player.posX, player.posY, player.posZ);
+							player.ignoreFrustumCheck = false;
 						}
 					}
 					Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
