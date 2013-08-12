@@ -30,6 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
@@ -340,6 +341,12 @@ public class TickHandlerClient
 						info.nextState.entInstance.setSprinting(info.player.isSprinting());
 						info.prevState.entInstance.setInvisible(info.player.isInvisible());
 						info.nextState.entInstance.setInvisible(info.player.isInvisible());
+						
+						if(info.nextState.entInstance instanceof EntityDragon)
+						{
+							info.nextState.entInstance.prevRotationYaw += 180F;
+							info.nextState.entInstance.rotationYaw += 180F;
+						}
 						
 						for(int i = 0; i < 5; i++)
 						{
