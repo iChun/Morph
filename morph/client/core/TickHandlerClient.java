@@ -432,7 +432,7 @@ public class TickHandlerClient
 					}
 				}
 			}
-			if(!keySelectorChooseDown && (isPressed(Keyboard.KEY_RETURN) || isPressed(mc.gameSettings.keyBindAttack.keyCode)))
+			if(!keySelectorChooseDown && (isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode)))
 			{
 				if(selectorShow)
 				{
@@ -459,7 +459,7 @@ public class TickHandlerClient
 					
 				}
 			}
-			if(!keySelectorReturnDown && (isPressed(Keyboard.KEY_ESCAPE) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))
+			if(!keySelectorReturnDown && (isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))
 			{
 				if(selectorShow)
 				{
@@ -467,7 +467,7 @@ public class TickHandlerClient
 					selectorTimer = selectorShowTime - selectorTimer;
 				}
 			}
-			if(!keySelectorDeleteDown && (isPressed(Keyboard.KEY_DELETE) || isPressed(Morph.keySelectorRemoveMorph)))
+			if(!keySelectorDeleteDown && (isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE)))
 			{
 				if(selectorShow)
 				{
@@ -498,9 +498,9 @@ public class TickHandlerClient
 			}
 			keySelectorBackDown = isPressed(Morph.keySelectorBack);
 			keySelectorForwardDown = isPressed(Morph.keySelectorForward);
-			keySelectorChooseDown = isPressed(Keyboard.KEY_RETURN) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
-			keySelectorReturnDown = isPressed(Keyboard.KEY_ESCAPE) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
-			keySelectorDeleteDown = isPressed(Keyboard.KEY_DELETE) || isPressed(Morph.keySelectorRemoveMorph);
+			keySelectorChooseDown = isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
+			keySelectorReturnDown = isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
+			keySelectorDeleteDown = isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE);
 		}
 	}
 

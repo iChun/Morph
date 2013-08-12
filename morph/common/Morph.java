@@ -66,6 +66,8 @@ public class Morph
 	
 	public static int keySelectorBack;
 	public static int keySelectorForward;
+	public static int keySelectorSelect;
+	public static int keySelectorCancel;
 	public static int keySelectorRemoveMorph;
 	public static int handRenderOverride;
 	
@@ -91,8 +93,10 @@ public class Morph
 		if(isClient)
 		{
 			config.addCustomCategoryComment("client", "These options are client only.Check here: http://www.minecraftwiki.net/wiki/Key_codes\nI would recommend binding keySelectorForward to -98 (Middle Mouse) to allow full use of the selector with the mouse.");
-			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: 199 (Home)", 199);
-			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: 207 (End)", 207);
+			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: 26 ([)", 26);
+			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: 27 (])", 27);
+			keySelectorSelect = addCommentAndReturnInt(config, "client", "keySelectorSelect", "Key Code to select morph on the selector.\nDefault: 28 (Enter/Return)", 28);
+			keySelectorCancel = addCommentAndReturnInt(config, "client", "keySelectorCancel", "Key Code to close the selector.\nDefault: 1 (Esc)", 1);
 			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);
 			handRenderOverride = addCommentAndReturnInt(config, "client", "handRenderOverride", "Allow the mod to override player hand rendering?\n0 = No\n1 = Yes", 1);
 		}
