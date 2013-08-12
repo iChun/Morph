@@ -153,10 +153,10 @@ public class ModelHelper
 		{
 			list.remove(child);
 		}
-
+		
 		return list;
 	}
-
+	
 	public static ModelBase getPossibleModel(Render rend)
 	{
 		ArrayList<ModelBase> models = new ArrayList<ModelBase>();

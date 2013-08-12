@@ -710,13 +710,24 @@ public class TickHandlerClient
 
 	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        
+			if(ent instanceof EntityDragon)
+			{
+				GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+			}
+	        
 	        float viewY = RenderManager.instance.playerViewY;
 	        RenderManager.instance.playerViewY = 180.0F;
 	        RenderManager.instance.renderEntityWithPosYaw(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+	        
+			if(ent instanceof EntityDragon)
+			{
+				GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+			}
+
 	        GL11.glTranslatef(0.0F, -0.22F, 0.0F);
 	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 255.0F * 0.8F, 255.0F * 0.8F);
 	        Tessellator.instance.setBrightness(240);
-
+	        
 	        RenderManager.instance.playerViewY = viewY;
 	        ent.renderYawOffset = f2;
 	        ent.rotationYaw = f3;

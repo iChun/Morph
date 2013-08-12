@@ -61,6 +61,7 @@ public class Morph
 	
 	public static int childMorphs;
 	public static int playerMorphs;
+	public static int bossMorphs;
 	public static int loseMorphsOnDeath;
 	
 	public static int keySelectorBack;
@@ -83,6 +84,8 @@ public class Morph
 		
 		childMorphs = addCommentAndReturnInt(config, "gameplay", "childMorphs", "Can you morph into child mobs?\nDisabled by default due to improper morph transitions\n0 = No\n1 = Yes", 0);
 		playerMorphs = addCommentAndReturnInt(config, "gameplay", "playerMorphs", "Can you morph into players?\n0 = No\n1 = Yes", 1);
+		bossMorphs = addCommentAndReturnInt(config, "gameplay", "bossMorphs", "Can you morph into bosses?\n0 = No\n1 = Yes", 0);
+		
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		
 		if(isClient)

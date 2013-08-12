@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.EnumStatus;
@@ -540,7 +541,7 @@ public class EventHandler
 					player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 				}
 			}
-			if(event.source.getEntity() instanceof EntityPlayer && event.entityLiving != event.source.getEntity() && (Morph.childMorphs != 0 || Morph.childMorphs == 0 && !event.entityLiving.isChild()) && (Morph.playerMorphs != 0 || Morph.playerMorphs == 0 && !(event.entityLiving instanceof EntityPlayer)))
+			if(event.source.getEntity() instanceof EntityPlayer && event.entityLiving != event.source.getEntity() && (Morph.childMorphs != 0 || Morph.childMorphs == 0 && !event.entityLiving.isChild()) && (Morph.playerMorphs != 0 || Morph.playerMorphs == 0 && !(event.entityLiving instanceof EntityPlayer)) && (Morph.bossMorphs != 0 || Morph.bossMorphs == 0 && !(event.entityLiving instanceof IBossDisplayData)))
 			{
 				EntityPlayer player = (EntityPlayer)event.source.getEntity();
 				
