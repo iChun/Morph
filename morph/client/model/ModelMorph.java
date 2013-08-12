@@ -39,9 +39,9 @@ public class ModelMorph extends ModelBase
 		{
 			modelList = ModelHelper.getModelCubesCopy(info.prevModelInfo, this);
 			
-			for(int i = 0; i < modelList.size(); i++)
+			for(int i = 0; i < morphInfo.nextModelInfo.modelList.size(); i++)
 			{
-				if(i >= morphInfo.nextModelInfo.modelList.size())
+				if(i >= modelList.size())
 				{
 					break;
 				}
@@ -49,7 +49,7 @@ public class ModelMorph extends ModelBase
 				ModelRenderer cubeCopy = modelList.get(i);
 				ModelRenderer cubeNewParent = morphInfo.nextModelInfo.modelList.get(i);
 				
-				ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy); 			
+				ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy, 0); 			
 			}
 			
 			if(modelList.size() < morphInfo.nextModelInfo.modelList.size())
@@ -97,6 +97,8 @@ public class ModelMorph extends ModelBase
 						cubeCopy.rotateAngleZ = parentCube.rotateAngleZ;
 						
 						modelList.add(cubeCopy);
+						
+						ModelHelper.createEmptyContents(this, parentCube, cubeCopy, 0);
 					}
 					catch(Exception e)
 					{
@@ -214,6 +216,8 @@ public class ModelMorph extends ModelBase
 	{
 		if(morphCubesList == null || depth > 20)
 		{
+//			System.out.println("null :(");
+//			System.out.println(depth);
 			return;
 		}
 		if(currentMorphCubes == null)

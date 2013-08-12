@@ -35,7 +35,7 @@ public class ModelHelper
 
 		return list;
 	}
-
+	
 	public static ModelRenderer getPotentialArm(ModelBase parent)
 	{
 		if(parent != null)
@@ -238,8 +238,12 @@ public class ModelHelper
 		return list;
 	}
 
-	public static void createEmptyContents(ModelBase base, ModelRenderer ori, ModelRenderer copy)
+	public static void createEmptyContents(ModelBase base, ModelRenderer ori, ModelRenderer copy, int depth)
 	{
+		if(depth > 20)
+		{
+			return;
+		}
 		if(copy.cubeList.size() < ori.cubeList.size())
 		{
 			for(int j = copy.cubeList.size(); j < ori.cubeList.size(); j++)
@@ -261,7 +265,9 @@ public class ModelHelper
 		{
 			for(int i = 0; i < ori.childModels.size(); i++)
 			{
-				copy.addChild(buildCopy((ModelRenderer)ori.childModels.get(i), base, 0, false));
+				ModelRenderer childCopy = buildCopy((ModelRenderer)ori.childModels.get(i), base, 0, false);
+				createEmptyContents(base, (ModelRenderer)ori.childModels.get(i), childCopy, depth + 1);
+				copy.addChild(childCopy);
 			}
 		}
 	}
@@ -302,6 +308,8 @@ public class ModelHelper
 				float x = randBox.posX1 + ((randBox.posX2 - randBox.posX1) > 0F ? rand.nextInt(((int)(randBox.posX2 - randBox.posX1) > 0) ? (int)(randBox.posX2 - randBox.posX1) : 1) : 0F);
 				float y = randBox.posY1 + ((randBox.posY2 - randBox.posY1) > 0F ? rand.nextInt(((int)(randBox.posY2 - randBox.posY1) > 0) ? (int)(randBox.posY2 - randBox.posY1) : 1) : 0F);
 				float z = randBox.posZ1 + ((randBox.posZ2 - randBox.posZ1) > 0F ? rand.nextInt(((int)(randBox.posZ2 - randBox.posZ1) > 0) ? (int)(randBox.posZ2 - randBox.posZ1) : 1) : 0F);
+				
+				cubeCopy.addBox(x, y, z, (int)Math.abs(box.posX2 - box.posX1), (int)Math.abs(box.posY2 - box.posY1), (int)Math.abs(box.posZ2 - box.posZ1));
 			}
 		}
 
