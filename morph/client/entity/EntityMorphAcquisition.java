@@ -88,7 +88,10 @@ public class EntityMorphAcquisition extends EntityLivingBase
     }
 	
 	@Override
-	protected void entityInit() {}
+	protected void entityInit() 
+	{
+		super.entityInit();
+	}
 
 	@Override
 	public void readEntityFromNBT(NBTTagCompound nbttagcompound) {}
