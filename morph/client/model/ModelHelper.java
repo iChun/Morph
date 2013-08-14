@@ -10,6 +10,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelCreeper;
 import net.minecraft.client.model.ModelIronGolem;
+import net.minecraft.client.model.ModelOcelot;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSpider;
@@ -57,7 +58,8 @@ public class ModelHelper
 								clz == ModelIronGolem.class && (f.getName().equalsIgnoreCase("ironGolemRightArm") || f.getName().equalsIgnoreCase("c") || f.getName().equalsIgnoreCase("field_78177_c")) ||
 								clz == ModelSpider.class && (f.getName().equalsIgnoreCase("spiderLeg7") || f.getName().equalsIgnoreCase("j") || f.getName().equalsIgnoreCase("field_78210_j")) ||
 								clz == ModelWolf.class && (f.getName().equalsIgnoreCase("wolfLeg3") || f.getName().equalsIgnoreCase("e") || f.getName().equalsIgnoreCase("field_78182_e")) ||
-								clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class &&  
+								clz == ModelOcelot.class && (f.getName().equalsIgnoreCase("ocelotFrontRightLeg") || f.getName().equalsIgnoreCase("d") || f.getName().equalsIgnoreCase("field_78157_d")) ||
+								clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class && clz != ModelOcelot.class &&  
 								(f.getName().contains("Right") || f.getName().contains("right")) && (f.getName().contains("arm") || f.getName().contains("hand") || f.getName().contains("Arm") || f.getName().contains("Hand")))
 							{
 								return (ModelRenderer)f.get(parent); // Add normal parent fields
