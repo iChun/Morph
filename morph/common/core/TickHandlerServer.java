@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import morph.common.Morph;
+import morph.common.entity.EntTracker;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -142,6 +143,24 @@ public class TickHandlerServer
 //					}
 				}
 				
+				
+				synchronized(trackingEntities)
+				{
+					for(int i = trackingEntities.size() - 1; i >= 0; i--)
+					{
+						EntTracker tracker = trackingEntities.get(i);
+						if(tracker.shouldTick())
+						{
+							tracker.tick();
+						}
+						else
+						{
+							tracker.kill();
+							trackingEntities.remove(i);
+						}
+					}
+				}
+				
 //				ArrayList<MorphState> states = getPlayerMorphs(world, "ohaiiChun");
 //				for(MorphState state : states)
 //				{
@@ -253,4 +272,6 @@ public class TickHandlerServer
 	
 	public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
 	public HashMap<String, ArrayList<MorphState>> playerMorphs = new HashMap<String, ArrayList<MorphState>>();
+	
+	public ArrayList<EntTracker> trackingEntities = new ArrayList<EntTracker>();
 }

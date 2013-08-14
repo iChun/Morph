@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -15,6 +16,7 @@ import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
+import morph.common.entity.EntTracker;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -636,6 +638,11 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onInteract(EntityInteractEvent event)
 	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.target instanceof EntityLivingBase)
+		{
+			System.out.println(event.target);
+			Morph.proxy.tickHandlerServer.trackingEntities.add(new EntTracker((EntityLivingBase)event.target, "fly", false));
+		}
 //		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 //		{
 //			System.out.println("asdasdasdsad");
