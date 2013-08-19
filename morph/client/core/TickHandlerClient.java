@@ -267,11 +267,6 @@ public class TickHandlerClient
 				if(info.prevState.entInstance == null)
 				{
 					info.prevState.entInstance = info.player;
-					if(info.player != null && !info.getMorphing())
-					{
-						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
-						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
-					}
 				}
 				
 				if(info.morphProgress < 10)
@@ -292,10 +287,6 @@ public class TickHandlerClient
 				
 				if(info.player != null)
 				{
-					if(info.prevState.entInstance == null)
-					{
-						info.prevState.entInstance = info.player;
-					}
 					if(info.prevState.entInstance != null && info.nextState.entInstance != null)
 					{
 						info.player.ignoreFrustumCheck = true;
@@ -341,6 +332,8 @@ public class TickHandlerClient
 						info.nextState.entInstance.setSprinting(info.player.isSprinting());
 						info.prevState.entInstance.setInvisible(info.player.isInvisible());
 						info.nextState.entInstance.setInvisible(info.player.isInvisible());
+						info.prevState.entInstance.setEntityHealth(info.prevState.entInstance.func_110138_aP() * (info.player.func_110143_aJ() / info.player.func_110138_aP()));
+						info.nextState.entInstance.setEntityHealth(info.nextState.entInstance.func_110138_aP() * (info.player.func_110143_aJ() / info.player.func_110138_aP()));
 						
 						if(info.nextState.entInstance instanceof EntityDragon)
 						{
@@ -364,7 +357,7 @@ public class TickHandlerClient
 			
 			if(!keySelectorBackDown && isPressed(Morph.keySelectorBack))
 			{
-				if(!selectorShow)
+				if(!selectorShow && mc.currentScreen == null)
 				{
 					Mouse.getDWheel();
 					selectorShow = true;
@@ -399,7 +392,7 @@ public class TickHandlerClient
 			}
 			if(!keySelectorForwardDown && isPressed(Morph.keySelectorForward))
 			{
-				if(!selectorShow)
+				if(!selectorShow && mc.currentScreen == null)
 				{
 					Mouse.getDWheel();
 					selectorShow = true;

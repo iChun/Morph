@@ -58,6 +58,10 @@ public class AbilityTrackerFly extends AbilityTracker
 			{
 				entTracker.trackTimer = 205;
 			}
+			else
+			{
+				entTracker.trackTimer = 5;
+			}
 		}
 		airborne = !entTracker.trackedEnt.onGround && !entTracker.trackedEnt.isCollidedHorizontally;
 	}

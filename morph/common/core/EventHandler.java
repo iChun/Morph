@@ -638,11 +638,11 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onInteract(EntityInteractEvent event)
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.target instanceof EntityLivingBase)
-		{
-			System.out.println(event.target);
-			Morph.proxy.tickHandlerServer.trackingEntities.add(new EntTracker((EntityLivingBase)event.target, "fly", false));
-		}
+//		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.target instanceof EntityLivingBase)
+//		{
+//			System.out.println(event.target);
+//			Morph.proxy.tickHandlerServer.trackingEntities.add(new EntTracker((EntityLivingBase)event.target, "fly", false));
+//		}
 //		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 //		{
 //			System.out.println("asdasdasdsad");
