@@ -127,6 +127,8 @@ public class PacketHandlerClient
 						{
 							state.readTag(mc.theWorld, tag);
 							
+							//System.out.println(state.identifier);
+							//TODO NEVER rmove the func! Just remove the sysout.
 							System.out.println(MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.playerMorphStates, state));
 						}
 					}

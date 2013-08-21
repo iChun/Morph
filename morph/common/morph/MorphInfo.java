@@ -95,6 +95,11 @@ public class MorphInfo
 		
 		World dimension = DimensionManager.getWorld(tag.getInteger("dimension"));
 		
+		if(dimension == null)
+		{
+			dimension = DimensionManager.getWorld(0);
+		}
+		
 		nextState = new MorphState(dimension, playerName, playerName, null, false);
 		
 		nextState.readTag(dimension, tag.getCompoundTag("nextState"));
