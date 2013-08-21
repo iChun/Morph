@@ -84,15 +84,7 @@ public class MorphState
 			invalid = true;
 		}
 		
-		if(invalid)
-		{
-			entInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", world);
-			NBTTagCompound fakeTag = new NBTTagCompound();
-			entInstance.writeEntityToNBT(fakeTag);
-			writeFakeTags(entInstance, fakeTag);
-			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
-		}
-		else
+		if(!invalid)
 		{
 			if(!playerMorph.equalsIgnoreCase(""))
 			{
@@ -103,6 +95,18 @@ public class MorphState
 				entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
 			}
 			identifier = tag.getString("identifier");
+			if(entInstance == null)
+			{
+				invalid = true;
+			}
+		}
+		if(invalid)
+		{
+			entInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", world);
+			NBTTagCompound fakeTag = new NBTTagCompound();
+			entInstance.writeEntityToNBT(fakeTag);
+			writeFakeTags(entInstance, fakeTag);
+			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 	}
 	
