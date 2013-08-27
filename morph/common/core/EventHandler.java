@@ -543,89 +543,14 @@ public class EventHandler
 					player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 				}
 			}
-			if(event.source.getEntity() instanceof EntityPlayer && event.entityLiving != event.source.getEntity() && (Morph.childMorphs != 0 || Morph.childMorphs == 0 && !event.entityLiving.isChild()) && (Morph.playerMorphs != 0 || Morph.playerMorphs == 0 && !(event.entityLiving instanceof EntityPlayer)) && (Morph.bossMorphs != 0 || Morph.bossMorphs == 0 && !(event.entityLiving instanceof IBossDisplayData)))
+			if(event.source.getEntity() instanceof EntityPlayer && event.entityLiving != event.source.getEntity())
 			{
 				EntityPlayer player = (EntityPlayer)event.source.getEntity();
 				
-				MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
-				
-	//				EntityGiantZombie zomb = new EntityGiantZombie(event.entityLiving.worldObj);
-	//				zomb.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, event.entityLiving.rotationYaw, event.entityLiving.rotationPitch);
-	//				event.entityLiving.worldObj.spawnEntityInWorld(zomb);
-				
-				if(!(event.entityLiving.addEntityID(new NBTTagCompound()) && !(event.entityLiving instanceof EntityPlayer) || event.entityLiving instanceof EntityPlayer))
+				if(EntityHelper.morphPlayer(player, event.entityLiving, true))
 				{
-					return;
+					event.entityLiving.setDead();
 				}
-				
-				if(info == null)
-				{
-					info = new MorphInfo(player.username, null, Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username));
-				}
-				else if(info.getMorphing() || info.nextState.entInstance == event.entityLiving)
-				{
-					return;
-				}
-				
-				byte isPlayer = (byte)((info.nextState.entInstance instanceof EntityPlayer && event.entityLiving instanceof EntityPlayer) ? 3 : info.nextState.entInstance instanceof EntityPlayer ? 1 : event.entityLiving instanceof EntityPlayer ? 2 : 0);
-				
-				if(!(info.nextState.entInstance instanceof EntityPlayer) && !info.nextState.entInstance.addEntityID(new NBTTagCompound()))
-				{
-					return;
-				}
-				
-				String username1 = (isPlayer == 1 || isPlayer == 3) ? ((EntityPlayer)info.nextState.entInstance).username : "";
-				String username2 = (isPlayer == 2 || isPlayer == 3) ? ((EntityPlayer)event.entityLiving).username : "";
-				
-				NBTTagCompound prevTag = new NBTTagCompound();
-				NBTTagCompound nextTag = new NBTTagCompound();
-	
-				info.nextState.entInstance.addEntityID(prevTag);
-				event.entityLiving.addEntityID(nextTag);
-				
-				MorphState prevState = new MorphState(player.worldObj, player.username, username1, prevTag, false);
-				MorphState nextState = new MorphState(player.worldObj, player.username, username2, nextTag, false);
-				
-				System.out.println(nextState.identifier);
-				
-				if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
-				{
-					return;
-				}
-				
-				prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username), prevState);
-				nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username), nextState);
-				
-				if(nextState.identifier.equalsIgnoreCase(info.nextState.identifier))
-				{
-					return;
-				}
-				
-				event.entityLiving.setDead();
-				
-				MorphInfo info2 = new MorphInfo(player.username, prevState, nextState);
-				info2.setMorphing(true);
-				
-				Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
-				
-				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-				DataOutputStream stream = new DataOutputStream(bytes);
-				try
-				{
-					stream.writeInt(event.entityLiving.entityId);
-					stream.writeInt(player.entityId);
-					
-					PacketDispatcher.sendPacketToAllInDimension(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()), player.dimension);
-				}
-				catch(IOException e)
-				{
-					
-				}
-				
-				MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, nextState, false);
-				PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
-				
-				player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 			}
 		}
 	}

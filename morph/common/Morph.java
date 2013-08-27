@@ -126,6 +126,7 @@ public class Morph
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
+		proxy.initCommands(event.getServer());
 	}
 	
 	@EventHandler

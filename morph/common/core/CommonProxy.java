@@ -5,13 +5,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import morph.client.core.TickHandlerClient;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemInWorldManager;
-import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -38,6 +37,16 @@ public class CommonProxy
 	{
 		tickHandlerServer = new TickHandlerServer();
 		TickRegistry.registerTickHandler(tickHandlerServer, Side.SERVER);
+	}
+	
+	public void initCommands(MinecraftServer server)
+	{
+		ICommandManager manager = server.getCommandManager();
+		if(manager instanceof CommandHandler)
+		{
+			CommandHandler handler = (CommandHandler)manager;
+			handler.registerCommand(new CommandMorph());
+		}
 	}
 	
 	public TickHandlerClient tickHandlerClient;
