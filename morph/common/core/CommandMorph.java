@@ -1,5 +1,8 @@
 package morph.common.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
@@ -30,7 +33,7 @@ public class CommandMorph extends CommandBase
 	@Override
 	public String getCommandUsage(ICommandSender icommandsender) 
 	{
-		return "/" + this.getCommandName();
+		return "/" + this.getCommandName() + "<demorph|clear|morphtargetr> [player] [force (true/false)]";
 	}
 
 	@Override
@@ -217,4 +220,24 @@ public class CommandMorph extends CommandBase
 		}
 	}
 
+	@Override
+    public List addTabCompletionOptions(ICommandSender ics, String[] args)
+    {
+		if(args.length == 1)
+		{
+			return getListOfStringsMatchingLastWord(args, new String[] { "demorph", "clear", "morphtarget" });
+		}
+		else if (args.length == 2)
+		{
+			return getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+		}
+		else if(args.length == 3 && args[0].equalsIgnoreCase("demorph"))
+		{
+			ArrayList list = new ArrayList();
+			list.add("true");
+			return list;
+		}
+        return null;
+    }
+	
 }
