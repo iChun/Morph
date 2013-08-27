@@ -109,6 +109,8 @@ public class ConnectionHandler
 				{
 					Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
 					MorphHandler.addOrGetMorphState(list, info.nextState);
+					
+					PacketDispatcher.sendPacketToAllPlayers(info.getMorphInfoAsPacket());
 				}
 			}
 		}
@@ -116,6 +118,10 @@ public class ConnectionHandler
 		MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
 		for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
 		{
+			if(e.getKey().equalsIgnoreCase(player.username))
+			{
+				continue;
+			}
 			PacketDispatcher.sendPacketToPlayer(e.getValue().getMorphInfoAsPacket(), (Player)player);
 		}
 		

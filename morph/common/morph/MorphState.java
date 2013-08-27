@@ -118,8 +118,8 @@ public class MorphState
 
 	public void writeFakeTags(EntityLivingBase living, NBTTagCompound tag)
 	{
-		tag.setFloat("HealF", 20F);
-		tag.setShort("Health", (short)20);
+		tag.setFloat("HealF", Short.MAX_VALUE);
+		tag.setShort("Health", (short)Short.MAX_VALUE);
 		tag.setShort("HurtTime", (short)0);
 		tag.setShort("DeathTime", (short)0);
 		tag.setShort("AttackTime", (short)0);

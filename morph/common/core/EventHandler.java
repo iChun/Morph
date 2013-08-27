@@ -555,7 +555,6 @@ public class EventHandler
 				
 				if(!(event.entityLiving.addEntityID(new NBTTagCompound()) && !(event.entityLiving instanceof EntityPlayer) || event.entityLiving instanceof EntityPlayer))
 				{
-					System.out.println("stop");
 					return;
 				}
 				
@@ -565,7 +564,6 @@ public class EventHandler
 				}
 				else if(info.getMorphing() || info.nextState.entInstance == event.entityLiving)
 				{
-					System.out.println("stop1");
 					return;
 				}
 				
@@ -573,7 +571,6 @@ public class EventHandler
 				
 				if(!(info.nextState.entInstance instanceof EntityPlayer) && !info.nextState.entInstance.addEntityID(new NBTTagCompound()))
 				{
-					System.out.println("stop2");
 					return;
 				}
 				
@@ -593,7 +590,6 @@ public class EventHandler
 				
 				if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
 				{
-					System.out.println("stop4");
 					return;
 				}
 				
@@ -602,7 +598,6 @@ public class EventHandler
 				
 				if(nextState.identifier.equalsIgnoreCase(info.nextState.identifier))
 				{
-					System.out.println("stop3");
 					return;
 				}
 				
@@ -735,7 +730,6 @@ public class EventHandler
             	String name = e.getKey();
             	ArrayList<MorphState> states = e.getValue();
             	tag.setInteger(name + "_morphStatesCount", states.size());
-            	System.out.println(name + "_morphStatesCount");
             	for(int i = 0; i < states.size(); i++)
             	{
             		tag.setCompoundTag(name + "_morphState" + i, states.get(i).getTag());
