@@ -355,7 +355,7 @@ public class TickHandlerClient
 				}
 			}
 			
-			if(!keySelectorBackDown && isPressed(Morph.keySelectorBack))
+			if(!keySelectorUpDown && isPressed(Morph.keySelectorUp))
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
@@ -390,7 +390,7 @@ public class TickHandlerClient
 					}
 				}
 			}
-			if(!keySelectorForwardDown && isPressed(Morph.keySelectorForward))
+			if(!keySelectorDownDown && isPressed(Morph.keySelectorDown))
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
@@ -489,8 +489,8 @@ public class TickHandlerClient
 					
 				}
 			}
-			keySelectorBackDown = isPressed(Morph.keySelectorBack);
-			keySelectorForwardDown = isPressed(Morph.keySelectorForward);
+			keySelectorUpDown = isPressed(Morph.keySelectorUp);
+			keySelectorDownDown = isPressed(Morph.keySelectorDown);
 			keySelectorChooseDown = isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
 			keySelectorReturnDown = isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
 			keySelectorDeleteDown = isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE);
@@ -789,8 +789,11 @@ public class TickHandlerClient
 	public boolean renderingMorph;
 	public byte renderingPlayer;
 	
-	public boolean keySelectorBackDown;
-	public boolean keySelectorForwardDown;
+	public boolean keySelectorUpDown;
+	public boolean keySelectorDownDown;
+	public boolean keySelectorLeftDown;
+	public boolean keySelectorRightDown;
+	
 	public boolean keySelectorChooseDown;
 	public boolean keySelectorReturnDown;
 	public boolean keySelectorDeleteDown;

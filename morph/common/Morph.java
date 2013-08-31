@@ -66,8 +66,11 @@ public class Morph
 	public static int bossMorphs;
 	public static int loseMorphsOnDeath;
 	
-	public static int keySelectorBack;
-	public static int keySelectorForward;
+	public static int keySelectorUp;
+	public static int keySelectorDown;
+	public static int keySelectorLeft;
+	public static int keySelectorRight;
+	
 	public static int keySelectorSelect;
 	public static int keySelectorCancel;
 	public static int keySelectorRemoveMorph;
@@ -97,8 +100,12 @@ public class Morph
 		if(isClient)
 		{
 			config.addCustomCategoryComment("client", "These options are client only.Check here: http://www.minecraftwiki.net/wiki/Key_codes\nI would recommend binding keySelectorForward to -98 (Middle Mouse) to allow full use of the selector with the mouse.");
-			keySelectorBack = addCommentAndReturnInt(config, "client", "keySelectorBack", "Key Code to go back on the selector\nDefault: 26 ([)", 26);
-			keySelectorForward = addCommentAndReturnInt(config, "client", "keySelectorForward", "Key Code to go forward on the selector\nDefault: 27 (])", 27);
+			
+			keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 200 (UP ARROW)", 200);
+			keySelectorDown = addCommentAndReturnInt(config, "client", "keySelectorDown", "Key Code to go down on the selector\nDefault: 208 (DOWN ARROW)", 208);
+			keySelectorLeft = addCommentAndReturnInt(config, "client", "keySelectorLeft", "Key Code to go left on the selector\nDefault: 203 (LEFT ARROW)", 203);
+			keySelectorRight = addCommentAndReturnInt(config, "client", "keySelectorRight", "Key Code to go right on the selector\nDefault: 205 (RIGHT ARROW)", 205);
+			
 			keySelectorSelect = addCommentAndReturnInt(config, "client", "keySelectorSelect", "Key Code to select morph on the selector.\nDefault: 28 (Enter/Return)", 28);
 			keySelectorCancel = addCommentAndReturnInt(config, "client", "keySelectorCancel", "Key Code to close the selector.\nDefault: 1 (Esc)", 1);
 			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);
