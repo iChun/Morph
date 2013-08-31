@@ -176,7 +176,7 @@ public class CommandMorph extends CommandBase
 			}
 			else if(args[0].equalsIgnoreCase("morphtarget"))
 			{
-				EntityPlayer player;
+				EntityPlayerMP player;
 				if(args.length > 1)
 				{
 					player = PlayerSelector.matchOnePlayer(icommandsender, args[1]);

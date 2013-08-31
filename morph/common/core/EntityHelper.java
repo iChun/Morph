@@ -24,7 +24,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 public class EntityHelper 
 {
 
-	public static boolean morphPlayer(EntityPlayer player, EntityLivingBase living, boolean kill)
+	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill)
 	{
 		if(!(Morph.childMorphs != 0 || Morph.childMorphs == 0 && !living.isChild()) && (Morph.playerMorphs != 0 || Morph.playerMorphs == 0 && !(living instanceof EntityPlayer)) && (Morph.bossMorphs != 0 || Morph.bossMorphs == 0 && !(living instanceof IBossDisplayData)))
 		{
@@ -112,7 +112,7 @@ public class EntityHelper
 			}
 		}
 		
-		MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, nextState, false);
+		MorphHandler.updatePlayerOfMorphStates(player, nextState, false);
 		PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
 		
 		player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
