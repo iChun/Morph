@@ -30,6 +30,13 @@ public class EntityHelper
 		{
 			return false;
 		}
+		for(Class<? extends EntityLivingBase> clz : Morph.blacklistedClasses)
+		{
+			if(clz.isInstance(living))
+			{
+				return false;
+			}
+		}
 		
 		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
 		

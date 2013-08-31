@@ -3,9 +3,11 @@ package morph.common;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import morph.api.Api;
 import morph.client.core.ClientProxy;
 import morph.client.core.PacketHandlerClient;
 import morph.common.core.CommonProxy;
@@ -13,6 +15,8 @@ import morph.common.core.ConnectionHandler;
 import morph.common.core.MapPacketHandler;
 import morph.common.core.ObfHelper;
 import morph.common.core.PacketHandlerServer;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.Configuration;
@@ -69,6 +73,8 @@ public class Morph
 	public static int keySelectorRemoveMorph;
 	public static int handRenderOverride;
 	
+	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
+	
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
 	{
@@ -119,6 +125,7 @@ public class Morph
 	public void postLoad(FMLPostInitializationEvent event)
 	{
 		proxy.initPostMod();
+		Api.blacklistEntity(EntitySlime.class);
 	}
 	
 	@EventHandler
