@@ -24,9 +24,6 @@ public class ModelInfo
 		modelParent = modelInstance;
 		modelList = ModelHelper.getModelCubes(modelInstance);
 		assumedArm = ModelHelper.getPotentialArm(modelInstance);
-
-		System.out.println("arms!");
-		System.out.println(assumedArm);
 	}
 	
 	public Render getRenderer()
