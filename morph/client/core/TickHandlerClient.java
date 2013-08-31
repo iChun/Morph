@@ -576,6 +576,13 @@ public class TickHandlerClient
 	        
 	        GL11.glPushMatrix();
 	        
+	        int maxShowable = (int)Math.ceil((double)reso.getScaledHeight() / size) + 2;
+	        
+	        if(selectorSelected == 0 && selectorSelectedPrev > 0 || selectorSelectedPrev == 0 && selectorSelected > 0)
+	        {
+	        	maxShowable = 150;
+	        }
+	        
 	        float progressV = (float)(scrollTime - (scrollTimer - renderTick)) / (float)scrollTime;
 	        
 	        progressV = (float)Math.pow(progressV, 2);
@@ -597,6 +604,11 @@ public class TickHandlerClient
 	        for(int i = playerMorphStates.size() - 1 ; i >= 0; i--)
 	        {
 	        	double height1 = gap + size * (i - selectorSelected);
+	        	
+	        	if(i > selectorSelected + maxShowable || i < selectorSelected - maxShowable)
+	        	{
+	        		continue;
+	        	}
 	        
 		        mc.func_110434_K().func_110577_a(rlUnselected);
 		        Tessellator tessellator = Tessellator.instance;
@@ -621,6 +633,11 @@ public class TickHandlerClient
 	        
 	        for(int i = 0; i < playerMorphStates.size(); i++)
 	        {
+	        	if(i > selectorSelected + maxShowable || i < selectorSelected - maxShowable)
+	        	{
+	        		continue;
+	        	}
+	        	
 	        	height1 = gap + (int)size * (i - selectorSelected);
 	        
 	        	MorphState state = playerMorphStates.get(i);
