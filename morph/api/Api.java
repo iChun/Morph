@@ -1,6 +1,8 @@
 package morph.api;
 
+import morph.common.core.EntityHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public final class Api 
 {
@@ -58,6 +60,35 @@ public final class Api
 	{
 		try {
 			Class.forName("morph.common.core.ApiHandler").getMethod("blacklistEntity", Class.class).invoke(null, clz);
+		} catch (Exception e) {
+		}
+	}
+	
+	/**
+	 * Forces a player to morph into an EntityLivingBase, also adds said entity to the morph list.
+	 * Called Serverside only.
+	 * @param player
+	 * @param living
+	 * @return morphSuccessful
+	 */
+	public static boolean forceMorph(EntityPlayerMP player, EntityLivingBase living)
+	{
+		try {
+			return (Boolean)Class.forName("morph.common.core.ApiHandler").getMethod("forceMorph", EntityPlayerMP.class, EntityLivingBase.class).invoke(null, player, living);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * Forces a player to demorph.
+	 * Called Serverside only.
+	 * @param player
+	 */
+	public static void forceDemorph(EntityPlayerMP player)
+	{
+		try {
+			Class.forName("morph.common.core.ApiHandler").getMethod("forceDemorph", EntityPlayerMP.class).invoke(null, player);
 		} catch (Exception e) {
 		}
 	}

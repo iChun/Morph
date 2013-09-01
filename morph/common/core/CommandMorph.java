@@ -43,7 +43,7 @@ public class CommandMorph extends CommandBase
 		{
 			if(args[0].equalsIgnoreCase("demorph"))
 			{
-				EntityPlayer player;
+				EntityPlayerMP player;
 				if(args.length > 1)
 				{
 					player = PlayerSelector.matchOnePlayer(icommandsender, args[1]);
@@ -58,24 +58,8 @@ public class CommandMorph extends CommandBase
 		        }
 				if(player != null)
 				{
-					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
-					
-					MorphState state1;
-					
-					MorphState state2 = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username);
-					
-					if(info != null)
+					if(EntityHelper.demorphPlayer(player))
 					{
-						state1 = info.nextState;
-						MorphInfo info2 = new MorphInfo(player.username, state1, state2);
-						info2.setMorphing(true);
-						
-						Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
-						
-						PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
-						
-						player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
-						
 						notifyAdmins(icommandsender, "Forcing " + args[1] + " to demorph");
 					}
 					else

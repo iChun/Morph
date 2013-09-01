@@ -3,6 +3,7 @@ package morph.common.core;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ApiHandler 
 {
@@ -66,6 +67,16 @@ public class ApiHandler
 		{
 			Morph.blacklistedClasses.add(clz);
 		}
+	}
+	
+	public static boolean forceMorph(EntityPlayerMP player, EntityLivingBase living)
+	{
+		return EntityHelper.morphPlayer(player, living, false);
+	}
+	
+	public static void forceDemorph(EntityPlayerMP player)
+	{
+		EntityHelper.demorphPlayer(player);
 	}
 	
 }

@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -119,6 +120,36 @@ public class EntityHelper
 		
 		return true;
 	}
+	
+	public static boolean demorphPlayer(EntityPlayerMP player)
+	{
+		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+		
+		MorphState state1;
+		
+		MorphState state2 = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username);
+		
+		if(info != null)
+		{
+			state1 = info.nextState;
+			MorphInfo info2 = new MorphInfo(player.username, state1, state2);
+			info2.setMorphing(true);
+			
+			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
+			
+			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
+			
+			player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/*
+	 * The following helper functions were taken out of iChunUtil. 
+	 */
 	
 	public static MovingObjectPosition getEntityLook(EntityLivingBase ent, double d, boolean ignoreEntities, float renderTick)
 	{
