@@ -9,6 +9,8 @@ import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
@@ -17,14 +19,25 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityHelper 
 {
-
+	@SideOnly(Side.CLIENT)
+    public static Render getEntityClassRenderObject(Class par1Class)
+    {
+        Render render = (Render)RenderManager.instance.entityRenderMap.get(par1Class);
+        if (render == null && par1Class != Entity.class)
+        {
+            render = getEntityClassRenderObject(par1Class.getSuperclass());
+        }
+        return render;
+    }
+	
 	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill)
 	{
 		if(!(Morph.childMorphs != 0 || Morph.childMorphs == 0 && !living.isChild()) && (Morph.playerMorphs != 0 || Morph.playerMorphs == 0 && !(living instanceof EntityPlayer)) && (Morph.bossMorphs != 0 || Morph.bossMorphs == 0 && !(living instanceof IBossDisplayData)))

@@ -10,6 +10,7 @@ import morph.client.model.ModelInfo;
 import morph.client.model.ModelList;
 import morph.common.Morph;
 import morph.common.core.CommonProxy;
+import morph.common.core.EntityHelper;
 import morph.common.core.ObfHelper;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.model.ModelBase;
@@ -72,8 +73,12 @@ public class ClientProxy extends CommonProxy
 			
 		for(int i = compatibleEntities.size() - 1; i >= 0; i--)
 		{
-			Render rend = RenderManager.instance.getEntityClassRenderObject(compatibleEntities.get(i));
-			if(rend.getClass() == RenderEntity.class)
+			if(renders.containsKey(compatibleEntities.get(i)))
+			{
+				continue;
+			}
+			Render rend = EntityHelper.getEntityClassRenderObject(compatibleEntities.get(i));
+			if(rend != null && rend.getClass() == RenderEntity.class)
 			{
 				rend = renders.get(compatibleEntities.get(i));
 			}
@@ -82,10 +87,7 @@ public class ClientProxy extends CommonProxy
 				compatibleEntities.remove(i);
 				continue;
 			}
-			if(!renders.containsKey(compatibleEntities.get(i)))
-			{
-				renders.put(compatibleEntities.get(i), (RendererLivingEntity)rend);
-			}
+			renders.put(compatibleEntities.get(i), (RendererLivingEntity)rend);
 		}
 		
 		for(Class clz : compatibleEntities)
