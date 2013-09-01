@@ -40,7 +40,7 @@ import cpw.mods.fml.common.network.NetworkModHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "Morph", name = "Morph",
-			version = "0.0.7"
+			version = "0.1.0"
 				)
 @NetworkMod(clientSideRequired = true,
 			serverSideRequired = false,
@@ -51,7 +51,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 				)
 public class Morph 
 {
-	public static final String version = "0.0.7";
+	public static final String version = "0.1.0";
 	
 	@Instance("Morph")
 	public static Morph instance;
