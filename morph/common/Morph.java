@@ -71,6 +71,11 @@ public class Morph
 	public static int keySelectorLeft;
 	public static int keySelectorRight;
 	
+	public static int keySelectorUpHold;
+	public static int keySelectorDownHold;
+	public static int keySelectorLeftHold;
+	public static int keySelectorRightHold;
+	
 	public static int keySelectorSelect;
 	public static int keySelectorCancel;
 	public static int keySelectorRemoveMorph;
@@ -101,10 +106,15 @@ public class Morph
 		{
 			config.addCustomCategoryComment("client", "These options are client only.\nCheck here: http://www.minecraftwiki.net/wiki/Key_codes");
 			
-			keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 200 (UP ARROW)", 200);
-			keySelectorDown = addCommentAndReturnInt(config, "client", "keySelectorDown", "Key Code to go down on the selector\nDefault: 208 (DOWN ARROW)", 208);
-			keySelectorLeft = addCommentAndReturnInt(config, "client", "keySelectorLeft", "Key Code to go left on the selector\nDefault: 203 (LEFT ARROW)", 203);
-			keySelectorRight = addCommentAndReturnInt(config, "client", "keySelectorRight", "Key Code to go right on the selector\nDefault: 205 (RIGHT ARROW)", 205);
+			keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 26 ([)", 26);
+			keySelectorDown = addCommentAndReturnInt(config, "client", "keySelectorDown", "Key Code to go down on the selector\nDefault: 27 (])", 27);
+			keySelectorLeft = addCommentAndReturnInt(config, "client", "keySelectorLeft", "Key Code to go left on the selector\nDefault: 26 ([)", 26);
+			keySelectorRight = addCommentAndReturnInt(config, "client", "keySelectorRight", "Key Code to go right on the selector\nDefault: 27 (])", 27);
+			
+			keySelectorUpHold = addCommentAndReturnInt(config, "client", "keySelectorUpHold", "Key required to hold to use up key on the selector\n0 = None\n1 = Shift\n2 = Ctrl\n3 = Alt\nDefault: 0", 0);
+			keySelectorDownHold = addCommentAndReturnInt(config, "client", "keySelectorDownHold", "Key required to hold to use down key on the selector\n0 = None\n1 = Shift\n2 = Ctrl\n3 = Alt\nDefault: 0", 0);
+			keySelectorLeftHold = addCommentAndReturnInt(config, "client", "keySelectorLeftHold", "Key required to hold to use left key on the selector\n0 = None\n1 = Shift\n2 = Ctrl\n3 = Alt\nDefault: 1", 1);
+			keySelectorRightHold = addCommentAndReturnInt(config, "client", "keySelectorRightHold", "Key required to hold to use right key on the selector\n0 = None\n1 = Shift\n2 = Ctrl\n3 = Alt\nDefault: 1", 1);
 			
 			keySelectorSelect = addCommentAndReturnInt(config, "client", "keySelectorSelect", "Key Code to select morph on the selector.\nDefault: 28 (Enter/Return)", 28);
 			keySelectorCancel = addCommentAndReturnInt(config, "client", "keySelectorCancel", "Key Code to close the selector.\nDefault: 1 (Esc)", 1);

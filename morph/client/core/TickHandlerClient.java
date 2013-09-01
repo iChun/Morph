@@ -21,6 +21,7 @@ import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -218,26 +219,38 @@ public class TickHandlerClient
 			int k = Mouse.getDWheel();
 			if(k != 0)
 			{
-				if(k > 0)
+				scrollTimerHori = scrollTimer = scrollTime;
+				
+				if(GuiScreen.isShiftKeyDown())
 				{
-					selectorSelectedPrev = selectorSelected;
-					scrollTimerHori = scrollTimer = scrollTime;
-
-					selectorSelected--;
-					if(selectorSelected < 0)
+					selectorSelectedHoriPrev = selectorSelectedHori;
+					if(k > 0)
 					{
-						selectorSelected = playerMorphCatMap.size() - 1;
+						selectorSelectedHori--;
+					}
+					else
+					{
+						selectorSelectedHori++;
 					}
 				}
 				else
 				{
 					selectorSelectedPrev = selectorSelected;
-					scrollTimerHori = scrollTimer = scrollTime;
-
-					selectorSelected++;
-					if(selectorSelected > playerMorphCatMap.size() - 1)
+					if(k > 0)
 					{
-						selectorSelected = 0;
+						selectorSelected--;
+						if(selectorSelected < 0)
+						{
+							selectorSelected = playerMorphCatMap.size() - 1;
+						}
+					}
+					else
+					{
+						selectorSelected++;
+						if(selectorSelected > playerMorphCatMap.size() - 1)
+						{
+							selectorSelected = 0;
+						}
 					}
 				}
 			}
@@ -377,7 +390,7 @@ public class TickHandlerClient
 				}
 			}
 			
-			if(!keySelectorUpDown && isPressed(Morph.keySelectorUp))
+			if((Morph.keySelectorUpHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorUpHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorUpHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorUpHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorUpDown && isPressed(Morph.keySelectorUp))
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
@@ -436,7 +449,7 @@ public class TickHandlerClient
 					}
 				}
 			}
-			if(!keySelectorDownDown && isPressed(Morph.keySelectorDown))
+			if((Morph.keySelectorDownHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorDownHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorDownHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorDownHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorDownDown && isPressed(Morph.keySelectorDown))
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
@@ -495,7 +508,7 @@ public class TickHandlerClient
 				}
 			}
 			
-			if(!keySelectorLeftDown && isPressed(Morph.keySelectorLeft))
+			if((Morph.keySelectorLeftHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorLeftHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorLeftHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorLeftHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorLeftDown && isPressed(Morph.keySelectorLeft))
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
@@ -549,7 +562,7 @@ public class TickHandlerClient
 					selectorSelectedHori--;
 				}
 			}
-			if(!keySelectorRightDown && isPressed(Morph.keySelectorRight))
+			if((Morph.keySelectorRightHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorRightHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorRightHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorRightHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorRightDown && isPressed(Morph.keySelectorRight))
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
