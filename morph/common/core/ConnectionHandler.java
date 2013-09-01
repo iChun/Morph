@@ -42,7 +42,7 @@ public class ConnectionHandler
 	public void onClientConnected()
 	{
 		Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
-		Morph.proxy.tickHandlerClient.playerMorphStates.clear();
+		Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class ConnectionHandler
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 		{
 			Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
-			Morph.proxy.tickHandlerClient.playerMorphStates.clear();
+			Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
 		}
 	}
 

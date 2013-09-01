@@ -99,7 +99,7 @@ public class Morph
 		
 		if(isClient)
 		{
-			config.addCustomCategoryComment("client", "These options are client only.Check here: http://www.minecraftwiki.net/wiki/Key_codes\nI would recommend binding keySelectorForward to -98 (Middle Mouse) to allow full use of the selector with the mouse.");
+			config.addCustomCategoryComment("client", "These options are client only.\nCheck here: http://www.minecraftwiki.net/wiki/Key_codes");
 			
 			keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 200 (UP ARROW)", 200);
 			keySelectorDown = addCommentAndReturnInt(config, "client", "keySelectorDown", "Key Code to go down on the selector\nDefault: 208 (DOWN ARROW)", 208);
@@ -132,7 +132,6 @@ public class Morph
 	public void postLoad(FMLPostInitializationEvent event)
 	{
 		proxy.initPostMod();
-		Api.blacklistEntity(EntitySlime.class);
 	}
 	
 	@EventHandler

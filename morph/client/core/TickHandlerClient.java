@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import morph.client.model.ModelMorph;
@@ -26,16 +28,10 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -164,6 +160,7 @@ public class TickHandlerClient
 			}
 			selectorShow = false;
 			selectorTimer = selectorShowTime - selectorTimer;
+			scrollTimerHori = scrollTime;
 		}
 		if(selectorTimer > 0)
 		{
@@ -176,19 +173,44 @@ public class TickHandlerClient
 				if(info != null)
 				{
 					MorphState state = info.nextState;
-					for(int i = 0; i < playerMorphStates.size(); i++)
+					String entName = state.entInstance.getEntityName();
+					
+					int i = 0;
+					
+					Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+					
+					while(ite.hasNext())
 					{
-						if(playerMorphStates.get(i).identifier.equalsIgnoreCase(state.identifier))
+						Entry<String, ArrayList<MorphState>> e = ite.next();
+						if(e.getKey().equalsIgnoreCase(entName))
 						{
 							selectorSelected = i;
+							ArrayList<MorphState> states = e.getValue();
+							
+							for(int j = 0; j < states.size(); j++)
+							{
+								if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
+								{
+									selectorSelectedHori = j;
+									break;
+								}
+							}
+							
+							break;
 						}
+						i++;
 					}
+					
 				}
 			}
 		}
 		if(scrollTimer > 0)
 		{
 			scrollTimer--;
+		}
+		if(scrollTimerHori > 0)
+		{
+			scrollTimerHori--;
 		}
 		
 		if(selectorShow)
@@ -199,21 +221,21 @@ public class TickHandlerClient
 				if(k > 0)
 				{
 					selectorSelectedPrev = selectorSelected;
-					scrollTimer = scrollTime;
+					scrollTimerHori = scrollTimer = scrollTime;
 
 					selectorSelected--;
 					if(selectorSelected < 0)
 					{
-						selectorSelected = playerMorphStates.size() - 1;
+						selectorSelected = playerMorphCatMap.size() - 1;
 					}
 				}
 				else
 				{
 					selectorSelectedPrev = selectorSelected;
-					scrollTimer = scrollTime;
+					scrollTimerHori = scrollTimer = scrollTime;
 
 					selectorSelected++;
-					if(selectorSelected > playerMorphStates.size() - 1)
+					if(selectorSelected > playerMorphCatMap.size() - 1)
 					{
 						selectorSelected = 0;
 					}
@@ -362,31 +384,55 @@ public class TickHandlerClient
 					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
+					scrollTimerHori = scrollTime;
 					
 					selectorSelected = 0;
+					selectorSelectedHori = 0;
 					
 					MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
 					if(info != null)
 					{
 						MorphState state = info.nextState;
-						for(int i = 0; i < playerMorphStates.size(); i++)
+						
+						String entName = state.entInstance.getEntityName();
+						
+						int i = 0;
+						
+						Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+						
+						while(ite.hasNext())
 						{
-							if(playerMorphStates.get(i).identifier.equalsIgnoreCase(state.identifier))
+							Entry<String, ArrayList<MorphState>> e = ite.next();
+							if(e.getKey().equalsIgnoreCase(entName))
 							{
 								selectorSelected = i;
+								ArrayList<MorphState> states = e.getValue();
+								
+								for(int j = 0; j < states.size(); j++)
+								{
+									if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
+									{
+										selectorSelectedHori = j;
+										break;
+									}
+								}
+								
+								break;
 							}
+							i++;
 						}
 					}
 				}
 				else
 				{
+					selectorSelectedHori = 0;
 					selectorSelectedPrev = selectorSelected;
-					scrollTimer = scrollTime;
+					scrollTimerHori = scrollTimer = scrollTime;
 					
 					selectorSelected--;
 					if(selectorSelected < 0)
 					{
-						selectorSelected = playerMorphStates.size() - 1;
+						selectorSelected = playerMorphCatMap.size() - 1;
 					}
 				}
 			}
@@ -397,50 +443,212 @@ public class TickHandlerClient
 					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
+					scrollTimerHori = scrollTime;
 					
 					selectorSelected = 0;
+					selectorSelectedHori = 0;
 					
 					MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
 					if(info != null)
 					{
 						MorphState state = info.nextState;
-						for(int i = 0; i < playerMorphStates.size(); i++)
+						String entName = state.entInstance.getEntityName();
+						
+						int i = 0;
+						
+						Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+						
+						while(ite.hasNext())
 						{
-							if(playerMorphStates.get(i).identifier.equalsIgnoreCase(state.identifier))
+							Entry<String, ArrayList<MorphState>> e = ite.next();
+							if(e.getKey().equalsIgnoreCase(entName))
 							{
 								selectorSelected = i;
+								ArrayList<MorphState> states = e.getValue();
+								
+								for(int j = 0; j < states.size(); j++)
+								{
+									if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
+									{
+										selectorSelectedHori = j;
+										break;
+									}
+								}
+								
+								break;
 							}
+							i++;
 						}
 					}
 				}
 				else
 				{
+					selectorSelectedHori = 0;
 					selectorSelectedPrev = selectorSelected;
-					scrollTimer = scrollTime;
+					scrollTimerHori = scrollTimer = scrollTime;
 
 					selectorSelected++;
-					if(selectorSelected > playerMorphStates.size() - 1)
+					if(selectorSelected > playerMorphCatMap.size() - 1)
 					{
 						selectorSelected = 0;
 					}
 				}
 			}
+			
+			if(!keySelectorLeftDown && isPressed(Morph.keySelectorLeft))
+			{
+				if(!selectorShow && mc.currentScreen == null)
+				{
+					Mouse.getDWheel();
+					selectorShow = true;
+					selectorTimer = selectorShowTime - selectorTimer;
+					scrollTimerHori = scrollTime;
+					
+					selectorSelected = 0;
+					selectorSelectedHori = 0;
+					
+					MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
+					if(info != null)
+					{
+						MorphState state = info.nextState;
+						
+						String entName = state.entInstance.getEntityName();
+						
+						int i = 0;
+						
+						Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+						
+						while(ite.hasNext())
+						{
+							Entry<String, ArrayList<MorphState>> e = ite.next();
+							if(e.getKey().equalsIgnoreCase(entName))
+							{
+								selectorSelected = i;
+								ArrayList<MorphState> states = e.getValue();
+								
+								for(int j = 0; j < states.size(); j++)
+								{
+									if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
+									{
+										selectorSelectedHori = j;
+										break;
+									}
+								}
+								
+								break;
+							}
+							i++;
+						}
+					}
+				}
+				else
+				{
+					selectorSelectedHoriPrev = selectorSelectedHori;
+					scrollTimerHori = scrollTime;
+					
+					selectorSelectedHori--;
+				}
+			}
+			if(!keySelectorRightDown && isPressed(Morph.keySelectorRight))
+			{
+				if(!selectorShow && mc.currentScreen == null)
+				{
+					Mouse.getDWheel();
+					selectorShow = true;
+					selectorTimer = selectorShowTime - selectorTimer;
+					scrollTimerHori = scrollTime;
+					
+					selectorSelected = 0;
+					selectorSelectedHori = 0;
+					
+					MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
+					if(info != null)
+					{
+						MorphState state = info.nextState;
+						
+						String entName = state.entInstance.getEntityName();
+						
+						int i = 0;
+						
+						Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+						
+						while(ite.hasNext())
+						{
+							Entry<String, ArrayList<MorphState>> e = ite.next();
+							if(e.getKey().equalsIgnoreCase(entName))
+							{
+								selectorSelected = i;
+								ArrayList<MorphState> states = e.getValue();
+								
+								for(int j = 0; j < states.size(); j++)
+								{
+									if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
+									{
+										selectorSelectedHori = j;
+										break;
+									}
+								}
+								
+								break;
+							}
+							i++;
+						}
+					}
+				}
+				else
+				{
+					selectorSelectedHoriPrev = selectorSelectedHori;
+					scrollTimerHori = scrollTime;
+					
+					selectorSelectedHori++;
+				}
+			}
+			
 			if(!keySelectorChooseDown && (isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode)))
 			{
 				if(selectorShow)
 				{
 					selectorShow = false;
 					selectorTimer = selectorShowTime - selectorTimer;
+					scrollTimerHori = scrollTime;
 
 					MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
-					if(!playerMorphStates.isEmpty() && (info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier) || info == null && !playerMorphStates.get(selectorSelected).playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
+					
+					MorphState selectedState = null;
+					
+					int i = 0;
+					
+					Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+					
+					while(ite.hasNext())
+					{
+						Entry<String, ArrayList<MorphState>> e = ite.next();
+						if(i == selectorSelected)
+						{
+							ArrayList<MorphState> states = e.getValue();
+							
+							for(int j = 0; j < states.size(); j++)
+							{
+								if(j == selectorSelectedHori)
+								{
+									selectedState = states.get(j);
+									break;
+								}
+							}
+							
+							break;
+						}
+						i++;
+					}
+					
+					if(selectedState != null && (info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier) || info == null && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
 					{
 						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 						DataOutputStream stream = new DataOutputStream(bytes);
 						try
 						{
 							stream.writeBoolean(false);
-							stream.writeUTF(playerMorphStates.get(selectorSelected).identifier);
+							stream.writeUTF(selectedState.identifier);
 							
 							PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
 						}
@@ -458,6 +666,7 @@ public class TickHandlerClient
 				{
 					selectorShow = false;
 					selectorTimer = selectorShowTime - selectorTimer;
+					scrollTimerHori = scrollTime;
 				}
 			}
 			if(!keySelectorDeleteDown && (isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE)))
@@ -465,20 +674,71 @@ public class TickHandlerClient
 				if(selectorShow)
 				{
 					MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
-					if(!playerMorphStates.isEmpty() && ((info == null || info != null && !info.nextState.identifier.equalsIgnoreCase(playerMorphStates.get(selectorSelected).identifier)) && !playerMorphStates.get(selectorSelected).playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
+					
+					MorphState selectedState = null;
+					
+					int i = 0;
+					
+					Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+					
+					boolean multiple = false;
+					boolean decrease = false;
+					
+					while(ite.hasNext())
+					{
+						Entry<String, ArrayList<MorphState>> e = ite.next();
+						if(i == selectorSelected)
+						{
+							ArrayList<MorphState> states = e.getValue();
+							
+							for(int j = 0; j < states.size(); j++)
+							{
+								if(j == selectorSelectedHori)
+								{
+									selectedState = states.get(j);
+									if(j == states.size() - 1)
+									{
+										decrease = true;
+									}
+									break;
+								}
+							}
+							
+							if(states.size() > 1)
+							{
+								multiple = true;
+							}
+							
+							break;
+						}
+						i++;
+					}
+
+					if(selectedState != null && ((info == null || info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier)) && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
 					{
 						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 						DataOutputStream stream = new DataOutputStream(bytes);
 						try
 						{
 							stream.writeBoolean(true);
-							stream.writeUTF(playerMorphStates.get(selectorSelected).identifier);
+							stream.writeUTF(selectedState.identifier);
 							
 							PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
-							selectorSelected--;
-							if(selectorSelected < 0)
+							if(!multiple)
 							{
-								selectorSelected = playerMorphStates.size() - 1;
+								selectorSelected--;
+								if(selectorSelected < 0)
+								{
+									selectorSelected = playerMorphCatMap.size() - 1;
+								}
+							}
+							else if(decrease)
+							{
+								selectorSelectedHori--;
+								if(selectorSelected < 0)
+								{
+									selectorSelected = 0;
+								}
 							}
 						}
 						catch(IOException e)
@@ -491,6 +751,9 @@ public class TickHandlerClient
 			}
 			keySelectorUpDown = isPressed(Morph.keySelectorUp);
 			keySelectorDownDown = isPressed(Morph.keySelectorDown);
+			keySelectorLeftDown = isPressed(Morph.keySelectorLeft);
+			keySelectorRightDown = isPressed(Morph.keySelectorRight);
+			
 			keySelectorChooseDown = isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
 			keySelectorReturnDown = isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
 			keySelectorDeleteDown = isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE);
@@ -593,6 +856,15 @@ public class TickHandlerClient
 	        	selectorSelectedPrev = selectorSelected;
 	        }
 	        
+	        float progressH = (float)(scrollTime - (scrollTimerHori - renderTick)) / (float)scrollTime;
+	        
+	        progressH = (float)Math.pow(progressH, 2);
+	        
+	        if(progressH > 1.0F)
+	        {
+	        	progressH = 1.0F;
+	        	selectorSelectedHoriPrev = selectorSelectedHori;
+	        }
 	        
 	        GL11.glTranslatef(0.0F, ((selectorSelected - selectorSelectedPrev) * 42F) * (1.0F - progressV), 0.0F);
 	        
@@ -601,24 +873,96 @@ public class TickHandlerClient
 	        GL11.glColor4f(1f,1f,1f,1f);
 	        GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
 	        
-	        for(int i = playerMorphStates.size() - 1 ; i >= 0; i--)
-	        {
-	        	double height1 = gap + size * (i - selectorSelected);
+	        int i = 0;
+	        
+			Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+	        
+			while(ite.hasNext())
+			{
+				Entry<String, ArrayList<MorphState>> e = ite.next();
 	        	
 	        	if(i > selectorSelected + maxShowable || i < selectorSelected - maxShowable)
 	        	{
+	        		i++;
 	        		continue;
 	        	}
+	        	
+	        	double height1 = gap + size * (i - selectorSelected);
 	        
-		        mc.func_110434_K().func_110577_a(rlUnselected);
+	        	ArrayList<MorphState> states = e.getValue();
+	        	if(states == null || states.isEmpty())
+	        	{
+	        		ite.remove();
+	        		i++;
+	        		break;
+	        	}
+	        	
 		        Tessellator tessellator = Tessellator.instance;
-		        tessellator.startDrawingQuads();
-				tessellator.setColorOpaque_F(1f,1f,1f);
-		        tessellator.addVertexWithUV(width1, height1 + size, -90.0D, 0.0D, 1.0D);
-		        tessellator.addVertexWithUV(width1 + size, height1 + size, -90.0D, 1.0D, 1.0D);
-		        tessellator.addVertexWithUV(width1 + size, height1, -90.0D, 1.0D, 0.0D);
-		        tessellator.addVertexWithUV(width1, height1, -90.0D, 0.0D, 0.0D);
-		        tessellator.draw();
+	        	
+	        	if(i == selectorSelected)
+	        	{
+		        	if(selectorSelectedHori < 0)
+		        	{
+		        		selectorSelectedHori = states.size() - 1;
+		        	}
+		        	if(selectorSelectedHori >= states.size())
+		        	{
+		        		selectorSelectedHori = 0;
+		        	}
+		        	
+		        	boolean newSlide = false;
+		        	
+		        	if(progressV < 1.0F && selectorSelectedPrev != selectorSelected)
+		        	{
+		        		selectorSelectedHoriPrev = states.size() - 1;
+		        		selectorSelectedHori = 0;
+		        		newSlide = true;
+		        	}
+		        	if(!selectorShow)
+		        	{
+		        		selectorSelectedHori = states.size() - 1;
+		        		newSlide = true;
+		        	}
+		        	else if(progress > 0.0F)
+		        	{
+		        		selectorSelectedHoriPrev = states.size() - 1;
+		        		newSlide = true;
+		        	}
+		        	
+		        	for(int j = 0; j < states.size(); j++)
+		        	{
+		        		GL11.glPushMatrix();
+		        		
+		        		GL11.glTranslated(newSlide && j == 0 ? 0.0D : ((selectorSelectedHori - selectorSelectedHoriPrev) * 42F) * (1.0F - progressH), 0.0D, 0.0D);
+
+		        		mc.func_110434_K().func_110577_a(states.size() == 1 || j == states.size() - 1 ? rlUnselected : rlUnselectedSide);
+		        		
+		        		double dist = size * (j - selectorSelectedHori);
+		        		
+				        tessellator.startDrawingQuads();
+						tessellator.setColorOpaque_F(1f,1f,1f);
+				        tessellator.addVertexWithUV(width1 + dist, height1 + size, -90.0D + j, 0.0D, 1.0D);
+				        tessellator.addVertexWithUV(width1 + dist + size, height1 + size, -90.0D + j, 1.0D, 1.0D);
+				        tessellator.addVertexWithUV(width1 + dist + size, height1, -90.0D + j, 1.0D, 0.0D);
+				        tessellator.addVertexWithUV(width1 + dist, height1, -90.0D + j, 0.0D, 0.0D);
+				        tessellator.draw();
+				        
+				        GL11.glPopMatrix();
+		        	}
+	        	}
+	        	else
+	        	{
+			        mc.func_110434_K().func_110577_a(rlUnselected);
+			        tessellator.startDrawingQuads();
+					tessellator.setColorOpaque_F(1f,1f,1f);
+			        tessellator.addVertexWithUV(width1, height1 + size, -90.0D, 0.0D, 1.0D);
+			        tessellator.addVertexWithUV(width1 + size, height1 + size, -90.0D, 1.0D, 1.0D);
+			        tessellator.addVertexWithUV(width1 + size, height1, -90.0D, 1.0D, 0.0D);
+			        tessellator.addVertexWithUV(width1, height1, -90.0D, 0.0D, 0.0D);
+			        tessellator.draw();
+	        	}
+		        
+		        i++;
 	        }
 	        
         	int height1 = gap;
@@ -629,22 +973,65 @@ public class TickHandlerClient
 			
 	        gap += 36;
 	        
-	        GL11.glTranslatef(0.0F, 0.0F, 700F);
+	        i = 0;
 	        
-	        for(int i = 0; i < playerMorphStates.size(); i++)
-	        {
+	        ite = playerMorphCatMap.entrySet().iterator();
+	        
+			while(ite.hasNext())
+			{
+				Entry<String, ArrayList<MorphState>> e = ite.next();
+				
 	        	if(i > selectorSelected + maxShowable || i < selectorSelected - maxShowable)
 	        	{
+	        		i++;
 	        		continue;
 	        	}
 	        	
 	        	height1 = gap + (int)size * (i - selectorSelected);
-	        
-	        	MorphState state = playerMorphStates.get(i);
 	        	
-	        	GL11.glTranslatef(0.0F, 0.0F, -20F);
-				drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick, selectorSelected == i);
-	        }
+	        	ArrayList<MorphState> states = e.getValue();
+	        	
+	        	if(i == selectorSelected)
+	        	{
+		        	boolean newSlide = false;
+		        	
+		        	if(progressV < 1.0F && selectorSelectedPrev != selectorSelected)
+		        	{
+		        		selectorSelectedHoriPrev = states.size() - 1;
+		        		selectorSelectedHori = 0;
+		        		newSlide = true;
+		        	}
+		        	if(!selectorShow)
+		        	{
+		        		selectorSelectedHori = states.size() - 1;
+		        		newSlide = true;
+		        	}
+	        		
+		        	for(int j = 0; j < states.size(); j++)
+		        	{
+		        		MorphState state = states.get(j);
+		        		GL11.glPushMatrix();
+		        		
+		        		GL11.glTranslated(newSlide && j == 0 ? 0.0D : ((selectorSelectedHori - selectorSelectedHoriPrev) * 42F) * (1.0F - progressH), 0.0D, 0.0D);
+		        		
+		        		double dist = size * (j - selectorSelectedHori);
+		        		
+		        		GL11.glTranslated(dist, 0.0D, 0.0D);
+		        		
+		        		drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick, true, j == states.size() - 1);
+		        		
+		        		GL11.glPopMatrix();
+		        	}
+	        	}
+	        	else
+	        	{
+	        		MorphState state = states.get(0);
+	        		drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick, selectorSelected == i, true);
+	        	}
+	        	
+        		GL11.glTranslatef(0.0F, 0.0F, 20F);
+				i++;
+			}
 	        
 	        GL11.glPopMatrix();
 	        
@@ -673,7 +1060,7 @@ public class TickHandlerClient
 		}
 	}
 	
-    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick, boolean selected)
+    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick, boolean selected, boolean text)
     {
     	forceRender = true;
     	if(ent != null)
@@ -694,7 +1081,10 @@ public class TickHandlerClient
 
 	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
 	        
-	        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
+	        if(text)
+	        {
+	        	Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getEntityName().equalsIgnoreCase(state.entInstance.getEntityName()) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
+	        }
 	        
 	        GL11.glDisable(3042 /*GL_BLEND*/);
 	        
@@ -776,7 +1166,7 @@ public class TickHandlerClient
 	
 	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
 	
-	public ArrayList<MorphState> playerMorphStates = new ArrayList<MorphState>();
+	public LinkedHashMap<String, ArrayList<MorphState>> playerMorphCatMap = new LinkedHashMap<String, ArrayList<MorphState>>();
 
 	public float renderTick;
 	
@@ -802,14 +1192,18 @@ public class TickHandlerClient
 	public int selectorTimer;
 	public int selectorSelectedPrev;
 	public int selectorSelected;
+	public int selectorSelectedHoriPrev;
+	public int selectorSelectedHori;
 	public long systemTime;
 	public int currentItem;
 	public int scrollTimer;
+	public int scrollTimerHori;
 	
 	public final int selectorShowTime = 10;
 	public final int scrollTime = 3;
 	
 	public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
-	public static final ResourceLocation rlUnselected= new ResourceLocation("morph", "textures/gui/guiUnselected.png");
+	public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");
+	public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");
 	
 }
