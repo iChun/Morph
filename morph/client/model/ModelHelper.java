@@ -132,7 +132,7 @@ public class ModelHelper
 		{
 			for(ModelRenderer cube : cubes)
 			{
-				if(!list.contains(cube))
+				if(cube != null && !list.contains(cube))
 				{
 					list.add(cube); //Add stuff like flying blaze rods stored in MR[] fields.
 				}
