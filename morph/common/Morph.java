@@ -40,7 +40,7 @@ import cpw.mods.fml.common.network.NetworkModHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "Morph", name = "Morph",
-			version = "0.1.2"
+			version = Morph.version
 				)
 @NetworkMod(clientSideRequired = true,
 			serverSideRequired = false,
