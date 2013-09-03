@@ -1089,18 +1089,6 @@ public class TickHandlerClient
 
 	        GL11.glTranslatef((float)posX, (float)posY, 50.0F);
 	        
-	        GL11.glEnable(3042 /*GL_BLEND*/);
-	        GL11.glBlendFunc(770, 771);
-
-	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
-	        
-	        if(text)
-	        {
-	        	Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getEntityName().equalsIgnoreCase(state.entInstance.getEntityName()) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
-	        }
-	        
-	        GL11.glDisable(3042 /*GL_BLEND*/);
-	        
 	        GL11.glScalef((float)(-scale), (float)scale, (float)scale);
 	        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 	        float f2 = ent.renderYawOffset;
@@ -1147,10 +1135,32 @@ public class TickHandlerClient
 	        ent.rotationPitch = f4;
 	        ent.rotationYawHead = f5;
 
-	        GL11.glEnable(GL11.GL_ALPHA_TEST);
+	        GL11.glPopMatrix();
+	        
+	        RenderHelper.disableStandardItemLighting();
+	        
+	        GL11.glPushMatrix();
+
+	        GL11.glTranslatef((float)posX, (float)posY, 50.0F);
+	        
+	        GL11.glEnable(3042 /*GL_BLEND*/);
+	        GL11.glBlendFunc(770, 771);
+
+	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
+	        
+	        if(text)
+	        {
+	        	GL11.glTranslatef(0.0F, 0.0F, 100F);
+	        	Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getEntityName().equalsIgnoreCase(state.entInstance.getEntityName()) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
+	        	GL11.glTranslatef(0.0F, 0.0F, -100F);
+	        }
+	        
+	        GL11.glDisable(3042 /*GL_BLEND*/);
 
 	        GL11.glPopMatrix();
-	        RenderHelper.disableStandardItemLighting();
+	        
+	        GL11.glEnable(GL11.GL_ALPHA_TEST);
+	        
 	        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 	        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 	        GL11.glDisable(GL11.GL_TEXTURE_2D);
