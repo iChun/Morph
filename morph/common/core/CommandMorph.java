@@ -60,11 +60,11 @@ public class CommandMorph extends CommandBase
 				{
 					if(EntityHelper.demorphPlayer(player))
 					{
-						notifyAdmins(icommandsender, "Forcing " + args[1] + " to demorph");
+						notifyAdmins(icommandsender, "Forcing " + player.username + " to demorph");
 					}
 					else
 					{
-						icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d(args[1] + " is not in morph!"));
+						icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d(player.username + " is not in morph!"));
 					}
 				}
 				else if(args.length > 2 && args[2].equalsIgnoreCase("true"))
