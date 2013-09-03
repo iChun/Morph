@@ -165,6 +165,16 @@ public class ObfHelper
 
 	public static ResourceLocation invokeGetEntityTexture(Render rend, Class clz, EntityLivingBase ent)
 	{
+		ResourceLocation loc = getEntTexture(rend, clz, ent);
+		if(loc != null)
+		{
+			return loc;
+		}
+		return AbstractClientPlayer.field_110314_b;
+	}
+	
+	private static ResourceLocation getEntTexture(Render rend, Class clz, EntityLivingBase ent)
+	{
 		try
 		{
 			Method m = clz.getDeclaredMethod(ObfHelper.getEntityTextureObf, Entity.class);

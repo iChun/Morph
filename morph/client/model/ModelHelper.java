@@ -62,7 +62,11 @@ public class ModelHelper
 								clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class && clz != ModelOcelot.class &&  
 								(f.getName().contains("Right") || f.getName().contains("right")) && (f.getName().contains("arm") || f.getName().contains("hand") || f.getName().contains("Arm") || f.getName().contains("Hand")))
 							{
-								return (ModelRenderer)f.get(parent); // Add normal parent fields
+								ModelRenderer arm = (ModelRenderer)f.get(parent);
+								if(arm != null)
+								{
+									return arm; // Add normal parent fields
+								}
 							}
 						}
 						else if(f.getType() == ModelRenderer[].class && clz == ModelSquid.class && (f.getName().equalsIgnoreCase("squidTentacles") || f.getName().equalsIgnoreCase("b") || f.getName().equalsIgnoreCase("field_78201_b")))
