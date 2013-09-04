@@ -58,7 +58,7 @@ public class EntityHelper
 //				zomb.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, event.entityLiving.rotationYaw, event.entityLiving.rotationPitch);
 //				event.entityLiving.worldObj.spawnEntityInWorld(zomb);
 		
-		if(!(living.addEntityID(new NBTTagCompound()) && !(living instanceof EntityPlayer) || living instanceof EntityPlayer))
+		if(!(living.writeToNBTOptional(new NBTTagCompound()) && !(living instanceof EntityPlayer) || living instanceof EntityPlayer))
 		{
 			return false;
 		}
@@ -74,7 +74,7 @@ public class EntityHelper
 		
 		byte isPlayer = (byte)((info.nextState.entInstance instanceof EntityPlayer && living instanceof EntityPlayer) ? 3 : info.nextState.entInstance instanceof EntityPlayer ? 1 : living instanceof EntityPlayer ? 2 : 0);
 		
-		if(!(info.nextState.entInstance instanceof EntityPlayer) && !info.nextState.entInstance.addEntityID(new NBTTagCompound()))
+		if(!(info.nextState.entInstance instanceof EntityPlayer) && !info.nextState.entInstance.writeToNBTOptional(new NBTTagCompound()))
 		{
 			return false;
 		}
@@ -85,8 +85,8 @@ public class EntityHelper
 		NBTTagCompound prevTag = new NBTTagCompound();
 		NBTTagCompound nextTag = new NBTTagCompound();
 
-		info.nextState.entInstance.addEntityID(prevTag);
-		living.addEntityID(nextTag);
+		info.nextState.entInstance.writeToNBTOptional(prevTag);
+		living.writeToNBTOptional(nextTag);
 		
 		MorphState prevState = new MorphState(player.worldObj, player.username, username1, prevTag, false);
 		MorphState nextState = new MorphState(player.worldObj, player.username, username2, nextTag, false);

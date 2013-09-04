@@ -330,7 +330,7 @@ public class TickHandlerClient
 						info.prevState.entInstance.prevRotationYaw = info.nextState.entInstance.prevRotationYaw = info.player.prevRotationYaw;
 						info.prevState.entInstance.prevRotationPitch = info.nextState.entInstance.prevRotationPitch = info.player.prevRotationPitch;
 						info.prevState.entInstance.prevRenderYawOffset = info.nextState.entInstance.prevRenderYawOffset = info.player.prevRenderYawOffset;
-						info.prevState.entInstance.prevLimbYaw = info.nextState.entInstance.prevLimbYaw = info.player.prevLimbYaw;
+						info.prevState.entInstance.prevLimbSwingAmount = info.nextState.entInstance.prevLimbSwingAmount = info.player.prevLimbSwingAmount;
 						info.prevState.entInstance.prevSwingProgress = info.nextState.entInstance.prevSwingProgress = info.player.prevSwingProgress;
 						info.prevState.entInstance.prevPosX = info.nextState.entInstance.prevPosX = info.player.prevPosX;
 						info.prevState.entInstance.prevPosY = info.nextState.entInstance.prevPosY = info.player.prevPosY;
@@ -340,7 +340,7 @@ public class TickHandlerClient
 						info.prevState.entInstance.rotationYaw = info.nextState.entInstance.rotationYaw = info.player.rotationYaw;
 						info.prevState.entInstance.rotationPitch = info.nextState.entInstance.rotationPitch = info.player.rotationPitch;
 						info.prevState.entInstance.renderYawOffset = info.nextState.entInstance.renderYawOffset = info.player.renderYawOffset;
-						info.prevState.entInstance.limbYaw = info.nextState.entInstance.limbYaw = info.player.limbYaw;
+						info.prevState.entInstance.limbSwingAmount = info.nextState.entInstance.limbSwingAmount = info.player.limbSwingAmount;
 						info.prevState.entInstance.swingProgress = info.nextState.entInstance.swingProgress = info.player.swingProgress;
 						info.prevState.entInstance.limbSwing = info.nextState.entInstance.limbSwing = info.player.limbSwing;
 						info.prevState.entInstance.posX = info.nextState.entInstance.posX = info.player.posX;
@@ -367,8 +367,8 @@ public class TickHandlerClient
 						info.nextState.entInstance.setSprinting(info.player.isSprinting());
 						info.prevState.entInstance.setInvisible(info.player.isInvisible());
 						info.nextState.entInstance.setInvisible(info.player.isInvisible());
-						info.prevState.entInstance.setEntityHealth(info.prevState.entInstance.func_110138_aP() * (info.player.func_110143_aJ() / info.player.func_110138_aP()));
-						info.nextState.entInstance.setEntityHealth(info.nextState.entInstance.func_110138_aP() * (info.player.func_110143_aJ() / info.player.func_110138_aP()));
+						info.prevState.entInstance.setHealth(info.prevState.entInstance.getMaxHealth() * (info.player.getHealth() / info.player.getMaxHealth()));
+						info.nextState.entInstance.setHealth(info.nextState.entInstance.getMaxHealth() * (info.player.getHealth() / info.player.getMaxHealth()));
 						
 						if(info.nextState.entInstance instanceof EntityDragon)
 						{
@@ -948,7 +948,7 @@ public class TickHandlerClient
 		        		
 		        		GL11.glTranslated(newSlide && j == 0 ? 0.0D : ((selectorSelectedHori - selectorSelectedHoriPrev) * 42F) * (1.0F - progressH), 0.0D, 0.0D);
 
-		        		mc.func_110434_K().func_110577_a(states.size() == 1 || j == states.size() - 1 ? rlUnselected : rlUnselectedSide);
+		        		mc.getTextureManager().bindTexture(states.size() == 1 || j == states.size() - 1 ? rlUnselected : rlUnselectedSide);
 		        		
 		        		double dist = size * (j - selectorSelectedHori);
 		        		
@@ -965,7 +965,7 @@ public class TickHandlerClient
 	        	}
 	        	else
 	        	{
-			        mc.func_110434_K().func_110577_a(rlUnselected);
+			        mc.getTextureManager().bindTexture(rlUnselected);
 			        tessellator.startDrawingQuads();
 					tessellator.setColorOpaque_F(1f,1f,1f);
 			        tessellator.addVertexWithUV(width1, height1 + size, -90.0D, 0.0D, 1.0D);
@@ -1057,7 +1057,7 @@ public class TickHandlerClient
 		        
 		        height1 = gap;
 		        
-		        mc.func_110434_K().func_110577_a(rlSelected);
+		        mc.getTextureManager().bindTexture(rlSelected);
 		        Tessellator tessellator = Tessellator.instance;
 		        tessellator.startDrawingQuads();
 				tessellator.setColorOpaque_F(1f,1f,1f);

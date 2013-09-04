@@ -33,7 +33,7 @@ public class RenderPlayerHand extends RenderPlayer
     	{
 	        float f = 1.0F;
 	        
-	        Minecraft.getMinecraft().func_110434_K().func_110577_a(resourceLoc); //try func_110776_a
+	        Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLoc); //try func_110776_a
 	        
 	        GL11.glColor4f(f, f, f, progress);
 	    	GL11.glEnable(GL11.GL_BLEND);

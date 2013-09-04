@@ -64,7 +64,7 @@ public class CommandMorph extends CommandBase
 					}
 					else
 					{
-						icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d(player.username + " is not in morph!"));
+						icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not in morph!"));
 					}
 				}
 				else if(args.length > 2 && args[2].equalsIgnoreCase("true"))
@@ -86,12 +86,12 @@ public class CommandMorph extends CommandBase
 					}
 					else
 					{
-						icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d(args[1] + " has no morph data!"));
+						icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(args[1] + " has no morph data!"));
 					}
 				}
 				else
 				{
-					icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d(args[1] + " is not online!"));
+					icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(args[1] + " is not online!"));
 				}
 			}
 			else if(args[0].equalsIgnoreCase("clear"))
@@ -180,7 +180,7 @@ public class CommandMorph extends CommandBase
 		        	{
 		        		if(!EntityHelper.morphPlayer(player, (EntityLivingBase)mop.entityHit, false))
 		        		{
-		        			icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d(player.username + " is not looking at a morphable mob."));
+		        			icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not looking at a morphable mob."));
 		        		}
 		        		else
 		        		{
@@ -189,12 +189,12 @@ public class CommandMorph extends CommandBase
 		        	}
 		        	else
 		        	{
-		        		icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d(player.username + " is not looking at a morphable mob."));
+		        		icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not looking at a morphable mob."));
 		        	}
 		        }
 		        else if(args.length > 1)
 		        {
-		        	icommandsender.sendChatToPlayer(ChatMessageComponent.func_111066_d("Cannot find player: " + args[1]));
+		        	icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText("Cannot find player: " + args[1]));
 		        }
 			}
 		}

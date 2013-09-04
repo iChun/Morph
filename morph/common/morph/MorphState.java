@@ -58,7 +58,7 @@ public class MorphState
 		NBTTagCompound tag1 = new NBTTagCompound();
 		if(entInstance != null)
 		{
-			entInstance.addEntityID(tag1);
+			entInstance.writeToNBTOptional(tag1);
 			writeFakeTags(entInstance, tag1);
 		}
 		

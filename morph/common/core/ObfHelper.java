@@ -170,7 +170,7 @@ public class ObfHelper
 		{
 			return loc;
 		}
-		return AbstractClientPlayer.field_110314_b;
+		return AbstractClientPlayer.locationStevePng;
 	}
 	
 	private static ResourceLocation getEntTexture(Render rend, Class clz, EntityLivingBase ent)
@@ -192,7 +192,7 @@ public class ObfHelper
 		{
 			e.printStackTrace();
 		}
-		return AbstractClientPlayer.field_110314_b;
+		return AbstractClientPlayer.locationStevePng;
 	}
 	
 	public static void invokePreRenderCallback(Render rend, Class clz, Entity ent, float rendTick)

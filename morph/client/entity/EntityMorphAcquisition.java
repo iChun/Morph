@@ -77,12 +77,12 @@ public class EntityMorphAcquisition extends EntityLivingBase
     }
 	
 	@Override
-    public void setEntityHealth(float par1)
+    public void setHealth(float par1)
     {
     }
 	
 	@Override
-    public boolean addEntityID(NBTTagCompound par1NBTTagCompound)
+    public boolean writeToNBTOptional(NBTTagCompound par1NBTTagCompound)
     {
     	return false;
     }
