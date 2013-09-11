@@ -47,7 +47,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 			connectionHandler = ConnectionHandler.class,
 			tinyPacketHandler = MapPacketHandler.class,
 			clientPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerClient.class),
-			serverPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerServer.class)
+			serverPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerServer.class),
+			versionBounds = "[0.1.0,0.2.0)"
 				)
 public class Morph 
 {

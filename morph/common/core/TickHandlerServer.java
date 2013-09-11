@@ -104,6 +104,7 @@ public class TickHandlerServer
 							{
 								ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 								player.setPosition(player.posX, player.posY, player.posZ);
+								player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 							}
 							
 							if(info.nextState.playerMorph.equalsIgnoreCase(e.getKey()))

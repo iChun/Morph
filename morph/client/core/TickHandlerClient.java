@@ -283,6 +283,7 @@ public class TickHandlerClient
 						{
 							ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 							info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
+							info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 						}
 					}
 				}
@@ -297,6 +298,7 @@ public class TickHandlerClient
 					{
 						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
+						info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 					}
 				}
 				if(info.prevState.entInstance == null)
@@ -800,11 +802,14 @@ public class TickHandlerClient
 			float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
 			float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
 			ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
+			eyeHeight = mc.thePlayer.eyeHeight;
 			mc.thePlayer.lastTickPosY -= ySize;
 			mc.thePlayer.prevPosY -= ySize;
 			mc.thePlayer.posY -= ySize;
-			
+			mc.thePlayer.eyeHeight = mc.thePlayer.getDefaultEyeHeight();
 		}
+		
+//		ySize = 0.0F;
 		
 //		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
 //		{
@@ -815,12 +820,13 @@ public class TickHandlerClient
 
 	public void renderTick(Minecraft mc, World world, float renderTick)
 	{
-		MorphInfoClient info1 = playerMorphInfo.get(mc.thePlayer.username);
-		if(info1 != null)
+		MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
+		if(info != null)
 		{
 			mc.thePlayer.lastTickPosY += ySize;
 			mc.thePlayer.prevPosY += ySize;
 			mc.thePlayer.posY += ySize;
+			mc.thePlayer.eyeHeight = eyeHeight;
 		}
 		
 		if(selectorTimer > 0 || selectorShow)
@@ -885,6 +891,9 @@ public class TickHandlerClient
 	        GL11.glDepthMask(false);
 	        GL11.glColor4f(1f,1f,1f,1f);
 	        GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
+	        
+	        GL11.glEnable(GL11.GL_BLEND);
+	        GL11.glBlendFunc(770, 771);
 	        
 	        int i = 0;
 	        
@@ -977,6 +986,8 @@ public class TickHandlerClient
 		        
 		        i++;
 	        }
+			
+			GL11.glDisable(3042 /*GL_BLEND*/);
 	        
         	int height1 = gap;
 	        
@@ -1197,6 +1208,7 @@ public class TickHandlerClient
 //	public boolean maintainMotion;
 	public float playerHeight = 1.8F;
 	public float ySize;
+	public float eyeHeight;
 	
 	public boolean forceRender;
 	public boolean renderingMorph;
