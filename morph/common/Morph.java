@@ -40,7 +40,8 @@ import cpw.mods.fml.common.network.NetworkModHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "Morph", name = "Morph",
-			version = Morph.version
+			version = Morph.version,
+			dependencies = "required-after:Forge@[9.10.1.859,)"
 				)
 @NetworkMod(clientSideRequired = true,
 			serverSideRequired = false,
