@@ -104,10 +104,15 @@ public class EntityHelper
 			return false;
 		}
 		
-		MorphInfo info2 = new MorphInfo(player.username, prevState, nextState);
-		info2.setMorphing(true);
-		
-		Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
+		if(Morph.instaMorph == 1)
+		{
+			MorphInfo info2 = new MorphInfo(player.username, prevState, nextState);
+			info2.setMorphing(true);
+			
+			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
+			
+			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
+		}
 		
 		if(kill)
 		{
@@ -127,7 +132,6 @@ public class EntityHelper
 		}
 		
 		MorphHandler.updatePlayerOfMorphStates(player, nextState, false);
-		PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
 		
 		player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 		

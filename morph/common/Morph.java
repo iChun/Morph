@@ -65,6 +65,7 @@ public class Morph
 	public static int playerMorphs;
 	public static int bossMorphs;
 	public static int loseMorphsOnDeath;
+	public static int instaMorph;
 	
 	public static int keySelectorUp;
 	public static int keySelectorDown;
@@ -82,7 +83,7 @@ public class Morph
 	public static int handRenderOverride;
 	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
-	
+
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
 	{
@@ -101,6 +102,7 @@ public class Morph
 		bossMorphs = addCommentAndReturnInt(config, "gameplay", "bossMorphs", "Can you morph into bosses?\n0 = No\n1 = Yes", 0);
 		
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
+		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
 		
 		if(isClient)
 		{
