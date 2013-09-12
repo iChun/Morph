@@ -15,6 +15,7 @@ import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
@@ -29,8 +30,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.EnumStatus;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -331,6 +334,19 @@ public class EventHandler
 
 				MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
 				
+				MovingObjectPosition mop = EntityHelper.getEntityLook(mc.renderViewEntity, mc.playerController.getBlockReachDistance(), false, event.partialTicks);
+				
+	            if (mc.renderViewEntity instanceof EntityPlayer && !mc.gameSettings.hideGUI && mop != null && !mc.renderViewEntity.isInsideOfMaterial(Material.water))
+	            {
+	                EntityPlayer entityplayer = (EntityPlayer)mc.renderViewEntity;
+	                GL11.glDisable(GL11.GL_ALPHA_TEST);
+	                if (!ForgeHooksClient.onDrawBlockHighlight(mc.renderGlobal, entityplayer, mop, 0, entityplayer.inventory.getCurrentItem(), event.partialTicks))
+	                {
+	                	mc.renderGlobal.drawSelectionBox(entityplayer, mop, 0, event.partialTicks);
+	                }
+	                GL11.glEnable(GL11.GL_ALPHA_TEST);
+	            }
+				
                 GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 				
 	        	if(info.morphProgress <= 40)
@@ -442,37 +458,37 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onDrawBlockHighlight(DrawBlockHighlightEvent event)
 	{
-		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.renderViewEntity == mc.thePlayer)
-		{
-	        MorphInfo info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
-			if(info1 != null && mc.renderViewEntity == mc.thePlayer)
-			{
-//				float prog = info1.morphProgress > 10 ? (((float)info1.morphProgress + event.partialTicks) / 60F) : 0.0F;
-//				if(prog > 1.0F)
-//				{
-//					prog = 1.0F;
-//				}
+//		Minecraft mc = Minecraft.getMinecraft();
+//		if(mc.renderViewEntity == mc.thePlayer)
+//		{
+//	        MorphInfo info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
+//			if(info1 != null && mc.renderViewEntity == mc.thePlayer)
+//			{
+////				float prog = info1.morphProgress > 10 ? (((float)info1.morphProgress + event.partialTicks) / 60F) : 0.0F;
+////				if(prog > 1.0F)
+////				{
+////					prog = 1.0F;
+////				}
+////				
+////				prog = (float)Math.pow(prog, 2);
+////				
+////				float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+////				float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+////				float ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
+////				mc.thePlayer.lastTickPosY -= ySize;
+////				mc.thePlayer.prevPosY -= ySize;
+////				mc.thePlayer.posY -= ySize;
+////				
+////                double d0 = (double)mc.playerController.getBlockReachDistance();
+////				event.context.drawSelectionBox(mc.thePlayer, mc.thePlayer.rayTrace(d0, (float)event.partialTicks), 0, event.partialTicks);
+////				
+////				mc.thePlayer.lastTickPosY += ySize;
+////				mc.thePlayer.prevPosY += ySize;
+////				mc.thePlayer.posY += ySize;
 //				
-//				prog = (float)Math.pow(prog, 2);
-//				
-//				float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
-//				float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
-//				float ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
-//				mc.thePlayer.lastTickPosY -= ySize;
-//				mc.thePlayer.prevPosY -= ySize;
-//				mc.thePlayer.posY -= ySize;
-//				
-//                double d0 = (double)mc.playerController.getBlockReachDistance();
-//				event.context.drawSelectionBox(mc.thePlayer, mc.thePlayer.rayTrace(d0, (float)event.partialTicks), 0, event.partialTicks);
-//				
-//				mc.thePlayer.lastTickPosY += ySize;
-//				mc.thePlayer.prevPosY += ySize;
-//				mc.thePlayer.posY += ySize;
-				
-				event.setCanceled(true);
-			}
-		}
+//				event.setCanceled(true);
+//			}
+//		}
 	}
 	
 	@SideOnly(Side.CLIENT)

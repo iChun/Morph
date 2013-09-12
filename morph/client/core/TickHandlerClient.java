@@ -121,8 +121,8 @@ public class TickHandlerClient
 		MorphInfo info = playerMorphInfo.get(mc.thePlayer.username);
 		if(info != null)
 		{
-            double d0 = (double)mc.playerController.getBlockReachDistance();
-            mc.objectMouseOver = mc.renderViewEntity.rayTrace(d0, renderTick);
+//            double d0 = (double)mc.playerController.getBlockReachDistance();
+//            mc.objectMouseOver = mc.renderViewEntity.rayTrace(d0, renderTick);
 
 //			motionMaintained[0] = mc.thePlayer.motionX;
 //			motionMaintained[1] = mc.thePlayer.motionZ;
