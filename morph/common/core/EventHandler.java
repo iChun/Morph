@@ -1,45 +1,38 @@
 package morph.common.core;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import morph.client.entity.EntityMorphAcquisition;
 import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
-import morph.common.entity.EntTracker;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.EnumStatus;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -50,6 +43,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -476,6 +470,54 @@ public class EventHandler
 //				mc.thePlayer.prevPosY += ySize;
 //				mc.thePlayer.posY += ySize;
 				
+				event.setCanceled(true);
+			}
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onMouseEvent(MouseEvent event)
+	{
+		if(Morph.proxy.tickHandlerClient.selectorShow)
+		{
+			int k = event.dwheel;
+			if(k != 0)
+			{
+				Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTimer = Morph.proxy.tickHandlerClient.scrollTime;
+				
+				if(GuiScreen.isShiftKeyDown())
+				{
+					Morph.proxy.tickHandlerClient.selectorSelectedHoriPrev = Morph.proxy.tickHandlerClient.selectorSelectedHori;
+					if(k > 0)
+					{
+						Morph.proxy.tickHandlerClient.selectorSelectedHori--;
+					}
+					else
+					{
+						Morph.proxy.tickHandlerClient.selectorSelectedHori++;
+					}
+				}
+				else
+				{
+					Morph.proxy.tickHandlerClient.selectorSelectedPrev = Morph.proxy.tickHandlerClient.selectorSelected;
+					if(k > 0)
+					{
+						Morph.proxy.tickHandlerClient.selectorSelected--;
+						if(Morph.proxy.tickHandlerClient.selectorSelected < 0)
+						{
+							Morph.proxy.tickHandlerClient.selectorSelected = Morph.proxy.tickHandlerClient.playerMorphCatMap.size() - 1;
+						}
+					}
+					else
+					{
+						Morph.proxy.tickHandlerClient.selectorSelected++;
+						if(Morph.proxy.tickHandlerClient.selectorSelected > Morph.proxy.tickHandlerClient.playerMorphCatMap.size() - 1)
+						{
+							Morph.proxy.tickHandlerClient.selectorSelected = 0;
+						}
+					}
+				}
 				event.setCanceled(true);
 			}
 		}

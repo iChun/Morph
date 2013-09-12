@@ -214,56 +214,6 @@ public class TickHandlerClient
 			scrollTimerHori--;
 		}
 		
-		if(selectorShow)
-		{
-			int k = Mouse.getDWheel();
-			if(k != 0)
-			{
-				scrollTimerHori = scrollTimer = scrollTime;
-				
-				if(GuiScreen.isShiftKeyDown())
-				{
-					selectorSelectedHoriPrev = selectorSelectedHori;
-					if(k > 0)
-					{
-						selectorSelectedHori--;
-					}
-					else
-					{
-						selectorSelectedHori++;
-					}
-				}
-				else
-				{
-					selectorSelectedPrev = selectorSelected;
-					if(k > 0)
-					{
-						selectorSelected--;
-						if(selectorSelected < 0)
-						{
-							selectorSelected = playerMorphCatMap.size() - 1;
-						}
-					}
-					else
-					{
-						selectorSelected++;
-						if(selectorSelected > playerMorphCatMap.size() - 1)
-						{
-							selectorSelected = 0;
-						}
-					}
-				}
-			}
-			else
-			{
-				currentItem = mc.thePlayer.inventory.currentItem;
-			}
-			if(selectorTimer < 5)
-			{
-				mc.thePlayer.inventory.currentItem = currentItem;
-			}
-		}
-
 		if(clock != world.getWorldTime() || !world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
 		{
 			clock = world.getWorldTime();
@@ -396,7 +346,6 @@ public class TickHandlerClient
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
-					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
 					scrollTimerHori = scrollTime;
@@ -455,7 +404,6 @@ public class TickHandlerClient
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
-					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
 					scrollTimerHori = scrollTime;
@@ -514,7 +462,6 @@ public class TickHandlerClient
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
-					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
 					scrollTimerHori = scrollTime;
@@ -568,7 +515,6 @@ public class TickHandlerClient
 			{
 				if(!selectorShow && mc.currentScreen == null)
 				{
-					Mouse.getDWheel();
 					selectorShow = true;
 					selectorTimer = selectorShowTime - selectorTimer;
 					scrollTimerHori = scrollTime;

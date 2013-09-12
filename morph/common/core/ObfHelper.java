@@ -37,6 +37,7 @@ public class ObfHelper
 	public static final String updateEntityActionStateDeobf = "updateEntityActionState";
 	
 	public static final String getEntityTextureObf = "func_110775_a";
+	public static final String getEntityTextureDeobf = "getEntityTexture";
 	
 	public static final String preRenderCallbackObf = "func_77041_b";
 	public static final String preRenderCallbackDeobf = "preRenderCallback";
@@ -177,7 +178,7 @@ public class ObfHelper
 	{
 		try
 		{
-			Method m = clz.getDeclaredMethod(ObfHelper.getEntityTextureObf, Entity.class);
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getEntityTextureObf : ObfHelper.getEntityTextureDeobf, Entity.class);
 			m.setAccessible(true);
 			return (ResourceLocation)m.invoke(rend, ent);
 		}
