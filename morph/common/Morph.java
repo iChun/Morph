@@ -49,11 +49,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 			tinyPacketHandler = MapPacketHandler.class,
 			clientPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerClient.class),
 			serverPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerServer.class),
-			versionBounds = "[0.1.0,0.2.0)"
+			versionBounds = "[0.2.0,0.3.0)"
 				)
 public class Morph 
 {
-	public static final String version = "0.1.4";
+	public static final String version = "0.2.0";
 	
 	@Instance("Morph")
 	public static Morph instance;
@@ -108,7 +108,7 @@ public class Morph
 		
 		if(isClient)
 		{
-			config.addCustomCategoryComment("client", "These options are client only.\nCheck here: http://www.minecraftwiki.net/wiki/Key_codes");
+			config.addCustomCategoryComment("client", "These options are client only.\nCheck here for key codes for the config: http://www.minecraftwiki.net/wiki/Key_codes");
 			
 			keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 26 ([)", 26);
 			keySelectorDown = addCommentAndReturnInt(config, "client", "keySelectorDown", "Key Code to go down on the selector\nDefault: 27 (])", 27);
