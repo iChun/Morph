@@ -1,6 +1,5 @@
 package morph.api;
 
-import morph.common.core.EntityHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 
