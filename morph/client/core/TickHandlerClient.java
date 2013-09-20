@@ -16,6 +16,8 @@ import morph.client.render.EntityRendererProxy;
 import morph.client.render.RenderMorph;
 import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
+import morph.common.ability.Ability;
+import morph.common.core.EntityHelper;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -234,6 +236,38 @@ public class TickHandlerClient
 							ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 							info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
 							info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+							
+							ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(info.nextState.entInstance.getClass());
+							ArrayList<Ability> oldAbilities = info.morphAbilities;
+							info.morphAbilities = new ArrayList<Ability>();
+							for(Ability ability : newAbilities)
+							{
+								try
+								{
+									Ability clone = ability.clone();
+									clone.setParent(info.player);
+									info.morphAbilities.add(clone);
+								}
+								catch(Exception e1)
+								{
+								}
+							}
+							for(Ability ability : oldAbilities)
+							{
+								boolean isRemoved = true;
+								for(Ability newAbility : info.morphAbilities)
+								{
+									if(newAbility.getType().equalsIgnoreCase(ability.getType()))
+									{
+										isRemoved = false;
+										break;
+									}
+								}
+								if(isRemoved && ability.getParent() != null)
+								{
+									ability.kill();
+								}
+							}
 						}
 					}
 				}
@@ -249,6 +283,11 @@ public class TickHandlerClient
 						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
 						info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+						
+						for(Ability ability : info.morphAbilities)
+						{
+							ability.setParent(info.player);
+						}
 					}
 				}
 				if(info.prevState.entInstance == null)
@@ -274,6 +313,14 @@ public class TickHandlerClient
 				
 				if(info.player != null)
 				{
+					for(Ability ability : info.morphAbilities)
+					{
+						if(ability.getParent() != null)
+						{
+							ability.tick();
+						}
+					}
+					
 					if(info.prevState.entInstance != null && info.nextState.entInstance != null)
 					{
 						info.player.ignoreFrustumCheck = true;

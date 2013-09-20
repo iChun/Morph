@@ -3,9 +3,11 @@ package morph.common.core;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import morph.common.Morph;
+import morph.common.ability.Ability;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -108,6 +110,12 @@ public class EntityHelper
 		{
 			MorphInfo info2 = new MorphInfo(player.username, prevState, nextState);
 			info2.setMorphing(true);
+
+			MorphInfo info3 = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+			if(info3 != null)
+			{
+				info2.morphAbilities = info3.morphAbilities;
+			}
 			
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
 			
@@ -152,6 +160,12 @@ public class EntityHelper
 			MorphInfo info2 = new MorphInfo(player.username, state1, state2);
 			info2.setMorphing(true);
 			
+			MorphInfo info3 = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+			if(info3 != null)
+			{
+				info2.morphAbilities = info3.morphAbilities;
+			}
+			
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
 			
 			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
@@ -163,6 +177,24 @@ public class EntityHelper
 		return false;
 	}
 	
+	public static ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
+	{
+		ArrayList<Ability> abilities = Ability.abilityMap.get(entClass);
+		if(abilities == null)
+		{
+			Class superClz = entClass.getSuperclass();
+			if(superClz != EntityLivingBase.class)
+			{
+				Ability.abilityMap.put(entClass, getEntityAbilities(superClz));
+				return Ability.abilityMap.get(entClass);
+			}
+		}
+		else
+		{
+			return abilities;
+		}
+		return new ArrayList<Ability>();
+	}
 	
 	/*
 	 * The following helper functions were taken out of iChunUtil. 

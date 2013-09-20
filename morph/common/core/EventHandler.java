@@ -12,6 +12,7 @@ import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
+import morph.common.entity.EntTracker;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -619,7 +620,7 @@ public class EventHandler
 //		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.target instanceof EntityLivingBase)
 //		{
 //			System.out.println(event.target);
-//			Morph.proxy.tickHandlerServer.trackingEntities.add(new EntTracker((EntityLivingBase)event.target, "fly", false));
+//			Morph.proxy.tickHandlerServer.trackingEntities.add(new EntTracker((EntityLivingBase)event.target, "float", true));
 //		}
 //		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 //		{

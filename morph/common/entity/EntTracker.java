@@ -1,27 +1,29 @@
 package morph.common.entity;
 
-import morph.common.ability.AbilityTracker;
+import morph.common.ability.tracker.AbilityTracker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 public class EntTracker 
 {
 	public final EntityLivingBase trackedEnt;
-	public final boolean shouldKill;
+	public final boolean simulated;
 
 	public AbilityTracker abilityTracker;
 	public int trackTimer;
 	public boolean ticking;
 	
-	public EntTracker(EntityLivingBase tracking, String type, boolean kill)
+	public EntTracker(EntityLivingBase tracking, String type, boolean simulation)
 	{
 		trackedEnt = tracking;
-		shouldKill = kill;
+		simulated = simulation;
 		
 		abilityTracker = AbilityTracker.createTracker(this, type);
 		trackTimer = abilityTracker.trackingTime();
 		
 		ticking = true;
+		
+		abilityTracker.initialize();
 	}
 	
 	public void tick()
@@ -36,7 +38,7 @@ public class EntTracker
 	
 	public void kill()
 	{
-		if(shouldKill)
+		if(simulated)
 		{
 			trackedEnt.setDead();
 		}

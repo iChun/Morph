@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import morph.client.entity.EntityMorphAcquisition;
+import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
+import morph.common.ability.Ability;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -84,6 +86,12 @@ public class MapPacketHandler
 							MorphInfo info2 = new MorphInfo(player.username, old, state);
 							info2.setMorphing(true);
 							
+							MorphInfo info3 = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+							if(info3 != null)
+							{
+								info2.morphAbilities = info3.morphAbilities;
+							}
+							
 							Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
 							
 							PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
@@ -141,6 +149,19 @@ public class MapPacketHandler
 							player.ignoreFrustumCheck = false;
 						}
 					}
+					
+					MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+					if(info != null)
+					{
+						for(Ability ability : info.morphAbilities)
+						{
+							if(ability.getParent() != null)
+							{
+								ability.kill();
+							}
+						}
+					}
+
 					Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
 					break;
 				}

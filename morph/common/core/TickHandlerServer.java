@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import morph.common.Morph;
+import morph.common.ability.Ability;
 import morph.common.entity.EntTracker;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -105,6 +106,38 @@ public class TickHandlerServer
 								ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 								player.setPosition(player.posX, player.posY, player.posZ);
 								player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
+								
+								ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(info.nextState.entInstance.getClass());
+								ArrayList<Ability> oldAbilities = info.morphAbilities;
+								info.morphAbilities = new ArrayList<Ability>();
+								for(Ability ability : newAbilities)
+								{
+									try
+									{
+										Ability clone = ability.clone();
+										clone.setParent(player);
+										info.morphAbilities.add(clone);
+									}
+									catch(Exception e1)
+									{
+									}
+								}
+								for(Ability ability : oldAbilities)
+								{
+									boolean isRemoved = true;
+									for(Ability newAbility : info.morphAbilities)
+									{
+										if(newAbility.getType().equalsIgnoreCase(ability.getType()))
+										{
+											isRemoved = false;
+											break;
+										}
+									}
+									if(isRemoved && ability.getParent() != null)
+									{
+										ability.kill();
+									}
+								}
 							}
 							
 							if(info.nextState.playerMorph.equalsIgnoreCase(e.getKey()))
@@ -127,12 +160,33 @@ public class TickHandlerServer
 									e1.printStackTrace();
 								}
 								
+								for(Ability ability : info.morphAbilities)
+								{
+									if(ability.getParent() != null)
+									{
+										ability.kill();
+									}
+								}
+								
 								saveData.removeTag(e.getKey() + "_morphData");
 								
 								ite.remove();
 							}
 						}
 					}
+					
+					for(Ability ability : info.morphAbilities)
+					{
+						if(ability.getParent() != null)
+						{
+							ability.tick();
+						}
+						else
+						{
+							ability.setParent(player);
+						}
+					}
+
 //					if(info.morphProgress > 70)
 //					{
 //						info.nextState.entInstance.isDead = false;

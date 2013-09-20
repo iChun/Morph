@@ -3,14 +3,12 @@ package morph.common.morph;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import morph.common.Morph;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemInWorldManager;
+import morph.common.ability.Ability;
+import morph.common.core.EntityHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
@@ -25,6 +23,8 @@ public class MorphInfo
 	
 	private boolean morphing; //if true, increase progress
 	public int morphProgress; //up to 80, 3 sec sound files, 0.5 sec between sounds where the skin turns black
+	
+	public ArrayList<Ability> morphAbilities = new ArrayList<Ability>(); 
 	
 	public MorphInfo(){playerName="";}
 	
@@ -106,6 +106,19 @@ public class MorphInfo
 		
 		morphing = true;
 		morphProgress = 80;
+		
+		ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(nextState.entInstance.getClass());
+		morphAbilities = new ArrayList<Ability>();
+		for(Ability ability : newAbilities)
+		{
+			try
+			{
+				morphAbilities.add(ability.clone());
+			}
+			catch(Exception e1)
+			{
+			}
+		}
 	}
 }
 

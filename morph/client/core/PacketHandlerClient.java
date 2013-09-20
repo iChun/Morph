@@ -101,6 +101,13 @@ public class PacketHandlerClient
 					MorphInfoClient info = new MorphInfoClient(name, prevState, nextState);
 					info.setMorphing(morphing);
 					info.morphProgress = morphProg;
+					
+					MorphInfoClient info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+					if(info1 != null)
+					{
+						info.morphAbilities = info1.morphAbilities;
+					}
+					
 					Morph.proxy.tickHandlerClient.playerMorphInfo.put(name, info);
 
 					break;

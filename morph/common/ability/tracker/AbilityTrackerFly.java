@@ -1,9 +1,10 @@
-package morph.common.ability;
+package morph.common.ability.tracker;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.util.DamageSource;
+import morph.common.ability.Ability;
 import morph.common.entity.EntTracker;
 
 public class AbilityTrackerFly extends AbilityTracker 
@@ -23,7 +24,7 @@ public class AbilityTrackerFly extends AbilityTracker
 	@Override
 	public void initialize() 
 	{
-		if(entTracker.shouldKill)
+		if(entTracker.simulated)
 		{
 			entTracker.trackedEnt.setPosition(entTracker.trackedEnt.posX, entTracker.trackedEnt.posY + 2D, entTracker.trackedEnt.posZ);
 		}
@@ -32,7 +33,7 @@ public class AbilityTrackerFly extends AbilityTracker
 	@Override
 	public void trackAbility() 
 	{
-		if(entTracker.trackTimer == 200 && entTracker.shouldKill)
+		if(entTracker.trackTimer == 200 && entTracker.simulated)
 		{
 			EntityPlayerMP player = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), entTracker.trackedEnt.worldObj, "MorphEntTracker", new ItemInWorldManager(entTracker.trackedEnt.worldObj));
 			player.setLocationAndAngles(entTracker.trackedEnt.posX + entTracker.trackedEnt.getRNG().nextDouble() * 10D - 5D, entTracker.trackedEnt.boundingBox.maxY + entTracker.trackedEnt.getRNG().nextDouble() * 4D, entTracker.trackedEnt.posX + entTracker.trackedEnt.getRNG().nextDouble() * 10D - 5D, 0.0F, 0.0F);
@@ -75,7 +76,7 @@ public class AbilityTrackerFly extends AbilityTracker
 	@Override
 	public int trackingTime() 
 	{
-		return entTracker.shouldKill ? 400 : 200; // 20s
+		return entTracker.simulated ? 400 : 200; // 20s
 	}
 
 }
