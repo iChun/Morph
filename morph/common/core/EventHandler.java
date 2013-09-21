@@ -12,7 +12,6 @@ import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
-import morph.common.entity.EntTracker;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -23,6 +22,7 @@ import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,7 +47,6 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -75,8 +74,24 @@ public class EventHandler
 	@ForgeSubscribe
 	public void onRenderPlayer(RenderPlayerEvent.Pre event)
 	{
+		float shadowSize = 0.5F;
+		try
+		{
+			if(Morph.proxy.tickHandlerClient.playerRenderShadowSize < 0.0F)
+			{
+				Morph.proxy.tickHandlerClient.playerRenderShadowSize = (Float)ObfuscationReflectionHelper.getPrivateValue(Render.class, event.renderer, ObfHelper.shadowSize);
+			}
+		}
+		catch(Exception e)
+		{
+			ObfHelper.obfWarning();
+			e.printStackTrace();
+		}
+		
+		
 		if(Morph.proxy.tickHandlerClient.forceRender)
 		{
+			ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
 			return;
 		}
 		if(Morph.proxy.tickHandlerClient.renderingMorph && Morph.proxy.tickHandlerClient.renderingPlayer > 1)
@@ -89,6 +104,56 @@ public class EventHandler
 
 		if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.username))
 		{
+	        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(event.entityPlayer.username);
+			
+			double par2 = Morph.proxy.tickHandlerClient.renderTick;
+	        int br1 = info.prevState != null ? info.prevState.entInstance.getBrightnessForRender((float)par2) : event.entityPlayer.getBrightnessForRender((float)par2);
+	        int br2 = info.nextState.entInstance.getBrightnessForRender((float)par2);
+	        
+	        float prog = (float)(info.morphProgress + par2) / 80F;
+	        
+	        if(prog > 1.0F)
+	        {
+	        	prog = 1.0F;
+	        }
+	        
+	        try
+	        {
+	        	float prevShadowSize = Morph.proxy.tickHandlerClient.playerRenderShadowSize;
+	        	
+	        	if(info.prevState != null && info.prevState.entInstance != null)
+	        	{
+		        	Render render = RenderManager.instance.getEntityRenderObject(info.prevState.entInstance);
+		        	if(render != null)
+		        	{
+		        		prevShadowSize = ObfuscationReflectionHelper.getPrivateValue(Render.class, render, ObfHelper.shadowSize);
+		        	}
+	        	}
+	        	
+	        	Render render = RenderManager.instance.getEntityRenderObject(info.nextState.entInstance);
+	        	if(render == event.renderer)
+	        	{
+	        		shadowSize = Morph.proxy.tickHandlerClient.playerRenderShadowSize;
+	        	}
+	        	else if(render != null)
+	        	{
+	        		shadowSize = ObfuscationReflectionHelper.getPrivateValue(Render.class, render, ObfHelper.shadowSize);
+	        	}
+
+	        	float shadowProg = prog;
+	        	prog /= 0.8F;
+	        	if(prog < 1.0F)
+	        	{
+	        		shadowSize = prevShadowSize + (shadowSize - prevShadowSize) * prog;
+	        	}
+	        	ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, shadowSize, ObfHelper.shadowSize);
+	        }
+	        catch(Exception e)
+	        {
+				ObfHelper.obfWarning();
+				e.printStackTrace();
+	        }
+			
 			if(Morph.proxy.tickHandlerClient.renderingPlayer != 2)
 			{
 				event.setCanceled(true);
@@ -99,22 +164,10 @@ public class EventHandler
 				return;
 			}
 			
-			double par2 = Morph.proxy.tickHandlerClient.renderTick;
 	        double d0 = event.entityPlayer.lastTickPosX + (event.entityPlayer.posX - event.entityPlayer.lastTickPosX) * (double)par2;
 	        double d1 = event.entityPlayer.lastTickPosY + (event.entityPlayer.posY - event.entityPlayer.lastTickPosY) * (double)par2;
 	        double d2 = event.entityPlayer.lastTickPosZ + (event.entityPlayer.posZ - event.entityPlayer.lastTickPosZ) * (double)par2;
 	        float f1 = event.entityPlayer.prevRotationYaw + (event.entityPlayer.rotationYaw - event.entityPlayer.prevRotationYaw) * (float)par2;
-	        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(event.entityPlayer.username);
-	        
-	        int br1 = info.prevState != null ? info.prevState.entInstance.getBrightnessForRender((float)par2) : event.entityPlayer.getBrightnessForRender((float)par2);
-	        int br2 = info.nextState.entInstance.getBrightnessForRender((float)par2);
-	        
-	        float prog = (float)(info.morphProgress + par2) / 80F;
-	        
-	        if(prog > 1.0F)
-	        {
-	        	prog = 1.0F;
-	        }
 	        
 	        int i = br1 + (int)((float)(br2 - br1) * prog);
 
@@ -314,6 +367,10 @@ public class EventHandler
 	        	GL11.glPopMatrix();
 	        	Morph.proxy.tickHandlerClient.renderingMorph = false;
 	        }
+		}
+		else
+		{
+			ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
 		}
 		Morph.proxy.tickHandlerClient.renderingPlayer--;
 	}

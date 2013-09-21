@@ -1199,6 +1199,7 @@ public class TickHandlerClient
 	
 	public RenderMorph renderMorphInstance;
 	public RenderPlayerHand renderHandInstance;
+	public float playerRenderShadowSize = -1F;
 	
 	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
 	
