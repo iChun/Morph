@@ -23,6 +23,7 @@ public class AbilityFly extends Ability {
 				player.sendPlayerAbilities();
 			}
 		}
+		getParent().fallDistance = 0.0F;
 		//TODO make "Thing" take note of this so it can fly...
 	}
 
@@ -48,6 +49,11 @@ public class AbilityFly extends Ability {
 	public Ability clone() 
 	{
 		return new AbilityFly();
+	}
+
+	@Override
+	public void postRender() 
+	{
 	}
 
 }

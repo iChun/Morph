@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
+import morph.common.ability.Ability;
+import morph.common.core.EntityHelper;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
@@ -106,6 +108,23 @@ public class PacketHandlerClient
 					if(info1 != null)
 					{
 						info.morphAbilities = info1.morphAbilities;
+					}
+					else
+					{
+						ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(info.nextState.entInstance.getClass());
+						info.morphAbilities = new ArrayList<Ability>();
+						for(Ability ability : newAbilities)
+						{
+							try
+							{
+								Ability clone = ability.clone();
+								info.morphAbilities.add(clone);
+							}
+							catch(Exception e1)
+							{
+							}
+						}
+
 					}
 					
 					Morph.proxy.tickHandlerClient.playerMorphInfo.put(name, info);

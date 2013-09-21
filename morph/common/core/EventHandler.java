@@ -620,7 +620,7 @@ public class EventHandler
 //		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.target instanceof EntityLivingBase)
 //		{
 //			System.out.println(event.target);
-//			Morph.proxy.tickHandlerServer.trackingEntities.add(new EntTracker((EntityLivingBase)event.target, "float", true));
+//			Morph.proxy.tickHandlerServer.trackingEntities.add(new EntTracker((EntityLivingBase)event.target, "float", false));
 //		}
 //		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 //		{

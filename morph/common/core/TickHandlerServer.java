@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -91,7 +92,7 @@ public class TickHandlerServer
 					Entry<String, MorphInfo> e = ite.next();
 					MorphInfo info = e.getValue();
 					
-					EntityPlayer player = world.getPlayerEntityByName(info.playerName);
+					EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(info.playerName);
 					
 					if(info.getMorphing())
 					{
@@ -177,7 +178,7 @@ public class TickHandlerServer
 					
 					for(Ability ability : info.morphAbilities)
 					{
-						if(ability.getParent() != null)
+						if(player != null && ability.getParent() == player || player == null && ability.getParent() != null)
 						{
 							ability.tick();
 						}

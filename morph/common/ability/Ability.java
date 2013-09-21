@@ -8,7 +8,14 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntityMagmaCube;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntitySquid;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class Ability 
 {
@@ -24,10 +31,7 @@ public abstract class Ability
 	
 	public void setParent(EntityLivingBase ent)
 	{
-		if(parent == null)
-		{
-			parent = ent;
-		}
+		parent = ent;
 	}
 	
 	public EntityLivingBase getParent()
@@ -39,15 +43,22 @@ public abstract class Ability
 	public abstract void tick(); // called only when parent != null. parent is not necessarily a player
 	public abstract void kill(); // called when the ability is finally removed, NOT when it is passed on with another morph.
 	public abstract Ability clone();
+	@SideOnly(Side.CLIENT)
+	public abstract void postRender();
 	
 	static
 	{
 		//TODO complete for vanilla mobs
 		mapAbilities(EntityBat.class, new AbilityFly());
-		mapAbilities(EntityBlaze.class, new AbilityFly());
-		mapAbilities(EntityGhast.class, new AbilityFly());
+		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity());
+		mapAbilities(EntityGhast.class, new AbilityFly(), new AbilityFireImmunity());
 		mapAbilities(EntityDragon.class, new AbilityFly());
-		mapAbilities(EntityWither.class, new AbilityFly());
+		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity());
+		mapAbilities(EntityChicken.class, new AbilityFloat(-0.1141748D, true));
+		mapAbilities(EntitySquid.class, new AbilitySwim(false));
+		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity());
+		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity());
+		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity());
 	}
 	
 	public static void mapAbilities(Class<? extends EntityLivingBase> entClass, Ability...abilities)

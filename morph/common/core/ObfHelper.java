@@ -29,6 +29,7 @@ public class ObfHelper
 	public static final String[] compiled 				= new String[] { "t", "field_78812_q", "compiled"	 			}; //ModelRenderer
     public static final String[] cameraZoom				= new String[] { "Y", "field_78503_V", "cameraZoom"				}; //EntityRenderer
     public static final String[] modelBipedMain			= new String[] { "f", "field_77109_a", "modelBipedMain"			}; //RenderPlayer
+    public static final String[] isImmuneToFire			= new String[] { "ag","field_70178_ae", "isImmuneToFire"		}; //Entity
 
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";

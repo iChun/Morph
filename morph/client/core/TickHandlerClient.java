@@ -1075,6 +1075,15 @@ public class TickHandlerClient
 	        }
 			GL11.glPopMatrix();
 		}
+		
+		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
+		{
+			MorphInfoClient morphInfo = e.getValue();
+			for(Ability ability : morphInfo.morphAbilities)
+			{
+				ability.postRender();
+			}
+		}
 	}
 	
     public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick, boolean selected, boolean text)
