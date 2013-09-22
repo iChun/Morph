@@ -11,6 +11,7 @@ import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntitySquid;
@@ -59,6 +60,7 @@ public abstract class Ability
 		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity());
 		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity());
 		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity());
+		mapAbilities(EntitySpider.class, new AbilityClimb());
 	}
 	
 	public static void mapAbilities(Class<? extends EntityLivingBase> entClass, Ability...abilities)
