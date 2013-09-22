@@ -1,6 +1,5 @@
 package morph.common.ability;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class AbilityFly extends Ability {

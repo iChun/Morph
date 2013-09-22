@@ -1,15 +1,5 @@
 package morph.common.ability;
 
-import morph.common.Morph;
-import morph.common.core.ObfHelper;
-import morph.common.morph.MorphInfo;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-
-
 public class AbilityClimb extends Ability {
 
 	@Override
