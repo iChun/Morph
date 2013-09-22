@@ -63,11 +63,29 @@ public abstract class Ability
 	
 	public static void mapAbilities(Class<? extends EntityLivingBase> entClass, Ability...abilities)
 	{
-		ArrayList<Ability> abilityList = new ArrayList<Ability>();
+		ArrayList<Ability> abilityList = abilityMap.get(entClass);
+		if(abilityList == null)
+		{
+			abilityList = new ArrayList<Ability>();
+			abilityMap.put(entClass, abilityList);
+		}
 		for(Ability ability : abilities)
 		{
-			abilityList.add(ability);
+			boolean added = false;
+			for(int i = 0; i < abilityList.size(); i++)
+			{
+				Ability ab = abilityList.get(i);
+				if(ab.getType().equals(ability.getType()))
+				{
+					abilityList.remove(i);
+					abilityList.add(i, ability);
+					added = true;
+				}
+			}
+			if(!added)
+			{
+				abilityList.add(ability);
+			}
 		}
-		abilityMap.put(entClass, abilityList);
 	}
 }
