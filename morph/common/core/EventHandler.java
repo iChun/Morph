@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.EnumStatus;
@@ -99,6 +100,11 @@ public class EventHandler
 			event.setCanceled(true);
 			return;
 		}
+		
+	    float bossHealthScale = BossStatus.healthScale;
+	    int bossStatusBarTime = BossStatus.statusBarLength;
+	    String bossName = BossStatus.bossName;
+	    boolean randVar = BossStatus.field_82825_d;
 		
 		Morph.proxy.tickHandlerClient.renderingPlayer++;
 
@@ -373,6 +379,11 @@ public class EventHandler
 			ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
 		}
 		Morph.proxy.tickHandlerClient.renderingPlayer--;
+		
+	    BossStatus.healthScale = bossHealthScale;
+	    BossStatus.statusBarLength = bossStatusBarTime;
+	    BossStatus.bossName = bossName;
+	    BossStatus.field_82825_d = randVar;
 	}
 	
 	@SideOnly(Side.CLIENT)

@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -824,6 +825,11 @@ public class TickHandlerClient
 			mc.thePlayer.eyeHeight = eyeHeight;
 		}
 		
+	    float bossHealthScale = BossStatus.healthScale;
+	    int bossStatusBarTime = BossStatus.statusBarLength;
+	    String bossName = BossStatus.bossName;
+	    boolean randVar = BossStatus.field_82825_d;
+		
 		if(selectorTimer > 0 || selectorShow)
 		{
 			GL11.glPushMatrix();
@@ -1077,6 +1083,11 @@ public class TickHandlerClient
 	        }
 			GL11.glPopMatrix();
 		}
+		
+	    BossStatus.healthScale = bossHealthScale;
+	    BossStatus.statusBarLength = bossStatusBarTime;
+	    BossStatus.bossName = bossName;
+	    BossStatus.field_82825_d = randVar;
 		
 		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
 		{
