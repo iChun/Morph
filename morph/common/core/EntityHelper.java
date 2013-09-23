@@ -42,7 +42,7 @@ public class EntityHelper
 	
 	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill)
 	{
-		if(!(Morph.childMorphs != 0 || Morph.childMorphs == 0 && !living.isChild()) && (Morph.playerMorphs != 0 || Morph.playerMorphs == 0 && !(living instanceof EntityPlayer)) && (Morph.bossMorphs != 0 || Morph.bossMorphs == 0 && !(living instanceof IBossDisplayData)))
+		if(Morph.childMorphs == 0 && living.isChild() || Morph.playerMorphs == 0 && living instanceof EntityPlayer || Morph.bossMorphs == 0 && living instanceof IBossDisplayData)
 		{
 			return false;
 		}

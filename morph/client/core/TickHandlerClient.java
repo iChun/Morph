@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.EnumChatFormatting;
@@ -373,6 +374,7 @@ public class TickHandlerClient
 						{
 							info.nextState.entInstance.prevRotationYaw += 180F;
 							info.nextState.entInstance.rotationYaw += 180F;
+							((EntityDragon)info.nextState.entInstance).deathTicks = info.player.deathTime;
 						}
 						
 						for(int i = 0; i < 5; i++)
