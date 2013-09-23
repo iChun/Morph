@@ -131,6 +131,7 @@ public class ConnectionHandler
 		{
 			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 			player.setPosition(player.posX, player.posY, player.posZ);
+			player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(player.username) ? player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 		}
 	}
 
@@ -148,6 +149,7 @@ public class ConnectionHandler
 		{
 			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 			player.setPosition(player.posX, player.posY, player.posZ);
+			player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(player.username) ? player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 		}
 	}
 
@@ -160,6 +162,7 @@ public class ConnectionHandler
 		{
 			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 			player.setPosition(player.posX, player.posY, player.posZ);
+			player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(player.username) ? player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 		}
 	}
 

@@ -7,10 +7,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySnowman;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
@@ -51,7 +53,7 @@ public abstract class Ability
 	{
 		//TODO complete for vanilla mobs
 		mapAbilities(EntityBat.class, new AbilityFly());
-		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity());
+		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityWaterAllergy());
 		mapAbilities(EntityGhast.class, new AbilityFly(), new AbilityFireImmunity());
 		mapAbilities(EntityDragon.class, new AbilityFly());
 		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity());
@@ -61,6 +63,8 @@ public abstract class Ability
 		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity());
 		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity());
 		mapAbilities(EntitySpider.class, new AbilityClimb());
+		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy());
+		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
 	}
 	
 	public static void mapAbilities(Class<? extends EntityLivingBase> entClass, Ability...abilities)

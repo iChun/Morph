@@ -21,6 +21,7 @@ public class AbilitySwim extends Ability {
 	public AbilitySwim(boolean airBreather)
 	{
 		canSurviveOutOfWater = airBreather;
+		air = 8008135;
 	}
 	
 	@Override
@@ -32,6 +33,10 @@ public class AbilitySwim extends Ability {
 	@Override
 	public void tick() 
 	{
+		if(air == 8008135)
+		{
+			air = getParent().getAir();
+		}
 		boolean flying = false;
 		if(getParent().isInWater())
 		{
