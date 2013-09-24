@@ -297,22 +297,6 @@ public class TickHandlerClient
 					info.prevState.entInstance = info.player;
 				}
 				
-				if(info.morphProgress < 10)
-				{
-					if(info.prevState.entInstance != mc.thePlayer)
-					{
-						info.prevState.entInstance.onUpdate();
-					}
-				}
-				else if(info.morphProgress > 70)
-				{
-					if(info.nextState.entInstance != mc.thePlayer)
-					{
-						info.nextState.entInstance.onUpdate();
-//						ObfHelper.forceUpdateEntityActionState(info.nextState.entInstance.getClass(), info.nextState.entInstance);
-					}
-				}
-				
 				if(info.player != null)
 				{
 					for(Ability ability : info.morphAbilities)
@@ -326,6 +310,35 @@ public class TickHandlerClient
 					if(info.prevState.entInstance != null && info.nextState.entInstance != null)
 					{
 						info.player.ignoreFrustumCheck = true;
+						
+						if(info.morphProgress < 10)
+						{
+							if(info.prevState.entInstance != mc.thePlayer)
+							{
+								info.prevState.entInstance.lastTickPosY -= info.player.yOffset;
+								info.prevState.entInstance.prevPosY -= info.player.yOffset;
+								info.prevState.entInstance.posY -= info.player.yOffset;
+								info.prevState.entInstance.onUpdate();
+								info.prevState.entInstance.lastTickPosY += info.player.yOffset;
+								info.prevState.entInstance.prevPosY += info.player.yOffset;
+								info.prevState.entInstance.posY += info.player.yOffset;
+							}
+						}
+						else if(info.morphProgress > 70)
+						{
+							if(info.nextState.entInstance != mc.thePlayer)
+							{
+								info.nextState.entInstance.lastTickPosY -= info.player.yOffset;
+								info.nextState.entInstance.prevPosY -= info.player.yOffset;
+								info.nextState.entInstance.posY -= info.player.yOffset;
+								info.nextState.entInstance.onUpdate();
+								info.nextState.entInstance.lastTickPosY += info.player.yOffset;
+								info.nextState.entInstance.prevPosY += info.player.yOffset;
+								info.nextState.entInstance.posY += info.player.yOffset;
+//								ObfHelper.forceUpdateEntityActionState(info.nextState.entInstance.getClass(), info.nextState.entInstance);
+							}
+						}
+
 						
 						info.prevState.entInstance.prevRotationYawHead = info.nextState.entInstance.prevRotationYawHead = info.player.prevRotationYawHead;
 						info.prevState.entInstance.prevRotationYaw = info.nextState.entInstance.prevRotationYaw = info.player.prevRotationYaw;

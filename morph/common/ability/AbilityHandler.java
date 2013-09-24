@@ -9,13 +9,18 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntitySnowman;
 import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntitySquid;
@@ -38,18 +43,23 @@ public class AbilityHandler
 		
 		//TODO complete for vanilla mobs
 		mapAbilities(EntityBat.class, new AbilityFly());
-		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityWaterAllergy());
-		mapAbilities(EntityGhast.class, new AbilityFly(), new AbilityFireImmunity());
-		mapAbilities(EntityDragon.class, new AbilityFly());
-		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity());
+		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
 		mapAbilities(EntityChicken.class, new AbilityFloat(-0.1141748D, true));
-		mapAbilities(EntitySquid.class, new AbilitySwim(false));
-		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity());
-		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity());
-		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity());
-		mapAbilities(EntitySpider.class, new AbilityClimb());
-		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy());
+		mapAbilities(EntityCreeper.class, new AbilityHostile());
+		mapAbilities(EntityDragon.class, new AbilityFly(), new AbilityHostile());
+		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy(), new AbilityHostile());
+		mapAbilities(EntityGhast.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityGiantZombie.class, new AbilityHostile());
+		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntitySilverfish.class, new AbilityHostile());
+		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntitySlime.class, new AbilityHostile());
 		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
+		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
+		mapAbilities(EntitySquid.class, new AbilitySwim(false));
+		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityZombie.class, new AbilityHostile());
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)

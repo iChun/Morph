@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import morph.api.Ability;
 import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
+import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -25,6 +27,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,6 +47,7 @@ import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -604,6 +608,56 @@ public class EventHandler
 					}
 				}
 				event.setCanceled(true);
+			}
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event)
+	{
+		if(Morph.hostileAbilityMode > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(event.entityLiving.getClass());
+			boolean hostile = false;
+			for(Ability ab : mobAbilities)
+			{
+				if(ab.getType().equalsIgnoreCase("hostile"))
+				{
+					hostile = true;
+					break;
+				}
+			}
+			if(hostile && event.target instanceof EntityPlayer)
+			{
+				EntityPlayer player = (EntityPlayer)event.target;
+				if(Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.username))
+				{
+					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+					if(!info.getMorphing() && info.morphProgress >= 80)
+					{
+						boolean playerHostile = false;
+						for(Ability ab: info.morphAbilities)
+						{
+							if(ab.getType().equalsIgnoreCase("hostile"))
+							{
+								playerHostile = true;
+								break;
+							}
+						}
+						if(hostile && playerHostile)
+						{
+							if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.hostileAbilityMode == 2)
+							{
+								return;
+							}
+							event.entityLiving.setRevengeTarget(null);
+							if(event.entityLiving instanceof EntityLiving)
+							{
+								((EntityLiving)event.entityLiving).setAttackTarget(null);
+							}
+						}
+					}
+				}
 			}
 		}
 	}

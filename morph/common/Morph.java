@@ -71,6 +71,7 @@ public class Morph
 	public static int instaMorph;
 	public static int abilityTracker;
 	public static int abilities;
+	public static int hostileAbilityMode;
 	
 	public static int keySelectorUp;
 	public static int keySelectorDown;
@@ -111,6 +112,8 @@ public class Morph
 		
 		abilityTracker = addCommentAndReturnInt(config, "gameplay", "abilityTracker", "Allow the mod to randomly track mobs to scan for abilities?\n0 = No\n1 = Yes", 1);
 		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
+		
+		hostileAbilityMode = addCommentAndReturnInt(config, "gameplay", "hostileAbilityMode", "Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.", 0);
 		
 		if(isClient)
 		{
