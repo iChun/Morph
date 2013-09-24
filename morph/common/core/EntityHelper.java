@@ -40,6 +40,11 @@ public class EntityHelper
 	
 	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill)
 	{
+		return morphPlayer(player, living, kill, false);
+	}
+	
+	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill, boolean forced)
+	{
 		if(Morph.childMorphs == 0 && living.isChild() || Morph.playerMorphs == 0 && living instanceof EntityPlayer || Morph.bossMorphs == 0 && living instanceof IBossDisplayData)
 		{
 			return false;
@@ -104,7 +109,7 @@ public class EntityHelper
 			return false;
 		}
 		
-		if(Morph.instaMorph == 1)
+		if(Morph.instaMorph == 1 || forced)
 		{
 			MorphInfo info2 = new MorphInfo(player.username, prevState, nextState);
 			info2.setMorphing(true);

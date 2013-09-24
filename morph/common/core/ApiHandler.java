@@ -71,7 +71,7 @@ public class ApiHandler
 	
 	public static boolean forceMorph(EntityPlayerMP player, EntityLivingBase living)
 	{
-		return EntityHelper.morphPlayer(player, living, false);
+		return EntityHelper.morphPlayer(player, living, false, true);
 	}
 	
 	public static void forceDemorph(EntityPlayerMP player)
