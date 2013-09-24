@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  * Abstract ability class.
  * Think of it like the Entity class, extend it to make your own types.
+ * Some abilities may seem more like traits, but let's just call it an ability for simplicity's sake.
  * Please take note that entities inherit their superclass' abilities.
  * @author iChun
  *
@@ -136,6 +137,21 @@ public abstract class Ability
 		try {
 			Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("removeAbility", Class.class, String.class).invoke(null, entClass, type);
 		} catch (Exception e) {
+		}
+	}
+	
+	/**
+	 * Checks to see if the entity class has a mapped ability type.
+	 * @param entClass
+	 * @param Ability type
+	 * @return Entity class has ability type
+	 */
+	public static boolean hasAbility(Class<? extends EntityLivingBase> entClass, String type)
+	{
+		try {
+			return (Boolean)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("hasAbility", Class.class, String.class).invoke(null, entClass, type);
+		} catch (Exception e) {
+			return false;
 		}
 	}
 }

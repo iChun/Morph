@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import morph.api.Ability;
+import morph.common.Morph;
 import morph.common.core.SessionState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -38,6 +39,8 @@ public class AbilityHandler
 		registerAbility("fly"			, AbilityFly.class			);
 		registerAbility("float"			, AbilityFloat.class		);
 		registerAbility("fireImmunity"	, AbilityFireImmunity.class	);
+		registerAbility("hostile"		, AbilityHostile.class		);
+		registerAbility("sunburn"		, AbilitySunburn.class		);
 		registerAbility("swim"			, AbilitySwim.class			);
 		registerAbility("waterAllergy"	, AbilityWaterAllergy.class	);
 		
@@ -53,13 +56,13 @@ public class AbilityHandler
 		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntitySilverfish.class, new AbilityHostile());
-		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile(), new AbilitySunburn());
 		mapAbilities(EntitySlime.class, new AbilityHostile());
 		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
 		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
 		mapAbilities(EntitySquid.class, new AbilitySwim(false));
 		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
-		mapAbilities(EntityZombie.class, new AbilityHostile());
+		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
@@ -81,6 +84,7 @@ public class AbilityHandler
 			if(!stringToClassMap.containsKey(ability.getType()))
 			{
 				registerAbility(ability.getType(), ability.getClass());
+				Morph.console("Ability type \"" + ability.getType() + "\" is not registered! Registering.", true);
 			}
 			for(int i = 0; i < abilityList.size(); i++)
 			{
@@ -113,6 +117,19 @@ public class AbilityHandler
 				}
 			}
 		}
+	}
+	
+	public static boolean hasAbility(Class<? extends EntityLivingBase> entClass, String type)
+	{
+		ArrayList<Ability> abilities = getEntityAbilities(entClass);
+		for(Ability ability : abilities)
+		{
+			if(ability.getType().equalsIgnoreCase(type))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
