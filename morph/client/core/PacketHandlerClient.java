@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import morph.api.Ability;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
-import morph.common.ability.Ability;
-import morph.common.core.EntityHelper;
+import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
@@ -111,7 +111,7 @@ public class PacketHandlerClient
 					}
 					else
 					{
-						ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(info.nextState.entInstance.getClass());
+						ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
 						info.morphAbilities = new ArrayList<Ability>();
 						for(Ability ability : newAbilities)
 						{

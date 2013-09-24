@@ -5,10 +5,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import morph.api.Ability;
 import morph.client.entity.EntityMorphAcquisition;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
-import morph.common.ability.Ability;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -164,6 +164,10 @@ public class MapPacketHandler
 
 					Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
 					break;
+				}
+				case 2:
+				{
+					SessionState.abilities = stream.readBoolean();
 				}
 			}
 		}

@@ -10,14 +10,14 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import morph.api.Ability;
 import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.EntityRendererProxy;
 import morph.client.render.RenderMorph;
 import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
-import morph.common.ability.Ability;
-import morph.common.core.EntityHelper;
+import morph.common.ability.AbilityHandler;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -239,7 +239,7 @@ public class TickHandlerClient
 							info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
 							info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 							
-							ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(info.nextState.entInstance.getClass());
+							ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
 							ArrayList<Ability> oldAbilities = info.morphAbilities;
 							info.morphAbilities = new ArrayList<Ability>();
 							for(Ability ability : newAbilities)

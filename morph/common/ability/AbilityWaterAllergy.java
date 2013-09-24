@@ -1,6 +1,8 @@
 package morph.common.ability;
 
+import morph.api.Ability;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 
 public class AbilityWaterAllergy extends Ability {
@@ -32,8 +34,11 @@ public class AbilityWaterAllergy extends Ability {
 	}
 
 	@Override
-	public void postRender() 
-	{
-	}
+	public void postRender() {}
 
+	@Override
+	public void save(NBTTagCompound tag) {}
+
+	@Override
+	public void load(NBTTagCompound tag) {}
 }

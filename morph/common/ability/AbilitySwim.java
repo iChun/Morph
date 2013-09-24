@@ -1,5 +1,6 @@
 package morph.common.ability;
 
+import morph.api.Ability;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -8,6 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -15,8 +17,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class AbilitySwim extends Ability {
 
-	public final boolean canSurviveOutOfWater;
+	public boolean canSurviveOutOfWater;
 	public int air;
+	
+	public AbilitySwim()
+	{
+		canSurviveOutOfWater = false;
+		air = 8008135;
+	}
 	
 	public AbilitySwim(boolean airBreather)
 	{
@@ -123,4 +131,17 @@ public class AbilitySwim extends Ability {
         tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + 0), (double)0.0D, (double)((float)(par3 + 0) * f), (double)((float)(par4 + 0) * f1));
         tessellator.draw();
     }
+	
+	@Override
+	public void save(NBTTagCompound tag) 
+	{
+		tag.setBoolean("canSurviveOutOfWater", canSurviveOutOfWater);
+	}
+
+	@Override
+	public void load(NBTTagCompound tag) 
+	{
+		canSurviveOutOfWater = tag.getBoolean("canSurviveOutOfWater");
+	}
+
 }

@@ -4,7 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.util.DamageSource;
-import morph.common.ability.Ability;
+import morph.api.Ability;
 import morph.common.entity.EntTracker;
 
 public class AbilityTrackerFloat extends AbilityTracker 

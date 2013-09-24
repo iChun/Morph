@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import morph.api.Ability;
 import morph.common.Morph;
-import morph.common.ability.Ability;
+import morph.common.ability.AbilityHandler;
 import morph.common.entity.EntTracker;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -108,7 +109,7 @@ public class TickHandlerServer
 								player.setPosition(player.posX, player.posY, player.posZ);
 								player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 								
-								ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(info.nextState.entInstance.getClass());
+								ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
 								ArrayList<Ability> oldAbilities = info.morphAbilities;
 								info.morphAbilities = new ArrayList<Ability>();
 								for(Ability ability : newAbilities)

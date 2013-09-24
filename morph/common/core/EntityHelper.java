@@ -3,11 +3,9 @@ package morph.common.core;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import morph.common.Morph;
-import morph.common.ability.Ability;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -175,25 +173,6 @@ public class EntityHelper
 			return true;
 		}
 		return false;
-	}
-	
-	public static ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
-	{
-		ArrayList<Ability> abilities = Ability.abilityMap.get(entClass);
-		if(abilities == null)
-		{
-			Class superClz = entClass.getSuperclass();
-			if(superClz != EntityLivingBase.class)
-			{
-				Ability.abilityMap.put(entClass, getEntityAbilities(superClz));
-				return Ability.abilityMap.get(entClass);
-			}
-		}
-		else
-		{
-			return abilities;
-		}
-		return new ArrayList<Ability>();
 	}
 	
 	/*

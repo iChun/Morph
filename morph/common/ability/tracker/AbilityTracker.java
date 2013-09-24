@@ -2,7 +2,7 @@ package morph.common.ability.tracker;
 
 import java.util.HashMap;
 
-import morph.common.ability.Ability;
+import morph.api.Ability;
 import morph.common.entity.EntTracker;
 
 public abstract class AbilityTracker 

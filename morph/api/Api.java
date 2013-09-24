@@ -14,7 +14,7 @@ public final class Api
 	public static boolean hasMorph(String playerName, boolean isClient)
 	{
 		try {
-			return (Boolean)Class.forName("morph.common.core.ApiHandler").getMethod("hasMorph", String.class, boolean.class).invoke(null, playerName, isClient);
+			return (Boolean)Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("hasMorph", String.class, boolean.class).invoke(null, playerName, isClient);
 		} catch (Exception e) {
 			return false;
 		}
@@ -29,7 +29,7 @@ public final class Api
 	public static float morphProgress(String playerName, boolean isClient)
 	{
 		try {
-			return (Float)Class.forName("morph.common.core.ApiHandler").getMethod("morphProgress", String.class, boolean.class).invoke(null, playerName, isClient);
+			return (Float)Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("morphProgress", String.class, boolean.class).invoke(null, playerName, isClient);
 		} catch (Exception e) {
 			return 1.0F;
 		}
@@ -44,7 +44,7 @@ public final class Api
 	public static EntityLivingBase getMorphEntity(String playerName, boolean isClient)
 	{
 		try {
-			return (EntityLivingBase)Class.forName("morph.common.core.ApiHandler").getMethod("getMorphEntity", String.class, boolean.class).invoke(null, playerName, isClient);
+			return (EntityLivingBase)Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("getMorphEntity", String.class, boolean.class).invoke(null, playerName, isClient);
 		} catch (Exception e) {
 			return null;
 		}
@@ -58,7 +58,7 @@ public final class Api
 	public static void blacklistEntity(Class<? extends EntityLivingBase> clz)
 	{
 		try {
-			Class.forName("morph.common.core.ApiHandler").getMethod("blacklistEntity", Class.class).invoke(null, clz);
+			Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("blacklistEntity", Class.class).invoke(null, clz);
 		} catch (Exception e) {
 		}
 	}
@@ -73,7 +73,7 @@ public final class Api
 	public static boolean forceMorph(EntityPlayerMP player, EntityLivingBase living)
 	{
 		try {
-			return (Boolean)Class.forName("morph.common.core.ApiHandler").getMethod("forceMorph", EntityPlayerMP.class, EntityLivingBase.class).invoke(null, player, living);
+			return (Boolean)Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("forceMorph", EntityPlayerMP.class, EntityLivingBase.class).invoke(null, player, living);
 		} catch (Exception e) {
 			return false;
 		}
@@ -87,7 +87,7 @@ public final class Api
 	public static void forceDemorph(EntityPlayerMP player)
 	{
 		try {
-			Class.forName("morph.common.core.ApiHandler").getMethod("forceDemorph", EntityPlayerMP.class).invoke(null, player);
+			Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("forceDemorph", EntityPlayerMP.class).invoke(null, player);
 		} catch (Exception e) {
 		}
 	}

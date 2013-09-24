@@ -1,12 +1,20 @@
 package morph.common.ability;
 
+import morph.api.Ability;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 
 public class AbilityFloat extends Ability {
 
-	public final double terminalVelocity;
-	public final boolean negateFallDistance;
+	public double terminalVelocity;
+	public boolean negateFallDistance;
+	
+	public AbilityFloat()
+	{
+		terminalVelocity = -1000D;
+		negateFallDistance = false;
+	}
 	
 	public AbilityFloat(double termVelo, boolean negateFall)
 	{
@@ -50,8 +58,20 @@ public class AbilityFloat extends Ability {
 	}
 
 	@Override
-	public void postRender() 
+	public void postRender() {}
+
+	@Override
+	public void save(NBTTagCompound tag) 
 	{
+		tag.setDouble("terminalVelocity", terminalVelocity);
+		tag.setBoolean("negateFallDistance", negateFallDistance);
+	}
+
+	@Override
+	public void load(NBTTagCompound tag) 
+	{
+		terminalVelocity = tag.getDouble("terminalVelocity");
+		negateFallDistance = tag.getBoolean("negateFallDistance");
 	}
 
 }

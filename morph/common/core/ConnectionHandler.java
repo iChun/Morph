@@ -1,5 +1,8 @@
 package morph.common.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -13,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -77,6 +81,20 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
 	{
+		try
+		{
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			DataOutputStream stream = new DataOutputStream(bytes);
+
+			stream.writeBoolean(Morph.abilities == 1);
+			
+			PacketDispatcher.sendPacketToPlayer(new Packet131MapData((short)Morph.getNetId(), (short)2, bytes.toByteArray()), (Player)player);
+		}
+		catch(IOException e)
+		{
+			
+		}
+		
 		ArrayList list = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username);
 		
 		if(Morph.proxy.tickHandlerServer.saveData != null)

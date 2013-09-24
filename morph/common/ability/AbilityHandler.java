@@ -3,6 +3,8 @@ package morph.common.ability;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import morph.api.Ability;
+import morph.common.core.SessionState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
@@ -17,40 +19,23 @@ import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntitySquid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class Ability 
+public class AbilityHandler 
 {
+
 	public final static String[] trackableAbilities = new String[] { "fly", "float", "swim", "fireImmunity" };
-	public final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>>();
-	
-	private EntityLivingBase parent;
-	
-	public Ability()
-	{
-		parent = null;
-	}
-	
-	public void setParent(EntityLivingBase ent)
-	{
-		parent = ent;
-	}
-	
-	public EntityLivingBase getParent()
-	{
-		return parent;
-	}
-	
-	public abstract String getType();
-	public abstract void tick(); // called only when parent != null. parent is not necessarily a player
-	public abstract void kill(); // called when the ability is finally removed, NOT when it is passed on with another morph.
-	public abstract Ability clone();
-	@SideOnly(Side.CLIENT)
-	public abstract void postRender();
+	private final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>>();
+	private final static HashMap<String, Class> stringToClassMap = new HashMap<String, Class>();
 	
 	static
 	{
+		registerAbility("climb"			, AbilityClimb.class		);
+		registerAbility("fly"			, AbilityFly.class			);
+		registerAbility("float"			, AbilityFloat.class		);
+		registerAbility("fireImmunity"	, AbilityFireImmunity.class	);
+		registerAbility("swim"			, AbilitySwim.class			);
+		registerAbility("waterAllergy"	, AbilityWaterAllergy.class	);
+		
 		//TODO complete for vanilla mobs
 		mapAbilities(EntityBat.class, new AbilityFly());
 		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityWaterAllergy());
@@ -66,7 +51,12 @@ public abstract class Ability
 		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy());
 		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
 	}
-	
+
+	public static void registerAbility(String name, Class<? extends Ability> clz)
+	{
+		stringToClassMap.put(name, clz);
+	}
+
 	public static void mapAbilities(Class<? extends EntityLivingBase> entClass, Ability...abilities)
 	{
 		ArrayList<Ability> abilityList = abilityMap.get(entClass);
@@ -78,6 +68,10 @@ public abstract class Ability
 		for(Ability ability : abilities)
 		{
 			boolean added = false;
+			if(!stringToClassMap.containsKey(ability.getType()))
+			{
+				registerAbility(ability.getType(), ability.getClass());
+			}
 			for(int i = 0; i < abilityList.size(); i++)
 			{
 				Ability ab = abilityList.get(i);
@@ -94,4 +88,43 @@ public abstract class Ability
 			}
 		}
 	}
+	
+	public static void removeAbility(Class<? extends EntityLivingBase> entClass, String type)
+	{
+		ArrayList<Ability> abilityList = abilityMap.get(entClass);
+		if(abilityList != null)
+		{
+			for(int i = abilityList.size() - 1; i >= 0; i--)
+			{
+				Ability ability = abilityList.get(i);
+				if(ability.getType().equalsIgnoreCase(type))
+				{
+					abilityList.remove(i);
+				}
+			}
+		}
+	}
+
+	public static ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
+	{
+		if(SessionState.abilities)
+		{
+			ArrayList<Ability> abilities = abilityMap.get(entClass);
+			if(abilities == null)
+			{
+				Class superClz = entClass.getSuperclass();
+				if(superClz != EntityLivingBase.class)
+				{
+					abilityMap.put(entClass, getEntityAbilities(superClz));
+					return abilityMap.get(entClass);
+				}
+			}
+			else
+			{
+				return abilities;
+			}
+		}
+		return new ArrayList<Ability>();
+	}
+
 }

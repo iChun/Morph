@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import morph.api.Ability;
 import morph.common.Morph;
-import morph.common.ability.Ability;
-import morph.common.core.EntityHelper;
+import morph.common.ability.AbilityHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
@@ -107,7 +107,7 @@ public class MorphInfo
 		morphing = true;
 		morphProgress = 80;
 		
-		ArrayList<Ability> newAbilities = EntityHelper.getEntityAbilities(nextState.entInstance.getClass());
+		ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(nextState.entInstance.getClass());
 		morphAbilities = new ArrayList<Ability>();
 		for(Ability ability : newAbilities)
 		{

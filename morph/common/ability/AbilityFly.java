@@ -1,6 +1,8 @@
 package morph.common.ability;
 
+import morph.api.Ability;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class AbilityFly extends Ability {
 
@@ -51,8 +53,12 @@ public class AbilityFly extends Ability {
 	}
 
 	@Override
-	public void postRender() 
-	{
-	}
+	public void postRender() {}
+
+	@Override
+	public void save(NBTTagCompound tag) {}
+
+	@Override
+	public void load(NBTTagCompound tag) {}
 
 }

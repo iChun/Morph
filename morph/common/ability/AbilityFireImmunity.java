@@ -1,20 +1,18 @@
 package morph.common.ability;
 
+import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 
 public class AbilityFireImmunity extends Ability {
 
-	public AbilityFireImmunity()
-	{
-	}
-	
 	@Override
 	public String getType() 
 	{
@@ -88,8 +86,12 @@ public class AbilityFireImmunity extends Ability {
 	}
 
 	@Override
-	public void postRender() 
-	{
-	}
+	public void postRender() {}
+
+	@Override
+	public void save(NBTTagCompound tag) {}
+
+	@Override
+	public void load(NBTTagCompound tag) {}
 
 }

@@ -1,6 +1,6 @@
 package morph.common.ability.tracker;
 
-import morph.common.ability.Ability;
+import morph.api.Ability;
 import morph.common.entity.EntTracker;
 
 public class AbilityTrackerDummy extends AbilityTracker 

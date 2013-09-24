@@ -66,8 +66,11 @@ public class Morph
 	public static int childMorphs;
 	public static int playerMorphs;
 	public static int bossMorphs;
+	
 	public static int loseMorphsOnDeath;
 	public static int instaMorph;
+	public static int abilityTracker;
+	public static int abilities;
 	
 	public static int keySelectorUp;
 	public static int keySelectorDown;
@@ -105,6 +108,9 @@ public class Morph
 		
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
+		
+		abilityTracker = addCommentAndReturnInt(config, "gameplay", "abilityTracker", "Allow the mod to randomly track mobs to scan for abilities?\n0 = No\n1 = Yes", 1);
+		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
 		
 		if(isClient)
 		{
