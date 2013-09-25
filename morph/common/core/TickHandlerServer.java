@@ -111,7 +111,7 @@ implements ITickHandler
 								{
 									EntityLivingBase living2 = (EntityLivingBase)ent1;
 									
-									EntTracker entTracker = new EntTracker(living2, "climb", true);
+									EntTracker entTracker = new EntTracker(living2, AbilityTracker.trackableAbilities[world.rand.nextInt(AbilityTracker.trackableAbilities.length)], true);
 	
 									if(!AbilityHandler.hasAbility(living2.getClass(), entTracker.abilityTracker.abilityTracked) && getTrackerResults(living2.getClass()).size() < 10)
 									{
