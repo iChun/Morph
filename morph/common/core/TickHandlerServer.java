@@ -97,24 +97,25 @@ implements ITickHandler
 
 				if(activeEntTracker == null)
 				{
-					if(world.loadedEntityList.size() > 0)
+					if(world.loadedEntityList.size() > 0 && world.getWorldTime() % 102 == 0)
 					{
 						Entity ent = (Entity)world.loadedEntityList.get(world.rand.nextInt(world.loadedEntityList.size()));
 						if(ent instanceof EntityLivingBase && !(ent instanceof EntityPlayer))
 						{
 							EntityLivingBase living = (EntityLivingBase)ent;
-							EntTracker entTracker = new EntTracker(living, AbilityTracker.trackableAbilities[world.rand.nextInt(AbilityTracker.trackableAbilities.length)], true);
-
-							if(!AbilityHandler.hasAbility(living.getClass(), entTracker.abilityTracker.abilityTracked) && getTrackerResults(living.getClass()).size() < 10)
+							NBTTagCompound tag = new NBTTagCompound();
+							if(living.writeToNBTOptional(tag))
 							{
-								NBTTagCompound tag = new NBTTagCompound();
-								if(living.writeToNBTOptional(tag))
+								Entity ent1 = EntityList.createEntityFromNBT(tag, world);
+								if(ent1 instanceof EntityLivingBase)
 								{
-									Entity ent1 = EntityList.createEntityFromNBT(tag, world);
-									if(ent1 instanceof EntityLivingBase)
+									EntityLivingBase living2 = (EntityLivingBase)ent1;
+									
+									EntTracker entTracker = new EntTracker(living2, "climb", true);
+	
+									if(!AbilityHandler.hasAbility(living2.getClass(), entTracker.abilityTracker.abilityTracked) && getTrackerResults(living2.getClass()).size() < 10)
 									{
-										EntityLivingBase living2 = (EntityLivingBase)ent1;
-										if(entTracker.abilityTracker.shouldTrack(living.worldObj, living2))
+										if(entTracker.abilityTracker.shouldTrack(living2.worldObj, living2))
 										{
 											ChunkCoordinates chunk = world.getSpawnPoint();
 
@@ -147,12 +148,13 @@ implements ITickHandler
 												entTracker.abilityTracker.posXUsed = posX;
 												entTracker.abilityTracker.posZUsed = posZ;
 												entTracker.trackedEnt.setPosition(posX + 0.5D, 246.1D, posZ + 0.5D);
+												
+												entTracker.abilityTracker.initialize();
 
 												world.spawnEntityInWorld(living2);
 
 												activeEntTracker = entTracker;
 											}
-											entTracker.abilityTracker.initialize();
 										}
 									}
 								}
@@ -170,6 +172,14 @@ implements ITickHandler
 					{
 						activeEntTracker.kill();
 
+						for(int i = -3; i <= 3; i++)
+						{
+							for(int k = -3; k <= 3; k++)
+							{
+								world.setBlockToAir(activeEntTracker.abilityTracker.posXUsed + i, 245, activeEntTracker.abilityTracker.posZUsed + k);
+							}
+						}
+						
 						ArrayList<AbilityTracker> results = getTrackerResults(activeEntTracker.trackedEnt.getClass());
 						results.add(activeEntTracker.abilityTracker);
 

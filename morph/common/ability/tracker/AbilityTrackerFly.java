@@ -3,10 +3,9 @@ package morph.common.ability.tracker;
 import morph.api.Ability;
 import morph.common.ability.AbilityFly;
 import morph.common.entity.EntTracker;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemInWorldManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.FakePlayer;
 
 public class AbilityTrackerFly extends AbilityTracker 
 {
@@ -36,7 +35,7 @@ public class AbilityTrackerFly extends AbilityTracker
 	{
 		if(entTracker.trackTimer == 200 && entTracker.simulated)
 		{
-			EntityPlayerMP player = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), entTracker.trackedEnt.worldObj, "MorphEntTracker", new ItemInWorldManager(entTracker.trackedEnt.worldObj));
+			EntityPlayer player = new FakePlayer(entTracker.trackedEnt.worldObj, "MorphEntTracker");
 			player.setLocationAndAngles(entTracker.trackedEnt.posX + entTracker.trackedEnt.getRNG().nextDouble() * 10D - 5D, entTracker.trackedEnt.boundingBox.maxY + entTracker.trackedEnt.getRNG().nextDouble() * 4D, entTracker.trackedEnt.posZ + entTracker.trackedEnt.getRNG().nextDouble() * 10D - 5D, 0.0F, 0.0F);
 			entTracker.trackedEnt.attackEntityFrom(DamageSource.causePlayerDamage(player), 1);
 		}
