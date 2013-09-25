@@ -30,6 +30,10 @@ public class AbilityTrackerFloat extends AbilityTracker
 	@Override
 	public void trackAbility() 
 	{
+		if(entTracker.trackedEnt.onGround)
+		{
+			terminalTime = 0;
+		}
 		if(!entTracker.trackedEnt.onGround && !entTracker.trackedEnt.isCollidedHorizontally)
 		{
 			if(prevMotionY != entTracker.trackedEnt.motionY && Math.abs(entTracker.trackedEnt.motionY - prevMotionY) > 0.001D)
@@ -40,7 +44,7 @@ public class AbilityTrackerFloat extends AbilityTracker
 			else
 			{
 				terminalTime++;
-				if(terminalTime >= 10 && prevMotionY < 0.05D)
+				if(terminalTime >= 10 && prevMotionY < -0.05D)
 				{
 					terminalVelo = entTracker.trackedEnt.motionY;
 					setHasAbility(true);
@@ -62,7 +66,7 @@ public class AbilityTrackerFloat extends AbilityTracker
 	@Override
 	public int trackingTime() 
 	{
-		return entTracker.simulated ? 240 : 200; // 20s
+		return entTracker.simulated ? 40 : 200; // 20s
 	}
 
 }

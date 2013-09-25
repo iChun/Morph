@@ -2,21 +2,24 @@ package morph.common;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import morph.api.Api;
 import morph.client.core.ClientProxy;
 import morph.client.core.PacketHandlerClient;
+import morph.common.ability.AbilityHandler;
 import morph.common.core.CommonProxy;
 import morph.common.core.ConnectionHandler;
 import morph.common.core.MapPacketHandler;
 import morph.common.core.ObfHelper;
 import morph.common.core.PacketHandlerServer;
+import morph.common.core.SessionState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.Configuration;
@@ -53,7 +56,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 				)
 public class Morph 
 {
-	public static final String version = "0.2.3";
+	public static final String version = "0.2.4";
 	
 	@Instance("Morph")
 	public static Morph instance;
@@ -62,6 +65,8 @@ public class Morph
 	public static CommonProxy proxy;
 	
 	private static Logger logger;
+	
+	public static File configFolder;
 	
 	public static int childMorphs;
 	public static int playerMorphs;
@@ -99,6 +104,8 @@ public class Morph
 		
 		boolean isClient = proxy instanceof ClientProxy;
 
+		configFolder = event.getModConfigurationDirectory();
+		
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		
@@ -115,7 +122,7 @@ public class Morph
 		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
 		
 		hostileAbilityMode = addCommentAndReturnInt(config, "gameplay", "hostileAbilityMode", "Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\nIf you'd like to turn on Hostile Ability, I'd recommend Mode 2 (personal preference)", 0);
-		hostileAbilityDistanceCheck = addCommentAndReturnInt(config, "gameplay", "hostileAbilityDistanceCheck", "Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 8", 8);
+		hostileAbilityDistanceCheck = addCommentAndReturnInt(config, "gameplay", "hostileAbilityDistanceCheck", "Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6", 6);
 		
 		if(isClient)
 		{
@@ -162,7 +169,55 @@ public class Morph
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
+		SessionState.abilities = Morph.abilities == 1;
+		
 		proxy.initCommands(event.getServer());
+		
+		NBTTagCompound tag = null;
+		
+    	try
+    	{
+    		File file = new File(Morph.configFolder, "morphAbilities.dat");
+    		if(!file.exists())
+    		{
+    			return;
+    		}
+    		else
+    		{
+    			tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
+    		}
+    	}
+    	catch(EOFException e)
+    	{
+    		Morph.console("Mod ability data is corrupted! Attempting to read from backup.", true);
+    		try
+    		{
+	    		File file = new File(Morph.configFolder, "morphAbilities_backup.dat");
+	    		if(!file.exists())
+	    		{
+	    			Morph.console("No backup detected!", true);
+	    			return;
+	    		}
+	    		tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
+
+	    		File file1 = new File(Morph.configFolder, "morphAbilities.dat");
+	    		file1.delete();
+	    		file.renameTo(file1);
+	    		Morph.console("Restoring mod ability data from backup.", false);
+    		}
+    		catch(Exception e1)
+    		{
+    			Morph.console("Even your backup data is corrupted. What have you been doing?!", true);
+    			return;
+    		}
+    	}
+    	catch(IOException e)
+    	{
+    		Morph.console("Failed to read mod ability save data!", true);
+    		return;
+    	}
+
+    	AbilityHandler.readAbilitiesFromNBT(tag);
 	}
 	
 	@EventHandler
@@ -175,7 +230,9 @@ public class Morph
 	{
 		proxy.tickHandlerServer.playerMorphInfo.clear();
 		proxy.tickHandlerServer.playerMorphs.clear();
-		Morph.proxy.tickHandlerServer.saveData = null;
+		proxy.tickHandlerServer.activeEntTrackers.clear();
+		proxy.tickHandlerServer.entTrackerResults.clear();
+		proxy.tickHandlerServer.saveData = null;
 	}
 	
     public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException

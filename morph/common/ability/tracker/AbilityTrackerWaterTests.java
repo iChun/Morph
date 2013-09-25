@@ -10,9 +10,6 @@ import net.minecraft.util.ChunkCoordinates;
 public class AbilityTrackerWaterTests extends AbilityTracker 
 {
 	
-	public int posXUsed;
-	public int posZUsed;
-	
 	public float entHealth;
 	public boolean waterAllergy;
 	public boolean landBreather;
@@ -23,69 +20,30 @@ public class AbilityTrackerWaterTests extends AbilityTracker
 		super(tracker, ability);
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void initialize() 
 	{
 		if(entTracker.simulated)
 		{
-			ChunkCoordinates chunk = entTracker.trackedEnt.worldObj.getSpawnPoint();
-			
-			boolean success = false;
-			
-			int posX = chunk.posX;
-			int posZ = chunk.posZ;
-
-			for(int tries = 0; tries < 3; tries++)
+			for(int i = -3; i <= 3; i++)
 			{
-				posX = chunk.posX;
-				posZ = chunk.posZ;
-				
-				posX += entTracker.trackedEnt.worldObj.rand.nextInt(200) - 100;
-				posZ += entTracker.trackedEnt.worldObj.rand.nextInt(200) - 100;
-				
-				for(int i = -3; i <= 3; i++)
+				for(int k = -3; k <= 3; k++)
 				{
-					for(int k = -3; k <= 3; k++)
+					for(int j = 0; j <= 6; j++)
 					{
-						for(int j = 0; j <= 6; j++)
+						if(Math.abs(i) == 3 || Math.abs(k) == 3 || j == 0 || j == 6)
 						{
-							if(!entTracker.trackedEnt.worldObj.isAirBlock(posX + i, 245 + j, posZ + k))
-							{
-								continue;
-							}
+							entTracker.trackedEnt.worldObj.setBlock(posXUsed + i, 245 + j, posZUsed + k, j == 6 ? Block.leaves.blockID : Block.glass.blockID);
+						}
+						else
+						{
+							entTracker.trackedEnt.worldObj.setBlock(posXUsed + i, 245 + j, posZUsed + k, Block.waterMoving.blockID);
 						}
 					}
 				}
-				
-				for(int i = -3; i <= 3; i++)
-				{
-					for(int k = -3; k <= 3; k++)
-					{
-						for(int j = 0; j <= 6; j++)
-						{
-							if(Math.abs(i) == 3 || Math.abs(k) == 3 || j == 0 || j == 6)
-							{
-								entTracker.trackedEnt.worldObj.setBlock(posX + i, 245 + j, posZ + k, j == 6 ? Block.leaves.blockID : Block.glass.blockID);
-							}
-							else
-							{
-								entTracker.trackedEnt.worldObj.setBlock(posX + i, 245 + j, posZ + k, Block.waterMoving.blockID);
-							}
-						}
-					}
-				}
-				success = true;
-				break;
 			}
 			
-			if(success)
-			{
-				posXUsed = posX;
-				posZUsed = posZ;
-				entTracker.trackedEnt.setPosition(posX + 0.5D, 246.1D, posZ + 0.5D);
-				entHealth = entTracker.trackedEnt.getHealth();
-			}
+			entHealth = entTracker.trackedEnt.getHealth();
 		}
 	}
 
@@ -121,7 +79,11 @@ public class AbilityTrackerWaterTests extends AbilityTracker
 				landBreather = true;
 			}
 		}
-		
+	}
+	
+	@Override
+	public void kill()
+	{
 		if(trackingTime() - entTracker.trackTimer > (trackingTime() - 10) && entTracker.simulated)
 		{
 			for(int i = -3; i <= 3; i++)

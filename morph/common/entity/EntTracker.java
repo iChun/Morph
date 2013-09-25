@@ -22,8 +22,6 @@ public class EntTracker
 		trackTimer = abilityTracker.trackingTime();
 		
 		ticking = true;
-		
-		abilityTracker.initialize();
 	}
 	
 	public void tick()

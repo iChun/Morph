@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import morph.api.Ability;
 import morph.common.entity.EntTracker;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.world.World;
 
 public abstract class AbilityTracker 
 {
@@ -11,6 +13,9 @@ public abstract class AbilityTracker
 	public final EntTracker entTracker;
 	
 	private boolean hasAbility;
+	
+	public int posXUsed;
+	public int posZUsed;
 	
 	public AbilityTracker(EntTracker tracker, String ability)
 	{
@@ -24,7 +29,19 @@ public abstract class AbilityTracker
 	public abstract Ability createAbility();
 	public abstract int trackingTime();
 	
-	public void kill() {}
+	public void kill() 
+	{
+		for(int i = -3; i <= 3; i++)
+		{
+			for(int k = -3; k <= 3; k++)
+			{
+				for(int j = 0; j <= 6; j++)
+				{
+					entTracker.trackedEnt.worldObj.setBlockToAir(posXUsed + i, 245 + j, posZUsed + k);
+				}
+			}
+		}
+	}
 	
 	public void setHasAbility(boolean flag)
 	{
@@ -54,7 +71,12 @@ public abstract class AbilityTracker
 		return new AbilityTrackerDummy(tracker, type);
 	}
 	
-	public final static String[] trackableAbilities = new String[] { "fly", "float", "water", "fireImmunity" };
+	public boolean shouldTrack(World worldObj, EntityLivingBase living)
+	{
+		return true;
+	}
+	
+	public final static String[] trackableAbilities = new String[] { "fly", "float", "water", "fireImmunity", "sunburn", "hostile", "climb" };
 	public static HashMap<String, Class> trackerClasses = new HashMap<String, Class>();
 	
 	static
@@ -64,5 +86,8 @@ public abstract class AbilityTracker
 		trackerClasses.put("float", AbilityTrackerFloat.class);
 		trackerClasses.put("water", AbilityTrackerWaterTests.class);
 		trackerClasses.put("fireImmunity", AbilityTrackerFireImmunity.class);
+		trackerClasses.put("sunburn", AbilityTrackerSunburn.class);
+		trackerClasses.put("hostile", AbilityTrackerHostile.class);
+		trackerClasses.put("climb", AbilityTrackerClimb.class);
 	}
 }
