@@ -646,9 +646,17 @@ public class EventHandler
 						}
 						if(hostile && playerHostile)
 						{
-							if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.hostileAbilityMode == 2)
+							if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.hostileAbilityMode == 2 || info.nextState.entInstance.getClass() != event.entityLiving.getClass() && Morph.hostileAbilityMode == 3)
 							{
 								return;
+							}
+							if(Morph.hostileAbilityMode == 4)
+							{
+								double dist = event.entityLiving.getDistanceToEntity(player);
+								if(dist < Morph.hostileAbilityDistanceCheck)
+								{
+									return;
+								}
 							}
 							event.entityLiving.setRevengeTarget(null);
 							if(event.entityLiving instanceof EntityLiving)
