@@ -1,11 +1,12 @@
 package morph.common.ability.tracker;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import morph.api.Ability;
+import morph.common.ability.AbilityFly;
+import morph.common.entity.EntTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.util.DamageSource;
-import morph.api.Ability;
-import morph.common.entity.EntTracker;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class AbilityTrackerFly extends AbilityTracker 
 {
@@ -70,7 +71,7 @@ public class AbilityTrackerFly extends AbilityTracker
 	@Override
 	public Ability createAbility() 
 	{
-		return null;
+		return new AbilityFly();
 	}
 
 	@Override

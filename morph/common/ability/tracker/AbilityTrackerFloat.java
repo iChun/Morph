@@ -1,10 +1,7 @@
 package morph.common.ability.tracker;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemInWorldManager;
-import net.minecraft.util.DamageSource;
 import morph.api.Ability;
+import morph.common.ability.AbilityFloat;
 import morph.common.entity.EntTracker;
 
 public class AbilityTrackerFloat extends AbilityTracker 
@@ -59,7 +56,7 @@ public class AbilityTrackerFloat extends AbilityTracker
 	@Override
 	public Ability createAbility() 
 	{
-		return null;
+		return new AbilityFloat(terminalVelo, true);
 	}
 
 	@Override

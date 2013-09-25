@@ -15,6 +15,7 @@ import morph.common.ability.AbilityHandler;
 import morph.common.entity.EntTracker;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -226,10 +227,10 @@ public class TickHandlerServer
 
 	public void prePlayerTick(WorldServer world, EntityPlayerMP player)
 	{
-		MorphInfo info = playerMorphInfo.get(player.username);
-		if(info != null)
-		{
-		}
+//		MorphInfo info = playerMorphInfo.get(player.username);
+//		if(info != null)
+//		{
+//		}
 
 	}
 	

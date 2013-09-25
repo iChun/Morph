@@ -61,5 +61,7 @@ public abstract class AbilityTracker
 		//TODO complete maps
 		trackerClasses.put("fly", AbilityTrackerFly.class);
 		trackerClasses.put("float", AbilityTrackerFloat.class);
+		trackerClasses.put("fireImmunity", AbilityTrackerFireImmunity.class);
+		trackerClasses.put("water", AbilityTrackerWaterTests.class);
 	}
 }
