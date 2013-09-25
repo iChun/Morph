@@ -29,7 +29,6 @@ import net.minecraft.entity.passive.EntitySquid;
 public class AbilityHandler 
 {
 
-	public final static String[] trackableAbilities = new String[] { "fly", "float", "swim", "fireImmunity" };
 	private final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>>();
 	private final static HashMap<String, Class> stringToClassMap = new HashMap<String, Class>();
 	

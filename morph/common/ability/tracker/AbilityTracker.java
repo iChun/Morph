@@ -54,6 +54,7 @@ public abstract class AbilityTracker
 		return new AbilityTrackerDummy(tracker, type);
 	}
 	
+	public final static String[] trackableAbilities = new String[] { "fly", "float", "water", "fireImmunity" };
 	public static HashMap<String, Class> trackerClasses = new HashMap<String, Class>();
 	
 	static
@@ -61,7 +62,7 @@ public abstract class AbilityTracker
 		//TODO complete maps
 		trackerClasses.put("fly", AbilityTrackerFly.class);
 		trackerClasses.put("float", AbilityTrackerFloat.class);
-		trackerClasses.put("fireImmunity", AbilityTrackerFireImmunity.class);
 		trackerClasses.put("water", AbilityTrackerWaterTests.class);
+		trackerClasses.put("fireImmunity", AbilityTrackerFireImmunity.class);
 	}
 }
