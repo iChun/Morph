@@ -59,7 +59,6 @@ public class AbilityHandler
 		registerAbility("swim"			, AbilitySwim.class			);
 		registerAbility("waterAllergy"	, AbilityWaterAllergy.class	);
 		
-		//TODO complete for vanilla mobs
 		mapAbilities(EntityBat.class, new AbilityFly());
 		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
 		mapAbilities(EntityChicken.class, new AbilityFloat(-0.1141748D, true));
