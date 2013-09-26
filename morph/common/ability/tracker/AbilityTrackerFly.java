@@ -72,6 +72,12 @@ public class AbilityTrackerFly extends AbilityTracker
 	{
 		return new AbilityFly();
 	}
+	
+	@Override
+	public int triesRequired()
+	{
+		return 10;
+	}
 
 	@Override
 	public int trackingTime() 

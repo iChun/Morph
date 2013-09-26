@@ -37,7 +37,7 @@ public class AbilityTrackerClimb extends AbilityTracker
 		if(entTracker.simulated)
 		{
 			entTracker.trackedEnt.rotationYaw = 180F;
-			entTracker.trackedEnt.moveEntityWithHeading(0.0F, 1.0F);
+			entTracker.trackedEnt.motionZ = -0.2D;
 			if(entTracker.trackedEnt.isCollidedHorizontally && entTracker.trackedEnt.motionY > 0.1D)
 			{
 				timeClimbing++;

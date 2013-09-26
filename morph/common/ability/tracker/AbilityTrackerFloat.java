@@ -23,7 +23,7 @@ public class AbilityTrackerFloat extends AbilityTracker
 	{
 		if(entTracker.simulated)
 		{
-			entTracker.trackedEnt.setPosition(entTracker.trackedEnt.posX, entTracker.trackedEnt.posY + 20D, entTracker.trackedEnt.posZ);
+			entTracker.trackedEnt.setPosition(entTracker.trackedEnt.posX, entTracker.trackedEnt.posY + 15D, entTracker.trackedEnt.posZ);
 		}
 	}
 

@@ -1,10 +1,13 @@
 package morph.common.ability;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
@@ -98,4 +101,12 @@ public class AbilitySunburn extends Ability {
 	{
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ResourceLocation getIcon() 
+	{
+		return iconResource;
+	}
+	
+	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/sunburn.png");
 }

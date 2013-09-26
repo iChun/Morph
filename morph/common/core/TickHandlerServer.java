@@ -20,6 +20,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -83,13 +85,13 @@ implements ITickHandler
 		{
 			clock = world.getWorldTime();
 
-			//			for(int i = 0 ; i < world.loadedEntityList.size(); i++)
-			//			{
-			//				if(world.loadedEntityList.get(i) instanceof EntityCow)
-			//				{
-			//					((EntityCow)world.loadedEntityList.get(i)).setDead();
-			//				}
-			//			}
+//						for(int i = 0 ; i < world.loadedEntityList.size(); i++)
+//						{
+//							if(world.loadedEntityList.get(i) instanceof EntityCow)
+//							{
+//								((EntityCow)world.loadedEntityList.get(i)).setDead();
+//							}
+//						}
 
 			if(Morph.abilityTracker == 1)
 			{
@@ -97,63 +99,73 @@ implements ITickHandler
 
 				if(activeEntTracker == null)
 				{
-					if(world.loadedEntityList.size() > 0 && world.getWorldTime() % 102 == 0)
+					if(world.getWorldTime() % 20 == 0)
 					{
-						Entity ent = (Entity)world.loadedEntityList.get(world.rand.nextInt(world.loadedEntityList.size()));
-						if(ent instanceof EntityLivingBase && !(ent instanceof EntityPlayer))
+						if(lastIndex > world.loadedEntityList.size())
 						{
-							EntityLivingBase living = (EntityLivingBase)ent;
-							NBTTagCompound tag = new NBTTagCompound();
-							if(living.writeToNBTOptional(tag))
+							lastIndex = 0;
+						}
+						for(int sel = lastIndex; sel < world.loadedEntityList.size(); sel++)
+						{
+							Entity ent = (Entity)world.loadedEntityList.get(sel);
+							if(ent instanceof EntitySquid && !(ent instanceof EntityPlayer) && !AbilityHandler.abilityClassList.contains(ent.getClass()))
 							{
-								Entity ent1 = EntityList.createEntityFromNBT(tag, world);
-								if(ent1 instanceof EntityLivingBase)
+								EntityLivingBase living = (EntityLivingBase)ent;
+								NBTTagCompound tag = new NBTTagCompound();
+								if(living.writeToNBTOptional(tag))
 								{
-									EntityLivingBase living2 = (EntityLivingBase)ent1;
-									
-									EntTracker entTracker = new EntTracker(living2, AbilityTracker.trackableAbilities[world.rand.nextInt(AbilityTracker.trackableAbilities.length)], true);
-	
-									if(!AbilityHandler.hasAbility(living2.getClass(), entTracker.abilityTracker.abilityTracked) && getTrackerResults(living2.getClass()).size() < 10)
+									Entity ent1 = EntityList.createEntityFromNBT(tag, world);
+									if(ent1 instanceof EntityLivingBase)
 									{
-										if(entTracker.abilityTracker.shouldTrack(living2.worldObj, living2))
+										EntityLivingBase living2 = (EntityLivingBase)ent1;
+										
+										EntTracker entTracker = new EntTracker(living2, AbilityTracker.trackableAbilities[world.rand.nextInt(AbilityTracker.trackableAbilities.length)], true);
+		
+										if(!AbilityHandler.hasAbility(living2.getClass(), entTracker.abilityTracker.abilityTracked) && getTrackerResults(living2.getClass(), entTracker.abilityTracker.abilityTracked).size() < entTracker.abilityTracker.triesRequired())
 										{
-											ChunkCoordinates chunk = world.getSpawnPoint();
-
-											int posX = chunk.posX;
-											int posZ = chunk.posZ;
-
-											boolean success = true;
-
-											for(int x = 0; x < world.playerEntities.size(); x++)
+											if(entTracker.abilityTracker.shouldTrack(living2.worldObj, living2))
 											{
-												EntityPlayer player = (EntityPlayer)world.playerEntities.get(x);
-												double d = player.getDistance(posX + 0.5D, 246, posZ + 0.5D);
-												if(d < 64D)
+												ChunkCoordinates chunk = world.getSpawnPoint();
+	
+												int posX = chunk.posX;
+												int posZ = chunk.posZ;
+	
+												boolean success = true;
+	
+												for(int x = 0; x < world.playerEntities.size(); x++)
 												{
-													success = false;
-													break;
-												}
-											}
-
-											if(success)
-											{
-												for(int i = -3; i <= 3; i++)
-												{
-													for(int k = -3; k <= 3; k++)
+													EntityPlayer player = (EntityPlayer)world.playerEntities.get(x);
+													double d = player.getDistance(posX + 0.5D, 246, posZ + 0.5D);
+													if(d < 128D)
 													{
-														world.setBlock(posX + i, 245, posZ + k, Block.glass.blockID);
+														success = false;
+														break;
 													}
 												}
-
-												entTracker.abilityTracker.posXUsed = posX;
-												entTracker.abilityTracker.posZUsed = posZ;
-												entTracker.trackedEnt.setPosition(posX + 0.5D, 246.1D, posZ + 0.5D);
-												
-												entTracker.abilityTracker.initialize();
-
-												world.spawnEntityInWorld(living2);
-
-												activeEntTracker = entTracker;
+	
+												if(success)
+												{
+													for(int i = -3; i <= 3; i++)
+													{
+														for(int k = -3; k <= 3; k++)
+														{
+															world.setBlock(posX + i, 245, posZ + k, Block.glass.blockID);
+														}
+													}
+	
+													entTracker.abilityTracker.posXUsed = posX;
+													entTracker.abilityTracker.posZUsed = posZ;
+													entTracker.trackedEnt.setPosition(posX + 0.5D, 246.1D, posZ + 0.5D);
+													
+													entTracker.abilityTracker.initialize();
+	
+//													world.spawnEntityInWorld(entTracker.trackedEnt);
+	
+													activeEntTracker = entTracker;
+													
+													lastIndex = sel;
+													break;
+												}
 											}
 										}
 									}
@@ -176,14 +188,17 @@ implements ITickHandler
 						{
 							for(int k = -3; k <= 3; k++)
 							{
-								world.setBlockToAir(activeEntTracker.abilityTracker.posXUsed + i, 245, activeEntTracker.abilityTracker.posZUsed + k);
+								for(int j = 0; j <= 6; j++)
+								{
+									world.setBlockToAir(activeEntTracker.abilityTracker.posXUsed + i, 245 + j, activeEntTracker.abilityTracker.posZUsed + k);
+								}
 							}
 						}
 						
-						ArrayList<AbilityTracker> results = getTrackerResults(activeEntTracker.trackedEnt.getClass());
+						ArrayList<AbilityTracker> results = getTrackerResults(activeEntTracker.trackedEnt.getClass(), activeEntTracker.abilityTracker.abilityTracked);
 						results.add(activeEntTracker.abilityTracker);
 
-						if(results.size() >= 10)
+						if(results.size() >= activeEntTracker.abilityTracker.triesRequired())
 						{
 							int successes = 0;
 							for(int i = 0; i < results.size(); i++)
@@ -203,7 +218,14 @@ implements ITickHandler
 					}
 				}
 
-				activeEntTrackers.put(world.provider.dimensionId, activeEntTracker);
+				if(activeEntTracker != null)
+				{
+					activeEntTrackers.put(world.provider.dimensionId, activeEntTracker);
+				}
+				else
+				{
+					activeEntTrackers.remove(world.provider.dimensionId);
+				}
 			}
 
 			if(world.provider.dimensionId == 0)
@@ -423,24 +445,32 @@ implements ITickHandler
 		return false;
 	}
 
-	public ArrayList<AbilityTracker> getTrackerResults(Class clz)
+	public ArrayList<AbilityTracker> getTrackerResults(Class clz, String type)
 	{
-		ArrayList<AbilityTracker> results = entTrackerResults.get(clz);
+		HashMap<String, ArrayList<AbilityTracker>> listMap = entTrackerResults.get(clz);
+		if(listMap == null)
+		{
+			listMap = new HashMap<String, ArrayList<AbilityTracker>>();
+			entTrackerResults.put(clz, listMap);
+		}
+		ArrayList<AbilityTracker> results = listMap.get(type);
 		if(results == null)
 		{
 			results = new ArrayList<AbilityTracker>();
-			entTrackerResults.put(clz, results);
+			listMap.put(type, results);
 		}
 		return results;
 	}
 
 	public long clock;
 
+	public int lastIndex;
+	
 	public NBTTagCompound saveData;
 
 	public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
 	public HashMap<String, ArrayList<MorphState>> playerMorphs = new HashMap<String, ArrayList<MorphState>>();
 
 	public HashMap<Integer, EntTracker> activeEntTrackers = new HashMap<Integer, EntTracker>();
-	public HashMap<Class, ArrayList<AbilityTracker>> entTrackerResults = new HashMap<Class, ArrayList<AbilityTracker>>();
+	public HashMap<Class, HashMap<String, ArrayList<AbilityTracker>>> entTrackerResults = new HashMap<Class, HashMap<String, ArrayList<AbilityTracker>>>();
 }

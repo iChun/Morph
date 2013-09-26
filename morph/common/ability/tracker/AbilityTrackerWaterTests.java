@@ -84,7 +84,7 @@ public class AbilityTrackerWaterTests extends AbilityTracker
 	@Override
 	public void kill()
 	{
-		if(trackingTime() - entTracker.trackTimer > (trackingTime() - 10) && entTracker.simulated)
+		if(entTracker.simulated)
 		{
 			for(int i = -3; i <= 3; i++)
 			{
@@ -92,7 +92,7 @@ public class AbilityTrackerWaterTests extends AbilityTracker
 				{
 					for(int j = 0; j <= 6; j++)
 					{
-						entTracker.trackedEnt.worldObj.setBlock(posXUsed + i, 245 + j, posZUsed + k, 0);
+						entTracker.trackedEnt.worldObj.setBlockToAir(posXUsed + i, 245 + j, posZUsed + k);
 					}
 				}
 			}

@@ -76,6 +76,11 @@ public abstract class AbilityTracker
 		return true;
 	}
 	
+	public int triesRequired()
+	{
+		return 5;
+	}
+	
 	public final static String[] trackableAbilities = new String[] { "fly", "float", "water", "fireImmunity", "sunburn", "hostile", "climb" };
 	public static HashMap<String, Class> trackerClasses = new HashMap<String, Class>();
 	

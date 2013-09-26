@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -144,4 +145,12 @@ public class AbilitySwim extends Ability {
 		canSurviveOutOfWater = tag.getBoolean("canSurviveOutOfWater");
 	}
 
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ResourceLocation getIcon() 
+	{
+		return iconResource;
+	}
+	
+	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/swim.png");
 }

@@ -17,6 +17,7 @@ import morph.client.render.EntityRendererProxy;
 import morph.client.render.RenderMorph;
 import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
+import morph.common.ability.AbilityFireImmunity;
 import morph.common.ability.AbilityHandler;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
@@ -273,7 +274,7 @@ public class TickHandlerClient
 						}
 					}
 				}
-				if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive()))
+				if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive() || !world.playerEntities.contains(info.player)))
 				{
 					info.player = null;
 				}
@@ -782,6 +783,11 @@ public class TickHandlerClient
 			keySelectorReturnDown = isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
 			keySelectorDeleteDown = isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE);
 		}
+		if(Morph.allowMorphSelection == 0 && selectorShow)
+		{
+			selectorShow = false;
+			selectorTimer = 0;
+		}
 	}
 
 	public void playerTick(World world, EntityPlayer player)
@@ -1191,6 +1197,53 @@ public class TickHandlerClient
 	        {
 	        	GL11.glTranslatef(0.0F, 0.0F, 100F);
 	        	Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getEntityName().equalsIgnoreCase(state.entInstance.getEntityName()) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
+	        	
+	        	if(Morph.showAbilitiesInGui == 1)
+	        	{
+		        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
+	        		int offset = 0;
+		        	for(int i = 0; i < abilities.size(); i++)
+		        	{
+		        		Ability ability = abilities.get(i);
+		        		ResourceLocation loc = ability.getIcon();
+		        		if(loc != null)
+		        		{
+				        	Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
+				        	
+							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+					        Tessellator tessellator = Tessellator.instance;
+							tessellator.setColorRGBA(255, 255, 255, 255);
+							
+					        tessellator.startDrawingQuads();
+							double size = 12D;
+							double iconX = 24D + (offset * (size + 2));
+							double iconY = -22D;
+							
+					        tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
+					        tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
+					        tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
+					        tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
+					        tessellator.draw();
+					        
+					        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
+					        
+					        tessellator.startDrawingQuads();
+							size = 12D;
+							iconX = 25D + (offset * (12D + 2));
+							iconY = -21D;
+							
+					        tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
+					        tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
+					        tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
+					        tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
+					        tessellator.draw();
+	
+					        offset++;
+		        		}
+		        	}
+	        	}
+	        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	        	
 	        	GL11.glTranslatef(0.0F, 0.0F, -100F);
 	        }
 	        

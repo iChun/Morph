@@ -2,6 +2,7 @@ package morph.api;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -97,6 +98,14 @@ public abstract class Ability
 	public abstract void postRender();
 	
 	/**
+	 * Icon location for ability. Can be null.
+	 * Mod's default icons are 32x32. Can be any resolution though.
+	 * @return resourcelocation for icon
+	 */
+	@SideOnly(Side.CLIENT)
+	public abstract ResourceLocation getIcon();
+	
+	/**
 	 * Registers the ability so the mod can look up the class when attempting to load Ability save data.
 	 * Call this no later than PostInit.
 	 * @param ability type
@@ -154,4 +163,76 @@ public abstract class Ability
 			return false;
 		}
 	}
+	
+	/**
+	 * The following are helper functions to create abilities packaged with Morph.
+	 * Use these to ability instances for mapping vanilla abilities to mobs.
+	 * Self explanatory.
+	 * @return
+	 */
+	public static Ability getNewAbilityClimb()
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityClimb").invoke(null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public static Ability getNewAbilityFireImmunity()
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityFireImmunity").invoke(null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public static Ability getNewAbilityFloat(float terminalVelocity, boolean negateFallDamage)
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityFloat", float.class, boolean.class).invoke(null, terminalVelocity, negateFallDamage);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public static Ability getNewAbilityFly()
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityFly").invoke(null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public static Ability getNewAbilityHostile()
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityHostile").invoke(null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public static Ability getNewAbilitySunburn()
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilitySunburn").invoke(null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public static Ability getNewAbilitySwim(boolean canBreatheOnLand)
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilitySwim", boolean.class).invoke(null, canBreatheOnLand);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public static Ability getNewAbilityWaterAllergy()
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityWaterAllergy").invoke(null);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 }

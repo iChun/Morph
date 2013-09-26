@@ -56,7 +56,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 				)
 public class Morph 
 {
-	public static final String version = "0.2.6";
+	public static final String version = "0.2.8";
 	
 	@Instance("Morph")
 	public static Morph instance;
@@ -79,6 +79,8 @@ public class Morph
 	public static int hostileAbilityMode;
 	public static int hostileAbilityDistanceCheck;
 	
+	public static int canSleepMorphed;
+	
 	public static int keySelectorUp;
 	public static int keySelectorDown;
 	public static int keySelectorLeft;
@@ -93,6 +95,9 @@ public class Morph
 	public static int keySelectorCancel;
 	public static int keySelectorRemoveMorph;
 	public static int handRenderOverride;
+	
+	public static int showAbilitiesInGui;
+	public static int allowMorphSelection;
 	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
 
@@ -118,11 +123,14 @@ public class Morph
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
 		
-		abilityTracker = addCommentAndReturnInt(config, "gameplay", "abilityTracker", "Allow the mod to randomly track mobs to scan for abilities?\n0 = No\n1 = Yes", 1);
+		abilityTracker = addCommentAndReturnInt(config, "gameplay", "abilityTracker", "Allow the mod to randomly track mobs to scan for abilities?\nWARNING: This is not 100% accurate, and is provided \"as is\". It may or may not give mod mobs the right abilities.\nMay or may not be resource intensive, most likely not.\n0 = No\n1 = Yes", 1);
 		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
 		
 		hostileAbilityMode = addCommentAndReturnInt(config, "gameplay", "hostileAbilityMode", "Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\nIf you'd like to turn on Hostile Ability, I'd recommend Mode 2 (personal preference)", 0);
 		hostileAbilityDistanceCheck = addCommentAndReturnInt(config, "gameplay", "hostileAbilityDistanceCheck", "Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6", 6);
+		
+		canSleepMorphed = addCommentAndReturnInt(config, "gameplay", "canSleepMorphed", "Can you sleep while morphed?\n0 = No\n1 = Yes", 0);
+		allowMorphSelection = addCommentAndReturnInt(config, "gameplay", "allowMorphSelection", "Requested by SoundLogic\nCan you open the morph GUI?\n0 = No\n1 = Yes", 1);
 		
 		if(isClient)
 		{
@@ -142,6 +150,8 @@ public class Morph
 			keySelectorCancel = addCommentAndReturnInt(config, "client", "keySelectorCancel", "Key Code to close the selector.\nDefault: 1 (Esc)", 1);
 			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);
 			handRenderOverride = addCommentAndReturnInt(config, "client", "handRenderOverride", "Allow the mod to override player hand rendering?\n0 = No\n1 = Yes", 1);
+			
+			showAbilitiesInGui = addCommentAndReturnInt(config, "client", "showAbilitiesInGui", "Show the abilities the morph has in the GUI?\n0 = No\n1 = Yes", 1);
 		}
 		
 		config.save();
@@ -170,6 +180,8 @@ public class Morph
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		SessionState.abilities = Morph.abilities == 1;
+		SessionState.canSleepMorphed = Morph.canSleepMorphed == 1;
+		SessionState.allowMorphSelection = Morph.allowMorphSelection == 1;
 		
 		proxy.initCommands(event.getServer());
 		

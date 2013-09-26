@@ -676,14 +676,17 @@ public class EventHandler
 	{
 		EntityPlayer player = (EntityPlayer)event.entityPlayer;
 		EnumStatus stats = EnumStatus.OTHER_PROBLEM;
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.username))
+		if(!SessionState.canSleepMorphed)
 		{
-			event.result = stats;
-			player.addChatMessage("You may not rest now, you are in morph");
-		}
-		else if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(player.username))
-		{
-			event.result = stats;
+			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.username))
+			{
+				event.result = stats;
+				player.addChatMessage("You may not rest now, you are in morph");
+			}
+			else if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(player.username))
+			{
+				event.result = stats;
+			}
 		}
 	}
 	

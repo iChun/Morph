@@ -8,7 +8,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 
 public class AbilityFireImmunity extends Ability {
@@ -93,5 +96,15 @@ public class AbilityFireImmunity extends Ability {
 
 	@Override
 	public void load(NBTTagCompound tag) {}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ResourceLocation getIcon() 
+	{
+		return iconResource;
+	}
+	
+	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/fireImmunity.png");
+
 
 }

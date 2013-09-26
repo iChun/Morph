@@ -39,6 +39,12 @@ public class AbilityTrackerFireImmunity extends AbilityTracker
 	}
 
 	@Override
+	public int triesRequired()
+	{
+		return 1;
+	}
+
+	@Override
 	public Ability createAbility() 
 	{
 		return new AbilityFireImmunity();

@@ -23,6 +23,7 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGiantZombie;
+import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySilverfish;
@@ -42,9 +43,10 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 public class AbilityHandler 
 {
 
-	private final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>>();
+	public final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>>();
 	public final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> trackedMap = new HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>>();
 	public final static HashMap<String, Class<? extends Ability>> stringToClassMap = new HashMap<String, Class<? extends Ability>>();
+	public final static ArrayList<Class<? extends EntityLivingBase>> abilityClassList = new ArrayList<Class<? extends EntityLivingBase>>();
 	
 	static
 	{
@@ -66,6 +68,7 @@ public class AbilityHandler
 		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy(), new AbilityHostile());
 		mapAbilities(EntityGhast.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityGiantZombie.class, new AbilityHostile());
+		mapAbilities(EntityIronGolem.class, new AbilitySwim(true));
 		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntitySilverfish.class, new AbilityHostile());
@@ -90,9 +93,17 @@ public class AbilityHandler
 		{
 			abilityList = new ArrayList<Ability>();
 			abilityMap.put(entClass, abilityList);
+			if(!abilityClassList.contains(entClass))
+			{
+				abilityClassList.add(entClass);
+			}
 		}
 		for(Ability ability : abilities)
 		{
+			if(ability == null)
+			{
+				continue;
+			}
 			boolean added = false;
 			if(!stringToClassMap.containsKey(ability.getType()))
 			{
@@ -455,6 +466,47 @@ public class AbilityHandler
     			}
     		}
     	}
+	}
+
+	
+	public static Ability getNewAbilityClimb()
+	{
+		return new AbilityClimb();
+	}
+	
+	public static Ability getNewAbilityFireImmunity()
+	{
+		return new AbilityFireImmunity();
+	}
+	
+	public static Ability getNewAbilityFloat(float terminalVelocity, boolean negateFallDamage)
+	{
+		return new AbilityFloat(terminalVelocity, negateFallDamage);
+	}
+	
+	public static Ability getNewAbilityFly()
+	{
+		return new AbilityFly();
+	}
+	
+	public static Ability getNewAbilityHostile()
+	{
+		return new AbilityHostile();
+	}
+	
+	public static Ability getNewAbilitySunburn()
+	{
+		return new AbilitySunburn();
+	}
+	
+	public static Ability getNewAbilitySwim(boolean canBreatheOnLand)
+	{
+		return new AbilitySwim(canBreatheOnLand);
+	}
+	
+	public static Ability getNewAbilityWaterAllergy()
+	{
+		return new AbilityWaterAllergy();
 	}
 
 }

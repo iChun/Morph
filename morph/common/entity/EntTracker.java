@@ -30,6 +30,18 @@ public class EntTracker
 		{
 			ticking = false;
 		}
+		else
+		{
+			try
+			{
+				trackedEnt.ticksExisted++;
+				trackedEnt.onUpdate();
+			}
+			catch(Exception e)
+			{
+				ticking = false;
+			}
+		}
 		trackTimer--;
 		abilityTracker.trackAbility();
 	}

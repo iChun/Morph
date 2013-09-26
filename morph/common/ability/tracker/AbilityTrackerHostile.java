@@ -31,6 +31,12 @@ public class AbilityTrackerHostile extends AbilityTracker
 	}
 	
 	@Override
+	public int triesRequired()
+	{
+		return 1;
+	}
+	
+	@Override
 	public void kill()
 	{
 	}

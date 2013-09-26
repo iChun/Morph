@@ -2,6 +2,9 @@ package morph.common.ability;
 
 import morph.api.Ability;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class AbilityClimb extends Ability {
 
@@ -47,5 +50,14 @@ public class AbilityClimb extends Ability {
 
 	@Override
 	public void load(NBTTagCompound tag) {}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ResourceLocation getIcon() 
+	{
+		return iconResource;
+	}
+	
+	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/climb.png");
 
 }

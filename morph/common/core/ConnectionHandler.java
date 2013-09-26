@@ -87,6 +87,8 @@ public class ConnectionHandler
 			DataOutputStream stream = new DataOutputStream(bytes);
 
 			stream.writeBoolean(Morph.abilities == 1);
+			stream.writeBoolean(Morph.canSleepMorphed == 1);
+			stream.writeBoolean(Morph.allowMorphSelection == 1);
 			
 			PacketDispatcher.sendPacketToPlayer(new Packet131MapData((short)Morph.getNetId(), (short)2, bytes.toByteArray()), (Player)player);
 		}

@@ -1,8 +1,11 @@
 package morph.common.ability;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import morph.api.Ability;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 public class AbilityFly extends Ability {
 
@@ -60,5 +63,14 @@ public class AbilityFly extends Ability {
 
 	@Override
 	public void load(NBTTagCompound tag) {}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ResourceLocation getIcon() 
+	{
+		return iconResource;
+	}
+	
+	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/fly.png");
 
 }
