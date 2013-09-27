@@ -10,6 +10,8 @@ import morph.common.ability.AbilityPoisonResistance;
 import morph.common.entity.EntTracker;
 
 public class AbilityTrackerPoisonResistance extends AbilityTracker{
+	
+	public float entHealth;
 
     public AbilityTrackerPoisonResistance(EntTracker tracker, String ability) {
         super(tracker, ability);
@@ -17,19 +19,17 @@ public class AbilityTrackerPoisonResistance extends AbilityTracker{
 
     @Override
     public void initialize() {
+    	entHealth = entTracker.trackedEnt.getHealth();
         if(entTracker.simulated){
-            entTracker.trackedEnt.addPotionEffect(new PotionEffect(Potion.poison.id, 1));
+            entTracker.trackedEnt.addPotionEffect(new PotionEffect(Potion.poison.id, 100)); // duration can't be 1. Not long enough.
         }
     }
 
     @Override
     public void trackAbility() {
-        if(entTracker.trackedEnt.isPotionActive(Potion.poison)){
-            
-            setHasAbility(true);
-            if(entTracker.trackTimer > 5){
-                entTracker.trackTimer = 5;
-            }
+        if(entTracker.trackTimer == 20 && (entTracker.trackedEnt.isPotionActive(Potion.poison) || entTracker.trackedEnt.getHealth() == entHealth)){
+        	setHasAbility(true);
+            entTracker.trackTimer = 5;
         }
     }
 
@@ -40,12 +40,7 @@ public class AbilityTrackerPoisonResistance extends AbilityTracker{
 
     @Override
     public int trackingTime() {
-        return entTracker.simulated ? 400 : 200; 
-    }
-
-    @Override
-    public boolean shouldTrack(World worldObj, EntityLivingBase living){
-        return living.isPotionActive(Potion.poison);
+        return 80; 
     }
 
 }

@@ -42,7 +42,7 @@ public class AbilityPoisonResistance extends Ability {
 
     @Override
     public ResourceLocation getIcon() {
-        // TODO Get someone to make a better icon -Lomeli12
+        //Get someone to make a better icon -Lomeli12
         return iconResource;
     }
 
