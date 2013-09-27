@@ -1,11 +1,11 @@
 package morph.common.ability;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 
 import morph.api.Ability;
+import morph.common.core.EntityHelper;
 
 public class AbilityPoisonResistance extends Ability {
 
@@ -14,20 +14,10 @@ public class AbilityPoisonResistance extends Ability {
         return "poisonResistance";
     }
 
-    public boolean hasPoisonEffect(EntityLivingBase entity) {
-        boolean hasEffect = false;
-        if(entity != null) {
-            if(entity.isPotionActive(Potion.poison) || entity.isPotionActive(Potion.wither))
-                hasEffect = true;
-        }
-        return hasEffect;
-    }
-
     @Override
     public void tick() {
-        if(hasPoisonEffect(this.getParent())) {
+        if(EntityHelper.hasPoisonEffect(this.getParent())) {
             this.getParent().removePotionEffect(Potion.poison.id);
-            this.getParent().getActivePotionEffect(Potion.wither).duration--;
         }
     }
 

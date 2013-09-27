@@ -81,7 +81,7 @@ public class AbilityHandler
 		mapAbilities(EntitySquid.class, new AbilitySwim(false));
 		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
-		mapAbilities(EntityCaveSpider.class, new AbilityHostile(), new AbilityClimb(), new AbilityPoisonResistance());
+		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
