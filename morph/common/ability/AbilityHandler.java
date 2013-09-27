@@ -15,10 +15,12 @@ import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.core.SessionState;
 import morph.common.morph.MorphState;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
@@ -50,14 +52,15 @@ public class AbilityHandler
 	
 	static
 	{
-		registerAbility("climb"			, AbilityClimb.class		);
-		registerAbility("fly"			, AbilityFly.class			);
-		registerAbility("float"			, AbilityFloat.class		);
-		registerAbility("fireImmunity"	, AbilityFireImmunity.class	);
-		registerAbility("hostile"		, AbilityHostile.class		);
-		registerAbility("sunburn"		, AbilitySunburn.class		);
-		registerAbility("swim"			, AbilitySwim.class			);
-		registerAbility("waterAllergy"	, AbilityWaterAllergy.class	);
+		registerAbility("climb"			  , AbilityClimb.class		);
+		registerAbility("fly"			  , AbilityFly.class			);
+		registerAbility("float"			  , AbilityFloat.class		);
+		registerAbility("fireImmunity"	  , AbilityFireImmunity.class	);
+		registerAbility("hostile"		  , AbilityHostile.class		);
+		registerAbility("sunburn"		  , AbilitySunburn.class		);
+		registerAbility("swim"			  , AbilitySwim.class			);
+		registerAbility("waterAllergy"    , AbilityWaterAllergy.class	);
+		registerAbility("poisonResistance", AbilityPoisonResistance.class);
 		
 		mapAbilities(EntityBat.class, new AbilityFly());
 		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
@@ -78,6 +81,7 @@ public class AbilityHandler
 		mapAbilities(EntitySquid.class, new AbilitySwim(false));
 		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
+		mapAbilities(EntityCaveSpider.class, new AbilityHostile(), new AbilityClimb(), new AbilityPoisonResistance());
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)

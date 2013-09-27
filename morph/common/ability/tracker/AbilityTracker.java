@@ -81,7 +81,7 @@ public abstract class AbilityTracker
 		return 5;
 	}
 	
-	public final static String[] trackableAbilities = new String[] { "fly", "float", "water", "fireImmunity", "sunburn", "hostile", "climb" };
+	public final static String[] trackableAbilities = new String[] { "fly", "float", "water", "fireImmunity", "sunburn", "hostile", "climb", "poisonResistance" };
 	public static HashMap<String, Class> trackerClasses = new HashMap<String, Class>();
 	
 	static
@@ -93,5 +93,6 @@ public abstract class AbilityTracker
 		trackerClasses.put("sunburn", AbilityTrackerSunburn.class);
 		trackerClasses.put("hostile", AbilityTrackerHostile.class);
 		trackerClasses.put("climb", AbilityTrackerClimb.class);
+		trackerClasses.put("poisonResistance", AbilityTrackerPoisonResistance.class);
 	}
 }
