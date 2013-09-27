@@ -52,7 +52,7 @@ public class AbilityTrackerFly extends AbilityTracker
 				maxTimeAirborne = timeAirborne;
 			}
 		}
-		if(maxTimeAirborne > 60 && airborneHeight < entTracker.trackedEnt.posY + 1.5D && timeAirborne > 3)
+		if(maxTimeAirborne > 60 && airborneHeight < entTracker.trackedEnt.posY + 4.5D && timeAirborne > 3)
 		{
 			setHasAbility(true);
 			if(entTracker.trackTimer > 205)
