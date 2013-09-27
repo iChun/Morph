@@ -30,16 +30,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityHelper 
 {
-    
-    public static boolean hasPoisonEffect(EntityLivingBase entity) {
-        boolean hasEffect = false;
-        if(entity != null) {
-            if(entity.isPotionActive(Potion.poison))
-                hasEffect = true;
-        }
-        return hasEffect;
-    }
-    
 	@SideOnly(Side.CLIENT)
     public static Render getEntityClassRenderObject(Class par1Class)
     {

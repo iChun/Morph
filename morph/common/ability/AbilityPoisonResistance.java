@@ -5,7 +5,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 
 import morph.api.Ability;
-import morph.common.core.EntityHelper;
 
 public class AbilityPoisonResistance extends Ability {
 
@@ -16,9 +15,8 @@ public class AbilityPoisonResistance extends Ability {
 
     @Override
     public void tick() {
-        if(EntityHelper.hasPoisonEffect(this.getParent())) {
+        if(this.getParent().isPotionActive(Potion.poison))
             this.getParent().removePotionEffect(Potion.poison.id);
-        }
     }
 
     @Override

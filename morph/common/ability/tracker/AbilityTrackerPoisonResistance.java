@@ -7,7 +7,6 @@ import net.minecraft.world.World;
 
 import morph.api.Ability;
 import morph.common.ability.AbilityPoisonResistance;
-import morph.common.core.EntityHelper;
 import morph.common.entity.EntTracker;
 
 public class AbilityTrackerPoisonResistance extends AbilityTracker{
@@ -25,7 +24,8 @@ public class AbilityTrackerPoisonResistance extends AbilityTracker{
 
     @Override
     public void trackAbility() {
-        if(EntityHelper.hasPoisonEffect(entTracker.trackedEnt)){
+        if(entTracker.trackedEnt.isPotionActive(Potion.poison)){
+            
             setHasAbility(true);
             if(entTracker.trackTimer > 5){
                 entTracker.trackTimer = 5;
@@ -45,7 +45,7 @@ public class AbilityTrackerPoisonResistance extends AbilityTracker{
 
     @Override
     public boolean shouldTrack(World worldObj, EntityLivingBase living){
-        return EntityHelper.hasPoisonEffect(living);
+        return living.isPotionActive(Potion.poison);
     }
 
 }
