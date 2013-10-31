@@ -78,13 +78,25 @@ implements ITickHandler
 	public void preWorldTick(WorldServer world)
 	{
 	}
+	
+	private HashMap<Integer, Long> clocks = new HashMap<Integer, Long>();
+	private long getLastClock(WorldServer world)
+	{
+		if (clocks.containsKey(world.provider.dimensionId)) return clocks.get(world.provider.dimensionId);
+		return -1;
+	}
+	
+	private long updateLastClock(WorldServer world)
+	{
+		long clock = world.getTotalWorldTime();
+		clocks.put(world.provider.dimensionId, clock);
+		return clock;
+	}
 
 	public void worldTick(WorldServer world)
 	{
-		if(clock != world.getWorldTime() || !world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
+		if(getLastClock(world) != updateLastClock(world))
 		{
-			clock = world.getWorldTime();
-
 //						for(int i = 0 ; i < world.loadedEntityList.size(); i++)
 //						{
 //							if(world.loadedEntityList.get(i) instanceof EntityCow)
