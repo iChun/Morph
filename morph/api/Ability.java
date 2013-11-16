@@ -105,6 +105,12 @@ public abstract class Ability
 	@SideOnly(Side.CLIENT)
 	public abstract ResourceLocation getIcon();
 	
+	@SideOnly(Side.CLIENT)
+	public boolean entityHasAbility(EntityLivingBase living)
+	{
+		return true;
+	}
+	
 	/**
 	 * Registers the ability so the mod can look up the class when attempting to load Ability save data.
 	 * Call this no later than PostInit.

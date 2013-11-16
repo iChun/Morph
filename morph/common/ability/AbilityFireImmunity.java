@@ -5,6 +5,7 @@ import morph.common.Morph;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -102,6 +103,21 @@ public class AbilityFireImmunity extends Ability {
 	public ResourceLocation getIcon() 
 	{
 		return iconResource;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean entityHasAbility(EntityLivingBase living)
+	{
+		if(living instanceof EntitySkeleton)
+		{
+			EntitySkeleton skele = (EntitySkeleton)living;
+			if(skele.getSkeletonType() != 1)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/fireImmunity.png");

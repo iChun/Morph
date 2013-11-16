@@ -42,6 +42,7 @@ import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -158,6 +159,7 @@ public class TickHandlerClient
 			mc.thePlayer.addChatMessage("Alert - You are using an unfinished build of Morph! Please report any issues on the GitHub");
 		}
 		
+		abilityScroll++;
 		if(mc.currentScreen != null && selectorShow)
 		{
 			if(mc.currentScreen instanceof GuiIngameMenu)
@@ -413,6 +415,7 @@ public class TickHandlerClient
 			
 			if((Morph.keySelectorUpHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorUpHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorUpHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorUpHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorUpDown && isPressed(Morph.keySelectorUp))
 			{
+				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
 				{
 					selectorShow = true;
@@ -471,6 +474,7 @@ public class TickHandlerClient
 			}
 			if((Morph.keySelectorDownHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorDownHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorDownHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorDownHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorDownDown && isPressed(Morph.keySelectorDown))
 			{
+				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
 				{
 					selectorShow = true;
@@ -529,6 +533,7 @@ public class TickHandlerClient
 			
 			if((Morph.keySelectorLeftHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorLeftHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorLeftHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorLeftHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorLeftDown && isPressed(Morph.keySelectorLeft))
 			{
+				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
 				{
 					selectorShow = true;
@@ -582,6 +587,7 @@ public class TickHandlerClient
 			}
 			if((Morph.keySelectorRightHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorRightHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorRightHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorRightHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorRightDown && isPressed(Morph.keySelectorRight))
 			{
+				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
 				{
 					selectorShow = true;
@@ -1198,59 +1204,143 @@ public class TickHandlerClient
 
 	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
 	        
+        	GL11.glTranslatef(0.0F, 0.0F, 100F);
 	        if(text)
 	        {
-	        	GL11.glTranslatef(0.0F, 0.0F, 100F);
 	        	Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getEntityName().equalsIgnoreCase(state.entInstance.getEntityName()) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
 	        	
-	        	if(Morph.showAbilitiesInGui == 1)
-	        	{
-		        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
-	        		int offset = 0;
-		        	for(int i = 0; i < abilities.size(); i++)
-		        	{
-		        		Ability ability = abilities.get(i);
-		        		ResourceLocation loc = ability.getIcon();
-		        		if(loc != null)
-		        		{
-				        	Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
-				        	
-							GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-					        Tessellator tessellator = Tessellator.instance;
-							tessellator.setColorRGBA(255, 255, 255, 255);
-							
-					        tessellator.startDrawingQuads();
-							double size = 12D;
-							double iconX = 24D + (offset * (size + 2));
-							double iconY = -22D;
-							
-					        tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
-					        tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
-					        tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
-					        tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
-					        tessellator.draw();
-					        
-					        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
-					        
-					        tessellator.startDrawingQuads();
-							size = 12D;
-							iconX = 25D + (offset * (12D + 2));
-							iconY = -21D;
-							
-					        tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
-					        tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
-					        tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
-					        tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
-					        tessellator.draw();
-	
-					        offset++;
-		        		}
-		        	}
-	        	}
 	        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	        	
-	        	GL11.glTranslatef(0.0F, 0.0F, -100F);
 	        }
+	        
+        	if(Morph.showAbilitiesInGui == 1)
+        	{
+	        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
+	        	
+	        	boolean shouldScroll = false; 
+				if(hasStencilBits && abilities.size() > 3)
+				{
+					MorphState selectedState = null;
+					
+					int i = 0;
+					
+					Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+					
+					while(ite.hasNext())
+					{
+						Entry<String, ArrayList<MorphState>> e = ite.next();
+						if(i == selectorSelected)
+						{
+							ArrayList<MorphState> states = e.getValue();
+							
+							for(int j = 0; j < states.size(); j++)
+							{
+								if(j == selectorSelectedHori)
+								{
+									selectedState = states.get(j);
+									break;
+								}
+							}
+							
+							break;
+						}
+						i++;
+					}
+
+					if(selectedState == state)
+					{
+						shouldScroll = true;
+					}
+					
+					if(shouldScroll)
+					{
+				        GL11.glEnable(GL11.GL_STENCIL_TEST);
+				        GL11.glColorMask(false, false, false, false);
+	
+				        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+				        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
+				        GL11.glStencilMask(0xFF);
+				        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+	
+						drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
+						
+						GL11.glStencilMask(0x00);
+						GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+	
+						
+				        GL11.glColorMask(true, true, true, true);
+					}
+				}
+	        	
+        		int offsetX = 0;
+        		int offsetY = 0;
+	        	for(int i = 0; i < (hasStencilBits && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
+	        	{
+	        		Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
+	        		
+	        		if(!ability.entityHasAbility(ent) || (hasStencilBits && abilities.size() > 3) && !shouldScroll && i >= 3)
+	        		{
+	        			continue;
+	        		}
+	        		ResourceLocation loc = ability.getIcon();
+	        		if(loc != null)
+	        		{
+	        			double pX = -20.5D;
+	        			double pY = -33.5D;
+						double size = 12D;
+	        			
+						if(hasStencilBits && abilities.size() > 3 && shouldScroll)
+						{
+		        			int round = abilityScroll % (30 * abilities.size());
+		        			
+		        			pY -= (size + 1) * (double)(round + (double)renderTick) / 30D;
+						}
+	        			
+			        	Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
+			        	
+						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				        Tessellator tessellator = Tessellator.instance;
+						tessellator.setColorRGBA(255, 255, 255, 255);
+						
+				        tessellator.startDrawingQuads();
+						double iconX = pX + (offsetX * (size + 1));
+						double iconY = pY + (offsetY * (size + 1));
+						
+				        tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
+				        tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
+				        tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
+				        tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
+				        tessellator.draw();
+				        
+				        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
+				        
+				        tessellator.startDrawingQuads();
+						size = 12D;
+						iconX = pX + 1D + (offsetX * (size + 1));
+						iconY = pY + 1D + (offsetY * (size + 1));
+						
+				        tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
+				        tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
+				        tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
+				        tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
+				        tessellator.draw();
+
+				        offsetY++;
+				        if(offsetY == 3 && !hasStencilBits)
+				        {
+				        	offsetY = 0;
+				        	offsetX++;
+				        }
+	        		}
+	        	}
+	        	
+				if(hasStencilBits && abilities.size() > 3 && shouldScroll)
+				{
+			        GL11.glDisable(GL11.GL_STENCIL_TEST);
+				}
+        	}
+        	GL11.glTranslatef(0.0F, 0.0F, -100F);
+
 	        
 	        GL11.glDisable(3042 /*GL_BLEND*/);
 
@@ -1276,6 +1366,20 @@ public class TickHandlerClient
     	}
     	return Keyboard.isKeyDown(key);
     }
+    
+	public static void drawColourOnScreen(int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
+	{
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(r, g, b, alpha);
+        tessellator.addVertex(posX		  , posY + height	, zLevel);
+        tessellator.addVertex(posX + width, posY + height	, zLevel);
+        tessellator.addVertex(posX + width, posY			, zLevel);
+        tessellator.addVertex(posX		  , posY			, zLevel);
+        tessellator.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
 	
 	public long clock;
 	
@@ -1321,11 +1425,15 @@ public class TickHandlerClient
 	public int scrollTimer;
 	public int scrollTimerHori;
 	
+	public int abilityScroll;
+	
 	public final int selectorShowTime = 10;
 	public final int scrollTime = 3;
 	
 	public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
 	public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");
 	public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");
+	
+	public static boolean hasStencilBits = MinecraftForgeClient.getStencilBits() > 0;
 	
 }
