@@ -385,6 +385,11 @@ public class TickHandlerClient
 						info.prevState.entInstance.setHealth(info.prevState.entInstance.getMaxHealth() * (info.player.getHealth() / info.player.getMaxHealth()));
 						info.nextState.entInstance.setHealth(info.nextState.entInstance.getMaxHealth() * (info.player.getHealth() / info.player.getMaxHealth()));
 						
+						if(!(info.nextState.entInstance instanceof EntityPlayer))
+						{
+							info.nextState.entInstance.yOffset = info.player.yOffset;
+						}
+
 						if(info.nextState.entInstance instanceof EntityDragon)
 						{
 							info.nextState.entInstance.prevRotationYaw += 180F;
