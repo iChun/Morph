@@ -10,6 +10,7 @@ import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.FakePlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,7 +33,7 @@ public class MorphState
 		
 		if(!player.equalsIgnoreCase(""))
 		{
-			entInstance = isRemote ? createPlayer(world, player) : new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, player, new ItemInWorldManager(world));
+			entInstance = isRemote ? createPlayer(world, player) : new FakePlayer(world, player);
 		}
 		else if(tag != null)
 		{
@@ -93,7 +94,7 @@ public class MorphState
 		{
 			if(!playerMorph.equalsIgnoreCase(""))
 			{
-				entInstance = isRemote ? createPlayer(world, playerMorph) : new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, playerMorph, new ItemInWorldManager(world));
+				entInstance = isRemote ? createPlayer(world, playerMorph) : new FakePlayer(world, playerMorph);
 			}
 			else
 			{
