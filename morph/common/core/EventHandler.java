@@ -525,6 +525,7 @@ public class EventHandler
 					ObfuscationReflectionHelper.setPrivateValue(EntityRenderer.class, mc.entityRenderer, 1.0D, ObfHelper.cameraZoom);
 				}
 			}
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 	}
 	
