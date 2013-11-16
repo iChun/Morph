@@ -43,6 +43,7 @@ public class MorphState
 		{
 			NBTTagCompound fakeTag = new NBTTagCompound();
 			entInstance.writeEntityToNBT(fakeTag);
+			fakeTag.removeTag("bukkit");
 			writeFakeTags(entInstance, fakeTag);
 			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
