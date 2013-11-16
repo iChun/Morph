@@ -57,6 +57,10 @@ implements ITickHandler
 		{
 			worldTick((WorldServer)tickData[0]);
 		}
+		else if (type.equals(EnumSet.of(TickType.SERVER)))
+		{
+			serverTick();
+		}
 		else if (type.equals(EnumSet.of(TickType.PLAYER)))
 		{
 			playerTick((WorldServer)((EntityPlayerMP)tickData[0]).worldObj, (EntityPlayerMP)tickData[0]);
@@ -66,13 +70,132 @@ implements ITickHandler
 	@Override
 	public EnumSet<TickType> ticks() 
 	{
-		return EnumSet.of(TickType.WORLD, TickType.PLAYER);
+		return EnumSet.of(TickType.WORLD, TickType.PLAYER, TickType.SERVER);
 	}
 
 	@Override
 	public String getLabel() 
 	{
 		return "TickHandlerServerMorph";
+	}
+	
+	public void serverTick()
+	{
+		Iterator<Entry<String, MorphInfo>> ite = playerMorphInfo.entrySet().iterator();
+		while(ite.hasNext())
+		{
+			Entry<String, MorphInfo> e = ite.next();
+			MorphInfo info = e.getValue();
+
+			EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(info.playerName);
+
+			if(info.getMorphing())
+			{
+				info.morphProgress++;
+				if(info.morphProgress > 80)
+				{
+					info.morphProgress = 80;
+					info.setMorphing(false);
+
+					if(player != null)
+					{
+						ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+						player.setPosition(player.posX, player.posY, player.posZ);
+						player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
+
+						ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+						ArrayList<Ability> oldAbilities = info.morphAbilities;
+						info.morphAbilities = new ArrayList<Ability>();
+						for(Ability ability : newAbilities)
+						{
+							try
+							{
+								Ability clone = ability.clone();
+								clone.setParent(player);
+								info.morphAbilities.add(clone);
+							}
+							catch(Exception e1)
+							{
+							}
+						}
+						for(Ability ability : oldAbilities)
+						{
+							boolean isRemoved = true;
+							for(Ability newAbility : info.morphAbilities)
+							{
+								if(newAbility.getType().equalsIgnoreCase(ability.getType()))
+								{
+									isRemoved = false;
+									break;
+								}
+							}
+							if(isRemoved && ability.getParent() != null)
+							{
+								ability.kill();
+							}
+						}
+					}
+
+					if(info.nextState.playerMorph.equalsIgnoreCase(e.getKey()))
+					{
+						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+						DataOutputStream stream = new DataOutputStream(bytes);
+						try
+						{
+							stream.writeUTF(e.getKey());
+
+							PacketDispatcher.sendPacketToAllPlayers(new Packet131MapData((short)Morph.getNetId(), (short)1, bytes.toByteArray()));
+						}
+						catch(IOException e1)
+						{
+
+						}
+						catch(Exception e1)
+						{
+							ObfHelper.obfWarning();
+							e1.printStackTrace();
+						}
+
+						for(Ability ability : info.morphAbilities)
+						{
+							if(ability.getParent() != null)
+							{
+								ability.kill();
+							}
+						}
+
+						saveData.removeTag(e.getKey() + "_morphData");
+
+						ite.remove();
+					}
+				}
+			}
+
+			for(Ability ability : info.morphAbilities)
+			{
+				if(player != null && ability.getParent() == player || player == null && ability.getParent() != null)
+				{
+					ability.tick();
+				}
+				else
+				{
+					ability.setParent(player);
+				}
+			}
+
+			//					if(info.morphProgress > 70)
+			//					{
+			//						info.nextState.entInstance.isDead = false;
+			//						info.nextState.entInstance.setLocationAndAngles(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+			//						info.nextState.entInstance.onUpdate();
+			//					}
+		}
+
+		//				ArrayList<MorphState> states = getPlayerMorphs(world, "ohaiiChun");
+		//				for(MorphState state : states)
+		//				{
+		//					System.out.println(state.identifier);
+		//				}
 	}
 
 	public void preWorldTick(WorldServer world)
@@ -226,125 +349,6 @@ implements ITickHandler
 				{
 					activeEntTrackers.remove(world.provider.dimensionId);
 				}
-			}
-
-			if(world.provider.dimensionId == 0)
-			{
-				Iterator<Entry<String, MorphInfo>> ite = playerMorphInfo.entrySet().iterator();
-				while(ite.hasNext())
-				{
-					Entry<String, MorphInfo> e = ite.next();
-					MorphInfo info = e.getValue();
-
-					EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(info.playerName);
-
-					if(info.getMorphing())
-					{
-						info.morphProgress++;
-						if(info.morphProgress > 80)
-						{
-							info.morphProgress = 80;
-							info.setMorphing(false);
-
-							if(player != null)
-							{
-								ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
-								player.setPosition(player.posX, player.posY, player.posZ);
-								player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
-
-								ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
-								ArrayList<Ability> oldAbilities = info.morphAbilities;
-								info.morphAbilities = new ArrayList<Ability>();
-								for(Ability ability : newAbilities)
-								{
-									try
-									{
-										Ability clone = ability.clone();
-										clone.setParent(player);
-										info.morphAbilities.add(clone);
-									}
-									catch(Exception e1)
-									{
-									}
-								}
-								for(Ability ability : oldAbilities)
-								{
-									boolean isRemoved = true;
-									for(Ability newAbility : info.morphAbilities)
-									{
-										if(newAbility.getType().equalsIgnoreCase(ability.getType()))
-										{
-											isRemoved = false;
-											break;
-										}
-									}
-									if(isRemoved && ability.getParent() != null)
-									{
-										ability.kill();
-									}
-								}
-							}
-
-							if(info.nextState.playerMorph.equalsIgnoreCase(e.getKey()))
-							{
-								ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-								DataOutputStream stream = new DataOutputStream(bytes);
-								try
-								{
-									stream.writeUTF(e.getKey());
-
-									PacketDispatcher.sendPacketToAllPlayers(new Packet131MapData((short)Morph.getNetId(), (short)1, bytes.toByteArray()));
-								}
-								catch(IOException e1)
-								{
-
-								}
-								catch(Exception e1)
-								{
-									ObfHelper.obfWarning();
-									e1.printStackTrace();
-								}
-
-								for(Ability ability : info.morphAbilities)
-								{
-									if(ability.getParent() != null)
-									{
-										ability.kill();
-									}
-								}
-
-								saveData.removeTag(e.getKey() + "_morphData");
-
-								ite.remove();
-							}
-						}
-					}
-
-					for(Ability ability : info.morphAbilities)
-					{
-						if(player != null && ability.getParent() == player || player == null && ability.getParent() != null)
-						{
-							ability.tick();
-						}
-						else
-						{
-							ability.setParent(player);
-						}
-					}
-
-					//					if(info.morphProgress > 70)
-					//					{
-					//						info.nextState.entInstance.isDead = false;
-					//						info.nextState.entInstance.setLocationAndAngles(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-					//						info.nextState.entInstance.onUpdate();
-					//					}
-				}
-
-				//				ArrayList<MorphState> states = getPlayerMorphs(world, "ohaiiChun");
-				//				for(MorphState state : states)
-				//				{
-				//					System.out.println(state.identifier);
-				//				}
 			}
 		}
 	}
