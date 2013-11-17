@@ -94,6 +94,9 @@ public class Morph
 	public static int keySelectorSelect;
 	public static int keySelectorCancel;
 	public static int keySelectorRemoveMorph;
+	
+	public static int keyFavourite;
+	
 	public static int handRenderOverride;
 	
 	public static int showAbilitiesInGui;
@@ -149,6 +152,9 @@ public class Morph
 			keySelectorSelect = addCommentAndReturnInt(config, "client", "keySelectorSelect", "Key Code to select morph on the selector.\nDefault: 28 (Enter/Return)", 28);
 			keySelectorCancel = addCommentAndReturnInt(config, "client", "keySelectorCancel", "Key Code to close the selector.\nDefault: 1 (Esc)", 1);
 			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);
+			
+			keyFavourite = addCommentAndReturnInt(config, "client", "keyFavourite", "Key Code to favourite/unfavourite morph on the selector and show the radial menu.\nDefault: 41 (` [also known as ~])", 41);
+			
 			handRenderOverride = addCommentAndReturnInt(config, "client", "handRenderOverride", "Allow the mod to override player hand rendering?\n0 = No\n1 = Yes", 1);
 			
 			showAbilitiesInGui = addCommentAndReturnInt(config, "client", "showAbilitiesInGui", "Show the abilities the morph has in the GUI?\n0 = No\n1 = Yes", 1);

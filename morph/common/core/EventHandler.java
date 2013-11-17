@@ -612,6 +612,18 @@ public class EventHandler
 				event.setCanceled(true);
 			}
 		}
+		else if(Morph.proxy.tickHandlerClient.radialShow)
+		{
+			Morph.proxy.tickHandlerClient.radialDeltaX += event.dx / 100D;
+			Morph.proxy.tickHandlerClient.radialDeltaY += event.dy / 100D;
+			
+			double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
+			if(mag > 1.0D)
+			{
+				Morph.proxy.tickHandlerClient.radialDeltaX /= mag;
+				Morph.proxy.tickHandlerClient.radialDeltaY /= mag;
+			}
+		}
 	}
 	
 	@ForgeSubscribe

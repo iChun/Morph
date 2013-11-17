@@ -19,6 +19,7 @@ public class MorphState
 {
 	public String playerName;
 	public String playerMorph;
+	public boolean isFavourite;
 	public boolean isRemote;
 	
 	public EntityLivingBase entInstance;
@@ -29,6 +30,7 @@ public class MorphState
 	{
 		playerName = name;
 		playerMorph = player;
+		isFavourite = name.equalsIgnoreCase(player);
 		isRemote = remote;
 		
 		if(!player.equalsIgnoreCase(""))
@@ -62,6 +64,7 @@ public class MorphState
 		
 		tag.setString("playerName", playerName);
 		tag.setString("playerMorph", playerMorph);
+		tag.setBoolean("isFavourite", isFavourite);
 		
 		NBTTagCompound tag1 = new NBTTagCompound();
 		if(entInstance != null)
@@ -81,6 +84,7 @@ public class MorphState
 	{
 		playerName = tag.getString("playerName");
 		playerMorph = tag.getString("playerMorph");
+		isFavourite = tag.getBoolean("isFavourite");
 		
 		NBTTagCompound tag1 = tag.getCompoundTag("entInstanceTag");
 		

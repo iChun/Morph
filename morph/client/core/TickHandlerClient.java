@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
@@ -160,15 +161,22 @@ public class TickHandlerClient
 		}
 		
 		abilityScroll++;
-		if(mc.currentScreen != null && selectorShow)
+		if(mc.currentScreen != null)
 		{
-			if(mc.currentScreen instanceof GuiIngameMenu)
+			if(selectorShow)
 			{
-				mc.displayGuiScreen(null);
+				if(mc.currentScreen instanceof GuiIngameMenu)
+				{
+					mc.displayGuiScreen(null);
+				}
+				selectorShow = false;
+				selectorTimer = selectorShowTime - selectorTimer;
+				scrollTimerHori = scrollTime;
 			}
-			selectorShow = false;
-			selectorTimer = selectorShowTime - selectorTimer;
-			scrollTimerHori = scrollTime;
+			if(radialShow)
+			{
+				radialShow = false;
+			}
 		}
 		if(selectorTimer > 0)
 		{
@@ -219,6 +227,10 @@ public class TickHandlerClient
 		if(scrollTimerHori > 0)
 		{
 			scrollTimerHori--;
+		}
+		if(radialTime > 0)
+		{
+			radialTime--;
 		}
 		
 		if(clock != world.getWorldTime() || !world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
@@ -695,6 +707,11 @@ public class TickHandlerClient
 					}
 					
 				}
+				else if(radialShow)
+				{
+					selectRadialMenu();
+					radialShow = false;
+				}
 			}
 			if(!keySelectorReturnDown && (isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))
 			{
@@ -703,6 +720,10 @@ public class TickHandlerClient
 					selectorShow = false;
 					selectorTimer = selectorShowTime - selectorTimer;
 					scrollTimerHori = scrollTime;
+				}
+				if(radialShow)
+				{
+					radialShow = false;
 				}
 			}
 			if(!keySelectorDeleteDown && (isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE)))
@@ -785,6 +806,92 @@ public class TickHandlerClient
 					
 				}
 			}
+			if(!keyFavouriteDown && isPressed(Morph.keyFavourite))
+			{
+				if(selectorShow)
+				{
+					MorphState selectedState = null;
+					
+					int i = 0;
+					
+					Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+					
+					while(ite.hasNext())
+					{
+						Entry<String, ArrayList<MorphState>> e = ite.next();
+						if(i == selectorSelected)
+						{
+							ArrayList<MorphState> states = e.getValue();
+							
+							for(int j = 0; j < states.size(); j++)
+							{
+								if(j == selectorSelectedHori)
+								{
+									selectedState = states.get(j);
+									break;
+								}
+							}
+							
+							break;
+						}
+						i++;
+					}
+					
+					if(selectedState != null && !selectedState.playerMorph.equalsIgnoreCase(selectedState.playerName))
+					{
+						selectedState.isFavourite = !selectedState.isFavourite;
+						
+						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+						DataOutputStream stream = new DataOutputStream(bytes);
+						try
+						{
+							stream.writeBoolean(selectedState.isFavourite);
+							stream.writeUTF(selectedState.identifier);
+							
+							PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)1, bytes.toByteArray()));
+						}
+						catch(IOException e)
+						{
+						}
+					}
+				}
+				else if(mc.currentScreen == null)
+				{
+					favouriteStates.clear();
+					
+					Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+					
+					while(ite.hasNext())
+					{
+						Entry<String, ArrayList<MorphState>> e = ite.next();
+						ArrayList<MorphState> states = e.getValue();
+						
+						for(int j = 0; j < states.size(); j++)
+						{
+							if(states.get(j).isFavourite)
+							{
+								favouriteStates.add(states.get(j));
+							}
+						}
+					}
+					
+					radialPlayerYaw = mc.renderViewEntity.rotationYaw;
+					radialPlayerPitch = mc.renderViewEntity.rotationPitch;
+					
+					radialDeltaX = radialDeltaY = 0;
+					
+					radialShow = true;
+					radialTime = 3;
+				}
+			}
+			if(keyFavouriteDown && !isPressed(Morph.keyFavourite))
+			{
+				if(radialShow)
+				{
+					selectRadialMenu();
+					radialShow = false;
+				}
+			}
 			keySelectorUpDown = isPressed(Morph.keySelectorUp);
 			keySelectorDownDown = isPressed(Morph.keySelectorDown);
 			keySelectorLeftDown = isPressed(Morph.keySelectorLeft);
@@ -793,6 +900,8 @@ public class TickHandlerClient
 			keySelectorChooseDown = isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
 			keySelectorReturnDown = isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
 			keySelectorDeleteDown = isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE);
+			
+			keyFavouriteDown = isPressed(Morph.keyFavourite);
 		}
 		if(Morph.allowMorphSelection == 0 && selectorShow)
 		{
@@ -835,6 +944,15 @@ public class TickHandlerClient
 			mc.thePlayer.eyeHeight = mc.thePlayer.getDefaultEyeHeight();
 		}
 		
+		if(radialShow)
+		{
+			Mouse.getDX();
+			Mouse.getDY();
+			mc.mouseHelper.deltaX = mc.mouseHelper.deltaY = 0;
+			mc.renderViewEntity.prevRotationYawHead = mc.renderViewEntity.rotationYawHead = radialPlayerYaw;
+			mc.renderViewEntity.prevRotationYaw = mc.renderViewEntity.rotationYaw = radialPlayerYaw;
+			mc.renderViewEntity.prevRotationPitch = mc.renderViewEntity.rotationPitch = radialPlayerPitch;
+		}
 //		ySize = 0.0F;
 		
 //		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
@@ -1114,6 +1232,167 @@ public class TickHandlerClient
 			GL11.glPopMatrix();
 		}
 		
+		//////////////////////
+		
+		if(radialShow)
+		{
+	    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
+	    	double magAcceptance = 0.8D;
+
+	    	ScaledResolution reso = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+			
+			GL11.glEnable(GL11.GL_BLEND);
+	        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	
+	        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glPushMatrix();
+	        GL11.glLoadIdentity();
+
+	        GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glPushMatrix();
+	        GL11.glLoadIdentity();
+			
+			int NUM_PIZZA_SLICES = 100;
+			
+    		float prog = (3F - radialTime + renderTick) / 3F;
+    		if(prog > 1.0F)
+    		{
+    			prog = 1.0F;
+    		}
+	        
+			if(hasStencilBits)
+			{
+		        GL11.glEnable(GL11.GL_STENCIL_TEST);
+		        GL11.glColorMask(false, false, false, false);
+	
+		        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+		        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
+		        GL11.glStencilMask(0xFF);
+		        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+	
+				float rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
+				
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				
+				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+				GL11.glVertex3d(0, 0, 0);
+				for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
+				    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, 0);
+				}
+				GL11.glEnd();
+				
+				GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0xFF);
+				
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				
+				rad = 0.44F * prog;
+				
+				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+				GL11.glVertex3d(0, 0, 0);
+				for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
+				    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, 0);
+				}
+				GL11.glEnd();
+				
+				GL11.glStencilMask(0x00);
+				GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+	
+		        GL11.glColorMask(true, true, true, true);
+			}
+
+			GL11.glColor4f(0.0F, 0.0F, 0.0F, mag > magAcceptance ? 0.6F : 0.4F);
+			
+			float rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
+			
+			GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+			GL11.glVertex3d(0, 0, 0);
+			for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
+			    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+			    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, 0);
+			}
+			GL11.glEnd();
+
+			if(hasStencilBits)
+			{
+				GL11.glDisable(GL11.GL_STENCIL_TEST);
+			}
+	        
+			GL11.glPopMatrix();
+
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			
+			GL11.glPopMatrix();
+
+			
+			GL11.glPushMatrix();
+	
+	    	int showAb = Morph.showAbilitiesInGui;
+	    	
+	    	Morph.showAbilitiesInGui = 0;
+	    	
+	    	double radialAngle = -720F;
+	    	if(mag > magAcceptance)
+	    	{
+	    		//is on radial menu
+	    		double aSin = Math.toDegrees(Math.asin(Morph.proxy.tickHandlerClient.radialDeltaX));
+	    		
+	    		if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+	    		{
+	    			radialAngle = aSin;
+	    		}
+	    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+	    		{
+	    			radialAngle = 90D + (90D - aSin);
+	    		}
+	    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+	    		{
+	    			radialAngle = 180D - aSin;
+	    		}
+	    		else if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+	    		{
+	    			radialAngle = 270D + (90D + aSin);
+	    		}
+	    	}
+	    	
+	    	if(mag > 0.9999999D)
+	    	{
+	    		mag = Math.round(mag);
+	    	}
+	    	
+	    	for(int i = 0; i < favouriteStates.size(); i++)
+	    	{
+	    		double angle = Math.PI * 2 * i / favouriteStates.size();
+	    		
+	    		angle -= Math.toRadians(90D);
+	    		
+	    		int radius = 80;
+	    		
+	    		float leeway = 360F / favouriteStates.size();
+	    		
+	    		boolean selected = false;
+	    		
+	    		if(mag > magAcceptance * 0.75D && (i == 0 && (radialAngle < (leeway / 2) && radialAngle >= 0F || radialAngle > (360F) - (leeway / 2)) || i != 0 && radialAngle < (leeway * i) + (leeway / 2) && radialAngle > (leeway * i ) - (leeway / 2)))
+	    		{
+	    			selected = true;
+	    		}
+	    		
+	    		favouriteStates.get(i).isFavourite = false;
+	    		
+	    		radius *= Math.pow(prog, 0.5D);
+	    		drawEntityOnScreen(favouriteStates.get(i), favouriteStates.get(i).entInstance, reso.getScaledWidth() / 2 + (int)(radius * Math.cos(angle)), (reso.getScaledHeight() + 32) / 2 + (int)(radius * Math.sin(angle)), 16 * prog + (float)(selected ? 6 * mag : 0), 2, 2, renderTick, selected, true);
+	    		favouriteStates.get(i).isFavourite = true;
+	    	}
+	    	
+	    	Morph.showAbilitiesInGui = showAb;
+	    	
+			GL11.glPopMatrix();
+		}
+
+		
+		//////////////////////
+		
 	    BossStatus.healthScale = bossHealthScale;
 	    BossStatus.statusBarLength = bossStatusBarTime;
 	    BossStatus.bossName = bossName;
@@ -1129,7 +1408,7 @@ public class TickHandlerClient
 		}
 	}
 	
-    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, int scale, float par4, float par5, float renderTick, boolean selected, boolean text)
+    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, float scale, float par4, float par5, float renderTick, boolean selected, boolean text)
     {
     	forceRender = true;
     	if(ent != null)
@@ -1207,11 +1486,57 @@ public class TickHandlerClient
         	GL11.glTranslatef(0.0F, 0.0F, 100F);
 	        if(text)
 	        {
-	        	Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getEntityName().equalsIgnoreCase(state.entInstance.getEntityName()) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
+	        	if(radialShow)
+	        	{
+	        		GL11.glPushMatrix();
+	        		float scaleee = 0.75F;
+	        		GL11.glScalef(scaleee, scaleee, scaleee);
+	        		String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || info == null && state.playerMorph.equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName();
+	        		Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2) * scaleee), 5, 16777215);
+	        		GL11.glPopMatrix();
+	        	}
+	        	else
+	        	{
+	        		Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getEntityName().equalsIgnoreCase(state.entInstance.getEntityName()) || info == null && ent.getEntityName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username)) ? EnumChatFormatting.GOLD : "") + ent.getEntityName(), 26, -32, 16777215);
+	        	}
 	        	
 	        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	        	
 	        }
+	        
+        	if(state != null && !state.playerMorph.equalsIgnoreCase(state.playerName) && state.isFavourite)
+        	{
+    			double pX = 9.5D;
+    			double pY = -33.5D;
+				double size = 9D;
+    			
+	        	Minecraft.getMinecraft().getTextureManager().bindTexture(rlFavourite);
+	        	
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		        Tessellator tessellator = Tessellator.instance;
+				tessellator.setColorRGBA(255, 255, 255, 255);
+				
+		        tessellator.startDrawingQuads();
+				double iconX = pX;
+				double iconY = pY;
+				
+		        tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
+		        tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
+		        tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
+		        tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
+		        tessellator.draw();
+		        
+		        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
+		        
+		        tessellator.startDrawingQuads();
+				iconX = pX + 1D;
+				iconY = pY + 1D;
+				
+		        tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
+		        tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
+		        tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
+		        tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
+		        tessellator.draw();
+        	}
 	        
         	if(Morph.showAbilitiesInGui == 1)
         	{
@@ -1247,7 +1572,7 @@ public class TickHandlerClient
 						i++;
 					}
 
-					if(selectedState == state)
+					if(state != null && selectedState == state)
 					{
 						shouldScroll = true;
 					}
@@ -1357,6 +1682,83 @@ public class TickHandlerClient
     	}
     	forceRender = false;
     }
+    
+    public void selectRadialMenu()
+    {
+    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
+    	double magAcceptance = 0.8D;
+
+    	double radialAngle = -720F;
+    	if(mag > magAcceptance)
+    	{
+    		//is on radial menu
+    		double aSin = Math.toDegrees(Math.asin(Morph.proxy.tickHandlerClient.radialDeltaX));
+    		
+    		if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+    		{
+    			radialAngle = aSin;
+    		}
+    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+    		{
+    			radialAngle = 90D + (90D - aSin);
+    		}
+    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+    		{
+    			radialAngle = 180D - aSin;
+    		}
+    		else if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+    		{
+    			radialAngle = 270D + (90D + aSin);
+    		}
+    	}
+    	else
+    	{
+    		return;
+    	}
+    	
+    	if(mag > 0.9999999D)
+    	{
+    		mag = Math.round(mag);
+    	}
+    	
+    	for(int i = 0; i < favouriteStates.size(); i++)
+    	{
+    		double angle = Math.PI * 2 * i / favouriteStates.size();
+    		
+    		angle -= Math.toRadians(90D);
+    		
+    		int radius = 80;
+    		
+    		float leeway = 360F / favouriteStates.size();
+    		
+    		boolean selected = false;
+    		
+    		if(mag > magAcceptance * 0.75D && (i == 0 && (radialAngle < (leeway / 2) && radialAngle >= 0F || radialAngle > (360F) - (leeway / 2)) || i != 0 && radialAngle < (leeway * i) + (leeway / 2) && radialAngle > (leeway * i ) - (leeway / 2)))
+    		{
+    			favouriteStates.get(i);
+    			
+    	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.username);
+    	        
+    			if(info != null && !info.nextState.identifier.equalsIgnoreCase(favouriteStates.get(i).identifier) || info == null && !favouriteStates.get(i).playerMorph.equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.username))
+    			{
+					ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+					DataOutputStream stream = new DataOutputStream(bytes);
+					try
+					{
+						stream.writeBoolean(false);
+						stream.writeUTF(favouriteStates.get(i).identifier);
+						
+						PacketDispatcher.sendPacketToServer(new Packet131MapData((short)Morph.getNetId(), (short)0, bytes.toByteArray()));
+					}
+					catch(IOException e)
+					{
+					}
+	    			return;
+    			}
+    		}
+    	}
+
+    }
 	
     public static boolean isPressed(int key)
     {
@@ -1413,6 +1815,7 @@ public class TickHandlerClient
 	public boolean keySelectorChooseDown;
 	public boolean keySelectorReturnDown;
 	public boolean keySelectorDeleteDown;
+	public boolean keyFavouriteDown;
 	
 	public boolean selectorShow;
 	public int selectorTimer;
@@ -1427,9 +1830,19 @@ public class TickHandlerClient
 	
 	public int abilityScroll;
 	
+	public boolean radialShow;
+	public float radialPlayerYaw;
+	public float radialPlayerPitch;
+	public double radialDeltaX;
+	public double radialDeltaY;
+	public int radialTime;
+	
+	public ArrayList<MorphState> favouriteStates = new ArrayList<MorphState>();
+	
 	public final int selectorShowTime = 10;
 	public final int scrollTime = 3;
 	
+	public static final ResourceLocation rlFavourite = new ResourceLocation("morph", "textures/gui/fav.png");
 	public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
 	public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");
 	public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");

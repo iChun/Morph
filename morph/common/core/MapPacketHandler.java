@@ -102,6 +102,21 @@ public class MapPacketHandler
 					
 					break;
 				}
+				case 1:
+				{
+					boolean favourite = stream.readBoolean();
+					
+					String identifier = stream.readUTF();
+					
+					MorphState state = MorphHandler.getMorphState(player, identifier);
+					
+					if(state != null)
+					{
+						state.isFavourite = favourite;
+					}
+
+					break;
+				}
 			}
 		}
 		catch(IOException e)
