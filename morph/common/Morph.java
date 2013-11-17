@@ -120,9 +120,9 @@ public class Morph
 		
 		config.addCustomCategoryComment("gameplay", "These options affect the gameplay while using the mod.");
 		
-		childMorphs = addCommentAndReturnInt(config, "gameplay", "childMorphs", "Can you morph into child mobs?\nDisabled by default due to improper morph transitions\n0 = No\n1 = Yes", 0);
-		playerMorphs = addCommentAndReturnInt(config, "gameplay", "playerMorphs", "Can you morph into players?\n0 = No\n1 = Yes", 1);
-		bossMorphs = addCommentAndReturnInt(config, "gameplay", "bossMorphs", "Can you morph into bosses?\n0 = No\n1 = Yes", 0);
+		childMorphs = addCommentAndReturnInt(config, "gameplay", "childMorphs", "Can you acquire child mob morphs?\nDisabled by default due to improper morph transitions\n0 = No\n1 = Yes", 0);
+		playerMorphs = addCommentAndReturnInt(config, "gameplay", "playerMorphs", "Can you acquire player morphs?\n0 = No\n1 = Yes", 1);
+		bossMorphs = addCommentAndReturnInt(config, "gameplay", "bossMorphs", "Can you acquire boss morphs?\n0 = No\n1 = Yes", 0);
 		
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 0);
