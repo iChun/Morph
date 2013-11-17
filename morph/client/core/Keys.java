@@ -21,7 +21,6 @@ public class Keys extends KeyHandler{
 	public static KeyBinding 
 			keyNext = new KeyBinding("[Morph] Navigate Next", Keyboard.KEY_LBRACKET),
 			keyPrev = new KeyBinding("[Morph] Navigate Previous", Keyboard.KEY_RBRACKET),
-			keyHoldVertical = new KeyBinding("[Morph] Navigate Vertically", 0),
 			keyHoldHorizontal = new KeyBinding("[Morph] Navigate Horizontally", Keyboard.KEY_LSHIFT),
 			keySelect = new KeyBinding("[Morph] Select", Keyboard.KEY_RETURN),
 			keyCancel = new KeyBinding("[Morph] Cancel", Keyboard.KEY_ESCAPE),
@@ -29,11 +28,8 @@ public class Keys extends KeyHandler{
 			keyFavourite = new KeyBinding("[Morph] Favourite", Keyboard.KEY_EQUALS);
 	
 	public Keys() {
-		super(new KeyBinding[]{keyNext, keyPrev,
-				keyHoldVertical, keyHoldHorizontal,
-				keySelect, keyCancel, keyRemove, keyFavourite}, 
-				 new boolean[]{false,false,false,false,
-								false,false,false,false});
+		super(new KeyBinding[]{keyNext, keyPrev, keyHoldHorizontal, keySelect, keyCancel, keyRemove, keyFavourite}, 
+				 new boolean[]{false,false,false,false, false,false,false});
 	}
 
 	@Override

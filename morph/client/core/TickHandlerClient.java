@@ -430,7 +430,7 @@ public class TickHandlerClient
 				}
 			}
 			
-			if((Keys.keyHoldVertical.keyCode == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Keys.keyHoldVertical.keyCode == 1 && GuiScreen.isShiftKeyDown() || Keys.keyHoldVertical.keyCode == 2 && GuiScreen.isCtrlKeyDown() || Keys.keyHoldVertical.keyCode == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorUpDown && isPressed(Keys.keyNext.keyCode))
+			if(!isPressed(Keys.keyHoldHorizontal.keyCode) && !keySelectorUpDown && isPressed(Keys.keyNext.keyCode))
 			{
 				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
@@ -489,7 +489,7 @@ public class TickHandlerClient
 					}
 				}
 			}
-			if((Keys.keyHoldVertical.keyCode == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Keys.keyHoldVertical.keyCode == 1 && GuiScreen.isShiftKeyDown() || Keys.keyHoldVertical.keyCode == 2 && GuiScreen.isCtrlKeyDown() || Keys.keyHoldVertical.keyCode == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorDownDown && isPressed(Keys.keyPrev.keyCode))
+			if(!isPressed(Keys.keyHoldHorizontal.keyCode) &&  !keySelectorDownDown && isPressed(Keys.keyPrev.keyCode))
 			{
 				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
