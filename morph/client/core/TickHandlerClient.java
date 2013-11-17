@@ -1262,93 +1262,99 @@ public class TickHandlerClient
 	    	double magAcceptance = 0.8D;
 
 	    	ScaledResolution reso = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-			
-			GL11.glEnable(GL11.GL_BLEND);
-	        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	
-	        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-			GL11.glPushMatrix();
-	        GL11.glLoadIdentity();
-
-	        GL11.glMatrixMode(GL11.GL_PROJECTION);
-			GL11.glPushMatrix();
-	        GL11.glLoadIdentity();
-			
-			int NUM_PIZZA_SLICES = 100;
-			
+	    	
     		float prog = (3F - radialTime + renderTick) / 3F;
     		if(prog > 1.0F)
     		{
     			prog = 1.0F;
     		}
 	        
-    		double zLev = 0.5D;
-    		
-			if(hasStencilBits)
-			{
-		        GL11.glEnable(GL11.GL_STENCIL_TEST);
-		        GL11.glColorMask(false, false, false, false);
-	
-		        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
-		        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
-		        GL11.glStencilMask(0xFF);
-		        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-	
-				float rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
-				
-				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				
-				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-				GL11.glVertex3d(0, 0, zLev);
-				for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
-				    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
-				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
-				}
-				GL11.glEnd();
-				
-				GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0xFF);
-				
-				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				
-				rad = 0.44F * prog;
-				
-				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-				GL11.glVertex3d(0, 0, zLev);
-				for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
-				    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
-				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
-				}
-				GL11.glEnd();
-				
-				GL11.glStencilMask(0x00);
-				GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-	
-		        GL11.glColorMask(true, true, true, true);
-			}
-
-			GL11.glColor4f(0.0F, 0.0F, 0.0F, mag > magAcceptance ? 0.6F : 0.4F);
-			
 			float rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
 			
-			GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-			GL11.glVertex3d(0, 0, zLev);
-			for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
-			    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
-			    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
-			}
-			GL11.glEnd();
-
-			if(hasStencilBits)
-			{
-				GL11.glDisable(GL11.GL_STENCIL_TEST);
-			}
-	        
-			GL11.glPopMatrix();
-
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+	    	if(!mc.gameSettings.hideGUI)
+	    	{
+				GL11.glEnable(GL11.GL_BLEND);
+		        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
+		        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+				GL11.glPushMatrix();
+		        GL11.glLoadIdentity();
+	
+		        GL11.glMatrixMode(GL11.GL_PROJECTION);
+				GL11.glPushMatrix();
+		        GL11.glLoadIdentity();
+				
+				int NUM_PIZZA_SLICES = 100;
+				
+	    		double zLev = 0.5D;
+	    		
+				if(hasStencilBits)
+				{
+					GL11.glDisable(GL11.GL_TEXTURE_2D);
+			        GL11.glEnable(GL11.GL_STENCIL_TEST);
+			        GL11.glColorMask(false, false, false, false);
+		
+			        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+			        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
+			        GL11.glStencilMask(0xFF);
+			        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+		
+					rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
+					
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+					
+					GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+					GL11.glVertex3d(0, 0, zLev);
+					for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
+					    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+					    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
+					}
+					GL11.glEnd();
+					
+					GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0xFF);
+					
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+					
+					rad = 0.44F * prog;
+					
+					GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+					GL11.glVertex3d(0, 0, zLev);
+					for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
+					    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+					    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
+					}
+					GL11.glEnd();
+					
+					GL11.glStencilMask(0x00);
+					GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+		
+			        GL11.glColorMask(true, true, true, true);
+				}
+	
+				rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
+				
+				GL11.glColor4f(0.0F, 0.0F, 0.0F, mag > magAcceptance ? 0.6F : 0.4F);
 			
-			GL11.glPopMatrix();
-
+				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+				GL11.glVertex3d(0, 0, zLev);
+				for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
+				    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
+				}
+				GL11.glEnd();
+	
+				if(hasStencilBits)
+				{
+					GL11.glDisable(GL11.GL_STENCIL_TEST);
+					GL11.glEnable(GL11.GL_TEXTURE_2D);
+				}
+		        
+				GL11.glPopMatrix();
+	
+				GL11.glMatrixMode(GL11.GL_MODELVIEW);
+				
+				GL11.glPopMatrix();
+	    	}
 			
 			GL11.glPushMatrix();
 	
@@ -1405,7 +1411,12 @@ public class TickHandlerClient
 	    		favouriteStates.get(i).isFavourite = false;
 	    		
 	    		radius *= Math.pow(prog, 0.5D);
-	    		drawEntityOnScreen(favouriteStates.get(i), favouriteStates.get(i).entInstance, reso.getScaledWidth() / 2 + (int)(radius * Math.cos(angle)), (reso.getScaledHeight() + 32) / 2 + (int)(radius * Math.sin(angle)), 16 * prog + (float)(selected ? 6 * mag : 0), 2, 2, renderTick, selected, true);
+	    		
+        		float entSize = favouriteStates.get(i).entInstance.width > favouriteStates.get(i).entInstance.height ? favouriteStates.get(i).entInstance.width : favouriteStates.get(i).entInstance.height;
+
+        		float scaleMag = entSize > 2.5F ? (float)((2.5F + (entSize - 2.5F) * (mag > magAcceptance && selected ? ((mag - magAcceptance) / (1.0F - magAcceptance)) : 0.0F)) / entSize) : 1.0F;
+	    		
+	    		drawEntityOnScreen(favouriteStates.get(i), favouriteStates.get(i).entInstance, reso.getScaledWidth() / 2 + (int)(radius * Math.cos(angle)), (reso.getScaledHeight() + 32) / 2 + (int)(radius * Math.sin(angle)), 16 * prog * scaleMag + (float)(selected ? 6 * mag : 0), 2, 2, renderTick, selected, true);
 	    		favouriteStates.get(i).isFavourite = true;
 	    	}
 	    	
