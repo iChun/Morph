@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -31,6 +32,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void initMod()
 	{
+		KeyBindingRegistry.registerKeyBinding(new Keys());
 		RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, Morph.proxy.tickHandlerClient.renderMorphInstance);
 	}
 	
