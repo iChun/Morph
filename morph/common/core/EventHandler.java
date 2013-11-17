@@ -116,7 +116,10 @@ public class EventHandler
 		if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.username))
 		{
 	        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(event.entityPlayer.username);
-	        info.player = event.entityPlayer;
+	        if(!event.entityPlayer.isPlayerSleeping())
+	        {
+	        	info.player = event.entityPlayer;
+	        }
 			
 			double par2 = Morph.proxy.tickHandlerClient.renderTick;
 	        int br1 = info.prevState != null ? info.prevState.entInstance.getBrightnessForRender((float)par2) : event.entityPlayer.getBrightnessForRender((float)par2);
