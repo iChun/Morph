@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -44,6 +45,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -402,7 +404,7 @@ public class TickHandlerClient
 						info.prevState.entInstance.setHealth(info.prevState.entInstance.getMaxHealth() * (info.player.getHealth() / info.player.getMaxHealth()));
 						info.nextState.entInstance.setHealth(info.nextState.entInstance.getMaxHealth() * (info.player.getHealth() / info.player.getMaxHealth()));
 						
-						if(!(info.nextState.entInstance instanceof EntityPlayer))
+						if(!(info.nextState.entInstance instanceof EntityPlayer || RenderManager.instance.getEntityRenderObject(info.nextState.entInstance) instanceof RenderBiped))
 						{
 							info.nextState.entInstance.yOffset = info.player.yOffset;
 						}
