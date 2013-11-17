@@ -1,4 +1,4 @@
-package morph.common.json;
+package morph.common.ability.mod;
 
 import java.io.*;
 import java.lang.reflect.Constructor;

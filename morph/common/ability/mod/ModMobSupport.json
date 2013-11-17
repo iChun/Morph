@@ -1,6 +1,4 @@
-
-<!-- saved from url=(0062)https://dl.dropboxusercontent.com/u/17362162/morphsupport.json -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">{
+{
   "customMobAbilityMapping": {
     "twilightforest.entity.EntityTFMosquitoSwarm": [
       "fly",
@@ -169,4 +167,4 @@
       "hostile"
     ]
   }
-}</pre></body></html>
+}
