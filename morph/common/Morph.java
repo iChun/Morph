@@ -66,6 +66,8 @@ public class Morph
 	
 	private static Logger logger;
 	
+	private static Configuration config;
+	
 	public static File configFolder;
 	
 	public static int childMorphs;
@@ -81,6 +83,8 @@ public class Morph
 	public static int hostileAbilityDistanceCheck;
 	
 	public static int canSleepMorphed;
+	
+	public static int ingameKeybindEditorHook;
 	
 	public static int keySelectorUp;
 	public static int keySelectorDown;
@@ -115,7 +119,7 @@ public class Morph
 
 		configFolder = event.getModConfigurationDirectory();
 		
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		
 		config.addCustomCategoryComment("gameplay", "These options affect the gameplay while using the mod.");
@@ -140,6 +144,8 @@ public class Morph
 		if(isClient)
 		{
 			config.addCustomCategoryComment("client", "These options are client only.\nCheck here for key codes for the config: http://www.minecraftwiki.net/wiki/Key_codes");
+			
+			ingameKeybindEditorHook = addCommentAndReturnInt(config, "client", "ingameKeybindEditorHook", "Allow an ingame keybind editor hook for Morph?\nDisable this only if you have issues in the keybind menu.\n0 = No\n1 = Yes", 1);
 			
 			keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 26 ([)", 26);
 			keySelectorDown = addCommentAndReturnInt(config, "client", "keySelectorDown", "Key Code to go down on the selector\nDefault: 27 (])", 27);
@@ -253,6 +259,14 @@ public class Morph
 		proxy.tickHandlerServer.activeEntTrackers.clear();
 		proxy.tickHandlerServer.entTrackerResults.clear();
 		proxy.tickHandlerServer.saveData = null;
+	}
+	
+	public void saveConfig()
+	{
+		if(config != null)
+		{
+			config.save();
+		}
 	}
 	
     public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException

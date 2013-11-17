@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import morph.api.Ability;
+import morph.client.gui.GuiKeyBinds;
 import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.EntityRendererProxy;
@@ -23,6 +24,7 @@ import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -33,6 +35,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -48,6 +51,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.GuiControlsScrollPanel;
+import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import org.lwjgl.input.Keyboard;
@@ -55,7 +60,9 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
@@ -90,6 +97,25 @@ public class TickHandlerClient
 			{
 				preRenderTick(Minecraft.getMinecraft(), Minecraft.getMinecraft().theWorld, (Float)tickData[0]); //only ingame
 			}
+            if(Minecraft.getMinecraft().currentScreen instanceof GuiControls && Morph.ingameKeybindEditorHook == 1)
+            {
+            	try
+            	{
+            		GuiControlsScrollPanel panel = (GuiControlsScrollPanel)ObfuscationReflectionHelper.getPrivateValue(GuiControls.class, (GuiControls)Minecraft.getMinecraft().currentScreen, "scrollPane");
+            		int selected = (Integer)ObfuscationReflectionHelper.getPrivateValue(GuiControlsScrollPanel.class, panel, "selected");
+            		if(selected != -1)
+            		{
+                		GameSettings options = (GameSettings)ObfuscationReflectionHelper.getPrivateValue(GuiControlsScrollPanel.class, panel, "options");
+            			if(options.keyBindings[selected] == KeyBindHook.keyBindHook)
+            			{
+            				FMLCommonHandler.instance().showGuiScreen(new GuiKeyBinds(Minecraft.getMinecraft().currentScreen));
+            			}
+            		}
+            	}
+            	catch(Exception e)
+            	{
+            	}
+            }
 		}
 	}
 
@@ -181,6 +207,7 @@ public class TickHandlerClient
 			if(radialShow)
 			{
 				radialShow = false;
+				GuiIngameForge.renderCrosshairs = renderCrosshair;
 			}
 		}
 		if(selectorTimer > 0)
@@ -716,6 +743,7 @@ public class TickHandlerClient
 				{
 					selectRadialMenu();
 					radialShow = false;
+					GuiIngameForge.renderCrosshairs = renderCrosshair;
 				}
 			}
 			if(!keySelectorReturnDown && (isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))
@@ -729,6 +757,7 @@ public class TickHandlerClient
 				if(radialShow)
 				{
 					radialShow = false;
+					GuiIngameForge.renderCrosshairs = renderCrosshair;
 				}
 			}
 			if(!keySelectorDeleteDown && (isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE)))
@@ -887,6 +916,9 @@ public class TickHandlerClient
 					
 					radialShow = true;
 					radialTime = 3;
+					
+					renderCrosshair = GuiIngameForge.renderCrosshairs;
+					GuiIngameForge.renderCrosshairs = false;
 				}
 			}
 			if(keyFavouriteDown && !isPressed(Morph.keyFavourite))
@@ -895,6 +927,7 @@ public class TickHandlerClient
 				{
 					selectRadialMenu();
 					radialShow = false;
+					GuiIngameForge.renderCrosshairs = renderCrosshair;
 				}
 			}
 			keySelectorUpDown = isPressed(Morph.keySelectorUp);
@@ -1873,6 +1906,7 @@ public class TickHandlerClient
 	public double radialDeltaX;
 	public double radialDeltaY;
 	public int radialTime;
+	public boolean renderCrosshair;
 	
 	public ArrayList<MorphState> favouriteStates = new ArrayList<MorphState>();
 	

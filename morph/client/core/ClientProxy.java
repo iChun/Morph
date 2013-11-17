@@ -1,7 +1,6 @@
 package morph.client.core;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,14 +11,11 @@ import morph.common.Morph;
 import morph.common.core.CommonProxy;
 import morph.common.core.EntityHelper;
 import morph.common.core.ObfHelper;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderEntity;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -31,6 +27,10 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void initMod()
 	{
+		if(Morph.ingameKeybindEditorHook == 1)
+		{
+			KeyBindingRegistry.registerKeyBinding(new KeyBindHook());
+		}
 		RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, Morph.proxy.tickHandlerClient.renderMorphInstance);
 	}
 	
