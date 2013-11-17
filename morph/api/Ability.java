@@ -31,7 +31,7 @@ public abstract class Ability
 	}
 	
 	/**
-	 * Constructor for mod mob support, with params.
+	 * Constructor for mod mob support, with String params.
 	 */
 	public Ability(Object...data)
 	{

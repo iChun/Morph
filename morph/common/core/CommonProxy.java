@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import morph.client.core.TickHandlerClient;
+import morph.common.Morph;
+import morph.common.ability.mod.AbilitySupport;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.EntityList;
@@ -31,6 +33,11 @@ public class CommonProxy
 			}
 		}
 		compatibleEntities.add(EntityPlayer.class);
+		
+		if(Morph.modAbilityPatch == 1)
+		{
+			AbilitySupport.getInstance().mapAbilities();
+		}
 	}
 	
 	public void initTickHandlers()

@@ -82,8 +82,6 @@ public class AbilityHandler
 		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
 		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
-		
-		AbilitySupport.getInstance().mapAbilities();
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
