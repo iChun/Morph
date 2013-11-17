@@ -125,7 +125,7 @@ public class Morph
 		bossMorphs = addCommentAndReturnInt(config, "gameplay", "bossMorphs", "Can you morph into bosses?\n0 = No\n1 = Yes", 0);
 		
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
-		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
+		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 0);
 		
 		abilityTracker = addCommentAndReturnInt(config, "gameplay", "abilityTracker", "Allow the mod to randomly track mobs to scan for abilities?\nWARNING: This is not 100% accurate, and is provided \"as is\". It may or may not give mod mobs the right abilities.\nMay or may not be resource intensive, most likely not.\nThere is also a community provided mod patch support that maps some, but not all the abilities to some mods.\n0 = No\n1 = Yes", 0);
 		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
