@@ -261,7 +261,7 @@ public class Morph
 		proxy.tickHandlerServer.saveData = null;
 	}
 	
-	public void saveConfig()
+	public static void saveConfig()
 	{
 		if(config != null)
 		{

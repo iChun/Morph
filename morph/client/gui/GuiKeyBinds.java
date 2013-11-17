@@ -111,6 +111,7 @@ public class GuiKeyBinds extends GuiScreen
     			}
     			btn.displayString = "Hold: " + (Morph.keySelectorRightHold == 0 ? "None" : Morph.keySelectorRightHold == 1 ? "Shift" : Morph.keySelectorRightHold == 2 ? "Ctrl" : "Alt");
     		}
+    		Morph.saveConfig();
     	}
         if (btn.id == 200)
         {
@@ -175,6 +176,8 @@ public class GuiKeyBinds extends GuiScreen
     			Morph.keyFavourite = i;
     		}
     		buttonId = -1;
+    		
+    		Morph.saveConfig();
     	}
     	else
     	{
