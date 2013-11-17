@@ -37,7 +37,10 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.EnumChatFormatting;
@@ -1191,7 +1194,17 @@ public class TickHandlerClient
 		        		
 		        		GL11.glTranslated(dist, 0.0D, 0.0D);
 		        		
-		        		drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick, true, j == states.size() - 1);
+		        		float entSize = state.entInstance.width > state.entInstance.height ? state.entInstance.width : state.entInstance.height;
+
+		        		float prog = j - selectorSelectedHori == 0 ? (3F - scrollTimerHori + renderTick) / 3F : 0.0F;
+		        		if(prog > 1.0F)
+		        		{
+		        			prog = 1.0F;
+		        		}
+
+		        		float scaleMag = ((2.5F + (entSize - 2.5F) * prog) / entSize) ;
+		        		
+		        		drawEntityOnScreen(state, state.entInstance, 20, height1, entSize > 2.5F ? 16F * scaleMag : 16F, 2, 2, renderTick, true, j == states.size() - 1);
 		        		
 		        		GL11.glPopMatrix();
 		        	}
@@ -1199,7 +1212,16 @@ public class TickHandlerClient
 	        	else
 	        	{
 	        		MorphState state = states.get(0);
-	        		drawEntityOnScreen(state, state.entInstance, 20, height1, 16, 2, 2, renderTick, selectorSelected == i, true);
+	        		float entSize = state.entInstance.width > state.entInstance.height ? state.entInstance.width : state.entInstance.height;
+
+	        		float prog = selectorSelected == i ? (3F - scrollTimer + renderTick) / 3F : 0.0F;
+	        		if(prog > 1.0F)
+	        		{
+	        			prog = 1.0F;
+	        		}
+
+	        		float scaleMag = (2.5F / entSize) ;
+	        		drawEntityOnScreen(state, state.entInstance, 20, height1, entSize > 2.5F ? 16F * scaleMag : 16F, 2, 2, renderTick, selectorSelected == i, true);
 	        	}
 	        	
         		GL11.glTranslatef(0.0F, 0.0F, 20F);
@@ -1260,6 +1282,8 @@ public class TickHandlerClient
     			prog = 1.0F;
     		}
 	        
+    		double zLev = 0.5D;
+    		
 			if(hasStencilBits)
 			{
 		        GL11.glEnable(GL11.GL_STENCIL_TEST);
@@ -1275,10 +1299,10 @@ public class TickHandlerClient
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 				
 				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-				GL11.glVertex3d(0, 0, 0);
+				GL11.glVertex3d(0, 0, zLev);
 				for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
 				    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
-				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, 0);
+				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
 				}
 				GL11.glEnd();
 				
@@ -1289,10 +1313,10 @@ public class TickHandlerClient
 				rad = 0.44F * prog;
 				
 				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-				GL11.glVertex3d(0, 0, 0);
+				GL11.glVertex3d(0, 0, zLev);
 				for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
 				    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
-				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, 0);
+				    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
 				}
 				GL11.glEnd();
 				
@@ -1307,10 +1331,10 @@ public class TickHandlerClient
 			float rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
 			
 			GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-			GL11.glVertex3d(0, 0, 0);
+			GL11.glVertex3d(0, 0, zLev);
 			for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
 			    double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
-			    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, 0);
+			    GL11.glVertex3d(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad, Math.sin(angle) * rad, zLev);
 			}
 			GL11.glEnd();
 
