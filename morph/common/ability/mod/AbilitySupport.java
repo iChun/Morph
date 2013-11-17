@@ -62,7 +62,7 @@ public class AbilitySupport {
 			for(String ability : abilities){
 				boolean hasArgs = false;
 				if(ability.contains("|")){
-					ArrayList<Object> argVars = new ArrayList<Object>();
+					ArrayList<String> argVars = new ArrayList<String>();
 					hasArgs = true;
 					String args = ability.split("\\|")[1];
 					ability = ability.split("\\|")[0];
@@ -73,7 +73,7 @@ public class AbilitySupport {
 					}
 					try {
 						Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
-						abilityObjs.add((Ability)abilityClass.getConstructor(Object[].class).newInstance(argVars.toArray(new Object[0])));
+						abilityObjs.add(((Ability)abilityClass.getConstructor().newInstance()).parse(argVars.toArray(new String[0])));
 					} catch (Exception e){
 						e.printStackTrace();
 					}
@@ -81,7 +81,6 @@ public class AbilitySupport {
 				if(!ability.isEmpty() && !hasArgs){
 					Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
 					try {
-						System.out.println(abilityClass.getSimpleName()+" added with no args");
 						abilityObjs.add((Ability)abilityClass.getConstructor().newInstance());
 					} catch (Exception e){
 						e.printStackTrace();

@@ -31,12 +31,9 @@ public abstract class Ability
 	}
 	
 	/**
-	 * Constructor for mod mob support, with String params.
+	 * Function for mod mob support, with args.
 	 */
-	public Ability(Object...data)
-	{
-		this();
-	}
+	public Ability parse(String[] args) { return this; }
 	
 	/**
 	 * Since parent is private it needs a setter.

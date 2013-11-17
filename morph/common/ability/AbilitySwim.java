@@ -33,26 +33,19 @@ public class AbilitySwim extends Ability {
 		air = 8008135;
 	}
 	
-	public AbilitySwim(Object...data)
+	@Override
+	public Ability parse(String[] args)
 	{
-		this();
 		try
 		{
-			if(data[0] instanceof Boolean)
-			{
-				canSurviveOutOfWater = (Boolean)data[1];
-			}
-			else if(data[0] instanceof String)
-			{
-				canSurviveOutOfWater = Boolean.parseBoolean((String)data[1]);
-			}
+			canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
 		}
 		catch(Exception e)
 		{
-			
 		}
+		return this;
 	}
-	
+
 	@Override
 	public String getType() 
 	{

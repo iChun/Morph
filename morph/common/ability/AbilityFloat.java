@@ -25,41 +25,18 @@ public class AbilityFloat extends Ability {
 		negateFallDistance = negateFall;
 	}
 	
-	public AbilityFloat(Object...data)
+	@Override
+	public Ability parse(String[] args)
 	{
-		this();
 		try
 		{
-			if(data[0] instanceof Double)
-			{
-				terminalVelocity = (Double)data[0];
-			}
-			else if(data[0] instanceof Float)
-			{
-				terminalVelocity = (Float)data[0];
-			}
-			else if(data[0] instanceof Integer)
-			{
-				terminalVelocity = (Integer)data[0];
-			}
-			else if(data[0] instanceof String)
-			{
-				terminalVelocity = Double.parseDouble((String)data[0]);
-			}
-			
-			if(data[1] instanceof Boolean)
-			{
-				negateFallDistance = (Boolean)data[1];
-			}
-			else if(data[1] instanceof String)
-			{
-				negateFallDistance = Boolean.parseBoolean((String)data[1]);
-			}
+			terminalVelocity = Double.parseDouble(args[0]);
+			negateFallDistance = Boolean.parseBoolean(args[1]);
 		}
 		catch(Exception e)
 		{
-			
 		}
+		return this;
 	}
 	
 	@Override
