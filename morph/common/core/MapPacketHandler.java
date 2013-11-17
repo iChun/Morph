@@ -161,6 +161,7 @@ public class MapPacketHandler
 						{
 							ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 							player.setPosition(player.posX, player.posY, player.posZ);
+							player.eyeHeight = player.getDefaultEyeHeight();
 							player.ignoreFrustumCheck = false;
 						}
 					}
