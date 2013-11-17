@@ -1,7 +1,6 @@
 package morph.client.core;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,15 +9,13 @@ import morph.client.model.ModelInfo;
 import morph.client.model.ModelList;
 import morph.common.Morph;
 import morph.common.core.CommonProxy;
+import morph.common.core.EntityHelper;
 import morph.common.core.ObfHelper;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderEntity;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -30,6 +27,10 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void initMod()
 	{
+		if(Morph.ingameKeybindEditorHook == 1)
+		{
+			KeyBindingRegistry.registerKeyBinding(new KeyBindHook());
+		}
 		RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, Morph.proxy.tickHandlerClient.renderMorphInstance);
 	}
 	
@@ -72,8 +73,12 @@ public class ClientProxy extends CommonProxy
 			
 		for(int i = compatibleEntities.size() - 1; i >= 0; i--)
 		{
-			Render rend = RenderManager.instance.getEntityClassRenderObject(compatibleEntities.get(i));
-			if(rend.getClass() == RenderEntity.class)
+			if(renders.containsKey(compatibleEntities.get(i)))
+			{
+				continue;
+			}
+			Render rend = EntityHelper.getEntityClassRenderObject(compatibleEntities.get(i));
+			if(rend != null && rend.getClass() == RenderEntity.class)
 			{
 				rend = renders.get(compatibleEntities.get(i));
 			}
@@ -82,10 +87,7 @@ public class ClientProxy extends CommonProxy
 				compatibleEntities.remove(i);
 				continue;
 			}
-			if(!renders.containsKey(compatibleEntities.get(i)))
-			{
-				renders.put(compatibleEntities.get(i), (RendererLivingEntity)rend);
-			}
+			renders.put(compatibleEntities.get(i), (RendererLivingEntity)rend);
 		}
 		
 		for(Class clz : compatibleEntities)

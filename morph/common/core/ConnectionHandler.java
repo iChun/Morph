@@ -1,9 +1,13 @@
 package morph.common.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import morph.common.Morph;
+import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -13,11 +17,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -42,7 +46,7 @@ public class ConnectionHandler
 	public void onClientConnected()
 	{
 		Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
-		Morph.proxy.tickHandlerClient.playerMorphStates.clear();
+		Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public class ConnectionHandler
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 		{
 			Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
-			Morph.proxy.tickHandlerClient.playerMorphStates.clear();
+			Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
 		}
 	}
 
@@ -77,15 +81,35 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
 	{
+		try
+		{
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			DataOutputStream stream = new DataOutputStream(bytes);
+
+			stream.writeBoolean(Morph.abilities == 1);
+			stream.writeBoolean(Morph.canSleepMorphed == 1);
+			stream.writeBoolean(Morph.allowMorphSelection == 1);
+			
+			PacketDispatcher.sendPacketToPlayer(new Packet131MapData((short)Morph.getNetId(), (short)2, bytes.toByteArray()), (Player)player);
+		}
+		catch(IOException e)
+		{
+			
+		}
+		
+		AbilityHandler.updatePlayerOfAbility(player, null);
+		
 		ArrayList list = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username);
 		
 		if(Morph.proxy.tickHandlerServer.saveData != null)
 		{
 			NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
+			
+			MorphHandler.addOrGetMorphState(list, new MorphState(player.worldObj, player.username, player.username, null, player.worldObj.isRemote));
+			
 			int count = tag.getInteger(player.username + "_morphStatesCount");
 			if(count > 0)
 			{
-				list.clear();
 				
 				for(int i = 0; i < count; i++)
 				{
@@ -97,11 +121,29 @@ public class ConnectionHandler
 					}
 				}
 			}
+			
+			NBTTagCompound tag1 = tag.getCompoundTag(player.username + "_morphData");
+			if(tag1.hasKey("playerName"))
+			{
+				MorphInfo info = new MorphInfo();
+				info.readNBT(tag1);
+				if(!info.nextState.playerName.equals(info.nextState.playerMorph))
+				{
+					Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
+					MorphHandler.addOrGetMorphState(list, info.nextState);
+					
+					PacketDispatcher.sendPacketToAllPlayers(info.getMorphInfoAsPacket());
+				}
+			}
 		}
 		
 		MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
 		for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
 		{
+			if(e.getKey().equalsIgnoreCase(player.username))
+			{
+				continue;
+			}
 			PacketDispatcher.sendPacketToPlayer(e.getValue().getMorphInfoAsPacket(), (Player)player);
 		}
 		
@@ -111,6 +153,7 @@ public class ConnectionHandler
 		{
 			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 			player.setPosition(player.posX, player.posY, player.posZ);
+			player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(player.username) ? player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 		}
 	}
 
@@ -122,11 +165,27 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerChangedDimension(EntityPlayer player) 
 	{
+		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+
+		if(info != null)
+		{
+			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+			player.setPosition(player.posX, player.posY, player.posZ);
+			player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(player.username) ? player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
+		}
 	}
 
 	@Override
 	public void onPlayerRespawn(EntityPlayer player) 
 	{
+		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+
+		if(info != null)
+		{
+			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+			player.setPosition(player.posX, player.posY, player.posZ);
+			player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(player.username) ? player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
+		}
 	}
 
 }

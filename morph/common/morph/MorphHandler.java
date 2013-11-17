@@ -27,6 +27,10 @@ public class MorphHandler
 				pos = i;
 			}
 		}
+		if(state.playerName.equalsIgnoreCase(state.playerMorph) && !state.playerMorph.equalsIgnoreCase(""))
+		{
+			pos = 0;
+		}
 		if(pos != -1)
 		{
 			states.add(pos, state);
@@ -63,6 +67,20 @@ public class MorphHandler
 			{
 				stream.writeUTF("state");
 				Morph.writeNBTTagCompound(state.getTag(), stream);
+				
+				if(bytes.toByteArray().length > 24000)
+				{
+					stream.writeUTF("##end");
+					
+					PacketDispatcher.sendPacketToPlayer(new Packet250CustomPayload("Morph", bytes.toByteArray()), (Player)player);
+					
+					bytes = new ByteArrayOutputStream();
+					stream = new DataOutputStream(bytes);
+					
+					stream.writeByte(1); //id
+					
+					stream.writeBoolean(false);
+				}
 			}
 			
 			stream.writeUTF("##end");

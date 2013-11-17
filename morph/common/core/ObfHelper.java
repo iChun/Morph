@@ -1,28 +1,37 @@
 package morph.common.core;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import morph.common.Morph;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import morph.common.Morph;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ObfHelper 
 {
 	public static boolean obfuscation;
 	
-	public static final String[] mainModel			= new String[] { "i", "field_77045_g", "mainModel" 		}; //RendererLivingEntity
-	public static final String[] textureOffsetX 	= new String[] { "r", "field_78803_o", "textureOffsetX" }; //ModelRenderer
-	public static final String[] textureOffsetY 	= new String[] { "s", "field_78813_p", "textureOffsetY" }; //ModelRenderer
-	public static final String[] resourceDomain		= new String[] { "a", "field_110626_a", "resourceDomain"}; //ResourceLocation
-	public static final String[] resourcePath 		= new String[] { "b", "field_110625_b", "resourcePath" 	}; //ResourceLocation
-	public static final String[] compiled 			= new String[] { "t", "field_78812_q", "compiled"	 	}; //ModelRenderer
-	
+	public static final String[] mainModel				= new String[] { "i", "field_77045_g", "mainModel" 				}; //RendererLivingEntity
+	public static final String[] textureOffsetX 		= new String[] { "r", "field_78803_o", "textureOffsetX" 		}; //ModelRenderer
+	public static final String[] textureOffsetY 		= new String[] { "s", "field_78813_p", "textureOffsetY" 		}; //ModelRenderer
+	public static final String[] resourceDomain			= new String[] { "a", "field_110626_a", "resourceDomain"		}; //ResourceLocation
+	public static final String[] resourcePath 			= new String[] { "b", "field_110625_b", "resourcePath" 			}; //ResourceLocation
+	public static final String[] compiled 				= new String[] { "t", "field_78812_q", "compiled"	 			}; //ModelRenderer
+    public static final String[] cameraZoom				= new String[] { "Y", "field_78503_V", "cameraZoom"				}; //EntityRenderer
+    public static final String[] modelBipedMain			= new String[] { "f", "field_77109_a", "modelBipedMain"			}; //RenderPlayer
+    public static final String[] isImmuneToFire			= new String[] { "ag","field_70178_ae", "isImmuneToFire"		}; //Entity
+    public static final String[] shadowSize				= new String[] { "d", "field_76989_e", "shadowSize"				}; //Render
+
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
 
@@ -30,6 +39,7 @@ public class ObfHelper
 	public static final String updateEntityActionStateDeobf = "updateEntityActionState";
 	
 	public static final String getEntityTextureObf = "func_110775_a";
+	public static final String getEntityTextureDeobf = "getEntityTexture";
 	
 	public static final String preRenderCallbackObf = "func_77041_b";
 	public static final String preRenderCallbackDeobf = "preRenderCallback";
@@ -40,8 +50,12 @@ public class ObfHelper
 	public static final String getHurtSoundObf = "func_70621_aR";
 	public static final String getHurtSoundDeobf = "getHurtSound";
 	
+	public static final String renderHandObf = "func_78476_b";
+	public static final String renderHandDeobf = "renderHand";
+	
+	public static final String alterSquishAmountObf = "func_70808_l";
+	
 	public static Method setSizeMethod;
-	public static Method updateEntityActionStateMethod;
 	public static Method pushOutOfBlocksMethod;
 	
 	public static void obfWarning()
@@ -51,16 +65,23 @@ public class ObfHelper
 	
     public static void detectObfuscation()
     {
+        obfuscation = true;
         try
         {
-            Class.forName("net.minecraft.world.World");
-            obfuscation = false;
+            Field[] fields = Class.forName("net.minecraft.world.World").getDeclaredFields();
+            for(Field f : fields)
+            {
+            	f.setAccessible(true);
+            	if(f.getName().equalsIgnoreCase("loadedEntityList"))
+            	{
+            		obfuscation = false;
+            		return;
+            	}
+            }
         }
         catch (Exception e)
         {
-            obfuscation = true;
         }
-
     }
 	
 	public static void forceSetSize(Entity ent, float width, float height)
@@ -96,31 +117,24 @@ public class ObfHelper
 		}
 	}
 	
-	public static void forceUpdateEntityActionState(EntityLivingBase ent)
+	public static void forceUpdateEntityActionState(Class clz, EntityLivingBase ent)
 	{
-		if(updateEntityActionStateMethod == null)
+		try
 		{
-			try
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.updateEntityActionStateObf : ObfHelper.updateEntityActionStateDeobf);
+			m.setAccessible(true);
+			m.invoke(ent);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != EntityLivingBase.class)
 			{
-				Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.updateEntityActionStateObf : ObfHelper.updateEntityActionStateDeobf);
-				updateEntityActionStateMethod = m;
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
+				forceUpdateEntityActionState(clz.getSuperclass(), ent);
 			}
 		}
-		if(updateEntityActionStateMethod != null)
+		catch(Exception e)
 		{
-			try
-			{
-				updateEntityActionStateMethod.setAccessible(true);
-				updateEntityActionStateMethod.invoke(ent);
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 	}
 	
@@ -154,9 +168,19 @@ public class ObfHelper
 
 	public static ResourceLocation invokeGetEntityTexture(Render rend, Class clz, EntityLivingBase ent)
 	{
+		ResourceLocation loc = getEntTexture(rend, clz, ent);
+		if(loc != null)
+		{
+			return loc;
+		}
+		return AbstractClientPlayer.locationStevePng;
+	}
+	
+	private static ResourceLocation getEntTexture(Render rend, Class clz, EntityLivingBase ent)
+	{
 		try
 		{
-			Method m = clz.getDeclaredMethod(ObfHelper.getEntityTextureObf, Entity.class);
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getEntityTextureObf : ObfHelper.getEntityTextureDeobf, Entity.class);
 			m.setAccessible(true);
 			return (ResourceLocation)m.invoke(rend, ent);
 		}
@@ -171,11 +195,15 @@ public class ObfHelper
 		{
 			e.printStackTrace();
 		}
-		return AbstractClientPlayer.field_110314_b;
+		return AbstractClientPlayer.locationStevePng;
 	}
 	
-	public static void invokePreRenderCallback(Render rend, Class clz, EntityLivingBase ent, float rendTick)
+	public static void invokePreRenderCallback(Render rend, Class clz, Entity ent, float rendTick)
 	{
+		if(!(rend instanceof RendererLivingEntity) || !(ent instanceof EntityLivingBase))
+		{
+			return;
+		}
 		try
 		{
 			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.preRenderCallbackObf : ObfHelper.preRenderCallbackDeobf, EntityLivingBase.class, float.class);
@@ -217,5 +245,44 @@ public class ObfHelper
 		return "damage.hit";
 	}
 	
-	
+	@SideOnly(Side.CLIENT)
+	public static void invokeRenderHand(EntityRenderer renderer, float renderTick)
+	{
+		try
+		{
+			Method m = EntityRenderer.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.renderHandObf : ObfHelper.renderHandDeobf, float.class, int.class);
+			m.setAccessible(true);
+			m.invoke(renderer, renderTick, 0);
+			return;
+		}
+		catch(NoSuchMethodException e)
+		{
+			Morph.console("Cannot find render hand method!", true);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static void forceResquish(Class clz, EntitySlime slime) 
+	{
+		try
+		{
+			Method m = clz.getDeclaredMethod(ObfHelper.alterSquishAmountObf);
+			m.setAccessible(true);
+			m.invoke(slime);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != EntitySlime.class)
+			{
+				forceUpdateEntityActionState(clz.getSuperclass(), slime);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

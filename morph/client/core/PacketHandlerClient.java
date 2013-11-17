@@ -3,24 +3,23 @@ package morph.client.core;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
+import morph.api.Ability;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
-import morph.common.core.ObfHelper;
+import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -104,6 +103,30 @@ public class PacketHandlerClient
 					MorphInfoClient info = new MorphInfoClient(name, prevState, nextState);
 					info.setMorphing(morphing);
 					info.morphProgress = morphProg;
+					
+					MorphInfoClient info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+					if(info1 != null)
+					{
+						info.morphAbilities = info1.morphAbilities;
+					}
+					else
+					{
+						ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+						info.morphAbilities = new ArrayList<Ability>();
+						for(Ability ability : newAbilities)
+						{
+							try
+							{
+								Ability clone = ability.clone();
+								info.morphAbilities.add(clone);
+							}
+							catch(Exception e1)
+							{
+							}
+						}
+
+					}
+					
 					Morph.proxy.tickHandlerClient.playerMorphInfo.put(name, info);
 
 					break;
@@ -114,7 +137,7 @@ public class PacketHandlerClient
 					
 					if(clear)
 					{
-						Morph.proxy.tickHandlerClient.playerMorphStates.clear();
+						Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
 					}
 					
 					while(stream.readUTF().equalsIgnoreCase("state"))
@@ -127,8 +150,32 @@ public class PacketHandlerClient
 						{
 							state.readTag(mc.theWorld, tag);
 							
-							System.out.println(MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.playerMorphStates, state));
+							String name = state.entInstance.getEntityName();
+							
+							if(name != null)
+							{
+								ArrayList<MorphState> states = Morph.proxy.tickHandlerClient.playerMorphCatMap.get(name);
+								if(states == null)
+								{
+									states = new ArrayList<MorphState>();
+									Morph.proxy.tickHandlerClient.playerMorphCatMap.put(name, states);
+								}
+								state = MorphHandler.addOrGetMorphState(states, state);
+							}
 						}
+					}
+					break;
+				}
+				case 2:
+				{
+					boolean clear = stream.readBoolean();
+					if(clear)
+					{
+						AbilityHandler.trackedMap.clear();
+						
+						NBTTagCompound tag = Morph.readNBTTagCompound(stream);
+						
+						AbilityHandler.readAbilityFromNBT(tag);
 					}
 					break;
 				}

@@ -1,8 +1,8 @@
 package morph.common.morph;
 
-import morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,6 +10,7 @@ import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.FakePlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,6 +19,7 @@ public class MorphState
 {
 	public String playerName;
 	public String playerMorph;
+	public boolean isFavourite;
 	public boolean isRemote;
 	
 	public EntityLivingBase entInstance;
@@ -28,11 +30,12 @@ public class MorphState
 	{
 		playerName = name;
 		playerMorph = player;
+		isFavourite = name.equalsIgnoreCase(player);
 		isRemote = remote;
 		
 		if(!player.equalsIgnoreCase(""))
 		{
-			entInstance = isRemote ? createPlayer(world, player) : new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, player, new ItemInWorldManager(world));
+			entInstance = isRemote ? createPlayer(world, player) : new FakePlayer(world, player);
 		}
 		else if(tag != null)
 		{
@@ -43,8 +46,15 @@ public class MorphState
 		{
 			NBTTagCompound fakeTag = new NBTTagCompound();
 			entInstance.writeEntityToNBT(fakeTag);
-			writeFakeTags(fakeTag);
-			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
+			writeFakeTags(entInstance, fakeTag);
+			if(playerMorph.equalsIgnoreCase(""))
+			{
+				identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
+			}
+			else
+			{
+				identifier = entInstance.getClass().toString() + "player_" + playerMorph;
+			}
 		}
 	}
 
@@ -54,12 +64,13 @@ public class MorphState
 		
 		tag.setString("playerName", playerName);
 		tag.setString("playerMorph", playerMorph);
+		tag.setBoolean("isFavourite", isFavourite);
 		
 		NBTTagCompound tag1 = new NBTTagCompound();
 		if(entInstance != null)
 		{
-			entInstance.addEntityID(tag1);
-			writeFakeTags(tag1);
+			entInstance.writeToNBTOptional(tag1);
+			writeFakeTags(entInstance, tag1);
 		}
 		
 		tag.setCompoundTag("entInstanceTag", tag1);
@@ -73,6 +84,7 @@ public class MorphState
 	{
 		playerName = tag.getString("playerName");
 		playerMorph = tag.getString("playerMorph");
+		isFavourite = tag.getBoolean("isFavourite");
 		
 		NBTTagCompound tag1 = tag.getCompoundTag("entInstanceTag");
 		
@@ -82,25 +94,29 @@ public class MorphState
 			invalid = true;
 		}
 		
-		if(invalid)
-		{
-			entInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", world);
-			NBTTagCompound fakeTag = new NBTTagCompound();
-			entInstance.writeEntityToNBT(fakeTag);
-			writeFakeTags(fakeTag);
-			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
-		}
-		else
+		if(!invalid)
 		{
 			if(!playerMorph.equalsIgnoreCase(""))
 			{
-				entInstance = isRemote ? createPlayer(world, playerMorph) : new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), world, playerMorph, new ItemInWorldManager(world));
+				entInstance = isRemote ? createPlayer(world, playerMorph) : new FakePlayer(world, playerMorph);
 			}
 			else
 			{
 				entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
 			}
 			identifier = tag.getString("identifier");
+			if(entInstance == null)
+			{
+				invalid = true;
+			}
+		}
+		if(invalid)
+		{
+			entInstance = (EntityLivingBase)EntityList.createEntityByName("Pig", world);
+			NBTTagCompound fakeTag = new NBTTagCompound();
+			entInstance.writeEntityToNBT(fakeTag);
+			writeFakeTags(entInstance, fakeTag);
+			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
 		}
 	}
 	
@@ -110,16 +126,34 @@ public class MorphState
 		return new EntityOtherPlayerMP(world, player);
 	}
 
-	public void writeFakeTags(NBTTagCompound fakeTag)
+	public void writeFakeTags(EntityLivingBase living, NBTTagCompound tag)
 	{
-		fakeTag.setFloat("HealF", entInstance.func_110138_aP());
-		fakeTag.setShort("Health", (short)entInstance.func_110138_aP());
-		fakeTag.setShort("HurtTime", (short)0);
-		fakeTag.setShort("DeathTime", (short)0);
-		fakeTag.setShort("AttackTime", (short)0);
-		fakeTag.setTag("ActiveEffects", new NBTTagList());
-		fakeTag.setShort("Fire", (short)0);
-		fakeTag.setShort("Anger", (short)0);
+		tag.setFloat("HealF", Short.MAX_VALUE);
+		tag.setShort("Health", (short)Short.MAX_VALUE);
+		tag.setShort("HurtTime", (short)0);
+		tag.setShort("DeathTime", (short)0);
+		tag.setShort("AttackTime", (short)0);
+		tag.setTag("ActiveEffects", new NBTTagList());
+		tag.setShort("Fire", (short)0);
+		tag.setShort("Anger", (short)0);
+		tag.setInteger("Age", living.isChild() ? -24000 : 0);
+		
+		if(living instanceof EntityLiving)
+		{
+			EntityLiving living1 = (EntityLiving)living;
+			
+			NBTTagList tagList = new NBTTagList();
+			
+	        for (int i = 0; i < living1.getLastActiveItems().length; ++i)
+	        {
+	            tagList.appendTag(new NBTTagCompound());
+	        }
+	        
+			tag.setBoolean("CanPickUpLoot", true);
+			tag.setTag("Equipment", tagList);
+			tag.setBoolean("Leashed", false);
+			tag.setBoolean("PersistenceRequired", true);
+		}
 	}
 	
 }

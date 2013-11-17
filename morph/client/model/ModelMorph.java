@@ -35,28 +35,28 @@ public class ModelMorph extends ModelBase
 		morphInfo = info;
 		rand = new Random();
 		
-		if(info != null && info.morphProgress < 80 && info.prevEntInfo != null && info.nextEntInfo != null)
+		if(info != null && info.morphProgress < 80 && info.prevModelInfo != null && info.nextModelInfo != null)
 		{
-			modelList = ModelHelper.getModelCubesCopy(info.prevEntInfo, this);
+			modelList = ModelHelper.getModelCubesCopy(info.prevModelInfo, this);
 			
-			for(int i = 0; i < modelList.size(); i++)
+			for(int i = 0; i < morphInfo.nextModelInfo.modelList.size(); i++)
 			{
-				if(i >= morphInfo.nextEntInfo.modelList.size())
+				if(i >= modelList.size())
 				{
 					break;
 				}
 				
 				ModelRenderer cubeCopy = modelList.get(i);
-				ModelRenderer cubeNewParent = morphInfo.nextEntInfo.modelList.get(i);
+				ModelRenderer cubeNewParent = morphInfo.nextModelInfo.modelList.get(i);
 				
-				ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy); 			
+				ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy, 0); 			
 			}
 			
-			if(modelList.size() < morphInfo.nextEntInfo.modelList.size())
+			if(modelList.size() < morphInfo.nextModelInfo.modelList.size())
 			{
-				for(int i = modelList.size(); i < morphInfo.nextEntInfo.modelList.size(); i++)
+				for(int i = modelList.size(); i < morphInfo.nextModelInfo.modelList.size(); i++)
 				{
-					ModelRenderer parentCube = morphInfo.nextEntInfo.modelList.get(i);
+					ModelRenderer parentCube = morphInfo.nextModelInfo.modelList.get(i);
 					try
 					{
 						int txOffsetX = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetX);
@@ -79,7 +79,7 @@ public class ModelMorph extends ModelBase
 							}
 							else
 							{
-								ModelRenderer randParentCube = morphInfo.nextEntInfo.modelList.get(rand.nextInt(morphInfo.nextEntInfo.modelList.size()));
+								ModelRenderer randParentCube = morphInfo.nextModelInfo.modelList.get(rand.nextInt(morphInfo.nextModelInfo.modelList.size()));
 								randBox = (ModelBox)randParentCube.cubeList.get(rand.nextInt(randParentCube.cubeList.size()));
 							}
 							
@@ -97,6 +97,8 @@ public class ModelMorph extends ModelBase
 						cubeCopy.rotateAngleZ = parentCube.rotateAngleZ;
 						
 						modelList.add(cubeCopy);
+						
+						ModelHelper.createEmptyContents(this, parentCube, cubeCopy, 0);
 					}
 					catch(Exception e)
 					{
@@ -113,8 +115,8 @@ public class ModelMorph extends ModelBase
 	{
 		GL11.glPushMatrix();
 
-		ArrayList<ModelRenderer> prevCubes = morphInfo.prevEntInfo.modelList;
-		ArrayList<ModelRenderer> nextCubes = morphInfo.nextEntInfo.modelList;
+		ArrayList<ModelRenderer> prevCubes = morphInfo.prevModelInfo.modelList;
+		ArrayList<ModelRenderer> nextCubes = morphInfo.nextModelInfo.modelList;
 		
 		for(int i = 0; i < nextCubes.size(); i++)
 		{
@@ -167,7 +169,7 @@ public class ModelMorph extends ModelBase
 		
 		GL11.glPushMatrix();
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
-		ObfHelper.invokePreRenderCallback(morphInfo.prevEntInfo.entRender, morphInfo.prevEntInfo.entRender.getClass(), morphInfo.prevState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
+		ObfHelper.invokePreRenderCallback(morphInfo.prevModelInfo.getRenderer(), morphInfo.prevModelInfo.getRenderer().getClass(), morphInfo.prevState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
 		GL11.glPopMatrix();
 		
@@ -177,7 +179,7 @@ public class ModelMorph extends ModelBase
 
 		GL11.glPushMatrix();
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
-		ObfHelper.invokePreRenderCallback(morphInfo.nextEntInfo.entRender, morphInfo.nextEntInfo.entRender.getClass(), morphInfo.nextState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
+		ObfHelper.invokePreRenderCallback(morphInfo.nextModelInfo.getRenderer(), morphInfo.nextModelInfo.getRenderer().getClass(), morphInfo.nextState.entInstance, Morph.proxy.tickHandlerClient.renderTick);
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
 		GL11.glPopMatrix();
 		
@@ -214,6 +216,8 @@ public class ModelMorph extends ModelBase
 	{
 		if(morphCubesList == null || depth > 20)
 		{
+//			System.out.println("null :(");
+//			System.out.println(depth);
 			return;
 		}
 		if(currentMorphCubes == null)

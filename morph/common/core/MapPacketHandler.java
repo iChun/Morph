@@ -5,7 +5,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import morph.api.Ability;
 import morph.client.entity.EntityMorphAcquisition;
+import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
@@ -84,6 +86,12 @@ public class MapPacketHandler
 							MorphInfo info2 = new MorphInfo(player.username, old, state);
 							info2.setMorphing(true);
 							
+							MorphInfo info3 = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+							if(info3 != null)
+							{
+								info2.morphAbilities = info3.morphAbilities;
+							}
+							
 							Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
 							
 							PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
@@ -92,6 +100,21 @@ public class MapPacketHandler
 						}
 					}
 					
+					break;
+				}
+				case 1:
+				{
+					boolean favourite = stream.readBoolean();
+					
+					String identifier = stream.readUTF();
+					
+					MorphState state = MorphHandler.getMorphState(player, identifier);
+					
+					if(state != null)
+					{
+						state.isFavourite = favourite;
+					}
+
 					break;
 				}
 			}
@@ -138,9 +161,31 @@ public class MapPacketHandler
 						{
 							ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 							player.setPosition(player.posX, player.posY, player.posZ);
+							player.eyeHeight = player.getDefaultEyeHeight();
+							player.ignoreFrustumCheck = false;
 						}
 					}
+					
+					MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+					if(info != null)
+					{
+						for(Ability ability : info.morphAbilities)
+						{
+							if(ability.getParent() != null)
+							{
+								ability.kill();
+							}
+						}
+					}
+
 					Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
+					break;
+				}
+				case 2:
+				{
+					SessionState.abilities = stream.readBoolean();
+					SessionState.canSleepMorphed = stream.readBoolean();
+					SessionState.allowMorphSelection = stream.readBoolean();
 					break;
 				}
 			}

@@ -25,6 +25,7 @@ public class EntityMorphAcquisition extends EntityLivingBase
 		setSize(0.1F, 0.1F);
 		noClip = true;
 		renderDistanceWeight = 10D;
+		ignoreFrustumCheck = true;
 	}
 	
 	public EntityMorphAcquisition(World par1World, EntityLivingBase ac, EntityLivingBase ar) 
@@ -38,6 +39,7 @@ public class EntityMorphAcquisition extends EntityLivingBase
 		setSize(0.1F, 0.1F);
 		noClip = true;
 		renderDistanceWeight = 10D;
+		ignoreFrustumCheck = true;
 		setLocationAndAngles(acquired.posX, acquired.posY, acquired.posZ, acquired.rotationYaw, acquired.rotationPitch);
 	}
 
@@ -75,18 +77,21 @@ public class EntityMorphAcquisition extends EntityLivingBase
     }
 	
 	@Override
-    public void setEntityHealth(float par1)
+    public void setHealth(float par1)
     {
     }
 	
 	@Override
-    public boolean addEntityID(NBTTagCompound par1NBTTagCompound)
+    public boolean writeToNBTOptional(NBTTagCompound par1NBTTagCompound)
     {
     	return false;
     }
 	
 	@Override
-	protected void entityInit() {}
+	protected void entityInit() 
+	{
+		super.entityInit();
+	}
 
 	@Override
 	public void readEntityFromNBT(NBTTagCompound nbttagcompound) {}

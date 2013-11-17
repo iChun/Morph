@@ -49,7 +49,6 @@ public class EntityRendererProxy extends EntityRenderer
         			float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
         			float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
         			ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
-        			this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(d0, par1);
         		}
         		
     			mc.thePlayer.lastTickPosY -= ySize;
