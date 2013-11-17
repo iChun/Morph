@@ -430,7 +430,7 @@ public class TickHandlerClient
 				}
 			}
 			
-			if((Morph.keySelectorUpHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorUpHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorUpHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorUpHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorUpDown && isPressed(Morph.keySelectorUp))
+			if((Keys.keyHoldVertical.keyCode == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Keys.keyHoldVertical.keyCode == 1 && GuiScreen.isShiftKeyDown() || Keys.keyHoldVertical.keyCode == 2 && GuiScreen.isCtrlKeyDown() || Keys.keyHoldVertical.keyCode == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorUpDown && isPressed(Keys.keyNext.keyCode))
 			{
 				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
@@ -489,7 +489,7 @@ public class TickHandlerClient
 					}
 				}
 			}
-			if((Morph.keySelectorDownHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorDownHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorDownHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorDownHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorDownDown && isPressed(Morph.keySelectorDown))
+			if((Keys.keyHoldVertical.keyCode == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Keys.keyHoldVertical.keyCode == 1 && GuiScreen.isShiftKeyDown() || Keys.keyHoldVertical.keyCode == 2 && GuiScreen.isCtrlKeyDown() || Keys.keyHoldVertical.keyCode == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorDownDown && isPressed(Keys.keyPrev.keyCode))
 			{
 				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
@@ -548,7 +548,7 @@ public class TickHandlerClient
 				}
 			}
 			
-			if((Morph.keySelectorLeftHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorLeftHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorLeftHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorLeftHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorLeftDown && isPressed(Morph.keySelectorLeft))
+			if(isPressed(Keys.keyHoldHorizontal.keyCode) && !keySelectorLeftDown && isPressed(Keys.keyNext.keyCode))
 			{
 				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
@@ -602,7 +602,7 @@ public class TickHandlerClient
 					selectorSelectedHori--;
 				}
 			}
-			if((Morph.keySelectorRightHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorRightHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorRightHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorRightHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorRightDown && isPressed(Morph.keySelectorRight))
+			if(isPressed(Keys.keyHoldHorizontal.keyCode) && !keySelectorRightDown && isPressed(Keys.keyPrev.keyCode))
 			{
 				abilityScroll = 0;
 				if(!selectorShow && mc.currentScreen == null)
@@ -657,7 +657,7 @@ public class TickHandlerClient
 				}
 			}
 			
-			if(!keySelectorChooseDown && (isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode)))
+			if(!keySelectorChooseDown && (isPressed(Keys.keySelect.keyCode) || isPressed(mc.gameSettings.keyBindAttack.keyCode)))
 			{
 				if(selectorShow)
 				{
@@ -718,7 +718,7 @@ public class TickHandlerClient
 					radialShow = false;
 				}
 			}
-			if(!keySelectorReturnDown && (isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))
+			if(!keySelectorReturnDown && (isPressed(Keys.keyCancel.keyCode) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))
 			{
 				if(selectorShow)
 				{
@@ -731,7 +731,7 @@ public class TickHandlerClient
 					radialShow = false;
 				}
 			}
-			if(!keySelectorDeleteDown && (isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE)))
+			if(!keySelectorDeleteDown && (isPressed(Keys.keyRemove.keyCode) || isPressed(Keyboard.KEY_DELETE)))
 			{
 				if(selectorShow)
 				{
@@ -811,7 +811,7 @@ public class TickHandlerClient
 					
 				}
 			}
-			if(!keyFavouriteDown && isPressed(Morph.keyFavourite))
+			if(!keyFavouriteDown && isPressed(Keys.keyFavourite.keyCode))
 			{
 				if(selectorShow)
 				{
@@ -889,7 +889,7 @@ public class TickHandlerClient
 					radialTime = 3;
 				}
 			}
-			if(keyFavouriteDown && !isPressed(Morph.keyFavourite))
+			if(keyFavouriteDown && !isPressed(Keys.keyFavourite.keyCode))
 			{
 				if(radialShow)
 				{
@@ -897,16 +897,16 @@ public class TickHandlerClient
 					radialShow = false;
 				}
 			}
-			keySelectorUpDown = isPressed(Morph.keySelectorUp);
-			keySelectorDownDown = isPressed(Morph.keySelectorDown);
-			keySelectorLeftDown = isPressed(Morph.keySelectorLeft);
-			keySelectorRightDown = isPressed(Morph.keySelectorRight);
+			keySelectorUpDown = isPressed(Keys.keyNext.keyCode);
+			keySelectorDownDown = isPressed(Keys.keyPrev.keyCode);
+			keySelectorLeftDown = isPressed(Keys.keyNext.keyCode);
+			keySelectorRightDown = isPressed(Keys.keyPrev.keyCode);
 			
-			keySelectorChooseDown = isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
-			keySelectorReturnDown = isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
-			keySelectorDeleteDown = isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE);
+			keySelectorChooseDown = isPressed(Keys.keySelect.keyCode) || isPressed(mc.gameSettings.keyBindAttack.keyCode);
+			keySelectorReturnDown = isPressed(Keys.keyCancel.keyCode) || isPressed(mc.gameSettings.keyBindUseItem.keyCode);
+			keySelectorDeleteDown = isPressed(Keys.keyRemove.keyCode) || isPressed(Keyboard.KEY_DELETE);
 			
-			keyFavouriteDown = isPressed(Morph.keyFavourite);
+			keyFavouriteDown = isPressed(Keys.keyFavourite.keyCode);
 		}
 		if(Morph.allowMorphSelection == 0 && selectorShow)
 		{

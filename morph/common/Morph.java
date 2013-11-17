@@ -82,7 +82,7 @@ public class Morph
 	
 	public static int canSleepMorphed;
 	
-	public static int keySelectorUp;
+	/*public static int keySelectorUp;
 	public static int keySelectorDown;
 	public static int keySelectorLeft;
 	public static int keySelectorRight;
@@ -96,7 +96,7 @@ public class Morph
 	public static int keySelectorCancel;
 	public static int keySelectorRemoveMorph;
 	
-	public static int keyFavourite;
+	public static int keyFavourite;*/
 	
 	public static int handRenderOverride;
 	
@@ -141,7 +141,7 @@ public class Morph
 		{
 			config.addCustomCategoryComment("client", "These options are client only.\nCheck here for key codes for the config: http://www.minecraftwiki.net/wiki/Key_codes");
 			
-			keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 26 ([)", 26);
+			/*keySelectorUp = addCommentAndReturnInt(config, "client", "keySelectorUp", "Key Code to go up on the selector\nDefault: 26 ([)", 26);
 			keySelectorDown = addCommentAndReturnInt(config, "client", "keySelectorDown", "Key Code to go down on the selector\nDefault: 27 (])", 27);
 			keySelectorLeft = addCommentAndReturnInt(config, "client", "keySelectorLeft", "Key Code to go left on the selector\nDefault: 26 ([)", 26);
 			keySelectorRight = addCommentAndReturnInt(config, "client", "keySelectorRight", "Key Code to go right on the selector\nDefault: 27 (])", 27);
@@ -156,7 +156,7 @@ public class Morph
 			keySelectorRemoveMorph = addCommentAndReturnInt(config, "client", "keySelectorRemoveMorph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14);
 			
 			keyFavourite = addCommentAndReturnInt(config, "client", "keyFavourite", "Key Code to favourite/unfavourite morph on the selector and show the radial menu.\nDefault: 41 (` [also known as ~])", 41);
-			
+		*/	
 			handRenderOverride = addCommentAndReturnInt(config, "client", "handRenderOverride", "Allow the mod to override player hand rendering?\n0 = No\n1 = Yes", 1);
 			
 			showAbilitiesInGui = addCommentAndReturnInt(config, "client", "showAbilitiesInGui", "Show the abilities the morph has in the GUI?\n0 = No\n1 = Yes", 1);
