@@ -14,6 +14,7 @@ import cpw.mods.fml.common.network.Player;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.core.SessionState;
+import morph.common.json.AbilitySupport;
 import morph.common.morph.MorphState;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -82,6 +83,7 @@ public class AbilityHandler
 		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
 		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
+		AbilitySupport.getInstance().mapAbilities();
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
