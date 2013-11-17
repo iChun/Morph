@@ -31,6 +31,14 @@ public abstract class Ability
 	}
 	
 	/**
+	 * Constructor for mod mob support, with params.
+	 */
+	public Ability(Object...data)
+	{
+		this();
+	}
+	
+	/**
 	 * Since parent is private it needs a setter.
 	 * @param newParent
 	 */
