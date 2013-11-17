@@ -33,7 +33,7 @@ public class CommandMorph extends CommandBase
 	@Override
 	public String getCommandUsage(ICommandSender icommandsender) 
 	{
-		return "/" + this.getCommandName() + "<demorph|clear|morphtargetr> [player] [force (true/false)]";
+		return "/" + this.getCommandName() + " <demorph|clear|morphtarget> [player] [force (true/false)]";
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class CommandMorph extends CommandBase
 		        	MovingObjectPosition mop = EntityHelper.getEntityLook(player, 4D, false, 1.0F);
 		        	if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase)
 		        	{
-		        		if(!EntityHelper.morphPlayer(player, (EntityLivingBase)mop.entityHit, false))
+		        		if(!EntityHelper.morphPlayer(player, (EntityLivingBase)mop.entityHit, false, true))
 		        		{
 		        			icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not looking at a morphable mob."));
 		        		}
