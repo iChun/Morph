@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 
 public class AbilitySupport {
 	
-	private static final String jsonPath = "/morph/common/ability/mod/ModMobSupport.json";
+	private static final String jsonPath = "/assets/morph/mod/ModMobSupport.json";
 	public static AbilitySupport instance = null;
 	private HashMap<String, String[]> customMobAbilityMapping = new HashMap<String, String[]>();
 
