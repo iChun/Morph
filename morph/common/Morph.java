@@ -22,6 +22,7 @@ import morph.common.core.SessionState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
@@ -265,7 +266,42 @@ public class Morph
 	{
 		if(config != null)
 		{
+			updatePropertyInt(config, "client", "keySelectorUp", keySelectorUp);
+			updatePropertyInt(config, "client", "keySelectorDown", keySelectorDown);
+			updatePropertyInt(config, "client", "keySelectorLeft", keySelectorLeft);
+			updatePropertyInt(config, "client", "keySelectorRight", keySelectorRight);
+			
+			updatePropertyInt(config, "client", "keySelectorUpHold", keySelectorUpHold);
+			updatePropertyInt(config, "client", "keySelectorDownHold", keySelectorDownHold);
+			updatePropertyInt(config, "client", "keySelectorLeftHold", keySelectorLeftHold);
+			updatePropertyInt(config, "client", "keySelectorRightHold", keySelectorRightHold);
+			
+			updatePropertyInt(config, "client", "keySelectorSelect", keySelectorSelect);
+			updatePropertyInt(config, "client", "keySelectorCancel", keySelectorCancel);
+			updatePropertyInt(config, "client", "keySelectorRemoveMorph", keySelectorRemoveMorph);
+
+			updatePropertyInt(config, "client", "keyFavourite", keyFavourite);
+
 			config.save();
+		}
+	}
+	
+	public static void updatePropertyInt(Configuration config, String cat, String propName, int value)
+	{
+		ConfigCategory category = config.getCategory(cat);
+		if(category.containsKey(propName))
+		{
+            Property prop = category.get(propName);
+
+            if (prop.getType() == null)
+            {
+                prop = new Property(prop.getName(), Integer.toString(value), Property.Type.INTEGER);
+                category.put(propName, prop);
+            }
+            else
+            {
+            	prop.set(Integer.toString(value));
+            }
 		}
 	}
 	
