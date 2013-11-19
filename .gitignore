@@ -13,7 +13,7 @@ paulscode/
 assets/forge/
 
 # MC/Forge files #
-deobfuscation_data-1.6.2.lzma
+deobfuscation_data-*.lzma
 fml_at.cfg
 fml_marker.cfg
 fmlversion.properties
