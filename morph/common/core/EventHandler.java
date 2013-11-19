@@ -213,10 +213,18 @@ public class EventHandler
 
 	        	float renderTick = Morph.proxy.tickHandlerClient.renderTick;
 	        	
+	        	float prevEntSize = info.prevState.entInstance != null ? info.prevState.entInstance.width > info.prevState.entInstance.height ? info.prevState.entInstance.width : info.prevState.entInstance.height : 1.0F;
+        		float nextEntSize = info.nextState.entInstance != null ? info.nextState.entInstance.width > info.nextState.entInstance.height ? info.nextState.entInstance.width : info.nextState.entInstance.height : 1.0F;
+        		
+        		float prevScaleMag = prevEntSize > 2.5F ? (2.5F / prevEntSize) : 1.0F;
+        		float nextScaleMag = nextEntSize > 2.5F ? (2.5F / nextEntSize) : 1.0F;
+        		
 	        	if(info.morphProgress <= 40)
 	        	{
 	        		if(info.prevModelInfo != null && info.morphProgress < 10)
 	        		{
+	        			GL11.glScalef(prevScaleMag, prevScaleMag, prevScaleMag);
+	        			
     		            float ff2 = info.prevState.entInstance.renderYawOffset;
     		            float ff3 = info.prevState.entInstance.rotationYaw;
     		            float ff4 = info.prevState.entInstance.rotationPitch;
@@ -273,6 +281,8 @@ public class EventHandler
 	        	{
 	        		if(info.nextModelInfo != null && info.morphProgress >= 70)
 	        		{
+	        			GL11.glScalef(nextScaleMag, nextScaleMag, nextScaleMag);
+	        			
     		            float ff2 = info.nextState.entInstance.renderYawOffset;
     		            float ff3 = info.nextState.entInstance.rotationYaw;
     		            float ff4 = info.nextState.entInstance.rotationPitch;
@@ -331,6 +341,10 @@ public class EventHandler
 	        	}
 	        	if(info.prevModelInfo != null && info.nextModelInfo != null && info.morphProgress >= 10 && info.morphProgress < 70)
 	        	{
+	        		float progress = ((float)info.morphProgress - 10F + Morph.proxy.tickHandlerClient.renderTick) / 60F;
+	        		
+	        		GL11.glScalef(prevScaleMag + (nextScaleMag - prevScaleMag) * progress, prevScaleMag + (nextScaleMag - prevScaleMag) * progress, prevScaleMag + (nextScaleMag - prevScaleMag) * progress);
+	        		
 		            float ff2 = info.prevState.entInstance.renderYawOffset;
 		            float ff3 = info.prevState.entInstance.rotationYaw;
 		            float ff4 = info.prevState.entInstance.rotationPitch;

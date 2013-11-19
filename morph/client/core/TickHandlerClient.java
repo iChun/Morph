@@ -1231,11 +1231,8 @@ public class TickHandlerClient
 		        		
 		        		float entSize = state.entInstance.width > state.entInstance.height ? state.entInstance.width : state.entInstance.height;
 
-		        		float prog = j - selectorSelectedHori == 0 ? (3F - scrollTimerHori + renderTick) / 3F : 0.0F;
-		        		if(prog > 1.0F)
-		        		{
-		        			prog = 1.0F;
-		        		}
+		        		float prog = j - selectorSelectedHori == 0 ? (!selectorShow ? scrollTimerHori - renderTick : (3F - scrollTimerHori + renderTick)) / 3F : 0.0F;
+		        		prog = MathHelper.clamp_float(prog, 0.0F, 1.0F);
 
 		        		float scaleMag = ((2.5F + (entSize - 2.5F) * prog) / entSize) ;
 		        		
@@ -1249,11 +1246,8 @@ public class TickHandlerClient
 	        		MorphState state = states.get(0);
 	        		float entSize = state.entInstance.width > state.entInstance.height ? state.entInstance.width : state.entInstance.height;
 
-	        		float prog = selectorSelected == i ? (3F - scrollTimer + renderTick) / 3F : 0.0F;
-	        		if(prog > 1.0F)
-	        		{
-	        			prog = 1.0F;
-	        		}
+	        		float prog = selectorSelected == i ? (!selectorShow ? scrollTimer - renderTick : (3F - scrollTimer + renderTick)) / 3F : 0.0F;
+	        		prog = MathHelper.clamp_float(prog, 0.0F, 1.0F);
 
 	        		float scaleMag = (2.5F / entSize) ;
 	        		drawEntityOnScreen(state, state.entInstance, 20, height1, entSize > 2.5F ? 16F * scaleMag : 16F, 2, 2, renderTick, selectorSelected == i, true);
