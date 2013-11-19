@@ -805,7 +805,7 @@ public class TickHandlerClient
 						i++;
 					}
 
-					if(selectedState != null && ((info == null || info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier)) && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
+					if(selectedState != null && !selectedState.isFavourite && ((info == null || info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier)) && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.username)))
 					{
 						ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 						DataOutputStream stream = new DataOutputStream(bytes);
@@ -1074,10 +1074,10 @@ public class TickHandlerClient
 	        
 	        GL11.glTranslatef(0.0F, ((selectorSelected - selectorSelectedPrev) * 42F) * (1.0F - progressV), 0.0F);
 	        
-	        GL11.glDisable(2929 /*GL_DEPTH_TEST*/);
+	        GL11.glDisable(GL11.GL_DEPTH_TEST);
 	        GL11.glDepthMask(false);
 	        GL11.glColor4f(1f,1f,1f,1f);
-	        GL11.glDisable(3008 /*GL_ALPHA_TEST*/);
+	        GL11.glDisable(GL11.GL_ALPHA_TEST);
 	        
 	        GL11.glEnable(GL11.GL_BLEND);
 	        GL11.glBlendFunc(770, 771);
@@ -1174,13 +1174,13 @@ public class TickHandlerClient
 		        i++;
 	        }
 			
-			GL11.glDisable(3042 /*GL_BLEND*/);
+			GL11.glDisable(GL11.GL_BLEND);
 	        
         	int height1 = gap;
 	        
 	        GL11.glDepthMask(true);
-	        GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
-	        GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
+	        GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        GL11.glEnable(GL11.GL_ALPHA_TEST);
 			
 	        gap += 36;
 	        
@@ -1425,6 +1425,10 @@ public class TickHandlerClient
 	    	{
 	    		mag = Math.round(mag);
 	    	}
+	    	
+	        GL11.glDepthMask(true);
+	        GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        GL11.glEnable(GL11.GL_ALPHA_TEST);
 	    	
 	    	for(int i = 0; i < favouriteStates.size(); i++)
 	    	{
