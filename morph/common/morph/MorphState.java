@@ -84,7 +84,7 @@ public class MorphState
 	{
 		playerName = tag.getString("playerName");
 		playerMorph = tag.getString("playerMorph");
-		isFavourite = tag.getBoolean("isFavourite");
+		isFavourite = tag.getBoolean("isFavourite") || playerName.equals(playerMorph);
 		
 		NBTTagCompound tag1 = tag.getCompoundTag("entInstanceTag");
 		
