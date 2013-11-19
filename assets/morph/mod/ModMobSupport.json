@@ -14,7 +14,7 @@
       "fireImmunity",
       "hostile"
     ],
-    "twilightforest.entity.EntityTFTinyBird": [
+    "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly"
     ],
     "am2.entities.EntityWaterElemental": [
@@ -55,7 +55,7 @@
       "climb",
       "hostile"
     ],
-    "twilightforest.entity.EntityTFRaven": [
+    "twilightforest.entity.passive.EntityTFRaven": [
       "fly"
     ],
     "twilightforest.entity.EntityTFHedgeSpider": [
@@ -104,7 +104,7 @@
       "fly",
       "hostile"
     ],
-    "twilightforest.entity.EntityTFMobileFirefly": [
+    "twilightforest.entity.passive.EntityTFMobileFirefly": [
       "fly"
     ],
     "thaumcraft.common.entities.monster.EntityFireBat": [
