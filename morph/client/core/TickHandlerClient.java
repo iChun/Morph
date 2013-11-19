@@ -1318,8 +1318,7 @@ public class TickHandlerClient
 				
 				int NUM_PIZZA_SLICES = 100;
 				
-	    		double zLev = 0.5D;
-	    		
+	    		double zLev = 0.05D;
 	    		
 				if(hasStencilBits)
 				{
