@@ -1306,6 +1306,9 @@ public class TickHandlerClient
 	        
 			float rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
 			
+    		int radius = 80;
+    		radius *= Math.pow(prog, 0.5D);
+			
 	    	if(!mc.gameSettings.hideGUI)
 	    	{
 				GL11.glEnable(GL11.GL_BLEND);
@@ -1323,6 +1326,7 @@ public class TickHandlerClient
 				
 	    		double zLev = 0.5D;
 	    		
+	    		
 				if(hasStencilBits)
 				{
 					GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -1334,7 +1338,7 @@ public class TickHandlerClient
 			        GL11.glStencilMask(0xFF);
 			        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 		
-					rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
+					rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog * (257F / (float)reso.getScaledHeight());
 					
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 					
@@ -1350,7 +1354,7 @@ public class TickHandlerClient
 					
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 					
-					rad = 0.44F * prog;
+					rad = 0.44F * prog * (257F / (float)reso.getScaledHeight());
 					
 					GL11.glBegin(GL11.GL_TRIANGLE_FAN);
 					GL11.glVertex3d(0, 0, zLev);
@@ -1366,7 +1370,7 @@ public class TickHandlerClient
 			        GL11.glColorMask(true, true, true, true);
 				}
 	
-				rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog;
+				rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog * (257F / (float)reso.getScaledHeight());
 				
 				GL11.glColor4f(0.0F, 0.0F, 0.0F, mag > magAcceptance ? 0.6F : 0.4F);
 			
@@ -1436,8 +1440,6 @@ public class TickHandlerClient
 	    		
 	    		angle -= Math.toRadians(90D);
 	    		
-	    		int radius = 80;
-	    		
 	    		float leeway = 360F / favouriteStates.size();
 	    		
 	    		boolean selected = false;
@@ -1448,8 +1450,6 @@ public class TickHandlerClient
 	    		}
 	    		
 	    		favouriteStates.get(i).isFavourite = false;
-	    		
-	    		radius *= Math.pow(prog, 0.5D);
 	    		
         		float entSize = favouriteStates.get(i).entInstance.width > favouriteStates.get(i).entInstance.height ? favouriteStates.get(i).entInstance.width : favouriteStates.get(i).entInstance.height;
 
