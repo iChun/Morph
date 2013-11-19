@@ -97,7 +97,7 @@ public class TickHandlerClient
 			{
 				preRenderTick(Minecraft.getMinecraft(), Minecraft.getMinecraft().theWorld, (Float)tickData[0]); //only ingame
 			}
-            if(Minecraft.getMinecraft().currentScreen instanceof GuiControls && Morph.ingameKeybindEditorHook == 1)
+            if(Minecraft.getMinecraft().currentScreen.getClass() == GuiControls.class && Morph.ingameKeybindEditorHook == 1)
             {
             	try
             	{
