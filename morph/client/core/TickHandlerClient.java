@@ -435,7 +435,7 @@ public class TickHandlerClient
 						{
 							info.nextState.entInstance.yOffset = info.player.yOffset;
 						}
-
+						
 						if(info.nextState.entInstance instanceof EntityDragon)
 						{
 							info.nextState.entInstance.prevRotationYaw += 180F;

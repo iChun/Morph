@@ -72,7 +72,6 @@ public class EventHandler
 		for(int i = 1; i <= 6; i++)
 		{
 			event.manager.soundPoolSounds.addSound("morph:morph" + i + ".ogg");
-			
 		}
 	}
 	
@@ -415,6 +414,7 @@ public class EventHandler
 	{
 		if(Morph.handRenderOverride == 1)
 		{
+			GL11.glPushMatrix();
 			Minecraft mc = Minecraft.getMinecraft();
 			if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(mc.thePlayer.username))
 			{
@@ -544,6 +544,7 @@ public class EventHandler
 				}
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			GL11.glPopMatrix();
 		}
 	}
 	

@@ -24,6 +24,7 @@ public class EntityRendererProxy extends EntityRenderer
 		mc = par1Minecraft;
 	}
 	
+	@Override
     public void getMouseOver(float par1)
     {
         if (this.mc.renderViewEntity != null)

@@ -123,6 +123,8 @@ public class EntityHelper
 			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.username, info2);
 			
 			PacketDispatcher.sendPacketToAllPlayers(info2.getMorphInfoAsPacket());
+			
+			player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 		}
 		
 		if(kill)
@@ -143,8 +145,6 @@ public class EntityHelper
 		}
 		
 		MorphHandler.updatePlayerOfMorphStates(player, nextState, false);
-		
-		player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 		
 		return true;
 	}
