@@ -94,7 +94,7 @@
       "hostile"
     ],
     "thaumcraft.common.entities.golems.EntityGolemBase": [
-      ""
+      "swim|true"
     ],
     "am2.entities.EntityEarthElemental": [
       "hostile"
