@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import morph.client.core.ClientProxy;
 import morph.client.core.PacketHandlerClient;
+import morph.client.render.HandRenderHandler;
 import morph.common.ability.AbilityHandler;
 import morph.common.core.CommonProxy;
 import morph.common.core.ConnectionHandler;
@@ -189,6 +190,8 @@ public class Morph
 	public void postLoad(FMLPostInitializationEvent event)
 	{
 		proxy.initPostMod();
+		
+		MinecraftForge.EVENT_BUS.register(new HandRenderHandler());
 	}
 	
 	@EventHandler

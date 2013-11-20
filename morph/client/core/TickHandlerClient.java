@@ -18,7 +18,6 @@ import morph.client.render.EntityRendererProxy;
 import morph.client.render.RenderMorph;
 import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
-import morph.common.ability.AbilityFireImmunity;
 import morph.common.ability.AbilityHandler;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
@@ -36,15 +35,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.boss.IBossDisplayData;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.EnumChatFormatting;
@@ -1916,5 +1909,4 @@ public class TickHandlerClient
 	public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");
 	
 	public static boolean hasStencilBits = MinecraftForgeClient.getStencilBits() > 0;
-	
 }
