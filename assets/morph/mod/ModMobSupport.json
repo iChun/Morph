@@ -166,5 +166,20 @@
       "fly",
       "hostile"
     ]
+    “micdoodle8.mods.galacticraft.core.entities.GCCoreEntityCreeper: [
+      "hostile"
+    ],
+    “micdoodle8.mods.galacticraft.core.entities.GCCoreEntitySkeleton: [
+      "hostile"
+      “sunburn”
+    ],
+    “micdoodle8.mods.galacticraft.core.entities.GCCoreEntityZombie: [
+      "hostile"
+      “sunburn”
+    ],
+    “micdoodle8.mods.galacticraft.core.entities.GCCoreEntitySpider: [
+      "hostile"
+      “climb”
+    ],
   }
 }
