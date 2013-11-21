@@ -77,7 +77,7 @@ public class AbilityFly extends Ability {
 	                }
 	                else
 	                {
-	                	player.addExhaustion(0.001F * 0.01F);
+	                	player.addExhaustion(0.001F);
 	                }
 				}
 				else if(player.isInWater())
