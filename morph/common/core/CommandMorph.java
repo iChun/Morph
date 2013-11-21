@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -33,7 +34,7 @@ public class CommandMorph extends CommandBase
 	@Override
 	public String getCommandUsage(ICommandSender icommandsender) 
 	{
-		return "/" + this.getCommandName() + " <demorph|clear|morphtarget> [player] [force (true/false)]";
+		return "/" + this.getCommandName() + " help";
 	}
 
 	@Override
@@ -41,7 +42,16 @@ public class CommandMorph extends CommandBase
 	{
 		if(args.length > 0)
 		{
-			if(args[0].equalsIgnoreCase("demorph"))
+			if(args[0].equalsIgnoreCase("help"))
+			{
+//				<demorph|clear|morphtarget> [player] [force (true/false)]
+				icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GRAY.toString() + "/morph demorph [player] [force demorph even if offline (true/false)] - Makes a player demorph"));
+				icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GRAY.toString() + "/morph clear [player] - Clears a player's morphs"));
+				icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GRAY.toString() + "/morph morphtarget [player] - Tries to make the player morph the mob they're looking at"));
+				icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GRAY.toString() + "/morph whitelist <player> - Adds a player to the morph skill whitelist, turning it on"));
+				icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GRAY.toString() + "/morph unwhitelist <player> - Removes a player from the morph skill whitelist"));
+			}
+			else if(args[0].equalsIgnoreCase("demorph"))
 			{
 				EntityPlayerMP player;
 				if(args.length > 1)
@@ -196,6 +206,88 @@ public class CommandMorph extends CommandBase
 		        {
 		        	icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText("Cannot find player: " + args[1]));
 		        }
+			}
+			else if(args[0].equalsIgnoreCase("whitelist"))
+			{
+				if(args.length == 1)
+				{
+					icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GRAY.toString() + "/morph whitelist <player> - Adds a player to the morph skill whitelist, turning it on"));
+				}
+				else
+				{
+					StringBuilder sb = new StringBuilder();
+					for(int i = 1; i < args.length; i++)
+					{
+						sb.append(args[i]);
+						if(i < args.length - 1)
+						{
+							sb.append(" ");
+						}
+					}
+					if(!Morph.whitelistedPlayerNames.contains(sb.toString().trim()))
+					{
+						notifyAdmins(icommandsender, "Whitelisting " + sb.toString().trim() + " to use the Morph Skill.");
+						Morph.whitelistedPlayerNames.add(sb.toString().trim());
+						
+						StringBuilder sb1 = new StringBuilder();
+						for(int i = 0; i < Morph.whitelistedPlayerNames.size(); i++)
+						{
+							sb1.append(Morph.whitelistedPlayerNames.get(i));
+							if(i < Morph.whitelistedPlayerNames.size() - 1)
+							{
+								sb1.append(", ");
+							}
+						}
+						Morph.whitelistedPlayers = sb1.toString();
+						
+						Morph.saveConfig();
+					}
+					else
+					{
+						icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText("Player already whitelisted"));
+					}
+				}
+			}
+			else if(args[0].equalsIgnoreCase("unwhitelist"))
+			{
+				if(args.length == 1)
+				{
+					icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GRAY.toString() + "/morph unwhitelist <player> - Removes a player from the morph skill whitelist"));
+				}
+				else
+				{
+					StringBuilder sb = new StringBuilder();
+					for(int i = 1; i < args.length; i++)
+					{
+						sb.append(args[i]);
+						if(i < args.length - 1)
+						{
+							sb.append(" ");
+						}
+					}
+					if(Morph.whitelistedPlayerNames.contains(sb.toString().trim()))
+					{
+						notifyAdmins(icommandsender, "Unwhitelisting " + sb.toString().trim() + " from using the Morph Skill.");
+						Morph.whitelistedPlayerNames.remove(sb.toString().trim());
+						
+						StringBuilder sb1 = new StringBuilder();
+						for(int i = 0; i < Morph.whitelistedPlayerNames.size(); i++)
+						{
+							sb1.append(Morph.whitelistedPlayerNames.get(i));
+							if(i < Morph.whitelistedPlayerNames.size() - 1)
+							{
+								sb1.append(", ");
+							}
+						}
+						Morph.whitelistedPlayers = sb1.toString();
+						
+						Morph.saveConfig();
+					}
+					else
+					{
+						icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText("Player is not on whitelist"));
+					}
+				}
 			}
 		}
 		else

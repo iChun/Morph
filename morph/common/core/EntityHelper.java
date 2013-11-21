@@ -56,6 +56,10 @@ public class EntityHelper
 				return false;
 			}
 		}
+		if(!Morph.whitelistedPlayerNames.isEmpty() && !Morph.whitelistedPlayerNames.contains(player.username))
+		{
+			return false;
+		}
 		
 		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
 		

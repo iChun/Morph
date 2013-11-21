@@ -40,6 +40,33 @@ public class CommonProxy
 				}
 			}
 		}
+		
+		String[] names = Morph.whitelistedPlayers.split(", *");
+		boolean added = false;
+		for(String playerName : names)
+		{
+			if(!playerName.trim().isEmpty())
+			{
+				added = true;
+				if(!Morph.whitelistedPlayerNames.contains(playerName.trim()))
+				{
+					Morph.whitelistedPlayerNames.add(playerName.trim());
+				}
+			}
+		}
+		if(!Morph.whitelistedPlayerNames.isEmpty())
+		{
+			StringBuilder sb = new StringBuilder("Whitelisted players: ");
+			for(int i = 0; i < Morph.whitelistedPlayerNames.size(); i++)
+			{
+				sb.append(Morph.whitelistedPlayerNames.get(i));
+				if(i < Morph.whitelistedPlayerNames.size() - 1)
+				{
+					sb.append(", ");
+				}
+			}
+			Morph.console(sb.toString(), false);
+		}
 	}
 	
 	public void initPostMod()

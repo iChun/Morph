@@ -78,6 +78,8 @@ public class Morph
 	
 	public static String blacklistedMobs;
 	
+	public static String whitelistedPlayers;
+	
 	public static int loseMorphsOnDeath;
 	public static int instaMorph;
 	public static int abilityTracker;
@@ -112,6 +114,7 @@ public class Morph
 	public static int allowMorphSelection;
 	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
+	public static ArrayList<String> whitelistedPlayerNames = new ArrayList<String>();
 
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
@@ -133,6 +136,8 @@ public class Morph
 		bossMorphs = addCommentAndReturnInt(config, "gameplay", "bossMorphs", "Can you acquire boss morphs?\nThis is disabled by default due to morphing issues with mobs like the EnderDragon, Twilight Forest's Hydra and Naga, etc.\n0 = No\n1 = Yes", 0);
 		
 		blacklistedMobs = addCommentAndReturnString(config, "gameplay", "blacklistedMobs", "Prevent players from acquiring these mobs as a morph.\nLeave blank to allow acquisition of all compatible mobs.\nFormatting is as follows: <class>, <class>, <class>\nExample: am2.entities.EntityBattleChicken, biomesoplenty.entities.EntityJungleSpider, thaumcraft.common.entities.monster.EntityWisp", "");
+		
+		whitelistedPlayers = addCommentAndReturnString(config, "gameplay", "whitelistedPlayers", "Only allow these players to use the Morph skill.\nLeave blank to allow all players to use the skill.\nFormatting is as follows: <name>, <name>, <name>\nExample: Cojomax99, pahimar, ohaiiChun", "");
 		
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
@@ -273,22 +278,27 @@ public class Morph
 	{
 		if(config != null)
 		{
-			updatePropertyInt(config, "client", "keySelectorUp", keySelectorUp);
-			updatePropertyInt(config, "client", "keySelectorDown", keySelectorDown);
-			updatePropertyInt(config, "client", "keySelectorLeft", keySelectorLeft);
-			updatePropertyInt(config, "client", "keySelectorRight", keySelectorRight);
-			
-			updatePropertyInt(config, "client", "keySelectorUpHold", keySelectorUpHold);
-			updatePropertyInt(config, "client", "keySelectorDownHold", keySelectorDownHold);
-			updatePropertyInt(config, "client", "keySelectorLeftHold", keySelectorLeftHold);
-			updatePropertyInt(config, "client", "keySelectorRightHold", keySelectorRightHold);
-			
-			updatePropertyInt(config, "client", "keySelectorSelect", keySelectorSelect);
-			updatePropertyInt(config, "client", "keySelectorCancel", keySelectorCancel);
-			updatePropertyInt(config, "client", "keySelectorRemoveMorph", keySelectorRemoveMorph);
+			if(proxy instanceof ClientProxy)
+			{
+				updatePropertyInt(config, "client", "keySelectorUp", keySelectorUp);
+				updatePropertyInt(config, "client", "keySelectorDown", keySelectorDown);
+				updatePropertyInt(config, "client", "keySelectorLeft", keySelectorLeft);
+				updatePropertyInt(config, "client", "keySelectorRight", keySelectorRight);
+				
+				updatePropertyInt(config, "client", "keySelectorUpHold", keySelectorUpHold);
+				updatePropertyInt(config, "client", "keySelectorDownHold", keySelectorDownHold);
+				updatePropertyInt(config, "client", "keySelectorLeftHold", keySelectorLeftHold);
+				updatePropertyInt(config, "client", "keySelectorRightHold", keySelectorRightHold);
+				
+				updatePropertyInt(config, "client", "keySelectorSelect", keySelectorSelect);
+				updatePropertyInt(config, "client", "keySelectorCancel", keySelectorCancel);
+				updatePropertyInt(config, "client", "keySelectorRemoveMorph", keySelectorRemoveMorph);
+	
+				updatePropertyInt(config, "client", "keyFavourite", keyFavourite);
+			}
 
-			updatePropertyInt(config, "client", "keyFavourite", keyFavourite);
-
+			updatePropertyString(config, "gameplay", "whitelistedPlayers", whitelistedPlayers);
+			
 			config.save();
 		}
 	}
@@ -308,6 +318,25 @@ public class Morph
             else
             {
             	prop.set(Integer.toString(value));
+            }
+		}
+	}
+	
+	public static void updatePropertyString(Configuration config, String cat, String propName, String value)
+	{
+		ConfigCategory category = config.getCategory(cat);
+		if(category.containsKey(propName))
+		{
+            Property prop = category.get(propName);
+
+            if (prop.getType() == null)
+            {
+                prop = new Property(prop.getName(), value, Property.Type.STRING);
+                category.put(propName, prop);
+            }
+            else
+            {
+            	prop.set(value);
             }
 		}
 	}
