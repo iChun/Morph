@@ -9,6 +9,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelCreeper;
+import net.minecraft.client.model.ModelHorse;
 import net.minecraft.client.model.ModelIronGolem;
 import net.minecraft.client.model.ModelOcelot;
 import net.minecraft.client.model.ModelQuadruped;
@@ -42,43 +43,67 @@ public class ModelHelper
 		if(parent != null)
 		{
 			Class clz = parent.getClass();
-			while(clz != ModelBase.class && ModelBase.class.isAssignableFrom(clz))
+			if(clz == ModelHorse.class)
 			{
-				try
+				ModelHorse dummy = new ModelHorse();
+				
+				ModelRenderer leg = new ModelRenderer(dummy, 60, 29);
+		        leg.addBox(-1.1F, -1.0F, -2.1F, 3, 8, 4);
+		        leg.setRotationPoint(-4.0F, 9.0F, -8.0F);
+		        
+		        ModelRenderer shin = new ModelRenderer(dummy, 60, 41);
+		        shin.addBox(-1.1F, 0.0F, -1.6F, 3, 5, 3);
+		        shin.setRotationPoint(0.0F, 7.0F, 0.0F);
+		        leg.addChild(shin);
+		        
+		        ModelRenderer hoof = new ModelRenderer(dummy, 60, 51);
+		        hoof.addBox(-1.6F, 5.1F, -2.1F, 4, 3, 4);
+		        hoof.setRotationPoint(0.0F, 0.0F, 0.0F);
+
+		        shin.addChild(hoof);
+		        
+		        return leg;
+			}
+			else
+			{
+				while(clz != ModelBase.class && ModelBase.class.isAssignableFrom(clz))
 				{
-					Field[] fields = clz.getDeclaredFields();
-					for(Field f : fields)
+					try
 					{
-						f.setAccessible(true);
-						if(f.getType() == ModelRenderer.class)
+						Field[] fields = clz.getDeclaredFields();
+						for(Field f : fields)
 						{
-							if(clz == ModelBiped.class && (f.getName().equalsIgnoreCase("bipedRightArm") || f.getName().equalsIgnoreCase("f") || f.getName().equalsIgnoreCase("field_78112_f")) || 
-								clz == ModelQuadruped.class && (f.getName().equalsIgnoreCase("leg3") || f.getName().equalsIgnoreCase("e") || f.getName().equalsIgnoreCase("field_78147_e")) ||
-								clz == ModelCreeper.class && (f.getName().equalsIgnoreCase("leg3") || f.getName().equalsIgnoreCase("f") || f.getName().equalsIgnoreCase("field_78129_f")) ||
-								clz == ModelIronGolem.class && (f.getName().equalsIgnoreCase("ironGolemRightArm") || f.getName().equalsIgnoreCase("c") || f.getName().equalsIgnoreCase("field_78177_c")) ||
-								clz == ModelSpider.class && (f.getName().equalsIgnoreCase("spiderLeg7") || f.getName().equalsIgnoreCase("j") || f.getName().equalsIgnoreCase("field_78210_j")) ||
-								clz == ModelWolf.class && (f.getName().equalsIgnoreCase("wolfLeg3") || f.getName().equalsIgnoreCase("e") || f.getName().equalsIgnoreCase("field_78182_e")) ||
-								clz == ModelOcelot.class && (f.getName().equalsIgnoreCase("ocelotFrontRightLeg") || f.getName().equalsIgnoreCase("d") || f.getName().equalsIgnoreCase("field_78157_d")) ||
-								clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class && clz != ModelOcelot.class &&  
-								(f.getName().contains("Right") || f.getName().contains("right")) && (f.getName().contains("arm") || f.getName().contains("hand") || f.getName().contains("Arm") || f.getName().contains("Hand")))
+							f.setAccessible(true);
+							if(f.getType() == ModelRenderer.class)
 							{
-								ModelRenderer arm = (ModelRenderer)f.get(parent);
-								if(arm != null)
+								if(clz == ModelBiped.class && (f.getName().equalsIgnoreCase("bipedRightArm") || f.getName().equalsIgnoreCase("f") || f.getName().equalsIgnoreCase("field_78112_f")) || 
+									clz == ModelQuadruped.class && (f.getName().equalsIgnoreCase("leg3") || f.getName().equalsIgnoreCase("e") || f.getName().equalsIgnoreCase("field_78147_e")) ||
+									clz == ModelCreeper.class && (f.getName().equalsIgnoreCase("leg3") || f.getName().equalsIgnoreCase("f") || f.getName().equalsIgnoreCase("field_78129_f")) ||
+									clz == ModelIronGolem.class && (f.getName().equalsIgnoreCase("ironGolemRightArm") || f.getName().equalsIgnoreCase("c") || f.getName().equalsIgnoreCase("field_78177_c")) ||
+									clz == ModelSpider.class && (f.getName().equalsIgnoreCase("spiderLeg7") || f.getName().equalsIgnoreCase("j") || f.getName().equalsIgnoreCase("field_78210_j")) ||
+									clz == ModelWolf.class && (f.getName().equalsIgnoreCase("wolfLeg3") || f.getName().equalsIgnoreCase("e") || f.getName().equalsIgnoreCase("field_78182_e")) ||
+									clz == ModelOcelot.class && (f.getName().equalsIgnoreCase("ocelotFrontRightLeg") || f.getName().equalsIgnoreCase("d") || f.getName().equalsIgnoreCase("field_78157_d")) ||
+									clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class && clz != ModelOcelot.class &&  
+									(f.getName().contains("Right") || f.getName().contains("right")) && (f.getName().contains("arm") || f.getName().contains("hand") || f.getName().contains("Arm") || f.getName().contains("Hand")))
 								{
-									return arm; // Add normal parent fields
+									ModelRenderer arm = (ModelRenderer)f.get(parent);
+									if(arm != null)
+									{
+										return arm; // Add normal parent fields
+									}
 								}
 							}
+							else if(f.getType() == ModelRenderer[].class && clz == ModelSquid.class && (f.getName().equalsIgnoreCase("squidTentacles") || f.getName().equalsIgnoreCase("b") || f.getName().equalsIgnoreCase("field_78201_b")))
+							{
+								return ((ModelRenderer[])f.get(parent))[0];
+							}
 						}
-						else if(f.getType() == ModelRenderer[].class && clz == ModelSquid.class && (f.getName().equalsIgnoreCase("squidTentacles") || f.getName().equalsIgnoreCase("b") || f.getName().equalsIgnoreCase("field_78201_b")))
-						{
-							return ((ModelRenderer[])f.get(parent))[0];
-						}
+						clz = clz.getSuperclass();
 					}
-					clz = clz.getSuperclass();
-				}
-				catch(Exception e)
-				{
-					throw new UnableToAccessFieldException(new String[0], e);
+					catch(Exception e)
+					{
+						throw new UnableToAccessFieldException(new String[0], e);
+					}
 				}
 			}
 		}

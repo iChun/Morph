@@ -50,9 +50,6 @@ public class ModelList
 				Render rend = RenderManager.instance.getEntityClassRenderObject(clz);
 				ModelBase base = ModelHelper.getPossibleModel(rend);
 				info = new ModelInfo(clz, rend, base);
-				System.out.println(rend);
-				System.out.println(base);
-				System.out.println(info);
 				ModelList.addModelInfo(clz, info);
 			}
 		}
