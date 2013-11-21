@@ -82,6 +82,9 @@
       "fly",
       "hostile"
     ],
+    "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
+      "waterAllergy"
+    ],
     "mods.natura.entity.BabyHeatscarSpider": [
       "climb",
       "fireImmunity",
