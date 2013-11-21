@@ -18,7 +18,29 @@ import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy 
 {
-	public void initMod(){}
+	public void initMod()
+	{
+		String[] classes = Morph.blacklistedMobs.split(", *");
+		for(String className : classes)
+		{
+			if(!className.trim().isEmpty())
+			{
+				try
+				{
+					Class clz = Class.forName(className.trim());
+					if(EntityLivingBase.class.isAssignableFrom(clz) && !Morph.blacklistedClasses.contains(clz))
+					{
+						Morph.blacklistedClasses.add(clz);
+						Morph.console("Blacklisting class: " + clz.getName(), false);
+					}
+				}
+				catch(Exception e)
+				{
+					Morph.console("Could not find class to blacklist: " + className.trim(), true);
+				}
+			}
+		}
+	}
 	
 	public void initPostMod()
 	{

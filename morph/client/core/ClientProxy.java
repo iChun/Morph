@@ -27,6 +27,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void initMod()
 	{
+		super.initMod();
 		if(Morph.ingameKeybindEditorHook == 1)
 		{
 			KeyBindingRegistry.registerKeyBinding(new KeyBindHook());

@@ -76,6 +76,8 @@ public class Morph
 	public static int playerMorphs;
 	public static int bossMorphs;
 	
+	public static String blacklistedMobs;
+	
 	public static int loseMorphsOnDeath;
 	public static int instaMorph;
 	public static int abilityTracker;
@@ -129,6 +131,8 @@ public class Morph
 		childMorphs = addCommentAndReturnInt(config, "gameplay", "childMorphs", "Can you acquire child mob morphs?\nDisabled by default due to improper morph transitions\n0 = No\n1 = Yes", 0);
 		playerMorphs = addCommentAndReturnInt(config, "gameplay", "playerMorphs", "Can you acquire player morphs?\n0 = No\n1 = Yes", 1);
 		bossMorphs = addCommentAndReturnInt(config, "gameplay", "bossMorphs", "Can you acquire boss morphs?\nThis is disabled by default due to morphing issues with mobs like the EnderDragon, Twilight Forest's Hydra and Naga, etc.\n0 = No\n1 = Yes", 0);
+		
+		blacklistedMobs = addCommentAndReturnString(config, "gameplay", "blacklistedMobs", "Prevent players from acquiring these mobs as a morph.\nLeave blank to allow acquisition of all compatible mobs.\nFormatting is as follows: <class>, <class>, <class>\nExample: am2.entities.EntityBattleChicken, biomesoplenty.entities.EntityJungleSpider, thaumcraft.common.entities.monster.EntityWisp", "");
 		
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
