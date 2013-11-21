@@ -168,6 +168,11 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityFlameWraith": [
+      "fly|false",
+      "hostile",
+      "fireImmunity"
     ]
   }
 }
