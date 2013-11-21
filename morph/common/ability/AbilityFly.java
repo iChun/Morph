@@ -72,7 +72,7 @@ public class AbilityFly extends Ability {
 	                	}
 	                	else
 	                	{
-	                		player.addExhaustion(0.015F * (float)i * 0.01F);
+	                		player.addExhaustion(0.013F * (float)i * 0.01F);
 	                	}
 	                }
 	                else
