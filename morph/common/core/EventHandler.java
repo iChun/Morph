@@ -221,8 +221,6 @@ public class EventHandler
 	        	{
 	        		if(info.prevModelInfo != null && info.morphProgress < 10)
 	        		{
-	        			GL11.glScalef(prevScaleMag, prevScaleMag, prevScaleMag);
-	        			
     		            float ff2 = info.prevState.entInstance.renderYawOffset;
     		            float ff3 = info.prevState.entInstance.rotationYaw;
     		            float ff4 = info.prevState.entInstance.rotationPitch;
@@ -231,6 +229,8 @@ public class EventHandler
 	        			
 	    	        	if((Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiContainerCreative) && RenderManager.instance.playerViewY == 180.0F)
 	    	        	{
+		        			GL11.glScalef(prevScaleMag, prevScaleMag, prevScaleMag);
+
 	    	        		EntityLivingBase renderView = Minecraft.getMinecraft().renderViewEntity;
 	    	        		
 	    	        		info.prevState.entInstance.renderYawOffset = renderView.renderYawOffset;
@@ -279,8 +279,6 @@ public class EventHandler
 	        	{
 	        		if(info.nextModelInfo != null && info.morphProgress >= 70)
 	        		{
-	        			GL11.glScalef(nextScaleMag, nextScaleMag, nextScaleMag);
-	        			
     		            float ff2 = info.nextState.entInstance.renderYawOffset;
     		            float ff3 = info.nextState.entInstance.rotationYaw;
     		            float ff4 = info.nextState.entInstance.rotationPitch;
@@ -289,7 +287,9 @@ public class EventHandler
 	        			
 	    	        	if((Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiContainerCreative) && RenderManager.instance.playerViewY == 180.0F)
 	    	        	{
-	    	        		EntityLivingBase renderView = Minecraft.getMinecraft().renderViewEntity;
+		        			GL11.glScalef(nextScaleMag, nextScaleMag, nextScaleMag);
+
+		        			EntityLivingBase renderView = Minecraft.getMinecraft().renderViewEntity;
 	    	        		
 	    	        		info.nextState.entInstance.prevRenderYawOffset = info.nextState.entInstance.renderYawOffset = renderView.renderYawOffset;
 	    	        		info.nextState.entInstance.rotationYaw = renderView.rotationYaw;
@@ -341,8 +341,6 @@ public class EventHandler
 	        	{
 	        		float progress = ((float)info.morphProgress - 10F + Morph.proxy.tickHandlerClient.renderTick) / 60F;
 	        		
-	        		GL11.glScalef(prevScaleMag + (nextScaleMag - prevScaleMag) * progress, prevScaleMag + (nextScaleMag - prevScaleMag) * progress, prevScaleMag + (nextScaleMag - prevScaleMag) * progress);
-	        		
 		            float ff2 = info.prevState.entInstance.renderYawOffset;
 		            float ff3 = info.prevState.entInstance.rotationYaw;
 		            float ff4 = info.prevState.entInstance.rotationPitch;
@@ -357,6 +355,8 @@ public class EventHandler
 
     	        	if((Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiContainerCreative) && RenderManager.instance.playerViewY == 180.0F)
     	        	{
+    	        		GL11.glScalef(prevScaleMag + (nextScaleMag - prevScaleMag) * progress, prevScaleMag + (nextScaleMag - prevScaleMag) * progress, prevScaleMag + (nextScaleMag - prevScaleMag) * progress);
+
     	        		EntityLivingBase renderView = Minecraft.getMinecraft().renderViewEntity;
     	        		
     	        		info.nextState.entInstance.renderYawOffset = info.prevState.entInstance.renderYawOffset = renderView.renderYawOffset;
