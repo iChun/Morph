@@ -403,8 +403,8 @@ public class ModelHelper
 		}
 		ModelRenderer cube = new ModelRenderer(morph, 0, 0);
 
-		float mag = (float)Math.pow((morphProgress - 10F + renderTick) / 50F, 2D);;
-
+		float mag = (float)Math.pow((morphProgress - 10F + renderTick) / 50F, 2D);
+		
 		cube.mirror = nextArm.mirror;
 		
 		if(mag > 1.0F)
