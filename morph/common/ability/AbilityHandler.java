@@ -52,9 +52,9 @@ public class AbilityHandler
 	
 	static
 	{
-		registerAbility("climb"			  , AbilityClimb.class		);
+		registerAbility("climb"			  , AbilityClimb.class			);
 		registerAbility("fly"			  , AbilityFly.class			);
-		registerAbility("float"			  , AbilityFloat.class		);
+		registerAbility("float"			  , AbilityFloat.class			);
 		registerAbility("fireImmunity"	  , AbilityFireImmunity.class	);
 		registerAbility("hostile"		  , AbilityHostile.class		);
 		registerAbility("sunburn"		  , AbilitySunburn.class		);

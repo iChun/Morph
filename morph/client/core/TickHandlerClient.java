@@ -972,7 +972,7 @@ public class TickHandlerClient
 			mc.thePlayer.lastTickPosY -= ySize;
 			mc.thePlayer.prevPosY -= ySize;
 			mc.thePlayer.posY -= ySize;
-			mc.thePlayer.eyeHeight = mc.thePlayer.getDefaultEyeHeight();
+			mc.thePlayer.eyeHeight = 0.0F;
 		}
 		
 		if(radialShow)
