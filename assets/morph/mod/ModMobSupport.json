@@ -1,37 +1,89 @@
 {
   "customMobAbilityMapping": {
-    "twilightforest.entity.EntityTFMosquitoSwarm": [
-      "fly",
+    "am2.bosses.EntityAirGuardian": [
       "hostile"
     ],
-    "am2.entities.EntityManaElemental": [
+    "am2.bosses.EntityArcaneGuardian": [
       "hostile"
     ],
-    "thaumcraft.common.entities.monster.EntityPech": [
-      ""
+    "am2.bosses.EntityEarthGuardian": [
+      "hostile"
     ],
     "am2.bosses.EntityFireGuardian": [
       "fireImmunity",
       "hostile"
     ],
-    "twilightforest.entity.passive.EntityTFTinyBird": [
-      "fly"
-    ],
-    "am2.entities.EntityWaterElemental": [
+    "am2.bosses.EntityNatureGuardian": [
       "hostile"
     ],
-    "am2.entities.EntityDarkMage": [
+    "am2.bosses.EntityWaterGuardian": [
+      "hostile"
+    ],
+    "am2.bosses.EntityWinterGuardian": [
       "hostile"
     ],
     "am2.entities.EntityBattleChicken": [
       "float|-0.114,true",
       "hostile"
     ],
-    "twilightforest.entity.EntityTFSwarmSpider": [
+    "am2.entities.EntityDarkling": [
+      "hostile"
+    ],
+    "am2.entities.EntityDarkMage": [
+      "hostile"
+    ],
+    "am2.entities.EntityDryad": [
+      ""
+    ],
+    "am2.entities.EntityEarthElemental": [
+      "hostile"
+    ],
+    "am2.entities.EntityFireElemental": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "am2.entities.EntityHecate": [
+      "sunburn",
+      "fly",
+      "hostile"
+    ],
+    "am2.entities.EntityHellCow": [
+      "hostile"
+    ],
+    "am2.entities.EntityLightMage": [
+      "hostile"
+    ],
+    "am2.entities.EntityMageVillager": [
+      ""
+    ],
+    "am2.entities.EntityManaCreeper": [
+      "hostile"
+    ],
+    "am2.entities.EntityManaElemental": [
+      "hostile"
+    ],
+    "am2.entities.EntityWaterElemental": [
+      "hostile"
+    ],
+    "biomesoplenty.entities.EntityBird": [
+      "fly"
+    ],
+    "biomesoplenty.entities.EntityGlob": [
+      "hostile"
+    ],
+    "biomesoplenty.entities.EntityJungleSpider": [
       "climb",
       "hostile"
     ],
-    "mods.natura.entity.NitroCreeper": [
+    "biomesoplenty.entities.EntityRosester": [
+      "float|-0.114,true"
+    ],
+    "biomesoplenty.entities.EntityWasp": [
+      "fly",
+      "hostile"
+    ],
+    "mods.natura.entity.BabyHeatscarSpider": [
+      "climb",
       "fireImmunity",
       "hostile"
     ],
@@ -40,54 +92,12 @@
       "fireImmunity",
       "hostile"
     ],
-    "biomesoplenty.entities.EntityWasp": [
-      "fly",
-      "hostile"
-    ],
-    "am2.entities.EntityLightMage": [
-      "hostile"
-    ],
-    "twilightforest.entity.EntityTFMiniGhast": [
-      "fly",
-      "hostile"
-    ],
-    "biomesoplenty.entities.EntityJungleSpider": [
-      "climb",
-      "hostile"
-    ],
-    "twilightforest.entity.passive.EntityTFRaven": [
-      "fly"
-    ],
-    "twilightforest.entity.EntityTFHedgeSpider": [
-      "climb",
-      "hostile"
-    ],
-    "am2.bosses.EntityAirGuardian": [
-      "hostile"
-    ],
     "mods.natura.entity.ImpEntity": [
       "fireImmunity",
       "hostile"
     ],
-    "am2.entities.EntityDryad": [
-      ""
-    ],
-    "am2.bosses.EntityEarthGuardian": [
-      "hostile"
-    ],
-    "mods.natura.entity.BabyHeatscarSpider": [
-      "climb",
+    "mods.natura.entity.NitroCreeper": [
       "fireImmunity",
-      "hostile"
-    ],
-    "biomesoplenty.entities.EntityBird": [
-      "fly"
-    ],
-    "twilightforest.entity.EntityTFFireBeetle": [
-      "fireImmunity",
-      "hostile"
-    ],
-    "biomesoplenty.entities.EntityGlob": [
       "hostile"
     ],
     "tconstruct.entity.BlueSlime": [
@@ -96,75 +106,65 @@
     "thaumcraft.common.entities.golems.EntityGolemBase": [
       "swim|true"
     ],
-    "am2.entities.EntityEarthElemental": [
-      "hostile"
-    ],
-    "am2.entities.EntityHecate": [
+    "thaumcraft.common.entities.monster.EntityBrainyZombie": [
       "sunburn",
-      "fly",
       "hostile"
-    ],
-    "twilightforest.entity.passive.EntityTFMobileFirefly": [
-      "fly"
     ],
     "thaumcraft.common.entities.monster.EntityFireBat": [
       "fireImmunity",
       "fly",
       "hostile"
     ],
-    "am2.bosses.EntityArcaneGuardian": [
+    "thaumcraft.common.entities.monster.EntityGiantBrainyZombie": [
+      "sunburn",
       "hostile"
     ],
-    "am2.entities.EntityHellCow": [
-      "hostile"
+    "thaumcraft.common.entities.monster.EntityPech": [
+      ""
     ],
-    "am2.entities.EntityDarkling": [
-      "hostile"
-    ],
-    "am2.entities.EntityFireElemental": [
-      "fireImmunity",
+    "thaumcraft.common.entities.monster.EntityTaintChicken": [
+      "float|-0.114,true",
       "hostile"
     ],
     "thaumcraft.common.entities.monster.EntityWisp": [
       "fly",
       "hostile"
     ],
-    "thaumcraft.common.entities.monster.EntityTaintChicken": [
-      "float|-0.114,true",
+    "twilightforest.entity.EntityTFDeathTome": [
+      "fly",
       "hostile"
     ],
-    "am2.entities.EntityMageVillager": [
-      ""
-    ],
-    "am2.bosses.EntityWinterGuardian": [
+    "twilightforest.entity.EntityTFFireBeetle": [
+      "fireImmunity",
       "hostile"
     ],
-    "am2.entities.EntityManaCreeper": [
+    "twilightforest.entity.EntityTFHedgeSpider": [
+      "climb",
       "hostile"
     ],
-    "biomesoplenty.entities.EntityRosester": [
-      "float|-0.114,true"
+    "twilightforest.entity.EntityTFMiniGhast": [
+      "fly",
+      "hostile"
     ],
-    "am2.bosses.EntityNatureGuardian": [
+    "twilightforest.entity.EntityTFMosquitoSwarm": [
+      "fly",
       "hostile"
     ],
     "twilightforest.entity.EntityTFPinchBeetle": [
       "hostile"
     ],
-    "am2.bosses.EntityWaterGuardian": [
+    "twilightforest.entity.EntityTFSwarmSpider": [
+      "climb",
       "hostile"
     ],
-    "thaumcraft.common.entities.monster.EntityBrainyZombie": [
-      "sunburn",
-      "hostile"
+    "twilightforest.entity.passive.EntityTFMobileFirefly": [
+      "fly"
     ],
-    "thaumcraft.common.entities.monster.EntityGiantBrainyZombie": [
-      "sunburn",
-      "hostile"
+    "twilightforest.entity.passive.EntityTFRaven": [
+      "fly"
     ],
-    "twilightforest.entity.EntityTFDeathTome": [
-      "fly",
-      "hostile"
+    "twilightforest.entity.passive.EntityTFTinyBird": [
+      "fly"
     ]
   }
 }
