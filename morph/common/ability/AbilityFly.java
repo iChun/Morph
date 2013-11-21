@@ -80,17 +80,9 @@ public class AbilityFly extends Ability {
 	                	player.addExhaustion(0.001F);
 	                }
 				}
-				else if(player.isInWater())
+				else if(player.isInWater() && slowdownInWater)
                 {
-	                MorphInfo info = null;
-	    			if(!player.worldObj.isRemote)
-	    			{
-	    				info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
-	    			}
-	    			else
-	    			{
-	    				info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.username);
-	    			}
+	                MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.username);
 	        		
 	        		if(info != null)
 	        		{
@@ -103,7 +95,7 @@ public class AbilityFly extends Ability {
 	        					break;
 	        				}
 	        			}
-	        			if(!swim && slowdownInWater)
+	        			if(!swim)
 	        			{
 	        				player.motionX *= 0.65D;
 	        				player.motionZ *= 0.65D;
