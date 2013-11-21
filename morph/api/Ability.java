@@ -205,10 +205,18 @@ public abstract class Ability
 			return null;
 		}
 	}
+	public static Ability getNewAbilityFly(boolean slowdownInWater)
+	{
+		try {
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityFly", boolean.class).invoke(null, slowdownInWater);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 	public static Ability getNewAbilityFly()
 	{
 		try {
-			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityFly").invoke(null);
+			return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityFly", boolean.class).invoke(null, true);
 		} catch (Exception e) {
 			return null;
 		}

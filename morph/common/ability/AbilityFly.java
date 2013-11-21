@@ -3,12 +3,42 @@ package morph.common.ability;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import morph.api.Ability;
+import morph.common.Morph;
+import morph.common.morph.MorphInfo;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 public class AbilityFly extends Ability {
 
+	public boolean slowdownInWater;
+	
+	public AbilityFly()
+	{
+		slowdownInWater = true;
+	}
+	
+	public AbilityFly(boolean slowdown)
+	{
+		slowdownInWater = slowdown;
+	}
+	
+	@Override
+	public Ability parse(String[] args)
+	{
+		try
+		{
+			slowdownInWater = Boolean.parseBoolean(args[0]);
+		}
+		catch(Exception e)
+		{
+		}
+		return this;
+	}
+	
 	@Override
 	public String getType() 
 	{
@@ -25,6 +55,63 @@ public class AbilityFly extends Ability {
 			{
 				player.capabilities.allowFlying = true;
 				player.sendPlayerAbilities();
+			}
+			if(player.capabilities.isFlying && !player.capabilities.isCreativeMode)
+			{
+				if(!player.worldObj.isRemote)
+				{
+					double motionX = player.posX - player.lastTickPosX;
+					double motionZ = player.posZ - player.lastTickPosZ;
+	                int i = Math.round(MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ) * 100.0F);
+	
+	                if (i > 0)
+	                {
+	                	if(player.isInWater() && slowdownInWater)
+	                	{
+	                		player.addExhaustion(0.095F * (float)i * 0.01F);
+	                	}
+	                	else
+	                	{
+	                		player.addExhaustion(0.015F * (float)i * 0.01F);
+	                	}
+	                }
+	                else
+	                {
+	                	player.addExhaustion(0.001F * 0.01F);
+	                }
+				}
+				else if(player.isInWater())
+                {
+	                MorphInfo info = null;
+	    			if(!player.worldObj.isRemote)
+	    			{
+	    				info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+	    			}
+	    			else
+	    			{
+	    				info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.username);
+	    			}
+	        		
+	        		if(info != null)
+	        		{
+	        			boolean swim = false;
+	        			for(Ability ability : info.morphAbilities)
+	        			{
+	        				if(ability.getType().equalsIgnoreCase("swim"))
+	        				{
+	        					swim = true;
+	        					break;
+	        				}
+	        			}
+	        			if(!swim && slowdownInWater)
+	        			{
+	        				player.motionX *= 0.65D;
+	        				player.motionZ *= 0.65D;
+	        				
+	        				player.motionY *= 0.2D;
+	        			}
+	        		}
+                }
 			}
 		}
 		getParent().fallDistance = 0.0F;
@@ -52,7 +139,7 @@ public class AbilityFly extends Ability {
 	@Override
 	public Ability clone() 
 	{
-		return new AbilityFly();
+		return new AbilityFly(slowdownInWater);
 	}
 
 	@Override

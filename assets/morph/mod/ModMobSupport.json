@@ -44,7 +44,7 @@
     ],
     "am2.entities.EntityHecate": [
       "sunburn",
-      "fly",
+      "fly|false",
       "hostile"
     ],
     "am2.entities.EntityHellCow": [
@@ -66,7 +66,7 @@
       "hostile"
     ],
     "biomesoplenty.entities.EntityBird": [
-      "fly"
+      "fly|true"
     ],
     "biomesoplenty.entities.EntityGlob": [
       "hostile"
@@ -79,7 +79,7 @@
       "float|-0.114,true"
     ],
     "biomesoplenty.entities.EntityWasp": [
-      "fly",
+      "fly|true",
       "hostile"
     ],
     "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
@@ -115,7 +115,7 @@
     ],
     "thaumcraft.common.entities.monster.EntityFireBat": [
       "fireImmunity",
-      "fly",
+      "fly|true",
       "hostile"
     ],
     "thaumcraft.common.entities.monster.EntityGiantBrainyZombie": [
@@ -130,11 +130,11 @@
       "hostile"
     ],
     "thaumcraft.common.entities.monster.EntityWisp": [
-      "fly",
+      "fly|false",
       "hostile"
     ],
     "twilightforest.entity.EntityTFDeathTome": [
-      "fly",
+      "fly|true",
       "hostile"
     ],
     "twilightforest.entity.EntityTFFireBeetle": [
@@ -146,11 +146,11 @@
       "hostile"
     ],
     "twilightforest.entity.EntityTFMiniGhast": [
-      "fly",
+      "fly|false",
       "hostile"
     ],
     "twilightforest.entity.EntityTFMosquitoSwarm": [
-      "fly",
+      "fly|true",
       "hostile"
     ],
     "twilightforest.entity.EntityTFPinchBeetle": [
@@ -161,13 +161,13 @@
       "hostile"
     ],
     "twilightforest.entity.passive.EntityTFMobileFirefly": [
-      "fly"
+      "fly|true"
     ],
     "twilightforest.entity.passive.EntityTFRaven": [
-      "fly"
+      "fly|true"
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
-      "fly"
+      "fly|true"
     ]
   }
 }

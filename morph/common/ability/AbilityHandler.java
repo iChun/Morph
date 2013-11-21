@@ -62,13 +62,13 @@ public class AbilityHandler
 		registerAbility("waterAllergy"    , AbilityWaterAllergy.class	);
 		registerAbility("poisonResistance", AbilityPoisonResistance.class);
 		
-		mapAbilities(EntityBat.class, new AbilityFly());
-		mapAbilities(EntityBlaze.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
+		mapAbilities(EntityBat.class, new AbilityFly(true));
+		mapAbilities(EntityBlaze.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
 		mapAbilities(EntityChicken.class, new AbilityFloat(-0.1141748D, true));
 		mapAbilities(EntityCreeper.class, new AbilityHostile());
-		mapAbilities(EntityDragon.class, new AbilityFly(), new AbilityHostile());
+		mapAbilities(EntityDragon.class, new AbilityFly(false), new AbilityHostile());
 		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy(), new AbilityHostile());
-		mapAbilities(EntityGhast.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityGhast.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityGiantZombie.class, new AbilityHostile());
 		mapAbilities(EntityIronGolem.class, new AbilitySwim(true));
 		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity(), new AbilityHostile());
@@ -79,7 +79,7 @@ public class AbilityHandler
 		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
 		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
 		mapAbilities(EntitySquid.class, new AbilitySwim(false));
-		mapAbilities(EntityWither.class, new AbilityFly(), new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
 		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
 	}
@@ -487,11 +487,11 @@ public class AbilityHandler
 		return new AbilityFloat(terminalVelocity, negateFallDamage);
 	}
 	
-	public static Ability getNewAbilityFly()
+	public static Ability getNewAbilityFly(boolean slowdownInWater)
 	{
-		return new AbilityFly();
+		return new AbilityFly(slowdownInWater);
 	}
-	
+
 	public static Ability getNewAbilityHostile()
 	{
 		return new AbilityHostile();
