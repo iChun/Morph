@@ -30,13 +30,7 @@ public class AbilityFly extends Ability {
 	@Override
 	public Ability parse(String[] args)
 	{
-		try
-		{
-			slowdownInWater = Boolean.parseBoolean(args[0]);
-		}
-		catch(Exception e)
-		{
-		}
+		slowdownInWater = Boolean.parseBoolean(args[0]);
 		return this;
 	}
 	

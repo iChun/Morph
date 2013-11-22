@@ -28,14 +28,8 @@ public class AbilityFloat extends Ability {
 	@Override
 	public Ability parse(String[] args)
 	{
-		try
-		{
-			terminalVelocity = Double.parseDouble(args[0]);
-			negateFallDistance = Boolean.parseBoolean(args[1]);
-		}
-		catch(Exception e)
-		{
-		}
+		terminalVelocity = Double.parseDouble(args[0]);
+		negateFallDistance = Boolean.parseBoolean(args[1]);
 		return this;
 	}
 	

@@ -36,13 +36,7 @@ public class AbilitySwim extends Ability {
 	@Override
 	public Ability parse(String[] args)
 	{
-		try
-		{
-			canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
-		}
-		catch(Exception e)
-		{
-		}
+		canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
 		return this;
 	}
 
