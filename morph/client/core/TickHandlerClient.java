@@ -72,6 +72,24 @@ public class TickHandlerClient
 		renderHandInstance.setRenderManager(RenderManager.instance);
 		
 		showWarning = ObfHelper.obfuscation;
+		
+		try
+		{
+			EntityPlayer.class.getDeclaredMethod("getPosition", float.class);
+			shouldReplaceRenderer = false;
+		}
+		catch(NoSuchMethodException e)
+		{
+			try
+			{
+				EntityPlayer.class.getDeclaredMethod("func_70666_h", float.class);
+				shouldReplaceRenderer = false;
+			}
+			catch(NoSuchMethodException e1)
+			{
+				shouldReplaceRenderer = true;
+			}
+		}
 	}
 	
 	@Override
@@ -149,35 +167,14 @@ public class TickHandlerClient
 
 	public void preWorldTick(Minecraft mc, WorldClient world)
 	{
-		MorphInfo info = playerMorphInfo.get(mc.thePlayer.username);
-		if(info != null)
-		{
-//            double d0 = (double)mc.playerController.getBlockReachDistance();
-//            mc.objectMouseOver = mc.renderViewEntity.rayTrace(d0, renderTick);
-
-//			motionMaintained[0] = mc.thePlayer.motionX;
-//			motionMaintained[1] = mc.thePlayer.motionZ;
-//			
-//			ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX - (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ + (double)mc.thePlayer.width * 0.35D);
-//            ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX - (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ - (double)mc.thePlayer.width * 0.35D);
-//            ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX + (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ - (double)mc.thePlayer.width * 0.35D);
-//            ObfHelper.forcePushOutOfBlocks(mc.thePlayer, mc.thePlayer.posX + (double)mc.thePlayer.width * 0.35D, mc.thePlayer.boundingBox.minY + 0.5D, mc.thePlayer.posZ + (double)mc.thePlayer.width * 0.35D);
-//            
-//			motionMaintained[2] = mc.thePlayer.motionX;
-//			motionMaintained[3] = mc.thePlayer.motionZ;
-//            
-//           	maintainMotion = mc.thePlayer.motionX != motionMaintained[0] || mc.thePlayer.motionZ != motionMaintained[1];
-		}
+//		MorphInfo info = playerMorphInfo.get(mc.thePlayer.username);
+//		if(info != null)
+//		{
+//		}
 	}
 	
 	public void worldTick(Minecraft mc, WorldClient world)
 	{
-//		if(maintainMotion)
-//		{
-//			mc.thePlayer.moveEntity(motionMaintained[0] - motionMaintained[2], 0D, motionMaintained[1] - motionMaintained[3]);
-//			mc.thePlayer.motionX = motionMaintained[0] - motionMaintained[2];
-//			mc.thePlayer.motionZ = motionMaintained[1] - motionMaintained[3];
-//		}
 		if(showWarning)
 		{
 			showWarning = false;
@@ -947,7 +944,7 @@ public class TickHandlerClient
 
 	public void preRenderTick(Minecraft mc, World world, float renderTick)
 	{
-		if(mc.entityRenderer instanceof EntityRenderer && !(mc.entityRenderer instanceof EntityRendererProxy))
+		if(shouldReplaceRenderer && mc.entityRenderer instanceof EntityRenderer && !(mc.entityRenderer instanceof EntityRendererProxy))
 		{
 			mc.entityRenderer = new EntityRendererProxy(mc);
 		}
@@ -972,7 +969,7 @@ public class TickHandlerClient
 			mc.thePlayer.lastTickPosY -= ySize;
 			mc.thePlayer.prevPosY -= ySize;
 			mc.thePlayer.posY -= ySize;
-			mc.thePlayer.eyeHeight = 0.0F;
+			mc.thePlayer.eyeHeight = mc.thePlayer.height / playerHeight < 1.0F ? mc.thePlayer.height / playerHeight * mc.thePlayer.getDefaultEyeHeight() : mc.thePlayer.getDefaultEyeHeight();
 			
 			shiftedPosY = true;
 		}
@@ -1851,6 +1848,8 @@ public class TickHandlerClient
 	
 	public boolean showWarning;
 	
+	public boolean shouldReplaceRenderer;
+	
 	public RenderMorph renderMorphInstance;
 	public RenderPlayerHand renderHandInstance;
 	public float playerRenderShadowSize = -1F;
@@ -1861,8 +1860,6 @@ public class TickHandlerClient
 
 	public float renderTick;
 	
-//	public double[] motionMaintained = new double[4];
-//	public boolean maintainMotion;
 	public float playerHeight = 1.8F;
 	public float ySize;
 	public float eyeHeight;
