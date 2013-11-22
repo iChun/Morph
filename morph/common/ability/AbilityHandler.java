@@ -184,19 +184,6 @@ public class AbilityHandler
 		return new ArrayList<Ability>();
 	}
 	
-	public static ArrayList<Ability> getEntityAbilities(EntityLivingBase ent)
-	{
-		ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
-		for(int i = abilities.size() - 1; i >= 0; i--)
-		{
-			if(!abilities.get(i).entityHasAbility(ent))
-			{
-				abilities.remove(i);
-			}
-		}
-		return abilities;
-	}
-
 	public static Ability getNewAbilityClimb()
 	{
 		return new AbilityClimb();
