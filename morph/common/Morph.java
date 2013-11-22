@@ -83,7 +83,6 @@ public class Morph
 	public static int disableEarlyGameFlight;
 	public static int loseMorphsOnDeath;
 	public static int instaMorph;
-	public static int abilityTracker;
 	public static int abilities;
 	public static int modAbilityPatch;
 	public static int hostileAbilityMode;
@@ -144,7 +143,6 @@ public class Morph
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
 		
-		abilityTracker = addCommentAndReturnInt(config, "gameplay", "abilityTracker", "Allow the mod to randomly track mobs to scan for abilities?\nWARNING: This is not 100% accurate, and is provided \"as is\". It may or may not give mod mobs the right abilities.\nMay or may not be resource intensive, most likely not.\nThere is also a community provided mod patch support that maps some, but not all the abilities to some mods.\n0 = No\n1 = Yes", 0);
 		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
 		modAbilityPatch = addCommentAndReturnInt(config, "gameplay", "modAbilityPatch", "Enable mod mob ability patching?\nThis support is mostly provided by the community and is not officially supported by the mod\n0 = No\n1 = Yes", 1);
 		
@@ -214,52 +212,6 @@ public class Morph
 		SessionState.allowFlight = true;
 		
 		proxy.initCommands(event.getServer());
-		
-		NBTTagCompound tag = null;
-		
-    	try
-    	{
-    		File file = new File(Morph.configFolder, "morphAbilities.dat");
-    		if(!file.exists())
-    		{
-    			return;
-    		}
-    		else
-    		{
-    			tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
-    		}
-    	}
-    	catch(EOFException e)
-    	{
-    		Morph.console("Mod ability data is corrupted! Attempting to read from backup.", true);
-    		try
-    		{
-	    		File file = new File(Morph.configFolder, "morphAbilities_backup.dat");
-	    		if(!file.exists())
-	    		{
-	    			Morph.console("No backup detected!", true);
-	    			return;
-	    		}
-	    		tag = CompressedStreamTools.readCompressed(new FileInputStream(file));
-
-	    		File file1 = new File(Morph.configFolder, "morphAbilities.dat");
-	    		file1.delete();
-	    		file.renameTo(file1);
-	    		Morph.console("Restoring mod ability data from backup.", false);
-    		}
-    		catch(Exception e1)
-    		{
-    			Morph.console("Even your backup data is corrupted. What have you been doing?!", true);
-    			return;
-    		}
-    	}
-    	catch(IOException e)
-    	{
-    		Morph.console("Failed to read mod ability save data!", true);
-    		return;
-    	}
-
-    	AbilityHandler.readAbilitiesFromNBT(tag);
 	}
 	
 	@EventHandler
@@ -272,8 +224,6 @@ public class Morph
 	{
 		proxy.tickHandlerServer.playerMorphInfo.clear();
 		proxy.tickHandlerServer.playerMorphs.clear();
-		proxy.tickHandlerServer.activeEntTrackers.clear();
-		proxy.tickHandlerServer.entTrackerResults.clear();
 		proxy.tickHandlerServer.saveData = null;
 	}
 	

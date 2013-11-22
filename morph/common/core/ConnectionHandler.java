@@ -83,8 +83,6 @@ public class ConnectionHandler
 	{
 		Morph.proxy.tickHandlerServer.updateSession(player);
 		
-		AbilityHandler.updatePlayerOfAbility(player, null);
-		
 		ArrayList list = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username);
 		
 		if(Morph.proxy.tickHandlerServer.saveData != null)

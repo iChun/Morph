@@ -166,19 +166,6 @@ public class PacketHandlerClient
 					}
 					break;
 				}
-				case 2:
-				{
-					boolean clear = stream.readBoolean();
-					if(clear)
-					{
-						AbilityHandler.trackedMap.clear();
-						
-						NBTTagCompound tag = Morph.readNBTTagCompound(stream);
-						
-						AbilityHandler.readAbilityFromNBT(tag);
-					}
-					break;
-				}
 			}
 		}
 		catch(IOException e)
