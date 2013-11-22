@@ -71,8 +71,6 @@ public class TickHandlerClient
 		renderHandInstance = new RenderPlayerHand();
 		renderHandInstance.setRenderManager(RenderManager.instance);
 		
-		showWarning = ObfHelper.obfuscation;
-		
 		try
 		{
 			EntityPlayer.class.getDeclaredMethod("getPosition", float.class);
@@ -175,12 +173,6 @@ public class TickHandlerClient
 	
 	public void worldTick(Minecraft mc, WorldClient world)
 	{
-		if(showWarning)
-		{
-			showWarning = false;
-			mc.thePlayer.addChatMessage("Alert - You are using an unfinished build of Morph! Please report any issues on the GitHub");
-		}
-		
 		abilityScroll++;
 		if(mc.currentScreen != null)
 		{
@@ -1854,8 +1846,6 @@ public class TickHandlerClient
 	}
 	
 	public long clock;
-	
-	public boolean showWarning;
 	
 	public boolean shouldReplaceRenderer;
 	
