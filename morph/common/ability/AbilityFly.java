@@ -137,10 +137,16 @@ public class AbilityFly extends Ability {
 	public void postRender() {}
 
 	@Override
-	public void save(NBTTagCompound tag) {}
+	public void save(NBTTagCompound tag) 
+	{
+		tag.setBoolean("slowdownInWater", slowdownInWater);
+	}
 
 	@Override
-	public void load(NBTTagCompound tag) {}
+	public void load(NBTTagCompound tag) 
+	{
+		slowdownInWater = tag.getBoolean("slowdownInWater");
+	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
