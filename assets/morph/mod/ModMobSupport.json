@@ -85,6 +85,76 @@
     "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
       "waterAllergy"
     ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntityDolphin": [
+      "swim|false",
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntityFishy": [
+      "swim|false"
+    ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntityJellyFish": [
+      "swim|false",
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntityMediumFish": [
+      "swim|false"
+    ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntityPiranha": [
+      "swim|false",
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntityray": [
+      "swim|false",
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntityShark": [
+      "swim|false",
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.aquatic.MoCEntitySmallFish": [
+      "swim|false"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityFlameWraith": [
+      "fly|false",
+      "hostile",
+      "fireImmunity"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityGolem": [
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityHellRat": [
+      "hostile",
+      "fireImmunity"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityMiniGolem": [
+      "hostile",
+      "sunburn"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityOgre": [
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityRat": [
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityScorpion": [
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntitySilverSkeleton": [ 
+      "hostile",
+      "sunburn",
+      "poisonResistance"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityWereWolf": [
+      "hostile"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityWraith": [
+      "hostile",
+      "sunburn",
+      "fly|false"
+    ],
+    "drzhark.mocreatures.entity.monster.MoCEntityWWolf": [
+      "hostile"
+    ],
     "mods.natura.entity.BabyHeatscarSpider": [
       "climb",
       "fireImmunity",
