@@ -7,12 +7,15 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.GuiIngameForge;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -20,23 +23,42 @@ public class AbilitySwim extends Ability {
 
 	public boolean canSurviveOutOfWater;
 	public int air;
+	public float swimSpeed;
+	public float landSpeed;
 	
 	public AbilitySwim()
 	{
 		canSurviveOutOfWater = false;
 		air = 8008135;
+		swimSpeed = 1f;
+		landSpeed = 1f;
 	}
 	
 	public AbilitySwim(boolean airBreather)
 	{
-		canSurviveOutOfWater = airBreather;
-		air = 8008135;
+		this();
+		canSurviveOutOfWater = airBreather;	
+	}
+	
+	public AbilitySwim(boolean airBreather, float swimModifier, float landModifier)
+	{
+		this(airBreather);
+		swimSpeed = swimModifier;
+		landSpeed = landModifier;
 	}
 	
 	@Override
 	public Ability parse(String[] args)
 	{
-		canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
+		try
+		{
+			canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
+			swimSpeed = Float.parseFloat(args[1]);
+			landSpeed = Float.parseFloat(args[2]);
+		}
+		catch(Exception e)
+		{
+		}
 		return this;
 	}
 
@@ -56,8 +78,33 @@ public class AbilitySwim extends Ability {
 		boolean flying = false;
 		if(getParent().isInWater())
 		{
+			if(GuiIngameForge.renderAir)
+			{
+				GuiIngameForge.renderAir = false;
+			}
 			getParent().setAir(300);
 			air = 300;
+			if(swimSpeed != 1f)
+			{
+				if(getParent().motionX > -swimSpeed && getParent().motionX < swimSpeed)
+				{
+					getParent().motionX *= swimSpeed;
+				}
+				if(getParent().motionZ > -swimSpeed && getParent().motionZ < swimSpeed)
+				{
+					getParent().motionZ *= swimSpeed;
+				}
+			}
+			boolean isJumping = ObfuscationReflectionHelper.getPrivateValue(EntityLivingBase.class, getParent(), "isJumping", "bd");
+			if(!getParent().isSneaking() && !isJumping)
+			{
+				getParent().motionY = 0f;
+			}else{
+				if(isJumping)
+				{
+					getParent().motionY *= swimSpeed;
+				}
+			}
 		}
 		else if(!canSurviveOutOfWater)
 		{
@@ -69,18 +116,34 @@ public class AbilitySwim extends Ability {
 	        	air = 0;
 	        	getParent().attackEntityFrom(DamageSource.drown, 2.0F);
 	        }
+	        
+	        if(landSpeed != 1f && air < 285)
+			{
+				if(getParent().motionX > -landSpeed && getParent().motionX < landSpeed)
+				{
+					getParent().motionX *= landSpeed;
+				}
+				if(getParent().motionZ > -landSpeed && getParent().motionZ < landSpeed)
+				{
+					getParent().motionZ *= landSpeed;
+				}
+			}
 		}
 	}
 
 	@Override
 	public void kill() 
 	{
+		if(!GuiIngameForge.renderAir)
+		{
+			GuiIngameForge.renderAir = true;
+		}
 	}
 
 	@Override
 	public Ability clone() 
 	{
-		return new AbilitySwim(canSurviveOutOfWater);
+		return new AbilitySwim(canSurviveOutOfWater, swimSpeed, landSpeed);
 	}
 
 	@Override
@@ -99,7 +162,7 @@ public class AbilitySwim extends Ability {
 	            int height = scaledresolution.getScaledHeight();
 	            
 	            int l1 = width / 2 + 91;
-	            int i2 = height - 39;
+	            int i2 = height - 30;
 	            AttributeInstance attributeinstance = mc.thePlayer.getEntityAttribute(SharedMonsterAttributes.maxHealth);
 	            float f = (float)attributeinstance.getAttributeValue();
 	            float f1 = mc.thePlayer.getAbsorptionAmount();
@@ -144,12 +207,16 @@ public class AbilitySwim extends Ability {
 	public void save(NBTTagCompound tag) 
 	{
 		tag.setBoolean("canSurviveOutOfWater", canSurviveOutOfWater);
+		tag.setFloat("swimSpeedModifier", swimSpeed);
+		tag.setFloat("landSpeedModifier", landSpeed);
 	}
 
 	@Override
 	public void load(NBTTagCompound tag) 
 	{
 		canSurviveOutOfWater = tag.getBoolean("canSurviveOutOfWater");
+		swimSpeed = tag.getFloat("swimSpeedModifier");
+		landSpeed = tag.getFloat("landSpeedModifier");
 	}
 
 	@SideOnly(Side.CLIENT)
