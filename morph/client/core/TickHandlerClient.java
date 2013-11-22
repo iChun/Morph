@@ -1314,9 +1314,9 @@ public class TickHandlerClient
 				
 	    		double zLev = 0.05D;
 	    		
+				GL11.glDisable(GL11.GL_TEXTURE_2D);
 				if(hasStencilBits)
 				{
-					GL11.glDisable(GL11.GL_TEXTURE_2D);
 			        GL11.glEnable(GL11.GL_STENCIL_TEST);
 			        GL11.glColorMask(false, false, false, false);
 		
@@ -1372,8 +1372,8 @@ public class TickHandlerClient
 				if(hasStencilBits)
 				{
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
-					GL11.glEnable(GL11.GL_TEXTURE_2D);
 				}
+				GL11.glEnable(GL11.GL_TEXTURE_2D);
 		        
 				GL11.glPopMatrix();
 	
