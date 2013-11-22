@@ -1,10 +1,15 @@
 package morph.common.ability;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import morph.api.Ability;
+import morph.common.Morph;
+import morph.common.morph.MorphInfo;
 
 public class AbilityStep extends Ability 
 {
@@ -37,6 +42,25 @@ public class AbilityStep extends Ability
 	@Override
 	public void tick() 
 	{
+		MorphInfo info = null;
+		if(getParent() instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer)getParent();
+			if(!player.worldObj.isRemote)
+			{
+				info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+			}
+			else
+			{
+				info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.username);
+			}
+		}
+		
+		if(info != null && info.nextState.entInstance.isChild())
+		{
+			return;
+		}
+
 		if (getParent().stepHeight != stepHeight)
 		{
 			getParent().stepHeight = stepHeight;
@@ -74,6 +98,13 @@ public class AbilityStep extends Ability
 	@SideOnly(Side.CLIENT)
 	public void postRender() 
 	{
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean entityHasAbility(EntityLivingBase living)
+	{
+		return !living.isChild();
 	}
 
 	@Override
