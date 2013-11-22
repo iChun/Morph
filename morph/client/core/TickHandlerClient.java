@@ -973,6 +973,8 @@ public class TickHandlerClient
 			mc.thePlayer.prevPosY -= ySize;
 			mc.thePlayer.posY -= ySize;
 			mc.thePlayer.eyeHeight = 0.0F;
+			
+			shiftedPosY = true;
 		}
 		
 		if(radialShow)
@@ -998,6 +1000,8 @@ public class TickHandlerClient
 		MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.username);
 		if(info != null)
 		{
+			shiftedPosY = false;
+			
 			mc.thePlayer.lastTickPosY += ySize;
 			mc.thePlayer.prevPosY += ySize;
 			mc.thePlayer.posY += ySize;
@@ -1862,6 +1866,7 @@ public class TickHandlerClient
 	public float playerHeight = 1.8F;
 	public float ySize;
 	public float eyeHeight;
+	public boolean shiftedPosY;
 	
 	public boolean forceRender;
 	public boolean renderingMorph;

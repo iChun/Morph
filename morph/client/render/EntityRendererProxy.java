@@ -36,26 +36,29 @@ public class EntityRendererProxy extends EntityRenderer
                 
                 float ySize = 0.0F;
                 
-                MorphInfo info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
-        		if(info1 != null && mc.renderViewEntity == mc.thePlayer)
-        		{
-        			float prog = info1.morphProgress > 10 ? (((float)info1.morphProgress + par1) / 60F) : 0.0F;
-        			if(prog > 1.0F)
-        			{
-        				prog = 1.0F;
-        			}
-        			
-        			prog = (float)Math.pow(prog, 2);
-        			
-        			float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
-        			float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
-        			ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
-        		}
+                if(!Morph.proxy.tickHandlerClient.shiftedPosY)
+                {
+	                MorphInfo info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.username);
+	        		if(info1 != null && mc.renderViewEntity == mc.thePlayer)
+	        		{
+	        			float prog = info1.morphProgress > 10 ? (((float)info1.morphProgress + par1) / 60F) : 0.0F;
+	        			if(prog > 1.0F)
+	        			{
+	        				prog = 1.0F;
+	        			}
+	        			
+	        			prog = (float)Math.pow(prog, 2);
+	        			
+	        			float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+	        			float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+	        			ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
+	        		}
+	        		
+	    			mc.thePlayer.lastTickPosY -= ySize;
+	    			mc.thePlayer.prevPosY -= ySize;
+	    			mc.thePlayer.posY -= ySize;
+                }
         		
-    			mc.thePlayer.lastTickPosY -= ySize;
-    			mc.thePlayer.prevPosY -= ySize;
-    			mc.thePlayer.posY -= ySize;
-
        			this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(d0, par1);
                 
                 
