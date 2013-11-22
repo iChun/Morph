@@ -57,29 +57,27 @@ public class AbilityFly extends Ability {
 			}
 			if(player.capabilities.isFlying && !player.capabilities.isCreativeMode)
 			{
-				if(!player.worldObj.isRemote)
-				{
-					double motionX = player.posX - player.lastTickPosX;
-					double motionZ = player.posZ - player.lastTickPosZ;
-	                int i = Math.round(MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ) * 100.0F);
-	
-	                if (i > 0)
-	                {
-	                	if(player.isInWater() && slowdownInWater)
-	                	{
-	                		player.addExhaustion(0.095F * (float)i * 0.01F);
-	                	}
-	                	else
-	                	{
-	                		player.addExhaustion(0.013F * (float)i * 0.01F);
-	                	}
-	                }
-	                else
-	                {
-	                	player.addExhaustion(0.001F);
-	                }
-				}
-				else if(player.isInWater() && slowdownInWater)
+				double motionX = player.worldObj.isRemote ? player.motionX : player.posX - player.lastTickPosX;
+				double motionZ = player.worldObj.isRemote ? player.motionZ : player.posZ - player.lastTickPosZ;
+                int i = Math.round(MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ) * 100.0F);
+
+                if (i > 0)
+                {
+                	if(player.isInWater() && slowdownInWater)
+                	{
+                		player.addExhaustion(0.095F * (float)i * 0.01F);
+                	}
+                	else
+                	{
+                		player.addExhaustion(0.025F * (float)i * 0.01F);
+                	}
+                }
+                else
+                {
+                	player.addExhaustion(0.001F);
+                }
+                
+				if(player.worldObj.isRemote && player.isInWater() && slowdownInWater)
                 {
 	                MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.username);
 	        		
