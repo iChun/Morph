@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import morph.api.Ability;
 import morph.common.Morph;
+import morph.common.core.SessionState;
 import morph.common.morph.MorphInfo;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,6 +51,10 @@ public class AbilityFly extends Ability {
 	{
 		if(getParent() instanceof EntityPlayer)
 		{
+			if(!SessionState.allowFlight)
+			{
+				return;
+			}
 			EntityPlayer player = (EntityPlayer)getParent();
 			if(!player.capabilities.allowFlying)
 			{
@@ -147,7 +152,7 @@ public class AbilityFly extends Ability {
 	@Override
 	public ResourceLocation getIcon() 
 	{
-		return iconResource;
+		return SessionState.allowFlight ? iconResource : null;
 	}
 	
 	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/fly.png");

@@ -710,6 +710,14 @@ public class EventHandler
 	    		Morph.console("Failed to read save data!", true);
 	    		return;
 	    	}
+	    	
+			if(Morph.proxy.tickHandlerServer.saveData != null)
+			{
+				if(Morph.disableEarlyGameFlight == 1 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether"))
+				{
+					SessionState.allowFlight = false;
+				}
+			}
 		}
 	}
 

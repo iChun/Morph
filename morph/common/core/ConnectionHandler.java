@@ -81,21 +81,7 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
 	{
-		try
-		{
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			DataOutputStream stream = new DataOutputStream(bytes);
-
-			stream.writeBoolean(Morph.abilities == 1);
-			stream.writeBoolean(Morph.canSleepMorphed == 1);
-			stream.writeBoolean(Morph.allowMorphSelection == 1);
-			
-			PacketDispatcher.sendPacketToPlayer(new Packet131MapData((short)Morph.getNetId(), (short)2, bytes.toByteArray()), (Player)player);
-		}
-		catch(IOException e)
-		{
-			
-		}
+		Morph.proxy.tickHandlerServer.updateSession(player);
 		
 		AbilityHandler.updatePlayerOfAbility(player, null);
 		
@@ -172,6 +158,19 @@ public class ConnectionHandler
 			ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 			player.setPosition(player.posX, player.posY, player.posZ);
 			player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(player.username) ? player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
+		}
+		
+		if(player.dimension == -1 && Morph.proxy.tickHandlerServer.saveData != null)
+		{
+			if(!Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether"))
+			{
+				Morph.proxy.tickHandlerServer.saveData.setBoolean("travelledToNether", true);
+				if(Morph.disableEarlyGameFlight == 1)
+				{
+					SessionState.allowFlight = true;
+					Morph.proxy.tickHandlerServer.updateSession(null);
+				}
+			}
 		}
 	}
 

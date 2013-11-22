@@ -186,6 +186,7 @@ public class MapPacketHandler
 					SessionState.abilities = stream.readBoolean();
 					SessionState.canSleepMorphed = stream.readBoolean();
 					SessionState.allowMorphSelection = stream.readBoolean();
+					SessionState.allowFlight = stream.readBoolean();
 					break;
 				}
 			}

@@ -33,9 +33,10 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 public class TickHandlerServer 
-implements ITickHandler
+	implements ITickHandler
 {
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) 
@@ -464,6 +465,33 @@ implements ITickHandler
 			listMap.put(type, results);
 		}
 		return results;
+	}
+	
+	public void updateSession(EntityPlayer player) 
+	{
+		try
+		{
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			DataOutputStream stream = new DataOutputStream(bytes);
+
+			stream.writeBoolean(SessionState.abilities);
+			stream.writeBoolean(SessionState.canSleepMorphed);
+			stream.writeBoolean(SessionState.allowMorphSelection);
+			stream.writeBoolean(SessionState.allowFlight);
+			
+			if(player != null)
+			{
+				PacketDispatcher.sendPacketToPlayer(new Packet131MapData((short)Morph.getNetId(), (short)2, bytes.toByteArray()), (Player)player);
+			}
+			else
+			{
+				PacketDispatcher.sendPacketToAllPlayers(new Packet131MapData((short)Morph.getNetId(), (short)2, bytes.toByteArray()));
+			}
+		}
+		catch(IOException e)
+		{
+			
+		}
 	}
 
 	public long clock;
