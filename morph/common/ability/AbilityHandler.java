@@ -36,6 +36,7 @@ import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -60,6 +61,8 @@ public class AbilityHandler
 		registerAbility("swim"			  , AbilitySwim.class			);
 		registerAbility("waterAllergy"    , AbilityWaterAllergy.class	);
 		registerAbility("poisonResistance", AbilityPoisonResistance.class);
+		registerAbility("step"			  , AbilityStep.class);
+		registerAbility("witherResistance", AbilityWitherResistance.class);
 		
 		mapAbilities(EntityBat.class, new AbilityFly(true));
 		mapAbilities(EntityBlaze.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
@@ -73,14 +76,15 @@ public class AbilityHandler
 		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntitySilverfish.class, new AbilityHostile());
-		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile(), new AbilitySunburn());
+		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile(), new AbilitySunburn(), new AbilityWitherResistance());
 		mapAbilities(EntitySlime.class, new AbilityHostile());
 		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
 		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
-		mapAbilities(EntitySquid.class, new AbilitySwim(false));
-		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntitySquid.class, new AbilitySwim(false, 1.2f, 0.4f, true));
+		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile(), new AbilityWitherResistance());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
 		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
+		mapAbilities(EntityHorse.class, new AbilityStep());
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
