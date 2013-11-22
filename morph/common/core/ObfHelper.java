@@ -30,6 +30,7 @@ public class ObfHelper
     public static final String[] cameraZoom				= new String[] { "Y", "field_78503_V", "cameraZoom"				}; //EntityRenderer
     public static final String[] modelBipedMain			= new String[] { "f", "field_77109_a", "modelBipedMain"			}; //RenderPlayer
     public static final String[] isImmuneToFire			= new String[] { "ag","field_70178_ae", "isImmuneToFire"		}; //Entity
+    public static final String[] isJumping 				= new String[] { "bd","field_70703_bu", "isJumping" 			}; //EntityLivingBase
     public static final String[] shadowSize				= new String[] { "d", "field_76989_e", "shadowSize"				}; //Render
 
 	public static final String setSizeObf = "func_70105_a";

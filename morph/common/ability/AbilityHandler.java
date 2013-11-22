@@ -61,7 +61,7 @@ public class AbilityHandler
 		registerAbility("swim"			  , AbilitySwim.class			);
 		registerAbility("waterAllergy"    , AbilityWaterAllergy.class	);
 		registerAbility("poisonResistance", AbilityPoisonResistance.class);
-		registerAbility("step"			  , AbilityStep.class);
+		registerAbility("step"			  , AbilityStep.class			);
 		registerAbility("witherResistance", AbilityWitherResistance.class);
 		
 		mapAbilities(EntityBat.class, new AbilityFly(true));
@@ -84,7 +84,7 @@ public class AbilityHandler
 		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile(), new AbilityWitherResistance());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
 		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
-		mapAbilities(EntityHorse.class, new AbilityStep());
+		mapAbilities(EntityHorse.class, new AbilityStep(1.0F));
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)

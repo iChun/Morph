@@ -1,6 +1,7 @@
 package morph.common.ability;
 
 import morph.api.Ability;
+import morph.common.core.ObfHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -53,16 +54,10 @@ public class AbilitySwim extends Ability {
 	@Override
 	public Ability parse(String[] args)
 	{
-		try
-		{
-			canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
-			swimSpeed = Float.parseFloat(args[1]);
-			landSpeed = Float.parseFloat(args[2]);
-			canMaintainDepth = Boolean.parseBoolean(args[3]);
-		}
-		catch(Exception e)
-		{
-		}
+		canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
+		swimSpeed = Float.parseFloat(args[1]);
+		landSpeed = Float.parseFloat(args[2]);
+		canMaintainDepth = Boolean.parseBoolean(args[3]);
 		return this;
 	}
 
@@ -101,8 +96,17 @@ public class AbilitySwim extends Ability {
 			}
 			if(canMaintainDepth)
 			{
-				boolean isJumping = ObfuscationReflectionHelper.getPrivateValue(EntityLivingBase.class, getParent(), "isJumping", "bd");
-				if(!getParent().isSneaking() && !isJumping)
+				boolean isJumping = false;
+				try
+				{
+					isJumping = (Boolean)ObfuscationReflectionHelper.getPrivateValue(EntityLivingBase.class, getParent(), ObfHelper.isJumping);
+				}
+				catch(Exception e)
+				{
+					ObfHelper.obfWarning();
+					e.printStackTrace();
+				}
+				if(!getParent().isSneaking() && !isJumping && getParent().isInsideOfMaterial(Material.water))
 				{
 					getParent().motionY = 0f;
 				}else{
@@ -169,7 +173,7 @@ public class AbilitySwim extends Ability {
 	            int height = scaledresolution.getScaledHeight();
 	            
 	            int l1 = width / 2 + 91;
-	            int i2 = height - 30;
+	            int i2 = height - 39;
 	            AttributeInstance attributeinstance = mc.thePlayer.getEntityAttribute(SharedMonsterAttributes.maxHealth);
 	            float f = (float)attributeinstance.getAttributeValue();
 	            float f1 = mc.thePlayer.getAbsorptionAmount();
