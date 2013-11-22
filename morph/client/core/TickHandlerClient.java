@@ -1601,7 +1601,7 @@ public class TickHandlerClient
 	        
         	if(Morph.showAbilitiesInGui == 1)
         	{
-	        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
+	        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent);
 	        	
 	        	boolean shouldScroll = false; 
 				if(hasStencilBits && abilities.size() > 3)
