@@ -25,6 +25,7 @@ public class AbilitySwim extends Ability {
 	public int air;
 	public float swimSpeed;
 	public float landSpeed;
+	public boolean canMaintainDepth;
 	
 	public AbilitySwim()
 	{
@@ -32,6 +33,7 @@ public class AbilitySwim extends Ability {
 		air = 8008135;
 		swimSpeed = 1f;
 		landSpeed = 1f;
+		canMaintainDepth = false;
 	}
 	
 	public AbilitySwim(boolean airBreather)
@@ -40,11 +42,12 @@ public class AbilitySwim extends Ability {
 		canSurviveOutOfWater = airBreather;	
 	}
 	
-	public AbilitySwim(boolean airBreather, float swimModifier, float landModifier)
+	public AbilitySwim(boolean airBreather, float swimModifier, float landModifier, boolean maintainDepth)
 	{
 		this(airBreather);
 		swimSpeed = swimModifier;
 		landSpeed = landModifier;
+		canMaintainDepth = maintainDepth;
 	}
 	
 	@Override
@@ -55,6 +58,7 @@ public class AbilitySwim extends Ability {
 			canSurviveOutOfWater = Boolean.parseBoolean(args[0]);
 			swimSpeed = Float.parseFloat(args[1]);
 			landSpeed = Float.parseFloat(args[2]);
+			canMaintainDepth = Boolean.parseBoolean(args[3]);
 		}
 		catch(Exception e)
 		{
@@ -95,14 +99,17 @@ public class AbilitySwim extends Ability {
 					getParent().motionZ *= swimSpeed;
 				}
 			}
-			boolean isJumping = ObfuscationReflectionHelper.getPrivateValue(EntityLivingBase.class, getParent(), "isJumping", "bd");
-			if(!getParent().isSneaking() && !isJumping)
+			if(canMaintainDepth)
 			{
-				getParent().motionY = 0f;
-			}else{
-				if(isJumping)
+				boolean isJumping = ObfuscationReflectionHelper.getPrivateValue(EntityLivingBase.class, getParent(), "isJumping", "bd");
+				if(!getParent().isSneaking() && !isJumping)
 				{
-					getParent().motionY *= swimSpeed;
+					getParent().motionY = 0f;
+				}else{
+					if(isJumping)
+					{
+						getParent().motionY *= swimSpeed;
+					}
 				}
 			}
 		}
@@ -143,7 +150,7 @@ public class AbilitySwim extends Ability {
 	@Override
 	public Ability clone() 
 	{
-		return new AbilitySwim(canSurviveOutOfWater, swimSpeed, landSpeed);
+		return new AbilitySwim(canSurviveOutOfWater, swimSpeed, landSpeed, canMaintainDepth);
 	}
 
 	@Override
@@ -209,6 +216,7 @@ public class AbilitySwim extends Ability {
 		tag.setBoolean("canSurviveOutOfWater", canSurviveOutOfWater);
 		tag.setFloat("swimSpeedModifier", swimSpeed);
 		tag.setFloat("landSpeedModifier", landSpeed);
+		tag.setBoolean("canMaintainDepth", canMaintainDepth);
 	}
 
 	@Override
@@ -217,6 +225,7 @@ public class AbilitySwim extends Ability {
 		canSurviveOutOfWater = tag.getBoolean("canSurviveOutOfWater");
 		swimSpeed = tag.getFloat("swimSpeedModifier");
 		landSpeed = tag.getFloat("landSpeedModifier");
+		canMaintainDepth = tag.getBoolean("canMaintainDepth");
 	}
 
 	@SideOnly(Side.CLIENT)

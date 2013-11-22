@@ -77,7 +77,7 @@ public class AbilityHandler
 		mapAbilities(EntitySlime.class, new AbilityHostile());
 		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
 		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
-		mapAbilities(EntitySquid.class, new AbilitySwim(false));
+		mapAbilities(EntitySquid.class, new AbilitySwim(false, 1.2f, 0.4f, true));
 		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
 		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
