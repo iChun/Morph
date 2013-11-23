@@ -1451,6 +1451,7 @@ public class TickHandlerClient
 	    BossStatus.bossName = bossName;
 	    BossStatus.field_82825_d = randVar;
 		
+    	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		for(Entry<String, MorphInfoClient> e : playerMorphInfo.entrySet())
 		{
 			MorphInfoClient morphInfo = e.getValue();
