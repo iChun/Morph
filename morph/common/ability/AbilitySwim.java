@@ -77,9 +77,12 @@ public class AbilitySwim extends Ability {
 		boolean flying = false;
 		if(getParent().isInWater())
 		{
-			if(GuiIngameForge.renderAir)
+			if(getParent().worldObj.isRemote)
 			{
-				GuiIngameForge.renderAir = false;
+				if(GuiIngameForge.renderAir)
+				{
+					GuiIngameForge.renderAir = false;
+				}
 			}
 			getParent().setAir(300);
 			air = 300;
@@ -145,9 +148,12 @@ public class AbilitySwim extends Ability {
 	@Override
 	public void kill() 
 	{
-		if(!GuiIngameForge.renderAir)
+		if(getParent().worldObj.isRemote)
 		{
-			GuiIngameForge.renderAir = true;
+			if(!GuiIngameForge.renderAir)
+			{
+				GuiIngameForge.renderAir = true;
+			}
 		}
 	}
 

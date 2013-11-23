@@ -65,16 +65,16 @@ public class AbilityFly extends Ability {
                 {
                 	if(player.isInWater() && slowdownInWater)
                 	{
-                		player.addExhaustion(0.095F * (float)i * 0.01F);
+                		player.addExhaustion(0.125F * (float)i * 0.01F);
                 	}
                 	else
                 	{
-                		player.addExhaustion(0.025F * (float)i * 0.01F);
+                		player.addExhaustion(0.035F * (float)i * 0.01F);
                 	}
                 }
                 else
                 {
-                	player.addExhaustion(0.001F);
+                	player.addExhaustion(0.002F);
                 }
                 
 				if(player.worldObj.isRemote && player.isInWater() && slowdownInWater)
