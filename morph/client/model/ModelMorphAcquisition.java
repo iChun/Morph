@@ -33,8 +33,8 @@ public class ModelMorphAcquisition extends ModelMorph
 		this.acquirer = ModelList.getModelInfo(ent.acquirer.getClass());
 		if(acquired != null)
 		{
-			this.modelList = ModelHelper.getModelCubesCopy(acquired, this);
-			this.modelListCopy = ModelHelper.getModelCubesCopy(acquired, this);
+			this.modelList = ModelHelper.getModelCubesCopy(acquired, this, ent.acquired);
+			this.modelListCopy = ModelHelper.getModelCubesCopy(acquired, this, ent.acquired);
 			
 			for(ModelRenderer cube : modelList)
 			{

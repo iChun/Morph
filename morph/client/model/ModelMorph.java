@@ -26,6 +26,9 @@ public class ModelMorph extends ModelBase
 	
 	public ArrayList<ModelRenderer> modelList;
 	
+	public ArrayList<ModelRenderer> prevModelList;
+	public ArrayList<ModelRenderer> nextModelList;
+	
 	public Random rand;
 	
 	public ModelMorph(){}
@@ -37,9 +40,12 @@ public class ModelMorph extends ModelBase
 		
 		if(info != null && info.morphProgress < 80 && info.prevModelInfo != null && info.nextModelInfo != null)
 		{
-			modelList = ModelHelper.getModelCubesCopy(info.prevModelInfo, this);
+			prevModelList = ModelHelper.compileRenderableModels(info.prevModelInfo, info.prevState.entInstance);
+			nextModelList = ModelHelper.compileRenderableModels(info.nextModelInfo, info.nextState.entInstance);
 			
-			for(int i = 0; i < morphInfo.nextModelInfo.modelList.size(); i++)
+			modelList = ModelHelper.getModelCubesCopy(info.prevModelInfo, this, info.prevState.entInstance);
+			
+			for(int i = 0; i < nextModelList.size(); i++)
 			{
 				if(i >= modelList.size())
 				{
@@ -47,16 +53,16 @@ public class ModelMorph extends ModelBase
 				}
 				
 				ModelRenderer cubeCopy = modelList.get(i);
-				ModelRenderer cubeNewParent = morphInfo.nextModelInfo.modelList.get(i);
+				ModelRenderer cubeNewParent = nextModelList.get(i);
 				
 				ModelHelper.createEmptyContents(this, cubeNewParent, cubeCopy, 0); 			
 			}
 			
-			if(modelList.size() < morphInfo.nextModelInfo.modelList.size())
+			if(modelList.size() < nextModelList.size())
 			{
-				for(int i = modelList.size(); i < morphInfo.nextModelInfo.modelList.size(); i++)
+				for(int i = modelList.size(); i < nextModelList.size(); i++)
 				{
-					ModelRenderer parentCube = morphInfo.nextModelInfo.modelList.get(i);
+					ModelRenderer parentCube = nextModelList.get(i);
 					try
 					{
 						int txOffsetX = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetX);
@@ -79,7 +85,7 @@ public class ModelMorph extends ModelBase
 							}
 							else
 							{
-								ModelRenderer randParentCube = morphInfo.nextModelInfo.modelList.get(rand.nextInt(morphInfo.nextModelInfo.modelList.size()));
+								ModelRenderer randParentCube = nextModelList.get(rand.nextInt(nextModelList.size()));
 								randBox = (ModelBox)randParentCube.cubeList.get(rand.nextInt(randParentCube.cubeList.size()));
 							}
 							
@@ -115,8 +121,8 @@ public class ModelMorph extends ModelBase
 	{
 		GL11.glPushMatrix();
 
-		ArrayList<ModelRenderer> prevCubes = morphInfo.prevModelInfo.modelList;
-		ArrayList<ModelRenderer> nextCubes = morphInfo.nextModelInfo.modelList;
+		ArrayList<ModelRenderer> prevCubes = prevModelList;
+		ArrayList<ModelRenderer> nextCubes = nextModelList;
 		
 		for(int i = 0; i < nextCubes.size(); i++)
 		{

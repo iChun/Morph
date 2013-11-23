@@ -18,6 +18,7 @@ import net.minecraft.client.model.ModelSpider;
 import net.minecraft.client.model.ModelSquid;
 import net.minecraft.client.model.ModelWolf;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.EntityLivingBase;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
 
@@ -25,17 +26,58 @@ public class ModelHelper
 {
 	public static Random rand = new Random();
 
-	public static ArrayList<ModelRenderer> getModelCubesCopy(ModelInfo info, ModelBase base)
+	public static ArrayList<ModelRenderer> getModelCubesCopy(ModelInfo info, ModelBase base, EntityLivingBase ent)
 	{
-		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
-
-		for(int i = 0; i < info.modelList.size(); i++)
+		if(ent != null)
 		{
-			ModelRenderer cube = (ModelRenderer)info.modelList.get(i);
-			list.add(buildCopy(cube, base, 0, true));
+			for(int i = 0; i < info.modelList.size(); i++)
+			{
+				ModelRenderer cube = info.modelList.get(i);
+				try
+				{
+					ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+				}
+				catch(Exception e)
+				{
+					ObfHelper.obfWarning();
+					e.printStackTrace();
+				}
+			}
+			info.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
+			
+			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+			
+			for(int i = 0; i < info.modelList.size(); i++)
+			{
+				ModelRenderer cube = info.modelList.get(i);
+				try
+				{
+					if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+					{
+						list.add(buildCopy(cube, base, 0, true));
+					}
+				}
+				catch(Exception e)
+				{
+					ObfHelper.obfWarning();
+					e.printStackTrace();
+				}
+			}
+			return list;
 		}
+		else
+		{
+		
+			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+	
+			for(int i = 0; i < info.modelList.size(); i++)
+			{
+				ModelRenderer cube = (ModelRenderer)info.modelList.get(i);
+				list.add(buildCopy(cube, base, 0, true));
+			}
 
-		return list;
+			return list;
+		}
 	}
 	
 	public static ModelRenderer getPotentialArm(ModelBase parent)
@@ -478,5 +520,47 @@ public class ModelHelper
 		}
 
 		return cube;
+	}
+
+	public static ArrayList<ModelRenderer> compileRenderableModels(ModelInfo modelInfo, EntityLivingBase ent) 
+	{
+		if(ent != null)
+		{
+			for(int i = 0; i < modelInfo.modelList.size(); i++)
+			{
+				ModelRenderer cube = modelInfo.modelList.get(i);
+				try
+				{
+					ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+				}
+				catch(Exception e)
+				{
+					ObfHelper.obfWarning();
+					e.printStackTrace();
+				}
+			}
+			modelInfo.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
+			
+			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+			
+			for(int i = 0; i < modelInfo.modelList.size(); i++)
+			{
+				ModelRenderer cube = modelInfo.modelList.get(i);
+				try
+				{
+					if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+					{
+						list.add(cube);
+					}
+				}
+				catch(Exception e)
+				{
+					ObfHelper.obfWarning();
+					e.printStackTrace();
+				}
+			}
+			return list;
+		}
+		return modelInfo.modelList;
 	}
 }
