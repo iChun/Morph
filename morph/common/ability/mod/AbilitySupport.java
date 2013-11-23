@@ -71,6 +71,10 @@ public class AbilitySupport {
 							argVars.add(arg.trim());
 						}
 					}
+					else
+					{
+						argVars.add(args.trim());
+					}
 					try {
 						Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
 						Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
