@@ -73,7 +73,16 @@ public class AbilitySupport {
 					}
 					try {
 						Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
-						abilityObjs.add(((Ability)abilityClass.getConstructor().newInstance()).parse(argVars.toArray(new String[0])));
+						Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
+						try
+						{
+							ab.parse(argVars.toArray(new String[0]));
+						}
+						catch(Exception e)
+						{
+							e.printStackTrace();
+						}
+						abilityObjs.add(ab);
 					} catch (Exception e){
 						e.printStackTrace();
 					}
