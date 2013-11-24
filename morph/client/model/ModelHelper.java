@@ -541,16 +541,16 @@ public class ModelHelper
 			}
 			modelInfo.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 			
-			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>(modelInfo.modelList);
 			
-			for(int i = 0; i < modelInfo.modelList.size(); i++)
+			for(int i = list.size() - 1; i >= 0 ; i--)
 			{
-				ModelRenderer cube = modelInfo.modelList.get(i);
+				ModelRenderer cube = list.get(i);
 				try
 				{
-					if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+					if(!(Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
 					{
-						list.add(cube);
+						list.remove(i);
 					}
 				}
 				catch(Exception e)
