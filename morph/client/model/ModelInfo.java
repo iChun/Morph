@@ -20,12 +20,12 @@ public class ModelInfo
 	public final ArrayList<ModelRenderer> modelList;
 	public final ModelRenderer assumedArm;
 	
-	public ModelInfo(Class entityClass, Render render, ModelBase modelInstance, ArrayList<ModelBase> models)
+	public ModelInfo(Class entityClass, Render render, ModelBase modelInstance)
 	{
 		entClass = entityClass;
 		entRender = render;
 		modelParent = modelInstance;
-		modelList = ModelHelper.getMultiModelCubes(models);
+		modelList = ModelHelper.getModelCubes(modelInstance);
 		assumedArm = ModelHelper.getPotentialArm(modelInstance);
 	}
 	

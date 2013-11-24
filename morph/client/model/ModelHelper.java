@@ -32,9 +32,13 @@ public class ModelHelper
 	{
 		if(ent != null)
 		{
-			for(int i = 0; i < info.modelList.size(); i++)
+			info.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
+
+			ArrayList<ModelRenderer> modelList = ModelHelper.getModelCubes(getPossibleModel(info.getRenderer()));
+			
+			for(int i = 0; i < modelList.size(); i++)
 			{
-				ModelRenderer cube = info.modelList.get(i);
+				ModelRenderer cube = modelList.get(i);
 				try
 				{
 					ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
@@ -49,9 +53,9 @@ public class ModelHelper
 			
 			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
 			
-			for(int i = 0; i < info.modelList.size(); i++)
+			for(int i = 0; i < modelList.size(); i++)
 			{
-				ModelRenderer cube = info.modelList.get(i);
+				ModelRenderer cube = modelList.get(i);
 				try
 				{
 					if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
@@ -65,6 +69,7 @@ public class ModelHelper
 					e.printStackTrace();
 				}
 			}
+			System.out.println(list);
 			return list;
 		}
 		else
@@ -235,16 +240,6 @@ public class ModelHelper
 		return list;
 	}
 	
-	public static ArrayList<ModelRenderer> getMultiModelCubes(ArrayList<ModelBase> parent)
-	{
-		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
-		for(ModelBase base : parent)
-		{
-			list.addAll(getModelCubes(base));
-		}
-		return list;
-	}
-	
 	public static ModelBase getPossibleModel(Render rend)
 	{
 		ArrayList<ArrayList<ModelBase>> models = new ArrayList<ArrayList<ModelBase>>();
@@ -270,7 +265,7 @@ public class ModelHelper
 								priorityLevel.add(base); // Add normal parent fields
 							}
 						}
-						else if(ModelBase.class.isAssignableFrom(f.getType()))
+						else if(ModelBase[].class.isAssignableFrom(f.getType()))
 						{
 							ModelBase[] modelBases = (ModelBase[])f.get(rend);
 							if(modelBases != null)
@@ -317,8 +312,9 @@ public class ModelHelper
 
 		int currentPriority = 0;
 		
-		for(ArrayList<ModelBase> modelList : models)
+		for (int i = 0; i < models.size(); i++) 
 		{
+			ArrayList<ModelBase> modelList = models.get(i);
 			for(ModelBase base : modelList)
 			{
 				ArrayList<ModelRenderer> mrs = getModelCubes(base);
@@ -335,53 +331,6 @@ public class ModelHelper
 		return base1;
 	}
 	
-	public static ArrayList<ModelBase> getModels(Render rend)
-	{
-		ArrayList<ModelBase> models = new ArrayList<ModelBase>();
-
-		if(rend != null)
-		{
-			try
-			{
-				Class clz = rend.getClass();
-				while(clz != Render.class)
-				{
-					Field[] fields = clz.getDeclaredFields();
-					for(Field f : fields)
-					{
-						f.setAccessible(true);
-						if(ModelBase.class.isAssignableFrom(f.getType()))
-						{
-							ModelBase base = (ModelBase)f.get(rend);
-							if(base != null)
-							{
-								models.add(base); // Add normal parent fields
-							}
-						}
-						else if(ModelBase.class.isAssignableFrom(f.getType()))
-						{
-							ModelBase[] modelBases = (ModelBase[])f.get(rend);
-							if(modelBases != null)
-							{
-								for(ModelBase base : modelBases)
-								{
-									models.add(base);
-								}
-							}
-						}
-					}
-					clz = clz.getSuperclass();
-				}
-			}
-			catch(Exception e)
-			{
-				throw new UnableToAccessFieldException(new String[0], e);
-			}
-		}
-
-		return models;
-	}
-
 	public static ArrayList<ModelRenderer> getChildren(ModelRenderer parent, boolean recursive, int depth)
 	{
 		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
@@ -619,22 +568,11 @@ public class ModelHelper
 			Morph.proxy.tickHandlerClient.forceRender = true;
 			modelInfo.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 
-			if(modelInfo.getRenderer() instanceof RendererLivingEntity)
+			ArrayList<ModelRenderer> modelList = ModelHelper.getModelCubes(getPossibleModel(modelInfo.getRenderer()));
+
+			for(int i = 0; i < modelList.size(); i++)
 			{
-				ArrayList<ModelRenderer> newModel = ModelHelper.getModelCubes((ModelBase)ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, (RendererLivingEntity)modelInfo.getRenderer(), ObfHelper.mainModel));
-				
-				for(ModelRenderer cube : newModel)
-				{
-					if(!modelInfo.modelList.contains(cube))
-					{
-						modelInfo.modelList.add(cube);
-					}
-				}
-			}
-			
-			for(int i = 0; i < modelInfo.modelList.size(); i++)
-			{
-				ModelRenderer cube = modelInfo.modelList.get(i);
+				ModelRenderer cube = modelList.get(i);
 				try
 				{
 					ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
@@ -649,7 +587,7 @@ public class ModelHelper
 			modelInfo.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 			Morph.proxy.tickHandlerClient.forceRender = forceRender;
 			
-			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>(modelInfo.modelList);
+			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>(modelList);
 			
 			for(int i = list.size() - 1; i >= 0 ; i--)
 			{

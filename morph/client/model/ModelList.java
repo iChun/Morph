@@ -49,7 +49,7 @@ public class ModelList
 				Morph.console("Cannot find ModelInfo for " + clz.getName() + ". Attempting to generate one.", true);
 				Render rend = RenderManager.instance.getEntityClassRenderObject(clz);
 				ModelBase base = ModelHelper.getPossibleModel(rend);
-				info = new ModelInfo(clz, rend, base, ModelHelper.getModels(rend));
+				info = new ModelInfo(clz, rend, base);
 				ModelList.addModelInfo(clz, info);
 			}
 		}

@@ -97,7 +97,7 @@ public class ClientProxy extends CommonProxy
 			try
 			{
 				RendererLivingEntity rend = (RendererLivingEntity)renders.get(clz);
-				ModelList.addModelInfo(clz, new ModelInfo(clz, rend, (ModelBase)ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, rend, ObfHelper.mainModel), ModelHelper.getModels(rend)));
+				ModelList.addModelInfo(clz, new ModelInfo(clz, rend, (ModelBase)ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, rend, ObfHelper.mainModel)));
 			}
 			catch(Exception e)
 			{
