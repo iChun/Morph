@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
 
+import morph.common.Morph;
 import morph.common.core.ObfHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -18,6 +19,7 @@ import net.minecraft.client.model.ModelSpider;
 import net.minecraft.client.model.ModelSquid;
 import net.minecraft.client.model.ModelWolf;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
@@ -235,7 +237,7 @@ public class ModelHelper
 	
 	public static ModelBase getPossibleModel(Render rend)
 	{
-		ArrayList<ModelBase> models = new ArrayList<ModelBase>();
+		ArrayList<ArrayList<ModelBase>> models = new ArrayList<ArrayList<ModelBase>>();
 
 		if(rend != null)
 		{
@@ -244,6 +246,8 @@ public class ModelHelper
 				Class clz = rend.getClass();
 				while(clz != Render.class)
 				{
+					ArrayList<ModelBase> priorityLevel = new ArrayList<ModelBase>();
+					
 					Field[] fields = clz.getDeclaredFields();
 					for(Field f : fields)
 					{
@@ -253,7 +257,7 @@ public class ModelHelper
 							ModelBase base = (ModelBase)f.get(rend);
 							if(base != null)
 							{
-								models.add(base); // Add normal parent fields
+								priorityLevel.add(base); // Add normal parent fields
 							}
 						}
 						else if(f.getType() == ModelBase[].class)
@@ -263,10 +267,30 @@ public class ModelHelper
 							{
 								for(ModelBase base : modelBases)
 								{
-									models.add(base);
+									priorityLevel.add(base);
 								}
 							}
 						}
+					}
+					
+					models.add(priorityLevel);
+					
+					if(clz == RendererLivingEntity.class)
+					{
+						ArrayList<ModelBase> topPriority = new ArrayList<ModelBase>();
+						for(Field f : fields)
+						{
+							f.setAccessible(true);
+							if(f.getType() == ModelBase.class && (f.getName().equalsIgnoreCase("mainModel") || f.getName().equalsIgnoreCase("field_77045_g")))
+							{
+								ModelBase base = (ModelBase)f.get(rend);
+								if(base != null)
+								{
+									topPriority.add(base);
+								}
+							}
+						}
+						models.add(topPriority);
 					}
 					clz = clz.getSuperclass();
 				}
@@ -278,16 +302,24 @@ public class ModelHelper
 		}
 
 		ModelBase base1 = null;
+		int priorityLevel = -1;
 		int size = -1;
 
-		for(ModelBase base : models)
+		int currentPriority = 0;
+		
+		for(ArrayList<ModelBase> modelList : models)
 		{
-			ArrayList<ModelRenderer> mrs = getModelCubes(base);
-			if(mrs.size() > size)
+			for(ModelBase base : modelList)
 			{
-				size = mrs.size();
-				base1 = base;
+				ArrayList<ModelRenderer> mrs = getModelCubes(base);
+				if(mrs.size() > size || mrs.size() == size && currentPriority > priorityLevel)
+				{
+					size = mrs.size();
+					base1 = base;
+					priorityLevel = currentPriority;
+				}
 			}
+			currentPriority++;
 		}
 
 		return base1;
@@ -539,7 +571,10 @@ public class ModelHelper
 					e.printStackTrace();
 				}
 			}
+			boolean forceRender = Morph.proxy.tickHandlerClient.forceRender;
+			Morph.proxy.tickHandlerClient.forceRender = true;
 			modelInfo.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
+			Morph.proxy.tickHandlerClient.forceRender = forceRender;
 			
 			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>(modelInfo.modelList);
 			
