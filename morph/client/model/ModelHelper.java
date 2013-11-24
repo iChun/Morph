@@ -69,7 +69,6 @@ public class ModelHelper
 					e.printStackTrace();
 				}
 			}
-			System.out.println(list);
 			return list;
 		}
 		else
