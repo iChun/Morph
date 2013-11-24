@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import morph.client.entity.EntityMorphAcquisition;
+import morph.client.model.ModelHelper;
 import morph.client.model.ModelInfo;
 import morph.client.model.ModelList;
 import morph.common.Morph;
@@ -96,7 +97,7 @@ public class ClientProxy extends CommonProxy
 			try
 			{
 				RendererLivingEntity rend = (RendererLivingEntity)renders.get(clz);
-				ModelList.addModelInfo(clz, new ModelInfo(clz, rend, (ModelBase)ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, rend, ObfHelper.mainModel)));
+				ModelList.addModelInfo(clz, new ModelInfo(clz, rend, (ModelBase)ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, rend, ObfHelper.mainModel), ModelHelper.getModels(rend)));
 			}
 			catch(Exception e)
 			{

@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.BossStatus;
 
 public class ModelInfo 
 {
@@ -19,12 +20,12 @@ public class ModelInfo
 	public final ArrayList<ModelRenderer> modelList;
 	public final ModelRenderer assumedArm;
 	
-	public ModelInfo(Class entityClass, Render render, ModelBase modelInstance)
+	public ModelInfo(Class entityClass, Render render, ModelBase modelInstance, ArrayList<ModelBase> models)
 	{
 		entClass = entityClass;
 		entRender = render;
 		modelParent = modelInstance;
-		modelList = ModelHelper.getModelCubes(modelInstance);
+		modelList = ModelHelper.getMultiModelCubes(models);
 		assumedArm = ModelHelper.getPotentialArm(modelInstance);
 	}
 	
@@ -35,9 +36,19 @@ public class ModelInfo
 	
 	public void forceRender(Entity ent, double d, double d1, double d2, float f, float f1)
 	{
+	    float bossHealthScale = BossStatus.healthScale;
+	    int bossStatusBarTime = BossStatus.statusBarLength;
+	    String bossName = BossStatus.bossName;
+	    boolean randVar = BossStatus.field_82825_d;
+		
 		if(RenderManager.instance.renderEngine != null && RenderManager.instance.livingPlayer != null)
 		{
 			entRender.doRender(ent, d, d1, d2, f, f1);
 		}
+		
+	    BossStatus.healthScale = bossHealthScale;
+	    BossStatus.statusBarLength = bossStatusBarTime;
+	    BossStatus.bossName = bossName;
+	    BossStatus.field_82825_d = randVar;
 	}
 }

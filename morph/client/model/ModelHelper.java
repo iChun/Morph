@@ -235,6 +235,16 @@ public class ModelHelper
 		return list;
 	}
 	
+	public static ArrayList<ModelRenderer> getMultiModelCubes(ArrayList<ModelBase> parent)
+	{
+		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+		for(ModelBase base : parent)
+		{
+			list.addAll(getModelCubes(base));
+		}
+		return list;
+	}
+	
 	public static ModelBase getPossibleModel(Render rend)
 	{
 		ArrayList<ArrayList<ModelBase>> models = new ArrayList<ArrayList<ModelBase>>();
@@ -252,7 +262,7 @@ public class ModelHelper
 					for(Field f : fields)
 					{
 						f.setAccessible(true);
-						if(f.getType() == ModelBase.class)
+						if(ModelBase.class.isAssignableFrom(f.getType()))
 						{
 							ModelBase base = (ModelBase)f.get(rend);
 							if(base != null)
@@ -260,7 +270,7 @@ public class ModelHelper
 								priorityLevel.add(base); // Add normal parent fields
 							}
 						}
-						else if(f.getType() == ModelBase[].class)
+						else if(ModelBase.class.isAssignableFrom(f.getType()))
 						{
 							ModelBase[] modelBases = (ModelBase[])f.get(rend);
 							if(modelBases != null)
@@ -281,7 +291,7 @@ public class ModelHelper
 						for(Field f : fields)
 						{
 							f.setAccessible(true);
-							if(f.getType() == ModelBase.class && (f.getName().equalsIgnoreCase("mainModel") || f.getName().equalsIgnoreCase("field_77045_g")))
+							if(ModelBase.class.isAssignableFrom(f.getType()) && (f.getName().equalsIgnoreCase("mainModel") || f.getName().equalsIgnoreCase("field_77045_g")))
 							{
 								ModelBase base = (ModelBase)f.get(rend);
 								if(base != null)
@@ -323,6 +333,53 @@ public class ModelHelper
 		}
 
 		return base1;
+	}
+	
+	public static ArrayList<ModelBase> getModels(Render rend)
+	{
+		ArrayList<ModelBase> models = new ArrayList<ModelBase>();
+
+		if(rend != null)
+		{
+			try
+			{
+				Class clz = rend.getClass();
+				while(clz != Render.class)
+				{
+					Field[] fields = clz.getDeclaredFields();
+					for(Field f : fields)
+					{
+						f.setAccessible(true);
+						if(ModelBase.class.isAssignableFrom(f.getType()))
+						{
+							ModelBase base = (ModelBase)f.get(rend);
+							if(base != null)
+							{
+								models.add(base); // Add normal parent fields
+							}
+						}
+						else if(ModelBase.class.isAssignableFrom(f.getType()))
+						{
+							ModelBase[] modelBases = (ModelBase[])f.get(rend);
+							if(modelBases != null)
+							{
+								for(ModelBase base : modelBases)
+								{
+									models.add(base);
+								}
+							}
+						}
+					}
+					clz = clz.getSuperclass();
+				}
+			}
+			catch(Exception e)
+			{
+				throw new UnableToAccessFieldException(new String[0], e);
+			}
+		}
+
+		return models;
 	}
 
 	public static ArrayList<ModelRenderer> getChildren(ModelRenderer parent, boolean recursive, int depth)
@@ -558,6 +615,23 @@ public class ModelHelper
 	{
 		if(ent != null)
 		{
+			boolean forceRender = Morph.proxy.tickHandlerClient.forceRender;
+			Morph.proxy.tickHandlerClient.forceRender = true;
+			modelInfo.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
+
+			if(modelInfo.getRenderer() instanceof RendererLivingEntity)
+			{
+				ArrayList<ModelRenderer> newModel = ModelHelper.getModelCubes((ModelBase)ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, (RendererLivingEntity)modelInfo.getRenderer(), ObfHelper.mainModel));
+				
+				for(ModelRenderer cube : newModel)
+				{
+					if(!modelInfo.modelList.contains(cube))
+					{
+						modelInfo.modelList.add(cube);
+					}
+				}
+			}
+			
 			for(int i = 0; i < modelInfo.modelList.size(); i++)
 			{
 				ModelRenderer cube = modelInfo.modelList.get(i);
@@ -571,8 +645,7 @@ public class ModelHelper
 					e.printStackTrace();
 				}
 			}
-			boolean forceRender = Morph.proxy.tickHandlerClient.forceRender;
-			Morph.proxy.tickHandlerClient.forceRender = true;
+			
 			modelInfo.forceRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 			Morph.proxy.tickHandlerClient.forceRender = forceRender;
 			

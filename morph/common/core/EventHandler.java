@@ -104,11 +104,6 @@ public class EventHandler
 			return;
 		}
 		
-	    float bossHealthScale = BossStatus.healthScale;
-	    int bossStatusBarTime = BossStatus.statusBarLength;
-	    String bossName = BossStatus.bossName;
-	    boolean randVar = BossStatus.field_82825_d;
-		
 		Morph.proxy.tickHandlerClient.renderingPlayer++;
 
 		if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.username))
@@ -400,11 +395,6 @@ public class EventHandler
 			ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
 		}
 		Morph.proxy.tickHandlerClient.renderingPlayer--;
-		
-	    BossStatus.healthScale = bossHealthScale;
-	    BossStatus.statusBarLength = bossStatusBarTime;
-	    BossStatus.bossName = bossName;
-	    BossStatus.field_82825_d = randVar;
 	}
 	
 	@SideOnly(Side.CLIENT)
