@@ -219,6 +219,9 @@
       "fly|false",
       "hostile"
     ],
+    "twilightforest.entity.EntityTFPenguin": [
+      "float|-0.114,true",
+    ],
     "twilightforest.entity.EntityTFMosquitoSwarm": [
       "fly|true",
       "hostile"
