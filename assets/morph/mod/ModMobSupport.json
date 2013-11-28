@@ -238,6 +238,32 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
+    ],
+    "morenature.entity.water.EntityWhale": [
+      "swim|false"
+    ],
+    "morenature.entity.water.EntitySwimming": [
+      "swim|false"
+    ],
+    "morenature.entity.water.EntityFish": [
+      "swim|false"
+    ],
+    "morenature.entity.water.EntityAngler": [
+      "swim}false",
+      "hostile"
+    ],
+    "morenature.entity.passive.EntityWingedBug": [
+      "fly|true"
+    ],
+    "morenature.entity.passive.EntitySnake": [
+      "hostile"
+    ],
+    "morenature.entity.passive.EntityCentipede": [
+      "hostile"
+    ],
+    "morenature.entity.passive.EntityBird": [
+      "fly|true",
+      "float|-0.114,true"
     ]
   }
 }
