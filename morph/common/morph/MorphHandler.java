@@ -11,6 +11,7 @@ import cpw.mods.fml.common.network.Player;
 import morph.common.Morph;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraftforge.common.FakePlayer;
 
 public class MorphHandler 
 {
@@ -44,6 +45,10 @@ public class MorphHandler
 	
 	public static void updatePlayerOfMorphStates(EntityPlayerMP player, MorphState morphState, boolean clear)
 	{
+		if(player.playerNetServerHandler == null || player.getClass() == FakePlayer.class)
+		{
+			return;
+		}
 		ArrayList<MorphState> states;
 		if(morphState == null)
 		{

@@ -21,6 +21,7 @@ import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.FakePlayer;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -45,7 +46,7 @@ public class EntityHelper
 	
 	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill, boolean forced)
 	{
-		if(Morph.childMorphs == 0 && living.isChild() || Morph.playerMorphs == 0 && living instanceof EntityPlayer || Morph.bossMorphs == 0 && living instanceof IBossDisplayData)
+		if(Morph.childMorphs == 0 && living.isChild() || Morph.playerMorphs == 0 && living instanceof EntityPlayer || Morph.bossMorphs == 0 && living instanceof IBossDisplayData || player.getClass() == FakePlayer.class || player.playerNetServerHandler == null)
 		{
 			return false;
 		}
