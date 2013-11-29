@@ -393,7 +393,6 @@ public class TickHandlerClient
 						info.prevState.entInstance.motionY = info.nextState.entInstance.motionY = info.player.motionY;
 						info.prevState.entInstance.motionZ = info.nextState.entInstance.motionZ = info.player.motionZ;
 						info.prevState.entInstance.ticksExisted = info.nextState.entInstance.ticksExisted = info.player.ticksExisted;
-						info.prevState.entInstance.onGround = info.nextState.entInstance.onGround = info.player.onGround;
 						info.prevState.entInstance.isAirBorne = info.nextState.entInstance.isAirBorne = info.player.isAirBorne;
 						info.prevState.entInstance.moveStrafing = info.nextState.entInstance.moveStrafing = info.player.moveStrafing;
 						info.prevState.entInstance.moveForward = info.nextState.entInstance.moveForward = info.player.moveForward;
@@ -403,6 +402,18 @@ public class TickHandlerClient
 						info.prevState.entInstance.hurtTime = info.nextState.entInstance.hurtTime = info.player.hurtTime;
 						info.prevState.entInstance.deathTime = info.nextState.entInstance.deathTime = info.player.deathTime;
 						info.prevState.entInstance.isSwingInProgress = info.nextState.entInstance.isSwingInProgress = info.player.isSwingInProgress;
+						info.prevState.entInstance.onGround = info.nextState.entInstance.onGround = info.player.onGround;
+
+						if(info.player != mc.thePlayer)
+						{
+							info.nextState.entInstance.noClip = false;
+							
+							info.nextState.entInstance.boundingBox.setBB(info.player.boundingBox);
+							info.nextState.entInstance.moveEntity(0.0D, -0.01D, 0.0D);
+							
+							info.prevState.entInstance.prevPosY = info.nextState.entInstance.prevPosY = info.player.prevPosY;
+						}
+						info.prevState.entInstance.noClip = info.nextState.entInstance.noClip = info.player.noClip;
 						
 						info.prevState.entInstance.setSneaking(info.player.isSneaking());
 						info.nextState.entInstance.setSneaking(info.player.isSneaking());
