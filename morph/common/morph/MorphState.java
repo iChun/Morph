@@ -53,7 +53,7 @@ public class MorphState
 			}
 			else
 			{
-				identifier = entInstance.getClass().toString() + "player_" + playerMorph;
+				identifier = "playerMorphState::player_" + playerMorph;
 			}
 		}
 	}
@@ -99,12 +99,13 @@ public class MorphState
 			if(!playerMorph.equalsIgnoreCase(""))
 			{
 				entInstance = isRemote ? createPlayer(world, playerMorph) : new FakePlayer(world, playerMorph);
+				identifier = "playerMorphState::player_" + playerMorph;
 			}
 			else
 			{
 				entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
+				identifier = tag.getString("identifier");
 			}
-			identifier = tag.getString("identifier");
 			if(entInstance == null)
 			{
 				invalid = true;
