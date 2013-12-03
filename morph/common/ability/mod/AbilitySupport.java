@@ -25,21 +25,15 @@ public class AbilitySupport {
 	public static AbilitySupport getInstance(){
 		if(instance == null){
 			Gson gson = new Gson();
-			try{
-				Reader fileIn = new InputStreamReader(new URL("https://raw.github.com/iChun/Morph/master" + jsonPath).openStream());
+			try
+			{
+				Reader fileIn = new InputStreamReader(Morph.class.getResourceAsStream(jsonPath));
 				instance = gson.fromJson(fileIn, AbilitySupport.class);
-			}catch(Exception e){
-				e.printStackTrace();
-				try
-				{
-					Reader fileIn = new InputStreamReader(Morph.class.getResourceAsStream(jsonPath));
-					instance = gson.fromJson(fileIn, AbilitySupport.class);
-				}
-				catch(Exception e1)
-				{
-					e1.printStackTrace();
-					instance = new AbilitySupport();
-				}
+			}
+			catch(Exception e1)
+			{
+				e1.printStackTrace();
+				instance = new AbilitySupport();
 			}
 		}
 		return instance;
