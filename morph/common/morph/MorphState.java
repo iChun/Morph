@@ -1,17 +1,22 @@
 package morph.common.morph;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import morph.common.Morph;
+import morph.common.core.ObfHelper;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemInWorldManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.FakePlayer;
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -49,7 +54,7 @@ public class MorphState
 			writeFakeTags(entInstance, fakeTag);
 			if(playerMorph.equalsIgnoreCase(""))
 			{
-				identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
+				identifier = entInstance.getClass().toString() + entInstance.getEntityName() + parseTag(fakeTag);
 			}
 			else
 			{
@@ -105,10 +110,21 @@ public class MorphState
 			{
 				entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
 				identifier = tag.getString("identifier");
+				if(!identifier.contains("MorphModVersion"))
+				{
+					identifier = "";
+				}
 			}
 			if(entInstance == null)
 			{
 				invalid = true;
+			}
+			else if(identifier.equalsIgnoreCase(""))
+			{
+				NBTTagCompound fakeTag = new NBTTagCompound();
+				entInstance.writeEntityToNBT(fakeTag);
+				writeFakeTags(entInstance, fakeTag);
+				identifier = entInstance.getClass().toString() + entInstance.getEntityName() + parseTag(fakeTag);
 			}
 		}
 		if(invalid)
@@ -117,7 +133,7 @@ public class MorphState
 			NBTTagCompound fakeTag = new NBTTagCompound();
 			entInstance.writeEntityToNBT(fakeTag);
 			writeFakeTags(entInstance, fakeTag);
-			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + fakeTag.toString();
+			identifier = entInstance.getClass().toString() + entInstance.getEntityName() + parseTag(fakeTag);
 		}
 	}
 	
@@ -130,6 +146,7 @@ public class MorphState
 	public void writeFakeTags(EntityLivingBase living, NBTTagCompound tag)
 	{
 		tag.removeTag("bukkit");
+		tag.removeTag("InLove");
 		
 		tag.setFloat("HealF", Short.MAX_VALUE);
 		tag.setShort("Health", (short)Short.MAX_VALUE);
@@ -157,6 +174,49 @@ public class MorphState
 			tag.setBoolean("Leashed", false);
 			tag.setBoolean("PersistenceRequired", true);
 		}
+		
+		tag.setString("MorphModVersion", Morph.version);
 	}
 	
+	public static String parseTag(NBTTagCompound tag)
+	{
+		StringBuilder sb = new StringBuilder();
+		ArrayList<String> tags = new ArrayList<String>();
+		
+		HashMap tagMap;
+		try
+		{
+			tagMap = ObfuscationReflectionHelper.getPrivateValue(NBTTagCompound.class, tag, ObfHelper.tagMap);
+		}
+		catch(Exception e)
+		{
+			ObfHelper.obfWarning();
+			e.printStackTrace();
+			tagMap = new HashMap();
+		}
+		
+		for(Object obj : tagMap.entrySet())
+		{
+			Entry e = (Entry)obj;
+			tags.add(e.getKey().toString() + ":" + tagMap.get(e.getKey()));
+		}
+		
+		Collections.sort(tags);
+		
+		sb.append(tag.getName() + ":[");
+		
+		for(int i = 0; i < tags.size(); i++)
+		{
+			sb.append(tags.get(i));
+			
+			if(i != tags.size() - 1)
+			{
+				sb.append(",");
+			}
+		}
+		
+		sb.append("]");
+		
+		return sb.toString();
+	}
 }

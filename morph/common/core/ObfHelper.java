@@ -32,6 +32,7 @@ public class ObfHelper
     public static final String[] isImmuneToFire			= new String[] { "ag","field_70178_ae", "isImmuneToFire"		}; //Entity
     public static final String[] isJumping 				= new String[] { "bd","field_70703_bu", "isJumping" 			}; //EntityLivingBase
     public static final String[] shadowSize				= new String[] { "d", "field_76989_e", "shadowSize"				}; //Render
+    public static final String[] tagMap					= new String[] { "a", "field_74784_a", "tagMap"					}; //NBTTagCompound
 
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";

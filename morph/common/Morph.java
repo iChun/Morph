@@ -54,11 +54,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 			tinyPacketHandler = MapPacketHandler.class,
 			clientPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerClient.class),
 			serverPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerServer.class),
-			versionBounds = "[0.4.0,0.5.0)"
+			versionBounds = "[0.5.0,0.6.0)"
 				)
 public class Morph 
 {
-	public static final String version = "0.4.0";
+	public static final String version = "0.5.0";
 	
 	@Instance("Morph")
 	public static Morph instance;
