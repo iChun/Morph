@@ -22,24 +22,46 @@ public class AbilitySupport {
 	public static AbilitySupport instance = null;
 	private HashMap<String, String[]> customMobAbilityMapping = new HashMap<String, String[]>();
 
-	public static AbilitySupport getInstance(){
-		if(instance == null){
+	public static AbilitySupport getInstance()
+	{
+		if(instance == null)
+		{
 			Gson gson = new Gson();
-			try{
-				Reader fileIn = new InputStreamReader(new URL("https://raw.github.com/iChun/Morph/master" + jsonPath).openStream());
-				instance = gson.fromJson(fileIn, AbilitySupport.class);
-			}catch(Exception e){
-				e.printStackTrace();
+			Reader fileIn = null;
+			if(Morph.forceLocalModAbilityPatch != 1)
+			{
 				try
 				{
-					Reader fileIn = new InputStreamReader(Morph.class.getResourceAsStream(jsonPath));
-					instance = gson.fromJson(fileIn, AbilitySupport.class);
+					fileIn = new InputStreamReader(new URL("https://raw.github.com/iChun/Morph/master" + jsonPath).openStream());
 				}
-				catch(Exception e1)
+				catch(Exception e)
 				{
-					e1.printStackTrace();
-					instance = new AbilitySupport();
+					fileIn = null;
+					Morph.console("Failed to retrieve mod mob ability mappings from GitHub!", true);
+					e.printStackTrace();
 				}
+			}
+			if(fileIn == null)
+			{
+				try
+				{
+					fileIn = new InputStreamReader(Morph.class.getResourceAsStream(jsonPath));
+				}
+				catch(Exception e)
+				{
+					fileIn = null;
+					Morph.console("Failed to read local copy of mod mob ability mappings", true);
+					e.printStackTrace();
+				}
+			}
+			
+			if(fileIn == null)
+			{
+				instance = new AbilitySupport();
+			}
+			else
+			{
+				instance = gson.fromJson(fileIn, AbilitySupport.class);
 			}
 		}
 		return instance;
