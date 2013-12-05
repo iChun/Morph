@@ -1,0 +1,11 @@
+{
+  "modNBTStripper": {
+    "example.class.One": [
+      "nbttagname1"
+    ],
+    "example.class.Two": [
+      "nbttagname1",
+	  "nbttagname2"
+    ]
+  }
+}
