@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import morph.client.core.TickHandlerClient;
 import morph.common.Morph;
 import morph.common.ability.mod.AbilitySupport;
+import morph.common.morph.mod.NBTStripper;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.EntityList;
@@ -86,6 +87,10 @@ public class CommonProxy
 		if(Morph.modAbilityPatch == 1)
 		{
 			AbilitySupport.getInstance().mapAbilities();
+		}
+		if(Morph.modNBTStripper == 1)
+		{
+			NBTStripper.getInstance().mapStripperInfo();
 		}
 	}
 	

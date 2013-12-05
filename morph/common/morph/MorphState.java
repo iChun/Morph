@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import morph.common.Morph;
 import morph.common.core.ObfHelper;
+import morph.common.morph.mod.NBTStripper;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -145,9 +146,6 @@ public class MorphState
 
 	public void writeFakeTags(EntityLivingBase living, NBTTagCompound tag)
 	{
-		tag.removeTag("bukkit");
-		tag.removeTag("InLove");
-		
 		tag.setFloat("HealF", Short.MAX_VALUE);
 		tag.setShort("Health", (short)Short.MAX_VALUE);
 		tag.setShort("HurtTime", (short)0);
@@ -176,6 +174,14 @@ public class MorphState
 		}
 		
 		tag.setString("MorphModVersion", Morph.version);
+		
+		ArrayList<String> stripList = NBTStripper.getNBTTagsToStrip(living);
+		for(String s : stripList)
+		{
+			tag.removeTag(s);
+		}
+		tag.removeTag("bukkit");
+		tag.removeTag("InLove");
 	}
 	
 	public static String parseTag(NBTTagCompound tag)
