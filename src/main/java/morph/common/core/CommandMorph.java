@@ -318,8 +318,8 @@ public class CommandMorph extends CommandBase
 	
     //Just to stop Forge from complaining
     @Override
-	public int compareTo(Object arg0) 
+    public int compareTo(Object arg0) 
     {
-		return 0;
-	}
+        return 0;
+    }
 }
