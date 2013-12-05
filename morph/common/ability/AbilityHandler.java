@@ -1,21 +1,11 @@
 package morph.common.ability;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import morph.api.Ability;
 import morph.common.Morph;
-import morph.common.ability.mod.AbilitySupport;
 import morph.common.core.SessionState;
-import morph.common.morph.MorphState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
@@ -25,6 +15,7 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGiantZombie;
+import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -37,11 +28,8 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet250CustomPayload;
 
 public class AbilityHandler 
 {
@@ -53,6 +41,7 @@ public class AbilityHandler
 	static
 	{
 		registerAbility("climb"			  , AbilityClimb.class			);
+		registerAbility("fallNegate"	  , AbilityFallNegate.class		);
 		registerAbility("fly"			  , AbilityFly.class			);
 		registerAbility("float"			  , AbilityFloat.class			);
 		registerAbility("fireImmunity"	  , AbilityFireImmunity.class	);
@@ -66,14 +55,18 @@ public class AbilityHandler
 		
 		mapAbilities(EntityBat.class, new AbilityFly(true));
 		mapAbilities(EntityBlaze.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
+		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
 		mapAbilities(EntityChicken.class, new AbilityFloat(-0.1141748D, true));
 		mapAbilities(EntityCreeper.class, new AbilityHostile());
 		mapAbilities(EntityDragon.class, new AbilityFly(false), new AbilityHostile());
 		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy(), new AbilityHostile());
 		mapAbilities(EntityGhast.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityGolem.class, new AbilityFallNegate());
 		mapAbilities(EntityGiantZombie.class, new AbilityHostile());
-		mapAbilities(EntityIronGolem.class, new AbilitySwim(true));
-		mapAbilities(EntityMagmaCube.class, new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityHorse.class, new AbilityStep(1.0F));
+		mapAbilities(EntityIronGolem.class, new AbilityFallNegate(), new AbilitySwim(true));
+		mapAbilities(EntityMagmaCube.class, new AbilityFallNegate(), new AbilityFireImmunity(), new AbilityHostile());
+		mapAbilities(EntityOcelot.class, new AbilityFallNegate());
 		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntitySilverfish.class, new AbilityHostile());
 		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile(), new AbilitySunburn(), new AbilityWitherResistance());
@@ -83,8 +76,6 @@ public class AbilityHandler
 		mapAbilities(EntitySquid.class, new AbilitySwim(false, 1.2f, 0.4f, true));
 		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile(), new AbilityWitherResistance());
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
-		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
-		mapAbilities(EntityHorse.class, new AbilityStep(1.0F));
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)

@@ -20,7 +20,6 @@ import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
 import morph.common.core.ObfHelper;
-import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiControls;
@@ -38,6 +37,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet131MapData;
 import net.minecraft.util.EnumChatFormatting;
@@ -266,7 +266,7 @@ public class TickHandlerClient
 						{
 							ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 							info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
-							info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+							info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 							
 							ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
 							ArrayList<Ability> oldAbilities = info.morphAbilities;
@@ -313,7 +313,7 @@ public class TickHandlerClient
 					{
 						ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
 						info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
-						info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+						info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).username.equalsIgnoreCase(mc.thePlayer.username) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 						
 						for(Ability ability : info.morphAbilities)
 						{
@@ -402,6 +402,8 @@ public class TickHandlerClient
 						info.prevState.entInstance.hurtTime = info.nextState.entInstance.hurtTime = info.player.hurtTime;
 						info.prevState.entInstance.deathTime = info.nextState.entInstance.deathTime = info.player.deathTime;
 						info.prevState.entInstance.isSwingInProgress = info.nextState.entInstance.isSwingInProgress = info.player.isSwingInProgress;
+						
+						boolean prevOnGround = info.nextState.entInstance.onGround;
 						info.prevState.entInstance.onGround = info.nextState.entInstance.onGround = info.player.onGround;
 
 						if(info.player != mc.thePlayer)
@@ -427,6 +429,11 @@ public class TickHandlerClient
 						if(!(info.nextState.entInstance instanceof EntityPlayer || RenderManager.instance.getEntityRenderObject(info.nextState.entInstance) instanceof RenderBiped))
 						{
 							info.nextState.entInstance.yOffset = info.player.yOffset;
+						}
+						
+						if(prevOnGround && !info.nextState.entInstance.onGround && info.nextState.entInstance instanceof EntitySlime)
+						{
+							((EntitySlime)info.nextState.entInstance).squishAmount = 0.6F;
 						}
 						
 						if(info.nextState.entInstance instanceof EntityDragon)
