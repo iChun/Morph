@@ -316,4 +316,10 @@ public class CommandMorph extends CommandBase
         return null;
     }
 	
+    //Just to stop Forge from complaining
+    @Override
+    public int compareTo(Object arg0) 
+    {
+        return 0;
+    }
 }

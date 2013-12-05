@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: "forge"
+
+def loadProperties(String sourceFileName) {
+    def config = new Properties()
+        def propFile = new File(sourceFileName)
+            if (propFile.canRead()) {
+                config.load(new FileInputStream(propFile))
+                    for (Map.Entry property in config) {
+                        ext[property.key] = property.value;
+                    }
+            }
+}
+
+loadProperties 'build.properties'
+
+group = 'morph'
+archivesBaseName = 'Morph'
+version = "$releaseVersion"
+
+minecraft {
+    version = "$mcVersion-$forgeVersion" // grab latest forge
+    assetDir = "build/vanilla/assets"
+}
+
+processResources {
+    exclude '**/xcf/**'
+
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.info'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.info'
+    }
+}
+
+
+jar {
+	appendix = "Beta"
+}
+// Included, but commented out, this for deobf jars that people can use test and develop for Morph in eclipse without the need to 
+// Download the source, make a new project, link another project to it, etc.
+//task deobfJar(type: Jar) {
+//    from sourceSets.main.output
+//    appendix = "dev"
+//}
+//
+//artifacts {
+//    archives deobfJar
+//}
