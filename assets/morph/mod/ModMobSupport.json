@@ -159,17 +159,17 @@
       "hostile"
     ],
     "gaia.entity.EntityGaiaBanshee": [
-      "hostile"
-      "sunburn"
+      "hostile",
+      "sunburn",
       "fly|false"
     ],
     "gaia.entity.EntityGaiaBaphomet": [
-      "hostile"
-      "fireImmunity"
+      "hostile",
+      "fireImmunity",
       "witherResistance"
     ],
     "gaia.entity.EntityGaiaBoneKnight": [
-      "hostile"
+      "hostile",
       "sunburn"
     ],
     "gaia.entity.EntityGaiaBoomer": [
@@ -179,20 +179,20 @@
       "step|1F"
     ],
     "gaia.entity.EntityGaiaCobbleGolem": [
-      "hostile"
+      "hostile",
       "swim|true,0.7F,1F,false"
     ],
     "gaia.entity.EntityGaiaCobblestoneGolem": [
-      "hostile"
+      "hostile",
       "swim|true,0.7F,1F,false"
     ],
     "gaia.entity.EntityGaiaCockatrice": [
-      "hostile"
+      "hostile",
       "float|-0.114,true"
     ],
     "gaia.entity.EntityGaiaCyclops": [
-      "hostile"
-      "step|2F"
+      "hostile",
+      "step|2F",
       "float|-0.114,true"
     ],
     "gaia.entity.EntityGaiaDryad": [
@@ -202,29 +202,29 @@
       "hostile"
     ],
     "gaia.entity.EntityGaiaEnderDragonGirl": [
-      "hostile"
-      "waterAllergy"
+      "hostile",
+      "waterAllergy",
       "fly|false"
     ],
     "gaia.entity.EntityGaiaEnderEye": [
-      "hostile"
-      "waterAllergy"
+      "hostile",
+      "waterAllergy",
       "fly|false"
     ],
     "gaia.entity.EntityGaiaFleshLich": [
-      "hostile"
-      "sunburn"
+      "hostile",
+      "sunburn",
       "poisonResistance"
     ],
     "gaia.entity.EntityGaiaGigaKnight": [
-      "hostile"
+      "hostile",
       "swim|true,1F,1F,false"
     ],
     "gaia.entity.EntityGaiaGryphon": [
       "fly|true"
     ],
     "gaia.entity.EntityGaiaHarpy": [
-      "hostile"
+      "hostile",
       "fly|true"
     ],
     "gaia.entity.EntityGaiaMandragora": [
@@ -237,92 +237,92 @@
       "hostile"
     ],
     "gaia.entity.EntityGaiaMinotaur": [
-      "hostile"
-      "fireImmunity"
-      "float|-0.114,true"
+      "hostile",
+      "fireImmunity",
+      "float|-0.114,true",
       "step|1F"
     ],
     "gaia.entity.EntityGaiaMinotaurus": [
-      "hostile"
+      "hostile",
       "step|1F"
     ],
     "gaia.entity.EntityGaiaMummy": [
-      "hostile"
+      "hostile",
       "sunburn"
     ],
     "gaia.entity.EntityGaiaNaga": [
-      "hostile"
+      "hostile",
       "swim|true,1.6F,1F,true"
     ],
     "gaia.entity.EntityGaiaNineTails": [
-      "hostile"
+      "hostile",
       "fireImmunity"
     ],
     "gaia.entity.EntityGaiaSahuagin": [
-      "hostile"
+      "hostile",
       "swim|true,1.6F,1F,true"
     ],
     "gaia.entity.EntityGaiaShaman": [
       "hostile"
     ],
     "gaia.entity.EntityGaiaSharko": [
-      "hostile"
+      "hostile",
       "swim|true,1.8F,1F,true"
     ],
     "gaia.entity.EntityGaiaSiren": [
-      "hostile"
+      "hostile",
       "swim|true,1.7F,1F,true"
     ],
     "gaia.entity.EntityGaiaSphinx": [
-      "hostile"
-      "fireImmunity"
+      "hostile",
+      "fireImmunity",
       "fly|true"
     ],
     "gaia.entity.EntityGaiaSpiderQueen": [
-      "hostile"
-      "climb"
+      "hostile",
+      "climb",
       "poisonResistance"
     ],
     "gaia.entity.EntityGaiaSpriggan": [
       "hostile"
     ],
     "gaia.entity.EntityGaiaSuccubus": [
-      "hostile"
-      "fly|false"
+      "hostile",
+      "fly|false",
       "fireImmunity"
     ],
     "gaia.entity.EntityGaiaValkyrie": [
-      "hostile"
-      "fireImmunity"
-      "fly|false"
+      "hostile",
+      "fireImmunity",
+      "fly|false",
       "step|1F"
     ],
     "gaia.entity.EntityGaiaVampire": [
-      "hostile"
-      "sunburn"
+      "hostile",
+      "sunburn",
       "fly|false"
     ],
     "gaia.entity.EntityGaiaWerecat": [
-      "hostile"
-      "step|1F"
-      "float|-0.114,true"
+      "hostile",
+      "step|1F",
+      "float|-0.114,true",
       "climb"
     ],
     "gaia.entity.EntityGaiaWitch": [
-      "hostile"
-      "poisonResistance"
+      "hostile",
+      "poisonResistance",
       "fly|false"
     ],
     "gaia.entity.EntityGaiaWitherCow": [
-      "hostile"
+      "hostile",
       "witherResistance"
     ],
     "gaia.entity.EntityGaiaYeti": [
-      "hostile"
+      "hostile",
       "step|1F"
     ],
     "gaia.entity.EntityGaiaYukiOnna": [
-      "hostile"
+      "hostile",
       "float|-0.114,true"
     ],
     "mods.natura.entity.BabyHeatscarSpider": [
@@ -343,35 +343,31 @@
       "fireImmunity",
       "hostile"
     ],
-    "tconstruct.entity.BlueSlime": [
+    "morenature.entity.water.EntityWhale": [
+      "swim|false,1F,1F,true"
+    ],
+    "morenature.entity.water.EntitySwimming": [
+      "swim|false,1F,1F,true"
+    ],
+    "morenature.entity.water.EntityFish": [
+      "swim|false,1F,1F,true"
+    ],
+    "morenature.entity.water.EntityAngler": [
+      "swim|false,1F,1F,true",
       "hostile"
     ],
-    "thaumcraft.common.entities.golems.EntityGolemBase": [
-      "swim|true,1F,1F,false"
+    "morenature.entity.passive.EntityWingedBug": [
+      "fly|true"
     ],
-    "thaumcraft.common.entities.monster.EntityBrainyZombie": [
-      "sunburn",
+    "morenature.entity.passive.EntitySnake": [
       "hostile"
     ],
-    "thaumcraft.common.entities.monster.EntityFireBat": [
-      "fireImmunity",
+    "morenature.entity.passive.EntityCentipede": [
+      "hostile"
+    ],
+    "morenature.entity.passive.EntityBird": [
       "fly|true",
-      "hostile"
-    ],
-    "thaumcraft.common.entities.monster.EntityGiantBrainyZombie": [
-      "sunburn",
-      "hostile"
-    ],
-    "thaumcraft.common.entities.monster.EntityPech": [
-      ""
-    ],
-    "thaumcraft.common.entities.monster.EntityTaintChicken": [
-      "float|-0.114,true",
-      "hostile"
-    ],
-    "thaumcraft.common.entities.monster.EntityWisp": [
-      "fly|false",
-      "hostile"
+      "float|-0.114,true"
     ],
     "noppes.animalbikes.entity.EntityDragonBike": [
       "fly|true",
@@ -417,6 +413,36 @@
     "noppes.animalbikes.entity.types.EntityRidableFlying": [
       "fly|true"
     ],
+    "tconstruct.entity.BlueSlime": [
+      "hostile"
+    ],
+    "thaumcraft.common.entities.golems.EntityGolemBase": [
+      "swim|true,1F,1F,false"
+    ],
+    "thaumcraft.common.entities.monster.EntityBrainyZombie": [
+      "sunburn",
+      "hostile"
+    ],
+    "thaumcraft.common.entities.monster.EntityFireBat": [
+      "fireImmunity",
+      "fly|true",
+      "hostile"
+    ],
+    "thaumcraft.common.entities.monster.EntityGiantBrainyZombie": [
+      "sunburn",
+      "hostile"
+    ],
+    "thaumcraft.common.entities.monster.EntityPech": [
+      ""
+    ],
+    "thaumcraft.common.entities.monster.EntityTaintChicken": [
+      "float|-0.114,true",
+      "hostile"
+    ],
+    "thaumcraft.common.entities.monster.EntityWisp": [
+      "fly|false",
+      "hostile"
+    ],
     "twilightforest.entity.EntityTFDeathTome": [
       "fly|true",
       "hostile"
@@ -455,32 +481,6 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
-    ],
-    "morenature.entity.water.EntityWhale": [
-      "swim|false"
-    ],
-    "morenature.entity.water.EntitySwimming": [
-      "swim|false"
-    ],
-    "morenature.entity.water.EntityFish": [
-      "swim|false"
-    ],
-    "morenature.entity.water.EntityAngler": [
-      "swim}false",
-      "hostile"
-    ],
-    "morenature.entity.passive.EntityWingedBug": [
-      "fly|true"
-    ],
-    "morenature.entity.passive.EntitySnake": [
-      "hostile"
-    ],
-    "morenature.entity.passive.EntityCentipede": [
-      "hostile"
-    ],
-    "morenature.entity.passive.EntityBird": [
-      "fly|true",
-      "float|-0.114,true"
     ]
   }
 }

@@ -106,7 +106,7 @@ public class AbilitySupport {
 						}
 						catch(Exception e)
 						{
-							e.printStackTrace();
+							Morph.console("Mappings are erroring! These mappings are probably invalid or outdated: " + ability, true);
 						}
 						abilityObjs.add(ab);
 					} catch (Exception e){
