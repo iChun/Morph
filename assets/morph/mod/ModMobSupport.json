@@ -238,6 +238,50 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
-    ]
+    ],
+    "portalgun.common.entity.EntityTurret": [
+      ""
+    ],
+    "resinresin.derpysquid.Entity.EntityExtraDerpySquid": [
+      "swim|false",
+      "float"
+    ],
+    "resinresin.derpysquid.Entity.EntityBabySquid": [
+      "swim|false",
+      "float"
+    ],
+    "resinresin.derpysquid.Entity.EntityExplosiveSquid": [
+      "swim|false",
+      "float"
+    ],
+    "resinresin.derpysquid.Entity.EntityFlyingSquid": [
+      "swim|false",
+      "float"
+    ],
+    "resinresin.derpysquid.Entity.EntityMildExplosiveSquid": [
+      "swim|false",
+      "float"
+    ],
+    "resinresin.derpysquid.Entity.EntityGoldSquid": [
+      "swim|false",
+      "float"
+    ],
+    "resinresin.derpysquid.Entity.EntitySquidPig": [
+      ""
+    ],
+    "resinresin.derpysquid.Entity.EntitySquidClass": [
+      "hostile"
+    ],
+    "resinresin.derpysquid.Entity.EntityTalkSquid": [
+      "swim|false"
+      "float"
+    ],
+    "resinresin.derpysquid.Entity.EntitySquidZombie": [
+      "hostile"
+      "sunburn"
+    ],
+    "resinresin.derpysquid.Entity.EntitySquidArmyRecruit": [
+      "hostile"
+    ],
   }
 }
