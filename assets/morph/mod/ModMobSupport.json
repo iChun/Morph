@@ -85,6 +85,22 @@
     "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
       "waterAllergy"
     ],
+    "drzhark.mocreatures.entity.ambient.MoCEntityBee": [
+      "fly|false",
+      "waterAllergy"
+    ],
+    "drzhark.mocreatures.entity.ambient.MoCEntityButterfly": [
+      "fly|false"
+    ],
+    "drzhark.mocreatures.entity.ambient.MoCEntityDragonfly": [
+      "fly|false"
+    ],
+    "drzhark.mocreatures.entity.ambient.MoCEntityFirefly": [
+      "fly|false"
+    ],
+    "drzhark.mocreatures.entity.ambient.MoCEntityFly": [
+      "fly|false"
+    ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityDolphin": [
       "swim|false,1.8F,0.6F,true",
       "hostile"
@@ -154,6 +170,12 @@
     ],
     "drzhark.mocreatures.entity.monster.MoCEntityWWolf": [
       "hostile"
+    ],
+    "drzhark.mocreatues.entity.passive.MoCEntityBird": [
+      "fly|false"
+    ],
+    "drzhark.mocreatues.entity.passive.MoCEntityWyvern": [
+      "fly|false"
     ],
     "gaia.entity.EntityGaiaAnubis": [
       "hostile"
