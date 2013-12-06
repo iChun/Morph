@@ -171,10 +171,10 @@
     "drzhark.mocreatures.entity.monster.MoCEntityWWolf": [
       "hostile"
     ],
-    "drzhark.mocreatues.entity.passive.MoCEntityBird": [
+    "drzhark.mocreatures.entity.passive.MoCEntityBird": [
       "fly|false"
     ],
-    "drzhark.mocreatues.entity.passive.MoCEntityWyvern": [
+    "drzhark.mocreatures.entity.passive.MoCEntityWyvern": [
       "fly|false"
     ],
     "gaia.entity.EntityGaiaAnubis": [
