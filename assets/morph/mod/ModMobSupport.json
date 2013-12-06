@@ -171,10 +171,10 @@
     "drzhark.mocreatures.entity.monster.MoCEntityWWolf": [
       "hostile"
     ],
-    "drzhark.mocreatues.entity.passive.MoCEntityBird": [
+    "drzhark.mocreatures.entity.passive.MoCEntityBird": [
       "fly|false"
     ],
-    "drzhark.mocreatues.entity.passive.MoCEntityWyvern": [
+    "drzhark.mocreatures.entity.passive.MoCEntityWyvern": [
       "fly|false"
     ],
     "gaia.entity.EntityGaiaAnubis": [
@@ -215,7 +215,7 @@
     "gaia.entity.EntityGaiaCyclops": [
       "hostile",
       "step|2F",
-      "float|-0.114,true"
+      "fallNegate"
     ],
     "gaia.entity.EntityGaiaDryad": [
       "poisonResistance"
@@ -253,7 +253,7 @@
       "poisonResistance"
     ],
     "gaia.entity.EntityGaiaMermaid": [
-      "swim|true,1.7F,1F,true" 
+      "swim|true,1.4F,1F,true" 
     ],
     "gaia.entity.EntityGaiaMimic": [
       "hostile"
@@ -261,7 +261,7 @@
     "gaia.entity.EntityGaiaMinotaur": [
       "hostile",
       "fireImmunity",
-      "float|-0.114,true",
+      "fallNegate",
       "step|1F"
     ],
     "gaia.entity.EntityGaiaMinotaurus": [
@@ -274,7 +274,7 @@
     ],
     "gaia.entity.EntityGaiaNaga": [
       "hostile",
-      "swim|true,1.6F,1F,true"
+      "swim|true,1.4F,1F,true"
     ],
     "gaia.entity.EntityGaiaNineTails": [
       "hostile",
@@ -282,18 +282,18 @@
     ],
     "gaia.entity.EntityGaiaSahuagin": [
       "hostile",
-      "swim|true,1.6F,1F,true"
+      "swim|true,1.4F,1F,true"
     ],
     "gaia.entity.EntityGaiaShaman": [
       "hostile"
     ],
     "gaia.entity.EntityGaiaSharko": [
       "hostile",
-      "swim|true,1.8F,1F,true"
+      "swim|true,1.6F,1F,true"
     ],
     "gaia.entity.EntityGaiaSiren": [
       "hostile",
-      "swim|true,1.7F,1F,true"
+      "swim|true,1.4F,1F,true"
     ],
     "gaia.entity.EntityGaiaSphinx": [
       "hostile",
@@ -327,7 +327,7 @@
     "gaia.entity.EntityGaiaWerecat": [
       "hostile",
       "step|1F",
-      "float|-0.114,true",
+      "fallNegate",
       "climb"
     ],
     "gaia.entity.EntityGaiaWitch": [
