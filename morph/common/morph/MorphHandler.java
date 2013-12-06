@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -39,6 +40,10 @@ public class MorphHandler
 		else
 		{
 			states.add(state);
+		}
+		if(Morph.sortMorphsAlphabetically == 2)
+		{
+			Collections.sort(states);
 		}
 		return state;
 	}

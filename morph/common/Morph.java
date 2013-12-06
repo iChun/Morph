@@ -116,6 +116,8 @@ public class Morph
 	public static int showAbilitiesInGui;
 	public static int allowMorphSelection;
 	
+	public static int sortMorphsAlphabetically;
+	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
 	public static ArrayList<String> whitelistedPlayerNames = new ArrayList<String>();
 
@@ -183,6 +185,8 @@ public class Morph
 			handRenderOverride = addCommentAndReturnInt(config, "client", "handRenderOverride", "Allow the mod to override player hand rendering?\n0 = No\n1 = Yes", 1);
 			
 			showAbilitiesInGui = addCommentAndReturnInt(config, "client", "showAbilitiesInGui", "Show the abilities the morph has in the GUI?\n0 = No\n1 = Yes", 1);
+			
+			sortMorphsAlphabetically = addCommentAndReturnInt(config, "client", "sortMorphsAlphabetically", "Sort the morphs alphabetically (Upper case first) in the GUI?\n0 = No\n1 = Yes\n2 = Yes, and attempt to sort grouped morphs as well", 0);
 		}
 		
 		config.save();

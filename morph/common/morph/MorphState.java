@@ -22,6 +22,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class MorphState 
+	implements Comparable
 {
 	public String playerName;
 	public String playerMorph;
@@ -224,5 +225,16 @@ public class MorphState
 		sb.append("]");
 		
 		return sb.toString();
+	}
+
+	@Override
+	public int compareTo(Object arg0) 
+	{
+		if(arg0 instanceof MorphState)
+		{
+			MorphState state = (MorphState)arg0;
+			return identifier.compareTo(state.identifier);
+		}
+		return 0;
 	}
 }

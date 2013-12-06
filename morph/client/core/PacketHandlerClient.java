@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import morph.api.Ability;
 import morph.client.morph.MorphInfoClient;
@@ -13,7 +16,6 @@ import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -140,6 +142,7 @@ public class PacketHandlerClient
 						Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
 					}
 					
+					boolean requireReorder = false;
 					while(stream.readUTF().equalsIgnoreCase("state"))
 					{
 						MorphState state = new MorphState(mc.theWorld, mc.thePlayer.username, "", null, true);
@@ -157,11 +160,36 @@ public class PacketHandlerClient
 								ArrayList<MorphState> states = Morph.proxy.tickHandlerClient.playerMorphCatMap.get(name);
 								if(states == null)
 								{
+									requireReorder = true;
 									states = new ArrayList<MorphState>();
 									Morph.proxy.tickHandlerClient.playerMorphCatMap.put(name, states);
 								}
-								state = MorphHandler.addOrGetMorphState(states, state);
+								MorphHandler.addOrGetMorphState(states, state);
 							}
+						}
+					}
+					
+					if(Morph.sortMorphsAlphabetically > 0 && requireReorder)
+					{
+						ArrayList<String> order = new ArrayList<String>();
+						Iterator<String> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.keySet().iterator();
+						while(ite.hasNext())
+						{
+							order.add(ite.next());
+						}
+						Collections.sort(order);
+						
+						order.remove(Minecraft.getMinecraft().thePlayer.username);
+						
+						order.add(0, Minecraft.getMinecraft().thePlayer.username);
+						
+						LinkedHashMap<String, ArrayList<MorphState>> bufferList = new LinkedHashMap<String, ArrayList<MorphState>>(Morph.proxy.tickHandlerClient.playerMorphCatMap);
+						
+						Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
+						
+						for(int i = 0; i < order.size(); i++)
+						{
+							Morph.proxy.tickHandlerClient.playerMorphCatMap.put(order.get(i), bufferList.get(order.get(i)));
 						}
 					}
 					break;
