@@ -44,22 +44,22 @@ public class GuiKeyBinds extends GuiScreen
      */
     public void initGui()
     {
-    	this.buttonList.add(new GuiButton(0 , 1 * (width - 320) / 5, 40, 80, 20, Morph.keySelectorUp < 0 ? Mouse.getButtonName(Morph.keySelectorUp + 100) : Keyboard.getKeyName(Morph.keySelectorUp)));
+    	this.buttonList.add(new GuiButton(0 , 1 * (width - 320) / 5, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorUp)));
     	this.buttonList.add(new GuiButton(1 , 1 * (width - 320) / 5, 65, 80, 20, "Hold: " + (Morph.keySelectorUpHold == 0 ? "None" : Morph.keySelectorUpHold == 1 ? "Shift" : Morph.keySelectorUpHold == 2 ? "Ctrl" : "Alt")));
     	
-    	this.buttonList.add(new GuiButton(10, 2 * (width - 320) / 5 + 80, 40, 80, 20, Morph.keySelectorDown < 0 ? Mouse.getButtonName(Morph.keySelectorDown + 100) : Keyboard.getKeyName(Morph.keySelectorDown)));
+    	this.buttonList.add(new GuiButton(10, 2 * (width - 320) / 5 + 80, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorDown)));
     	this.buttonList.add(new GuiButton(11, 2 * (width - 320) / 5 + 80, 65, 80, 20, "Hold: " + (Morph.keySelectorDownHold == 0 ? "None" : Morph.keySelectorDownHold == 1 ? "Shift" : Morph.keySelectorDownHold == 2 ? "Ctrl" : "Alt")));
     	
-    	this.buttonList.add(new GuiButton(20, 3 * (width - 320) / 5 + 160, 40, 80, 20, Morph.keySelectorLeft < 0 ? Mouse.getButtonName(Morph.keySelectorLeft + 100) : Keyboard.getKeyName(Morph.keySelectorLeft)));
+    	this.buttonList.add(new GuiButton(20, 3 * (width - 320) / 5 + 160, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorLeft)));
     	this.buttonList.add(new GuiButton(21, 3 * (width - 320) / 5 + 160, 65, 80, 20, "Hold: " + (Morph.keySelectorLeftHold == 0 ? "None" : Morph.keySelectorLeftHold == 1 ? "Shift" : Morph.keySelectorLeftHold == 2 ? "Ctrl" : "Alt")));
     	
-    	this.buttonList.add(new GuiButton(30, 4 * (width - 320) / 5 + 240, 40, 80, 20, Morph.keySelectorRight < 0 ? Mouse.getButtonName(Morph.keySelectorRight + 100) : Keyboard.getKeyName(Morph.keySelectorRight)));
+    	this.buttonList.add(new GuiButton(30, 4 * (width - 320) / 5 + 240, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorRight)));
     	this.buttonList.add(new GuiButton(31, 4 * (width - 320) / 5 + 240, 65, 80, 20, "Hold: " + (Morph.keySelectorRightHold == 0 ? "None" : Morph.keySelectorRightHold == 1 ? "Shift" : Morph.keySelectorRightHold == 2 ? "Ctrl" : "Alt")));
     	
-    	this.buttonList.add(new GuiButton(40 , 1 * (width - 320) / 5, 110, 80, 20, Morph.keySelectorSelect < 0 ? Mouse.getButtonName(Morph.keySelectorSelect + 100) : Keyboard.getKeyName(Morph.keySelectorSelect)));
-    	this.buttonList.add(new GuiButton(50, 2 * (width - 320) / 5 + 80, 110, 80, 20, Morph.keySelectorCancel < 0 ? Mouse.getButtonName(Morph.keySelectorCancel + 100) : Keyboard.getKeyName(Morph.keySelectorCancel)));
-    	this.buttonList.add(new GuiButton(60, 3 * (width - 320) / 5 + 160, 110, 80, 20, Morph.keySelectorRemoveMorph < 0 ? Mouse.getButtonName(Morph.keySelectorRemoveMorph + 100) : Keyboard.getKeyName(Morph.keySelectorRemoveMorph)));
-    	this.buttonList.add(new GuiButton(70, 4 * (width - 320) / 5 + 240, 110, 80, 20, Morph.keyFavourite < 0 ? Mouse.getButtonName(Morph.keyFavourite + 100) : Keyboard.getKeyName(Morph.keyFavourite)));
+    	this.buttonList.add(new GuiButton(40 , 1 * (width - 320) / 5, 110, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorSelect)));
+    	this.buttonList.add(new GuiButton(50, 2 * (width - 320) / 5 + 80, 110, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorCancel)));
+    	this.buttonList.add(new GuiButton(60, 3 * (width - 320) / 5 + 160, 110, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorRemoveMorph)));
+    	this.buttonList.add(new GuiButton(70, 4 * (width - 320) / 5 + 240, 110, 80, 20, GameSettings.getKeyDisplayString(Morph.keyFavourite)));
 
         this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.getString("gui.done")));
     }
@@ -172,7 +172,7 @@ public class GuiKeyBinds extends GuiScreen
         			Morph.keyFavourite = i;
         		}
         		buttonId = -1;
-        		guibutton.displayString = Mouse.getButtonName(par3);
+        		guibutton.displayString = GameSettings.getKeyDisplayString(par3 - 100);
             }
         }
     }
@@ -189,7 +189,7 @@ public class GuiKeyBinds extends GuiScreen
     			GuiButton btn = (GuiButton)buttonList.get(k);
     			if(btn.id == buttonId)
     			{
-    				btn.displayString = Keyboard.getKeyName(i);
+    				btn.displayString = GameSettings.getKeyDisplayString(i);
     				break;
     			}
     		}
