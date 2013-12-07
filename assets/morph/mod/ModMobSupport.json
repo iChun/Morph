@@ -105,6 +105,9 @@
       "swim|false,1.8F,0.6F,true",
       "hostile"
     ],
+    "drzhark.mocreatures.entity.MoCEntityFlyerMob": [
+      "fly|true"
+    ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityFishy": [
       "swim|false,1.4F,0.5F,true"
     ],
