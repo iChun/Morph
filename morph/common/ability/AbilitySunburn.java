@@ -115,7 +115,7 @@ public class AbilitySunburn extends Ability {
 	@Override
 	public boolean entityHasAbility(EntityLivingBase living)
 	{
-		if(fireImmunityInstance.entityHasAbility(living))
+		if(AbilityHandler.hasAbility(living.getClass(), "fireImmunity") && fireImmunityInstance.entityHasAbility(living))
 		{
 			return false;
 		}
