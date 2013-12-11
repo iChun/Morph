@@ -105,6 +105,9 @@
       "swim|false,1.8F,0.6F,true",
       "hostile"
     ],
+    "drzhark.mocreatures.entity.MoCEntityFlyerMob": [
+      "fly|true"
+    ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityFishy": [
       "swim|false,1.4F,0.5F,true"
     ],
@@ -253,7 +256,7 @@
       "poisonResistance"
     ],
     "gaia.entity.EntityGaiaMermaid": [
-      "swim|true,1.4F,1F,true" 
+      "swim|true,1.2F,1F,true" 
     ],
     "gaia.entity.EntityGaiaMimic": [
       "hostile"
@@ -274,7 +277,7 @@
     ],
     "gaia.entity.EntityGaiaNaga": [
       "hostile",
-      "swim|true,1.4F,1F,true"
+      "swim|true,1.2F,1F,true"
     ],
     "gaia.entity.EntityGaiaNineTails": [
       "hostile",
@@ -282,18 +285,18 @@
     ],
     "gaia.entity.EntityGaiaSahuagin": [
       "hostile",
-      "swim|true,1.4F,1F,true"
+      "swim|true,1.2F,1F,true"
     ],
     "gaia.entity.EntityGaiaShaman": [
       "hostile"
     ],
     "gaia.entity.EntityGaiaSharko": [
       "hostile",
-      "swim|true,1.6F,1F,true"
+      "swim|true,1.2F,1F,true"
     ],
     "gaia.entity.EntityGaiaSiren": [
       "hostile",
-      "swim|true,1.4F,1F,true"
+      "swim|true,1.2F,1F,true"
     ],
     "gaia.entity.EntityGaiaSphinx": [
       "hostile",
