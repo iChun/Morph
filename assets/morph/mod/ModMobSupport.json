@@ -350,6 +350,25 @@
       "hostile",
       "float|-0.114,true"
     ],
+    "gravestone.entity.monster.EntitySkeletonCat": [
+      "hostile",
+      "sunburn",
+    ],
+    "gravestone.entity.monster.EntitySkeletonDog": [
+      "hostile",
+      "sunburn",
+    ],
+    "gravestone.entity.monster.EntityZombieCat": [
+      "hostile",
+      "sunburn",
+    ],
+    "gravestone.entity.monster.EntityZombieDog": [
+      "hostile",
+      "sunburn",
+    ],
+    "koi.Entitykoi": [
+      "swim|false,1.2F,0.3F,true"
+    ],
     "mods.natura.entity.BabyHeatscarSpider": [
       "climb",
       "fireImmunity",
