@@ -352,19 +352,19 @@
     ],
     "gravestone.entity.monster.EntitySkeletonCat": [
       "hostile",
-      "sunburn",
+      "sunburn"
     ],
     "gravestone.entity.monster.EntitySkeletonDog": [
       "hostile",
-      "sunburn",
+      "sunburn"
     ],
     "gravestone.entity.monster.EntityZombieCat": [
       "hostile",
-      "sunburn",
+      "sunburn"
     ],
     "gravestone.entity.monster.EntityZombieDog": [
       "hostile",
-      "sunburn",
+      "sunburn"
     ],
     "koi.Entitykoi": [
       "swim|false,1.2F,0.3F,true"
