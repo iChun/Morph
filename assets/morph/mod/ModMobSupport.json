@@ -517,6 +517,10 @@
       "climb",
       "hostile"
     ],
+    "twilightforest.entity.EntityTFSquirrel": [
+      "climb",
+      "fallNegate"
+    ],
     "twilightforest.entity.passive.EntityTFMobileFirefly": [
       "fly|true"
     ],
