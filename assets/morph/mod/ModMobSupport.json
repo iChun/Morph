@@ -369,6 +369,71 @@
     "koi.Entitykoi": [
       "swim|false,1.2F,0.3F,true"
     ],
+    "mods.dungeonMobs.EntityAhriman": [
+      "witherResistance",
+      "poisonResistance",
+      "waterAllergy",
+      "fireImmunity",
+      "float|-0.114,true",
+      "fly|true",
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityCaveFisher": [
+      "climb",
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityCockatrice": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityDestrachan": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityGhoul": [
+      "sunburn",
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityHookHorror": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityIllithid": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityLizalfos": [
+      "hostile",
+      "fallNegate",
+      "step|1F"
+    ],
+    "mods.dungeonMobs.EntityManticore": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityNetherHound": [
+      "fireImmunity",
+      "waterAllergy",
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityRakshasa": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityRustMonster": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityShrieker": [
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityThoqqua": [
+      "climb",
+      "fireImmunity",
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityTroll": [
+      "witherResistance",
+      "poisonResistance",
+      "hostile"
+    ],
+    "mods.dungeonMobs.EntityUmberHulk": [
+      "fireImmunity",
+      "hostile"
+    ],
     "mods.natura.entity.BabyHeatscarSpider": [
       "climb",
       "fireImmunity",
