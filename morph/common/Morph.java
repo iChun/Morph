@@ -144,7 +144,7 @@ public class Morph
 		
 		whitelistedPlayers = addCommentAndReturnString(config, "gameplay", "whitelistedPlayers", "Only allow these players to use the Morph skill.\nLeave blank to allow all players to use the skill.\nFormatting is as follows: <name>, <name>, <name>\nExample: Cojomax99, pahimar, ohaiiChun", "");
 		
-		disableEarlyGameFlight = addCommentAndReturnInt(config, "gameplay", "disableEarlyGameFlight", "Disable the flight ability until a player has reached the nether?\n0 = No\n1 = Yes", 0);
+		disableEarlyGameFlight = addCommentAndReturnInt(config, "gameplay", "disableEarlyGameFlight", "Disable the flight ability until a player...\n0 = Enable early game flight\n1 = ...has reached the nether\n2 = ...has killed the Wither", 0);
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose all your morphs on death?\n0 = No\n1 = Yes", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
 		

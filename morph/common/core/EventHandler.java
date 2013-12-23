@@ -9,40 +9,32 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import morph.api.Ability;
-import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
-import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.BossStatus;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.EnumStatus;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
@@ -626,6 +618,15 @@ public class EventHandler
 					event.entityLiving.setDead();
 				}
 			}
+			if(event.entityLiving instanceof EntityWither && !Morph.proxy.tickHandlerServer.saveData.getBoolean("killedWither"))
+			{
+				Morph.proxy.tickHandlerServer.saveData.setBoolean("killedWither", true);
+				if(Morph.disableEarlyGameFlight == 2)
+				{
+					SessionState.allowFlight = true;
+					Morph.proxy.tickHandlerServer.updateSession(null);
+				}
+			}
 		}
 	}
 	
@@ -703,7 +704,7 @@ public class EventHandler
 	    	
 			if(Morph.proxy.tickHandlerServer.saveData != null)
 			{
-				if(Morph.disableEarlyGameFlight == 1 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether"))
+				if(Morph.disableEarlyGameFlight == 1 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether") || Morph.disableEarlyGameFlight == 2 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("killedWither"))
 				{
 					SessionState.allowFlight = false;
 				}
