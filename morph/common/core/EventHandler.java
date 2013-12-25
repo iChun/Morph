@@ -141,8 +141,8 @@ public class EventHandler
 	        	}
 
 	        	float shadowProg = prog;
-	        	prog /= 0.8F;
-	        	if(prog < 1.0F)
+	        	shadowProg /= 0.8F;
+	        	if(shadowProg < 1.0F)
 	        	{
 	        		shadowSize = prevShadowSize + (shadowSize - prevShadowSize) * prog;
 	        	}
