@@ -2,9 +2,7 @@ package morph.common;
 
 import java.io.DataInput;
 import java.io.DataOutput;
-import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -13,7 +11,6 @@ import java.util.logging.Logger;
 import morph.client.core.ClientProxy;
 import morph.client.core.PacketHandlerClient;
 import morph.client.render.HandRenderHandler;
-import morph.common.ability.AbilityHandler;
 import morph.common.core.CommonProxy;
 import morph.common.core.ConnectionHandler;
 import morph.common.core.MapPacketHandler;
@@ -35,8 +32,8 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.NetworkMod;
@@ -186,7 +183,7 @@ public class Morph
 			
 			showAbilitiesInGui = addCommentAndReturnInt(config, "client", "showAbilitiesInGui", "Show the abilities the morph has in the GUI?\n0 = No\n1 = Yes", 1);
 			
-			sortMorphsAlphabetically = addCommentAndReturnInt(config, "client", "sortMorphsAlphabetically", "Sort the morphs alphabetically (Upper case first) in the GUI?\n0 = No\n1 = Yes\n2 = Yes, and attempt to sort grouped morphs as well", 0);
+			sortMorphsAlphabetically = addCommentAndReturnInt(config, "client", "sortMorphsAlphabetically", "Sort the morphs alphabetically (according to Operating System) in the GUI?\n0 = No\n1 = Yes\n2 = Yes, and attempt to sort grouped morphs as well", 0);
 		}
 		
 		config.save();
@@ -214,7 +211,7 @@ public class Morph
 	}
 	
 	@EventHandler
-	public void serverStarting(FMLServerStartingEvent event)
+	public void serverStarting(FMLServerAboutToStartEvent event)
 	{
 		SessionState.abilities = Morph.abilities == 1;
 		SessionState.canSleepMorphed = Morph.canSleepMorphed == 1;

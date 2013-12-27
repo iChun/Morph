@@ -15,6 +15,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
@@ -36,7 +37,7 @@ public class HandRenderHandler
 {
 
 	@SideOnly(Side.CLIENT)
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.LOWEST)
 	public void onRenderWorldLast(RenderWorldLastEvent event)
 	{
 		if(Morph.handRenderOverride == 1)

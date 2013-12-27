@@ -11,6 +11,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -131,7 +132,7 @@ public class AbilitySwim extends Ability {
 	        	getParent().attackEntityFrom(DamageSource.drown, 2.0F);
 	        }
 	        
-	        if(landSpeed != 1f && air < 285)
+	        if(!(getParent() instanceof EntityPlayer && ((EntityPlayer)getParent()).capabilities.isFlying) && landSpeed != 1f && air < 285)
 			{
 				if(getParent().motionX > -landSpeed && getParent().motionX < landSpeed)
 				{

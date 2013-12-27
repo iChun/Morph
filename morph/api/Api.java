@@ -1,7 +1,11 @@
 package morph.api;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public final class Api 
 {
@@ -35,6 +39,21 @@ public final class Api
 		}
 	}
 	
+	/**
+	 * Returns previous entity instance used to render the morph.
+	 * If player does not have a previous morph state, null will be returned.
+	 * @param Player Username
+	 * @param Clientside (false for Serverside)
+	 */
+	public static EntityLivingBase getPrevMorphEntity(String playerName, boolean isClient)
+	{
+		try {
+			return (EntityLivingBase)Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("getPrevMorphEntity", String.class, boolean.class).invoke(null, playerName, isClient);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Returns entity instance used to render the morph.
 	 * If player does not have a morph, null will be returned.
@@ -92,4 +111,44 @@ public final class Api
 		}
 	}
 	
+	/**
+	 * Checks if the entity passed on is a Morph.
+	 * If it is, the player name will be passed, else null.
+	 * @param EntityLivingBase instance
+	 * @param Clientside (false for Serverside)
+	 */
+	public static String isEntityAMorph(EntityLivingBase living, boolean isClient)
+	{
+		try {
+			return (String)Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("isEntityAMorph", EntityLivingBase.class, boolean.class).invoke(null, living, isClient);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Allows the rendering of the next player rendered.
+	 * Prevents Morph from cancelling the player render event to render the morphed entity.
+	 */
+	public static void allowNextPlayerRender()
+	{
+		try {
+			Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("allowNextPlayerRender").invoke(null);
+		} catch (Exception e) {
+		}
+	}
+	
+	/**
+	 * Returns the black grainy morph skin that overlays the player when the player is morphing
+	 * @return Morph Skin Resource Location
+	 */
+	@SideOnly(Side.CLIENT)
+	public static ResourceLocation getMorphSkinTexture()
+	{
+		try {
+			return (ResourceLocation)Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("getMorphSkinTexture").invoke(null);
+		} catch (Exception e) {
+			return AbstractClientPlayer.locationStevePng;
+		}
+	}
 }

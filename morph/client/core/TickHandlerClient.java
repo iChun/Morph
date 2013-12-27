@@ -1502,6 +1502,14 @@ public class TickHandlerClient
 	        float f3 = ent.rotationYaw;
 	        float f4 = ent.rotationPitch;
 	        float f5 = ent.rotationYawHead;
+	        
+	        double tX = ent.lastTickPosX;
+	        double tY = ent.lastTickPosY;
+	        double tZ = ent.lastTickPosZ;
+	        
+	        double psX = ent.posX;
+	        double psY = ent.posY;
+	        double psZ = ent.posZ;
 
 	        GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
 	        RenderHelper.enableStandardItemLighting();
@@ -1883,6 +1891,8 @@ public class TickHandlerClient
 	public float eyeHeight;
 	public boolean shiftedPosY;
 	
+	public boolean allowRender;
+	
 	public boolean forceRender;
 	public boolean renderingMorph;
 	public byte renderingPlayer;
@@ -1922,7 +1932,7 @@ public class TickHandlerClient
 	
 	public final int selectorShowTime = 10;
 	public final int scrollTime = 3;
-	
+
 	public static final ResourceLocation rlFavourite = new ResourceLocation("morph", "textures/gui/fav.png");
 	public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
 	public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");

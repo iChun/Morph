@@ -85,6 +85,12 @@ public class EventHandler
 		}
 		
 		
+		if(Morph.proxy.tickHandlerClient.allowRender)
+		{
+			Morph.proxy.tickHandlerClient.allowRender = false;
+			ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
+			return;
+		}
 		if(Morph.proxy.tickHandlerClient.forceRender)
 		{
 			ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
@@ -664,10 +670,15 @@ public class EventHandler
 	    		if(!file.exists())
 	    		{
 	    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
-	    			Morph.console("Save data does not exist!", true);
-	    			return;
+	    			if(world.getWorldInfo().getWorldTotalTime() > 0)
+	    			{
+	    				Morph.console("Save data does not exist!", true);
+	    			}
 	    		}
-	    		Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
+	    		else
+	    		{
+	    			Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
+	    		}
 	    	}
 	    	catch(EOFException e)
 	    	{
@@ -679,27 +690,27 @@ public class EventHandler
 		    		{
 		    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
 		    			Morph.console("No backup detected!", true);
-		    			return;
 		    		}
-		    		Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
-
-		    		File file1 = new File(world.getChunkSaveLocation(), "morph.dat");
-		    		file1.delete();
-		    		file.renameTo(file1);
-		    		Morph.console("Restoring data from backup.", false);
+		    		else
+		    		{
+			    		Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
+	
+			    		File file1 = new File(world.getChunkSaveLocation(), "morph.dat");
+			    		file1.delete();
+			    		file.renameTo(file1);
+			    		Morph.console("Restoring data from backup.", false);
+		    		}
 	    		}
 	    		catch(Exception e1)
 	    		{
 	    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
 	    			Morph.console("Even your backup data is corrupted. What have you been doing?!", true);
-	    			return;
 	    		}
 	    	}
 	    	catch(IOException e)
 	    	{
 	    		Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
 	    		Morph.console("Failed to read save data!", true);
-	    		return;
 	    	}
 	    	
 			if(Morph.proxy.tickHandlerServer.saveData != null)

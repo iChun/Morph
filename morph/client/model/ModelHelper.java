@@ -10,6 +10,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelCreeper;
+import net.minecraft.client.model.ModelDragon;
 import net.minecraft.client.model.ModelHorse;
 import net.minecraft.client.model.ModelIronGolem;
 import net.minecraft.client.model.ModelOcelot;
@@ -452,7 +453,7 @@ public class ModelHelper
 
 	public static int getModelHeight(ModelRenderer model) 
 	{
-		int height = 0;
+		int height = 0;//Y1 lower than Y2
 		for(int i = 0; i < model.cubeList.size(); i++)
 		{
 			ModelBox box = (ModelBox)model.cubeList.get(i);
