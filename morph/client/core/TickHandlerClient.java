@@ -1503,14 +1503,6 @@ public class TickHandlerClient
 	        float f4 = ent.rotationPitch;
 	        float f5 = ent.rotationYawHead;
 	        
-	        double tX = ent.lastTickPosX;
-	        double tY = ent.lastTickPosY;
-	        double tZ = ent.lastTickPosZ;
-	        
-	        double psX = ent.posX;
-	        double psY = ent.posY;
-	        double psZ = ent.posZ;
-
 	        GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
 	        RenderHelper.enableStandardItemLighting();
 	        GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
