@@ -1,4 +1,4 @@
-morph.keybinds=[Morph] Klicken zum ändern der Tastenbelegung
+morph.keybinds=[Morph] Klicken zum Ändern der Tastenbelegung
 morph.gui.keybinds.title=Morph Tastenbelegung
 morph.gui.keybinds.hold=Halten
 morph.gui.keybinds.none=Nichts
@@ -9,7 +9,7 @@ morph.gui.keybinds.selector=Wähler
 morph.gui.keybinds.up=Hoch
 morph.gui.keybinds.down=Runter
 morph.gui.keybinds.left=Links
-morph.gui.keybinds.right=Richts
+morph.gui.keybinds.right=Rechts
 morph.gui.keybinds.choose=Auswählen
 morph.gui.keybinds.cancel=Abbrechen
 morph.gui.keybinds.remove=Entfernen
