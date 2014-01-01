@@ -174,8 +174,6 @@ public class MorphState
 			tag.setBoolean("PersistenceRequired", true);
 		}
 		
-		tag.setString("MorphModVersion", Morph.version);
-		
 		ArrayList<String> stripList = NBTStripper.getNBTTagsToStrip(living);
 		for(String s : stripList)
 		{
