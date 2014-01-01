@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Klikni za uređivanje tipki
+morph.gui.keybinds.title=Morph tipke
+morph.gui.keybinds.hold=Drži
+morph.gui.keybinds.none=Ništa
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Selektor
+morph.gui.keybinds.up=Gore
+morph.gui.keybinds.down=Dolje
+morph.gui.keybinds.left=Lijevo
+morph.gui.keybinds.right=Desno
+morph.gui.keybinds.choose=Izaberi
+morph.gui.keybinds.cancel=Odustani
+morph.gui.keybinds.remove=Ukloni
+morph.gui.keybinds.favorite=Najdraži
