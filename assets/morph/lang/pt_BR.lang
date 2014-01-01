@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Clique para controles
+morph.gui.keybinds.title=Controles do Morph
+morph.gui.keybinds.hold=Segurar
+morph.gui.keybinds.none=Nenhum
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Seletor
+morph.gui.keybinds.up=Cima
+morph.gui.keybinds.down=Baixo
+morph.gui.keybinds.left=Esquerda
+morph.gui.keybinds.right=Direita
+morph.gui.keybinds.choose=Escolher
+morph.gui.keybinds.cancel=Cancelar
+morph.gui.keybinds.remove=Remover
+morph.gui.keybinds.favorite=Favorito
