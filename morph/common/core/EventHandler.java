@@ -36,6 +36,7 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -67,7 +68,7 @@ public class EventHandler
 	}
 	
 	@SideOnly(Side.CLIENT)
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void onRenderPlayer(RenderPlayerEvent.Pre event)
 	{
 		float shadowSize = 0.5F;
@@ -395,8 +396,8 @@ public class EventHandler
 		Morph.proxy.tickHandlerClient.renderingPlayer--;
 	}
 	
-	@SideOnly(Side.CLIENT)
-	@ForgeSubscribe
+//	@SideOnly(Side.CLIENT)
+//	@ForgeSubscribe
 	public void onDrawBlockHighlight(DrawBlockHighlightEvent event)
 	{
 //		Minecraft mc = Minecraft.getMinecraft();
