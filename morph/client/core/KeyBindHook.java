@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class KeyBindHook extends KeyHandler 
 {
 
-	public static KeyBinding keyBindHook = new KeyBinding("[Morph] Keybinds", Keyboard.KEY_NEXT);
+	public static KeyBinding keyBindHook = new KeyBinding("morph.keybinds", Keyboard.KEY_NEXT);
 	
 	public KeyBindHook() {
 		super(new KeyBinding[] { keyBindHook });

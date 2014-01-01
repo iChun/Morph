@@ -19,6 +19,7 @@ import morph.client.render.RenderMorph;
 import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
+import morph.common.ability.AbilityWitherResistance;
 import morph.common.core.ObfHelper;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
@@ -347,23 +348,31 @@ public class TickHandlerClient
 								info.prevState.entInstance.lastTickPosY -= info.player.yOffset;
 								info.prevState.entInstance.prevPosY -= info.player.yOffset;
 								info.prevState.entInstance.posY -= info.player.yOffset;
+								info.prevState.entInstance.setPosition(info.prevState.entInstance.posX, info.prevState.entInstance.posY, info.prevState.entInstance.posZ);
 								info.prevState.entInstance.onUpdate();
 								info.prevState.entInstance.lastTickPosY += info.player.yOffset;
 								info.prevState.entInstance.prevPosY += info.player.yOffset;
 								info.prevState.entInstance.posY += info.player.yOffset;
+								info.prevState.entInstance.setPosition(info.prevState.entInstance.posX, info.prevState.entInstance.posY, info.prevState.entInstance.posZ);
 							}
 						}
 						else if(info.morphProgress > 70)
 						{
 							if(info.nextState.entInstance != mc.thePlayer)
 							{
+								if(!(info.nextState.entInstance instanceof EntityPlayer || RenderManager.instance.getEntityRenderObject(info.nextState.entInstance) instanceof RenderBiped))
+								{
+									info.nextState.entInstance.yOffset = 0.0F;
+								}
 								info.nextState.entInstance.lastTickPosY -= info.player.yOffset;
 								info.nextState.entInstance.prevPosY -= info.player.yOffset;
 								info.nextState.entInstance.posY -= info.player.yOffset;
+								info.nextState.entInstance.setPosition(info.nextState.entInstance.posX, info.nextState.entInstance.posY, info.nextState.entInstance.posZ);
 								info.nextState.entInstance.onUpdate();
 								info.nextState.entInstance.lastTickPosY += info.player.yOffset;
 								info.nextState.entInstance.prevPosY += info.player.yOffset;
 								info.nextState.entInstance.posY += info.player.yOffset;
+								info.nextState.entInstance.setPosition(info.nextState.entInstance.posX, info.nextState.entInstance.posY, info.nextState.entInstance.posZ);
 //								ObfHelper.forceUpdateEntityActionState(info.nextState.entInstance.getClass(), info.nextState.entInstance);
 							}
 						}
@@ -1687,11 +1696,11 @@ public class TickHandlerClient
 	        	
         		int offsetX = 0;
         		int offsetY = 0;
-	        	for(int i = 0; i < (hasStencilBits && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
+	        	for(int i = 0; i < (abilitiesSize > 3 && hasStencilBits && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
 	        	{
 	        		Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
 	        		
-	        		if(!ability.entityHasAbility(ent) || (hasStencilBits && abilities.size() > 3) && !shouldScroll && i >= 3)
+	        		if(!ability.entityHasAbility(ent) || (abilitiesSize > 3 && hasStencilBits && abilities.size() > 3) && !shouldScroll && i >= 3)
 	        		{
 	        			continue;
 	        		}

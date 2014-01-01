@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.GuiControlsScrollPanel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,7 +22,7 @@ public class GuiKeyBinds extends GuiScreen
     private GuiScreen parentScreen;
 
     /** The title string that is displayed in the top-center of the screen. */
-    protected String screenTitle = "Morph Keybinds";
+    protected String screenTitle = "morph.gui.keybinds.title";
 
     /** The ID of the  button that has been pressed. */
     private int buttonId = -1;
@@ -45,16 +46,16 @@ public class GuiKeyBinds extends GuiScreen
     public void initGui()
     {
     	this.buttonList.add(new GuiButton(0 , 1 * (width - 320) / 5, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorUp)));
-    	this.buttonList.add(new GuiButton(1 , 1 * (width - 320) / 5, 65, 80, 20, "Hold: " + (Morph.keySelectorUpHold == 0 ? "None" : Morph.keySelectorUpHold == 1 ? "Shift" : Morph.keySelectorUpHold == 2 ? "Ctrl" : "Alt")));
+    	this.buttonList.add(new GuiButton(1 , 1 * (width - 320) / 5, 65, 80, 20, StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorUpHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorUpHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorUpHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"))));
     	
     	this.buttonList.add(new GuiButton(10, 2 * (width - 320) / 5 + 80, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorDown)));
-    	this.buttonList.add(new GuiButton(11, 2 * (width - 320) / 5 + 80, 65, 80, 20, "Hold: " + (Morph.keySelectorDownHold == 0 ? "None" : Morph.keySelectorDownHold == 1 ? "Shift" : Morph.keySelectorDownHold == 2 ? "Ctrl" : "Alt")));
+    	this.buttonList.add(new GuiButton(11, 2 * (width - 320) / 5 + 80, 65, 80, 20, StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorDownHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorDownHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorDownHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"))));
     	
     	this.buttonList.add(new GuiButton(20, 3 * (width - 320) / 5 + 160, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorLeft)));
-    	this.buttonList.add(new GuiButton(21, 3 * (width - 320) / 5 + 160, 65, 80, 20, "Hold: " + (Morph.keySelectorLeftHold == 0 ? "None" : Morph.keySelectorLeftHold == 1 ? "Shift" : Morph.keySelectorLeftHold == 2 ? "Ctrl" : "Alt")));
+    	this.buttonList.add(new GuiButton(21, 3 * (width - 320) / 5 + 160, 65, 80, 20, StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorLeftHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorLeftHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorLeftHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"))));
     	
     	this.buttonList.add(new GuiButton(30, 4 * (width - 320) / 5 + 240, 40, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorRight)));
-    	this.buttonList.add(new GuiButton(31, 4 * (width - 320) / 5 + 240, 65, 80, 20, "Hold: " + (Morph.keySelectorRightHold == 0 ? "None" : Morph.keySelectorRightHold == 1 ? "Shift" : Morph.keySelectorRightHold == 2 ? "Ctrl" : "Alt")));
+    	this.buttonList.add(new GuiButton(31, 4 * (width - 320) / 5 + 240, 65, 80, 20, StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorRightHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorRightHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorRightHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"))));
     	
     	this.buttonList.add(new GuiButton(40 , 1 * (width - 320) / 5, 110, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorSelect)));
     	this.buttonList.add(new GuiButton(50, 2 * (width - 320) / 5 + 80, 110, 80, 20, GameSettings.getKeyDisplayString(Morph.keySelectorCancel)));
@@ -83,7 +84,7 @@ public class GuiKeyBinds extends GuiScreen
     			{
     				Morph.keySelectorUpHold = 0;
     			}
-    			btn.displayString = "Hold: " + (Morph.keySelectorUpHold == 0 ? "None" : Morph.keySelectorUpHold == 1 ? "Shift" : Morph.keySelectorUpHold == 2 ? "Ctrl" : "Alt");
+    			btn.displayString = StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorUpHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorUpHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorUpHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"));
     		}
     		else if(btn.id == 11)
     		{
@@ -92,7 +93,7 @@ public class GuiKeyBinds extends GuiScreen
     			{
     				Morph.keySelectorDownHold = 0;
     			}
-    			btn.displayString = "Hold: " + (Morph.keySelectorDownHold == 0 ? "None" : Morph.keySelectorDownHold == 1 ? "Shift" : Morph.keySelectorDownHold == 2 ? "Ctrl" : "Alt");
+    			btn.displayString = StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorDownHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorDownHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorDownHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"));
     		}
     		else if(btn.id == 21)
     		{
@@ -101,7 +102,7 @@ public class GuiKeyBinds extends GuiScreen
     			{
     				Morph.keySelectorLeftHold = 0;
     			}
-    			btn.displayString = "Hold: " + (Morph.keySelectorLeftHold == 0 ? "None" : Morph.keySelectorLeftHold == 1 ? "Shift" : Morph.keySelectorLeftHold == 2 ? "Ctrl" : "Alt");
+    			btn.displayString = StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorLeftHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorLeftHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorLeftHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"));
     		}
     		else if(btn.id == 31)
     		{
@@ -110,7 +111,7 @@ public class GuiKeyBinds extends GuiScreen
     			{
     				Morph.keySelectorRightHold = 0;
     			}
-    			btn.displayString = "Hold: " + (Morph.keySelectorRightHold == 0 ? "None" : Morph.keySelectorRightHold == 1 ? "Shift" : Morph.keySelectorRightHold == 2 ? "Ctrl" : "Alt");
+    			btn.displayString = StatCollector.translateToLocal("morph.gui.keybinds.hold") + ": " + (Morph.keySelectorRightHold == 0 ? StatCollector.translateToLocal("morph.gui.keybinds.none") : Morph.keySelectorRightHold == 1 ? StatCollector.translateToLocal("morph.gui.keybinds.shift") : Morph.keySelectorRightHold == 2 ? StatCollector.translateToLocal("morph.gui.keybinds.ctrl") : StatCollector.translateToLocal("morph.gui.keybinds.alt"));
     		}
     		Morph.saveConfig();
     	}
@@ -241,17 +242,17 @@ public class GuiKeyBinds extends GuiScreen
     public void drawScreen(int par1, int par2, float par3)
     {
         this.drawDefaultBackground();
-        drawCenteredString(fontRenderer, screenTitle, width / 2, 4, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal(screenTitle), width / 2, 4, 0xffffff);
         
-        drawCenteredString(fontRenderer, "Selector Up",  1 * (width - 320) / 5 + 40, 30, 0xffffff);
-        drawCenteredString(fontRenderer, "Selector Down",  2 * (width - 320) / 5 + 80 + 40, 30, 0xffffff);
-        drawCenteredString(fontRenderer, "Selector Left",  3 * (width - 320) / 5 + 160 + 40, 30, 0xffffff);
-        drawCenteredString(fontRenderer, "Selector Right",  4 * (width - 320) / 5 + 240 + 40, 30, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.selector") + " " + StatCollector.translateToLocal("morph.gui.keybinds.up"),  1 * (width - 320) / 5 + 40, 30, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.selector") + " " + StatCollector.translateToLocal("morph.gui.keybinds.down"),  2 * (width - 320) / 5 + 80 + 40, 30, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.selector") + " " + StatCollector.translateToLocal("morph.gui.keybinds.left"),  3 * (width - 320) / 5 + 160 + 40, 30, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.selector") + " " + StatCollector.translateToLocal("morph.gui.keybinds.right"),  4 * (width - 320) / 5 + 240 + 40, 30, 0xffffff);
         
-        drawCenteredString(fontRenderer, "Selector Choose",  1 * (width - 320) / 5 + 40, 100, 0xffffff);
-        drawCenteredString(fontRenderer, "Selector Cancel",  2 * (width - 320) / 5 + 80 + 40, 100, 0xffffff);
-        drawCenteredString(fontRenderer, "Selector Remove",  3 * (width - 320) / 5 + 160 + 40, 100, 0xffffff);
-        drawCenteredString(fontRenderer, "Favourite",  4 * (width - 320) / 5 + 240 + 40, 100, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.selector") + " " + StatCollector.translateToLocal("morph.gui.keybinds.choose"),  1 * (width - 320) / 5 + 40, 100, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.selector") + " " + StatCollector.translateToLocal("morph.gui.keybinds.cancel"),  2 * (width - 320) / 5 + 80 + 40, 100, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.selector") + " " + StatCollector.translateToLocal("morph.gui.keybinds.remove"),  3 * (width - 320) / 5 + 160 + 40, 100, 0xffffff);
+        drawCenteredString(fontRenderer, StatCollector.translateToLocal("morph.gui.keybinds.favorite"),  4 * (width - 320) / 5 + 240 + 40, 100, 0xffffff);
 
         super.drawScreen(par1, par2, par3);
     }

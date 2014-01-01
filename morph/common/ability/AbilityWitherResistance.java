@@ -66,6 +66,7 @@ public class AbilityWitherResistance extends Ability {
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public ResourceLocation getIcon() 
 	{
