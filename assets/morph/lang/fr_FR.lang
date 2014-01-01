@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Cliquez pour configurer les touches.
+morph.gui.keybinds.title=Morph Keybinds
+morph.gui.keybinds.hold=Maintenir
+morph.gui.keybinds.none=Aucun
+morph.gui.keybinds.shift=Maj
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Sélecteur
+morph.gui.keybinds.up=Haut
+morph.gui.keybinds.down=Bas
+morph.gui.keybinds.left=Gauche
+morph.gui.keybinds.right=Droite
+morph.gui.keybinds.choose=Choisir
+morph.gui.keybinds.cancel=Annuler
+morph.gui.keybinds.remove=Suprimer
+morph.gui.keybinds.favorite=Favoris
