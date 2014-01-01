@@ -29,6 +29,18 @@ public class AbilityClimb extends Ability {
 				getParent().motionY = 0.1176D; //(0.2D - 0.08D) * 0.98D
 			}
 		}
+		if(!getParent().worldObj.isRemote)
+		{
+			double motionX = getParent().posX - getParent().lastTickPosX;
+			double motionZ = getParent().posZ - getParent().lastTickPosZ;
+			double motionY = getParent().posY - getParent().lastTickPosY - 0.765D; //serverside motion is weird.
+			System.out.println(motionY);
+			if(motionY > 0.0D && (motionX == 0D || motionZ == 0D))
+			{
+				//most likely climbing.
+				getParent().fallDistance = 0.0F;
+			}
+		}
 	}
 
 	@Override
