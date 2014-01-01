@@ -20,17 +20,20 @@ public class MorphHandler
 	public static MorphState addOrGetMorphState(ArrayList<MorphState> states, MorphState state)
 	{
 		int pos = -1;
+		boolean isFavourite = state.isFavourite;
 		for(int i = states.size() - 1; i >= 0; i--)
 		{
 			MorphState mState = states.get(i);
 			if(mState.identifier.equalsIgnoreCase(state.identifier) || !state.playerMorph.equalsIgnoreCase("") && mState.playerMorph.equalsIgnoreCase(state.playerMorph))
 			{
+				isFavourite = mState.isFavourite;
 				states.remove(i);
 				pos = i;
 			}
 		}
 		if(state.playerName.equalsIgnoreCase(state.playerMorph) && !state.playerMorph.equalsIgnoreCase(""))
 		{
+			isFavourite = true;
 			pos = 0;
 		}
 		if(pos != -1)
@@ -41,6 +44,7 @@ public class MorphHandler
 		{
 			states.add(state);
 		}
+		state.isFavourite = isFavourite;
 		if(Morph.sortMorphsAlphabetically == 2)
 		{
 			Collections.sort(states);
