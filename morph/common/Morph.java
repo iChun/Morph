@@ -108,6 +108,8 @@ public class Morph
 	
 	public static int keyFavourite;
 	
+	public static int renderCrosshairInRadialMenu;
+	
 	public static int handRenderOverride;
 	
 	public static int showAbilitiesInGui;
@@ -184,6 +186,8 @@ public class Morph
 			showAbilitiesInGui = addCommentAndReturnInt(config, "client", "showAbilitiesInGui", "Show the abilities the morph has in the GUI?\n0 = No\n1 = Yes", 1);
 			
 			sortMorphs = addCommentAndReturnInt(config, "client", "sortMorphs", "Sort the morphs in the GUI?\n0 = Order of acquisition (Server default)\n1 = Alphabetically (according to Operating System)\n2 = Alphabetically, and attempt to sort grouped morphs as well\n3 = Most recently used since connecting to the server", 0);
+
+			renderCrosshairInRadialMenu = addCommentAndReturnInt(config, "client", "renderCrosshairInRadialMenu", "As per request, render the crosshair position when in the radial menu.\n0 = No\n1 = Yes", 0);
 		}
 		
 		config.save();

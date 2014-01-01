@@ -190,7 +190,6 @@ public class TickHandlerClient
 			if(radialShow)
 			{
 				radialShow = false;
-				GuiIngameForge.renderCrosshairs = renderCrosshair;
 			}
 		}
 		if(selectorTimer > 0)
@@ -759,7 +758,6 @@ public class TickHandlerClient
 				{
 					selectRadialMenu();
 					radialShow = false;
-					GuiIngameForge.renderCrosshairs = renderCrosshair;
 				}
 			}
 			if(!keySelectorReturnDown && (isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.keyCode)))
@@ -773,7 +771,6 @@ public class TickHandlerClient
 				if(radialShow)
 				{
 					radialShow = false;
-					GuiIngameForge.renderCrosshairs = renderCrosshair;
 				}
 			}
 			if(!keySelectorDeleteDown && (isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE)))
@@ -933,8 +930,6 @@ public class TickHandlerClient
 					radialShow = true;
 					radialTime = 3;
 					
-					renderCrosshair = GuiIngameForge.renderCrosshairs;
-					GuiIngameForge.renderCrosshairs = false;
 				}
 			}
 			if(keyFavouriteDown && !isPressed(Morph.keyFavourite))
@@ -943,7 +938,6 @@ public class TickHandlerClient
 				{
 					selectRadialMenu();
 					radialShow = false;
-					GuiIngameForge.renderCrosshairs = renderCrosshair;
 				}
 			}
 			keySelectorUpDown = isPressed(Morph.keySelectorUp);
@@ -1934,7 +1928,6 @@ public class TickHandlerClient
 	public double radialDeltaX;
 	public double radialDeltaY;
 	public int radialTime;
-	public boolean renderCrosshair;
 	
 	public ArrayList<MorphState> favouriteStates = new ArrayList<MorphState>();
 	

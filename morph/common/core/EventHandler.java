@@ -17,6 +17,7 @@ import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -30,10 +31,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.EnumStatus;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.EventPriority;
@@ -64,6 +67,100 @@ public class EventHandler
 		for(int i = 1; i <= 6; i++)
 		{
 			event.manager.soundPoolSounds.addSound("morph:morph" + i + ".ogg");
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onRenderGameOverlayPre(RenderGameOverlayEvent.Pre event)
+	{
+		if(event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+		{
+			if(Morph.proxy.tickHandlerClient.radialShow)
+			{
+				if(Morph.renderCrosshairInRadialMenu == 1)
+				{
+			    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
+			    	double magAcceptance = 0.8D;
+
+			    	double radialAngle = -720F;
+		    		double aSin = Math.toDegrees(Math.asin(Morph.proxy.tickHandlerClient.radialDeltaX));
+		    		
+		    		if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+		    		{
+		    			radialAngle = aSin;
+		    		}
+		    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+		    		{
+		    			radialAngle = 90D + (90D - aSin);
+		    		}
+		    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+		    		{
+		    			radialAngle = 180D - aSin;
+		    		}
+		    		else if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+		    		{
+		    			radialAngle = 270D + (90D + aSin);
+		    		}
+		    		
+			    	ScaledResolution reso = new ScaledResolution(Minecraft.getMinecraft().gameSettings, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+		    		
+			    	GL11.glTranslated(reso.getScaledWidth_double() / 2D, reso.getScaledHeight_double() / 2D, 0D);
+		    		GL11.glRotatef((float)radialAngle, 0.0F, 0.0F, 1.0F);
+		    		GL11.glTranslated(-reso.getScaledWidth_double() / 2D, -reso.getScaledHeight_double() / 2D, 0D);
+		    		GL11.glTranslatef(0.0F, -((float)reso.getScaledHeight_double() / 2.85F * 0.675F * MathHelper.clamp_float((float)(mag / magAcceptance), 0.0F, 1.0F) + (MathHelper.clamp_float((float)((mag - magAcceptance) / (1.0D - magAcceptance)), 0.0F, 1.0F) * (float)reso.getScaledHeight_double() / 2.85F * (1F - 0.675F))), 0.0F);
+				}
+				else
+				{
+					event.setCanceled(true);
+				}
+			}
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onRenderGameOverlayPost(RenderGameOverlayEvent.Post event)
+	{
+		if(event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+		{
+			if(Morph.proxy.tickHandlerClient.radialShow)
+			{
+				if(Morph.renderCrosshairInRadialMenu == 1)
+				{
+			    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
+			    	double magAcceptance = 0.8D;
+
+			    	double radialAngle = -720F;
+		    		double aSin = Math.toDegrees(Math.asin(Morph.proxy.tickHandlerClient.radialDeltaX));
+		    		
+		    		if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+		    		{
+		    			radialAngle = aSin;
+		    		}
+		    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+		    		{
+		    			radialAngle = 90D + (90D - aSin);
+		    		}
+		    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+		    		{
+		    			radialAngle = 180D - aSin;
+		    		}
+		    		else if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+		    		{
+		    			radialAngle = 270D + (90D + aSin);
+		    		}
+		    		
+			    	ScaledResolution reso = new ScaledResolution(Minecraft.getMinecraft().gameSettings, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+
+			    	GL11.glTranslatef(0.0F, ((float)reso.getScaledHeight_double() / 2.85F * 0.675F * MathHelper.clamp_float((float)(mag / magAcceptance), 0.0F, 1.0F) + (MathHelper.clamp_float((float)((mag - magAcceptance) / (1.0D - magAcceptance)), 0.0F, 1.0F) * (float)reso.getScaledHeight_double() / 2.85F * (1F - 0.675F))), 0.0F);
+		    		GL11.glTranslated(reso.getScaledWidth_double() / 2D, reso.getScaledHeight_double() / 2D, 0D);
+		    		GL11.glRotatef(-(float)radialAngle, 0.0F, 0.0F, 1.0F);
+			    	GL11.glTranslated(-reso.getScaledWidth_double() / 2D, -reso.getScaledHeight_double() / 2D, 0D);
+
+			    	
+				}
+			}
 		}
 	}
 	
