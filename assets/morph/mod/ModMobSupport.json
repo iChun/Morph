@@ -437,6 +437,86 @@
     "koi.Entitykoi": [
       "swim|false,1.2F,0.3F,true"
     ],
+    "lycanite.lycanitesmobs.demonmobs.entity.EntityAsmodi": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.demonmobs.entity.EntityBehemoth": [
+      "step|1F",
+      "fireImmunity",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.demonmobs.entity.EntityBelph": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.demonmobs.entity.EntityCacodemon": [
+      "fireImmunity",
+      "waterAllergy",
+      "fly|true",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.demonmobs.entity.EntityNetherSoul": [
+      "fireImmunity",
+      "waterAllergy",
+      "fly|true",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.demonmobs.entity.EntityPinky": [
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.demonmobs.entity.EntityTrite": [
+      "climb",
+      "witherResistance",
+      "fireImmunity",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityClink": [
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityCrusk": [
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityCryptZombie": [
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityErepede": [
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityGorgomite": [
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityJoust": [
+      ""
+    ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityJoustAlpha": [
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.swampmobs.entity.EntityAspid": [
+      "swim|true,1.5F,1.5F,false",
+      "poisonResistance"
+    ],
+    "lycanite.lycanitesmobs.swampmobs.entity.EntityDweller": [
+      "swim|false,1.5F,1.5F,true"
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.swampmobs.entity.EntityEttin": [
+      "step|1F",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.swampmobs.entity.EntityEyewig": [
+      "climb",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.swampmobs.entity.EntityGhoulZombie": [
+      "sunburn",
+      "poisonResistance",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.swampmobs.entity.EntityLurker": [
+      "climb",
+      "hostile"
+    ],
     "mods.natura.entity.BabyHeatscarSpider": [
       "climb",
       "fireImmunity",
