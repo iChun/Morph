@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Cliquez ici pour modifier les liaisons de clé
+morph.gui.keybinds.title=Liaisons de clé Morph
+morph.gui.keybinds.hold=Tenir
+morph.gui.keybinds.none=Aucun
+morph.gui.keybinds.shift=Majuscule
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Sélecteur
+morph.gui.keybinds.up=En haut
+morph.gui.keybinds.down=En bas
+morph.gui.keybinds.left=Gauche
+morph.gui.keybinds.right=Droit
+morph.gui.keybinds.choose=Choisir
+morph.gui.keybinds.cancel=Annuler
+morph.gui.keybinds.remove=Enlever
+morph.gui.keybinds.favorite=Favori
