@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
@@ -28,6 +30,10 @@ public class MorphInfo
 	
 	public MorphInfo(){playerName="";}
 	
+	public boolean flying;
+	
+	public boolean firstUpdate;
+	
 	public MorphInfo(String name, MorphState prev, MorphState next)
 	{
 		playerName = name;
@@ -38,6 +44,9 @@ public class MorphInfo
 		
 		morphing = false;
 		morphProgress = 0;
+		
+		flying = false;
+		firstUpdate = true;
 	}
 	
 	public void setMorphing(boolean flag)
@@ -72,6 +81,8 @@ public class MorphInfo
 			{
 				Morph.writeNBTTagCompound(nextState.getTag(), stream);
 			}
+			
+			stream.writeBoolean(flying);
 		}
 		catch(IOException e)
 		{
@@ -87,6 +98,8 @@ public class MorphInfo
 		tag.setInteger("dimension", nextState.entInstance.dimension);
 		
 		tag.setCompoundTag("nextState", nextState.getTag());
+		
+		tag.setBoolean("isFlying", flying);
 	}
 	
 	public void readNBT(NBTTagCompound tag)
@@ -119,6 +132,8 @@ public class MorphInfo
 			{
 			}
 		}
+		
+		flying = tag.getBoolean("isFlying");
 	}
 }
 

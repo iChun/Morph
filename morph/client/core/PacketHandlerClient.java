@@ -126,11 +126,12 @@ public class PacketHandlerClient
 							{
 							}
 						}
-
 					}
 					
 					Morph.proxy.tickHandlerClient.playerMorphInfo.put(name, info);
-
+					
+					info.flying = stream.readBoolean();
+					
 					break;
 				}
 				case 1:

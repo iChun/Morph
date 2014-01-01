@@ -454,7 +454,14 @@ public class TickHandlerClient
 							}
 						}
 					}
+					if(info.flying && info.firstUpdate)
+					{
+						info.player.capabilities.isFlying = true;
+						info.player.capabilities.allowFlying = true;
+						info.player.sendPlayerAbilities();
+					}
 				}
+				info.firstUpdate = false;
 			}
 			
 			if((Morph.keySelectorUpHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorUpHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorUpHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorUpHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorUpDown && isPressed(Morph.keySelectorUp))

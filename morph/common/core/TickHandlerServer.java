@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import morph.api.Ability;
 import morph.common.Morph;
+import morph.common.ability.AbilityFly;
 import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -168,12 +169,18 @@ public class TickHandlerServer
 				if(player != null && ability.getParent() == player || player == null && ability.getParent() != null)
 				{
 					ability.tick();
+					if(!info.firstUpdate && ability instanceof AbilityFly && player != null)
+					{
+						info.flying = player.capabilities.isFlying;
+					}
 				}
 				else
 				{
 					ability.setParent(player);
 				}
 			}
+
+			info.firstUpdate = false;
 
 			//					if(info.morphProgress > 70)
 			//					{
