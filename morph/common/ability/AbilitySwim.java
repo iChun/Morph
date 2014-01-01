@@ -50,6 +50,10 @@ public class AbilitySwim extends Ability {
 		swimSpeed = swimModifier;
 		landSpeed = landModifier;
 		canMaintainDepth = maintainDepth;
+		if(swimSpeed > 1.22F)
+		{
+			swimSpeed = 1.22F;
+		}
 	}
 	
 	@Override
@@ -59,6 +63,10 @@ public class AbilitySwim extends Ability {
 		swimSpeed = Float.parseFloat(args[1]);
 		landSpeed = Float.parseFloat(args[2]);
 		canMaintainDepth = Boolean.parseBoolean(args[3]);
+		if(swimSpeed > 1.22F)
+		{
+			swimSpeed = 1.22F;
+		}
 		return this;
 	}
 
