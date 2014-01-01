@@ -31,6 +31,7 @@ public class MorphInfo
 	public MorphInfo(){playerName="";}
 	
 	public boolean flying;
+	public boolean sleeping;
 	
 	public boolean firstUpdate;
 	
@@ -46,6 +47,7 @@ public class MorphInfo
 		morphProgress = 0;
 		
 		flying = false;
+		sleeping = false;
 		firstUpdate = true;
 	}
 	

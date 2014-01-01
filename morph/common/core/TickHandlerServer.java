@@ -163,6 +163,21 @@ public class TickHandlerServer
 					}
 				}
 			}
+			
+			if(player != null)
+			{
+				 if(player.isPlayerSleeping() && player.getSleepTimer() > 0)
+				 {
+					 info.sleeping = true;
+				 }
+				 else if(info.sleeping)
+				 {
+					 info.sleeping = false;
+					 ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+					 player.setPosition(player.posX, player.posY, player.posZ);
+					 player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
+				 }
+			}
 
 			for(Ability ability : info.morphAbilities)
 			{
