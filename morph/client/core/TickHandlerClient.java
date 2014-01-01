@@ -1335,15 +1335,20 @@ public class TickHandlerClient
 	    		double zLev = 0.05D;
 	    		
 				GL11.glDisable(GL11.GL_TEXTURE_2D);
-				if(hasStencilBits)
+				
+				final int stencilBit = MinecraftForgeClient.reserveStencilBit();
+				
+				if(stencilBit >= 0)
 				{
 			        GL11.glEnable(GL11.GL_STENCIL_TEST);
 			        GL11.glColorMask(false, false, false, false);
 		
-			        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
-			        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
-			        GL11.glStencilMask(0xFF);
-			        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+			        final int stencilMask = 1 << stencilBit;
+			        
+					GL11.glStencilMask(stencilMask);
+					GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
+					GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+					GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 		
 					rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog * (257F / (float)reso.getScaledHeight());
 					
@@ -1357,7 +1362,7 @@ public class TickHandlerClient
 					}
 					GL11.glEnd();
 					
-					GL11.glStencilFunc(GL11.GL_ALWAYS, 0, 0xFF);
+					GL11.glStencilFunc(GL11.GL_ALWAYS, 0, stencilMask);
 					
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 					
@@ -1372,7 +1377,7 @@ public class TickHandlerClient
 					GL11.glEnd();
 					
 					GL11.glStencilMask(0x00);
-					GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+					GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
 		
 			        GL11.glColorMask(true, true, true, true);
 				}
@@ -1389,10 +1394,13 @@ public class TickHandlerClient
 				}
 				GL11.glEnd();
 	
-				if(hasStencilBits)
+				if(stencilBit >= 0)
 				{
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
 				}
+				
+				MinecraftForgeClient.releaseStencilBit(stencilBit);
+				
 				GL11.glEnable(GL11.GL_TEXTURE_2D);
 		        
 				GL11.glPopMatrix();
@@ -1634,7 +1642,10 @@ public class TickHandlerClient
 	    		}
 	        	
 	        	boolean shouldScroll = false; 
-				if(hasStencilBits && abilitiesSize > 3)
+	        	
+	        	final int stencilBit = MinecraftForgeClient.reserveStencilBit();
+	        	
+				if(stencilBit >= 0 && abilitiesSize > 3)
 				{
 					MorphState selectedState = null;
 					
@@ -1670,18 +1681,20 @@ public class TickHandlerClient
 					
 					if(shouldScroll)
 					{
+						final int stencilMask = 1 << stencilBit;
+						
 				        GL11.glEnable(GL11.GL_STENCIL_TEST);
 				        GL11.glColorMask(false, false, false, false);
 	
-				        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+				        GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
 				        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
-				        GL11.glStencilMask(0xFF);
+				        GL11.glStencilMask(stencilMask);
 				        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 	
 						drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
 						
 						GL11.glStencilMask(0x00);
-						GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+						GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
 	
 						
 				        GL11.glColorMask(true, true, true, true);
@@ -1690,11 +1703,11 @@ public class TickHandlerClient
 	        	
         		int offsetX = 0;
         		int offsetY = 0;
-	        	for(int i = 0; i < (abilitiesSize > 3 && hasStencilBits && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
+	        	for(int i = 0; i < (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
 	        	{
 	        		Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
 	        		
-	        		if(!ability.entityHasAbility(ent) || (abilitiesSize > 3 && hasStencilBits && abilities.size() > 3) && !shouldScroll && i >= 3)
+	        		if(!ability.entityHasAbility(ent) || (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3) && !shouldScroll && i >= 3)
 	        		{
 	        			continue;
 	        		}
@@ -1705,7 +1718,7 @@ public class TickHandlerClient
 	        			double pY = -33.5D;
 						double size = 12D;
 	        			
-						if(hasStencilBits && abilities.size() > 3 && shouldScroll)
+						if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
 						{
 		        			int round = abilityScroll % (30 * abilities.size());
 		        			
@@ -1742,7 +1755,7 @@ public class TickHandlerClient
 				        tessellator.draw();
 
 				        offsetY++;
-				        if(offsetY == 3 && !hasStencilBits)
+				        if(offsetY == 3 && stencilBit < 0)
 				        {
 				        	offsetY = 0;
 				        	offsetX++;
@@ -1750,10 +1763,12 @@ public class TickHandlerClient
 	        		}
 	        	}
 	        	
-				if(hasStencilBits && abilities.size() > 3 && shouldScroll)
+				if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
 				{
 			        GL11.glDisable(GL11.GL_STENCIL_TEST);
 				}
+				
+				MinecraftForgeClient.releaseStencilBit(stencilBit);
         	}
         	GL11.glTranslatef(0.0F, 0.0F, -100F);
 
@@ -1938,6 +1953,4 @@ public class TickHandlerClient
 	public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
 	public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");
 	public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");
-	
-	public static boolean hasStencilBits = MinecraftForgeClient.getStencilBits() > 0;
 }
