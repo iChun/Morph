@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Klicka för tangentbindningar
+morph.gui.keybinds.title=Morph Tangentbindningar
+morph.gui.keybinds.hold=Håll
+morph.gui.keybinds.none=Ingen
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Väljare
+morph.gui.keybinds.up=Upp
+morph.gui.keybinds.down=Ner
+morph.gui.keybinds.left=Vänster
+morph.gui.keybinds.right=Höger
+morph.gui.keybinds.choose=Välj
+morph.gui.keybinds.cancel=Avbryt
+morph.gui.keybinds.remove=Ta bort
+morph.gui.keybinds.favorite=Favorit
