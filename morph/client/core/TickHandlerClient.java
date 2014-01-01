@@ -1030,7 +1030,7 @@ public class TickHandlerClient
 	    String bossName = BossStatus.bossName;
 	    boolean randVar = BossStatus.field_82825_d;
 		
-		if(selectorTimer > 0 || selectorShow)
+		if((selectorTimer > 0 || selectorShow) && !mc.gameSettings.hideGUI)
 		{
 			GL11.glPushMatrix();
 			
@@ -1299,7 +1299,7 @@ public class TickHandlerClient
 		
 		//////////////////////
 		
-		if(radialShow)
+		if(radialShow && !mc.gameSettings.hideGUI)
 		{
 	    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
 	    	double magAcceptance = 0.8D;
