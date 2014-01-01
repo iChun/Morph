@@ -34,7 +34,6 @@ public class AbilityClimb extends Ability {
 			double motionX = getParent().posX - getParent().lastTickPosX;
 			double motionZ = getParent().posZ - getParent().lastTickPosZ;
 			double motionY = getParent().posY - getParent().lastTickPosY - 0.765D; //serverside motion is weird.
-			System.out.println(motionY);
 			if(motionY > 0.0D && (motionX == 0D || motionZ == 0D))
 			{
 				//most likely climbing.
