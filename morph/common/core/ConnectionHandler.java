@@ -144,6 +144,27 @@ public class ConnectionHandler
 	@Override
 	public void onPlayerLogout(EntityPlayer player) 
 	{
+		if(Morph.proxy.tickHandlerServer.saveData != null)
+		{
+			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+			if(info != null)
+			{
+		    	NBTTagCompound tag1 = new NBTTagCompound();
+		    	info.writeNBT(tag1);
+		    	Morph.proxy.tickHandlerServer.saveData.setCompoundTag(player.username + "_morphData", tag1);
+			}
+		
+			ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.playerMorphs.get(player.username);
+			if(states != null)
+			{
+				Morph.proxy.tickHandlerServer.saveData.setInteger(player.username + "_morphStatesCount", states.size());
+		    	for(int i = 0; i < states.size(); i++)
+		    	{
+		    		Morph.proxy.tickHandlerServer.saveData.setCompoundTag(player.username + "_morphState" + i, states.get(i).getTag());
+		    	}
+
+			}
+		}
 	}
 
 	@Override
