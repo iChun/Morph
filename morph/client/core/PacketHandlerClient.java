@@ -132,6 +132,36 @@ public class PacketHandlerClient
 					
 					info.flying = stream.readBoolean();
 					
+					if(Morph.sortMorphs == 3 && info.playerName.equalsIgnoreCase(mc.thePlayer.username))
+					{
+						String name1 = info.nextState.entInstance.getEntityName();
+						
+						if(name1 != null)
+						{
+							ArrayList<String> order = new ArrayList<String>();
+							Iterator<String> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.keySet().iterator();
+							while(ite.hasNext())
+							{
+								order.add(ite.next());
+							}
+	
+							order.remove(name1);
+							order.remove(mc.thePlayer.username);
+							
+							order.add(0, name1);
+							order.add(0, mc.thePlayer.username);
+							
+							LinkedHashMap<String, ArrayList<MorphState>> bufferList = new LinkedHashMap<String, ArrayList<MorphState>>(Morph.proxy.tickHandlerClient.playerMorphCatMap);
+							
+							Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
+							
+							for(int i = 0; i < order.size(); i++)
+							{
+								Morph.proxy.tickHandlerClient.playerMorphCatMap.put(order.get(i), bufferList.get(order.get(i)));
+							}
+						}
+					}
+					
 					break;
 				}
 				case 1:
@@ -170,28 +200,9 @@ public class PacketHandlerClient
 						}
 					}
 					
-					if(Morph.sortMorphsAlphabetically > 0 && requireReorder)
+					if(requireReorder)
 					{
-						ArrayList<String> order = new ArrayList<String>();
-						Iterator<String> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.keySet().iterator();
-						while(ite.hasNext())
-						{
-							order.add(ite.next());
-						}
-						Collections.sort(order);
-						
-						order.remove(Minecraft.getMinecraft().thePlayer.username);
-						
-						order.add(0, Minecraft.getMinecraft().thePlayer.username);
-						
-						LinkedHashMap<String, ArrayList<MorphState>> bufferList = new LinkedHashMap<String, ArrayList<MorphState>>(Morph.proxy.tickHandlerClient.playerMorphCatMap);
-						
-						Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
-						
-						for(int i = 0; i < order.size(); i++)
-						{
-							Morph.proxy.tickHandlerClient.playerMorphCatMap.put(order.get(i), bufferList.get(order.get(i)));
-						}
+						MorphHandler.reorderMorphs(Minecraft.getMinecraft().thePlayer.username, Morph.proxy.tickHandlerClient.playerMorphCatMap);
 					}
 					break;
 				}

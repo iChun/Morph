@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import morph.common.Morph;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.FakePlayer;
@@ -45,7 +47,7 @@ public class MorphHandler
 			states.add(state);
 		}
 		state.isFavourite = isFavourite;
-		if(Morph.sortMorphsAlphabetically == 2)
+		if(Morph.sortMorphs == 2)
 		{
 			Collections.sort(states);
 		}
@@ -117,6 +119,33 @@ public class MorphHandler
 			}
 		}
 		return null;
+	}
+
+	public static void reorderMorphs(String starter, LinkedHashMap<String, ArrayList<MorphState>> morphMap) 
+	{
+		if(Morph.sortMorphs == 1 || Morph.sortMorphs == 2)
+		{
+			ArrayList<String> order = new ArrayList<String>();
+			Iterator<String> ite = morphMap.keySet().iterator();
+			while(ite.hasNext())
+			{
+				order.add(ite.next());
+			}
+			Collections.sort(order);
+			
+			order.remove(starter);
+			
+			order.add(0, starter);
+			
+			LinkedHashMap<String, ArrayList<MorphState>> bufferList = new LinkedHashMap<String, ArrayList<MorphState>>(morphMap);
+			
+			morphMap.clear();
+			
+			for(int i = 0; i < order.size(); i++)
+			{
+				morphMap.put(order.get(i), bufferList.get(order.get(i)));
+			}
+		}
 	}
 	
 }
