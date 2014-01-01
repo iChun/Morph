@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Klikkaa pikanäppäinasetuksia varten
+morph.gui.keybinds.title=Morph Pikanäppäimet
+morph.gui.keybinds.hold=Pidä
+morph.gui.keybinds.none=Ei mitään
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Valitsin
+morph.gui.keybinds.up=Ylös
+morph.gui.keybinds.down=Alas
+morph.gui.keybinds.left=Vasemmalle
+morph.gui.keybinds.right=Oikealle
+morph.gui.keybinds.choose=Valitse
+morph.gui.keybinds.cancel=Peruuta
+morph.gui.keybinds.remove=Poista
+morph.gui.keybinds.favorite=Suosikki
