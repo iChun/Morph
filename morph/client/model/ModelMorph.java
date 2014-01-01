@@ -180,8 +180,8 @@ public class ModelMorph extends ModelBase
 		GL11.glPopMatrix();
 		
 		float prevScaleX = buffer1.get(0) / buffer.get(0);
-		float prevScaleY = buffer1.get(1) / buffer.get(1);
-		float prevScaleZ = buffer1.get(2) / buffer.get(2);
+		float prevScaleY = buffer1.get(5) / buffer.get(5);
+		float prevScaleZ = buffer1.get(8) / buffer.get(8);
 
 		GL11.glPushMatrix();
 		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
@@ -190,8 +190,8 @@ public class ModelMorph extends ModelBase
 		GL11.glPopMatrix();
 		
 		float nextScaleX = buffer1.get(0) / buffer.get(0);
-		float nextScaleY = buffer1.get(1) / buffer.get(1);
-		float nextScaleZ = buffer1.get(2) / buffer.get(2);
+		float nextScaleY = buffer1.get(5) / buffer.get(5);
+		float nextScaleZ = buffer1.get(8) / buffer.get(8);
 		
 		float progress = ((float)morphInfo.morphProgress - 10F + Morph.proxy.tickHandlerClient.renderTick) / 60F;
 
