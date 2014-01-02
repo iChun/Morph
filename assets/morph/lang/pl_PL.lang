@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Kliknij dla Klawiszologii
+morph.gui.keybinds.title=Klawiszologia Morph
+morph.gui.keybinds.hold=Przytrzymaj
+morph.gui.keybinds.none=Nic
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Selektor
+morph.gui.keybinds.up=Góra
+morph.gui.keybinds.down=Dół
+morph.gui.keybinds.left=Lewo
+morph.gui.keybinds.right=Prawo
+morph.gui.keybinds.choose=Wybierz
+morph.gui.keybinds.cancel=Anuluj
+morph.gui.keybinds.remove=Usuń
+morph.gui.keybinds.favorite=Dodaj do ulubionych
