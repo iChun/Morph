@@ -1,11 +1,11 @@
 morph.keybinds=[Morph] Нажмите для настроек клавиш
 morph.gui.keybinds.title=Горячие клавиши мода "Morph"
-morph.gui.keybinds.hold=Hold
+morph.gui.keybinds.hold=Удерживать
 morph.gui.keybinds.none=Нет клавиши
 morph.gui.keybinds.shift=Shift
 morph.gui.keybinds.ctrl=Ctrl
 morph.gui.keybinds.alt=Alt
-morph.gui.keybinds.selector=Selector
+morph.gui.keybinds.selector=Переключатель
 morph.gui.keybinds.up=Стрелка вверх
 morph.gui.keybinds.down=Стрелка вниз
 morph.gui.keybinds.left=Стрелка влево
