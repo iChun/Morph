@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Klik voor keybinds
+morph.gui.keybinds.title=Morph Keybinds
+morph.gui.keybinds.hold=Vasthouden
+morph.gui.keybinds.none=Niets
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Keuzeschakelaar
+morph.gui.keybinds.up=Boven
+morph.gui.keybinds.down=Beneden
+morph.gui.keybinds.left=Links
+morph.gui.keybinds.right=Rechts
+morph.gui.keybinds.choose=Kiezen
+morph.gui.keybinds.cancel=Annuleer
+morph.gui.keybinds.remove=Verwijderen
+morph.gui.keybinds.favorite=Favoriet
