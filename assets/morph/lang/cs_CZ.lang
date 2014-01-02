@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Kliknete pro nastaveni klaves
+morph.gui.keybinds.title=Nastaveni klaves v modu Morph
+morph.gui.keybinds.hold=Drzet
+morph.gui.keybinds.none=Zadny
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Volic
+morph.gui.keybinds.up=Nahoru
+morph.gui.keybinds.down=Dolu
+morph.gui.keybinds.left=Vlevo
+morph.gui.keybinds.right=Vpravo
+morph.gui.keybinds.choose=Vybrat
+morph.gui.keybinds.cancel=Zrusit
+morph.gui.keybinds.remove=Odstranit
+morph.gui.keybinds.favorite=Oblibene
