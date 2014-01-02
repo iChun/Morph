@@ -437,6 +437,91 @@
     "koi.Entitykoi": [
       "swim|false,1.2F,0.3F,true"
     ],
+    "lom.LotsOMobsEntity.EntityAnt": [
+      "climb"
+    ],
+	  "lom.LotsOMobsEntity.EntityBear": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntityBird": [
+      "fly|true"
+    ],
+	  "lom.LotsOMobsEntity.EntityBirdy": [
+      "fly|true"
+    ],
+	  "lom.LotsOMobsEntity.EntityButterfly": [
+      "fly|true"
+    ],
+	  "lom.LotsOMobsEntity.EntityCroco": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntityFireFly": [
+      "fly|true"
+    ],
+  	"lom.LotsOMobsEntity.EntityFishy": [
+      "swim|false,1.2F,1F,true"
+    ],
+	  "lom.LotsOMobsEntity.EntityFly": [
+      "fly|true"
+    ],
+  	"lom.LotsOMobsEntity.EntityBee": [
+      "fly|true"
+    ],
+	  "lom.LotsOMobsEntity.EntityIceBear": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntityGekko": [
+      "climb"
+    ],
+	  "lom.LotsOMobsEntity.EntityLizard": [
+      "climb"
+    ],
+	  "lom.LotsOMobsEntity.EntityKakkerlak": [
+      "climb"
+    ],
+	  "lom.LotsOMobsEntity.EntityLion": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntityNarwal": [
+      "swim|false,1F,1F,true"
+    ],
+	  "lom.LotsOMobsEntity.EntityPterosaurus": [
+      "fly|true"
+    ],
+	  "lom.LotsOMobsEntity.EntityRaptor": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntitySaberTooth": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntitySnake": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntitySquirrel": [
+      "climb",
+	    "fallNegate"
+    ],
+	  "lom.LotsOMobsEntity.EntityTRex": [
+      "hostile"
+    ],
+	  "lom.LotsOMobsEntity.EntityTropicalFishy": [
+      "swim|false,1.2F,1F,true"
+    ],
+	  "lom.LotsOMobsEntity.EntityTurtle": [
+      "swim|false,1F,1F,true"
+    ],
+	  "lom.LotsOMobsEntity.EntityVulture": [
+      "fly|true"
+    ],
+	  "lom.LotsOMobsEntity.EntityWhale": [
+      "swim|false,1F,1F,true"
+    ],
+	  "lom.LotsOMobsEntity.EntitySanta": [
+      "fly|true"
+    ],
+	  "lom.LotsOMobsEntity.EntityGorilla": [
+      "hostile"
+    ],
     "lycanite.lycanitesmobs.demonmobs.entity.EntityAsmodi": [
       "fireImmunity",
       "hostile"
