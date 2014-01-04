@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Kattints a gombokhoz
+morph.gui.keybinds.title=Morph Gombok
+morph.gui.keybinds.hold=Tart
+morph.gui.keybinds.none=Semmi
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Kiválasztó
+morph.gui.keybinds.up=Fel
+morph.gui.keybinds.down=Le
+morph.gui.keybinds.left=Bal
+morph.gui.keybinds.right=Jobb
+morph.gui.keybinds.choose=Választ
+morph.gui.keybinds.cancel=Mégse
+morph.gui.keybinds.remove=Törlés
+morph.gui.keybinds.favorite=Kedvenc
