@@ -681,6 +681,7 @@
     ],
     "thaumcraft.common.entities.monster.EntityFireBat": [
       "fireImmunity",
+      "waterAllergy",
       "fly|true",
       "hostile"
     ],
