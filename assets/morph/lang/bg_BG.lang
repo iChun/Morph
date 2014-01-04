@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Натисни тук за промяна на копчета
+morph.gui.keybinds.title=Morph копчета
+morph.gui.keybinds.hold=Задръж
+morph.gui.keybinds.none=Никой
+morph.gui.keybinds.shift=Шифт
+morph.gui.keybinds.ctrl=Ктрл
+morph.gui.keybinds.alt=Алт
+morph.gui.keybinds.selector=Селектор
+morph.gui.keybinds.up=Нагоре
+morph.gui.keybinds.down=Надолу
+morph.gui.keybinds.left=Наляво
+morph.gui.keybinds.right=Надясно
+morph.gui.keybinds.choose=Избери
+morph.gui.keybinds.cancel=Отказ
+morph.gui.keybinds.remove=Изтрий
+morph.gui.keybinds.favorite=Любими
