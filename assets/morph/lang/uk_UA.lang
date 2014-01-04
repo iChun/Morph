@@ -1,0 +1,16 @@
+morph.keybinds=[Morph] Натисніть для налаштування клавіш
+morph.gui.keybinds.title=Гарячі клавіші Morph
+morph.gui.keybinds.hold=Зажимаючи
+morph.gui.keybinds.none=нічого
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=
+morph.gui.keybinds.up=Вверх
+morph.gui.keybinds.down=Вниз
+morph.gui.keybinds.left=Вліво
+morph.gui.keybinds.right=Вправо
+morph.gui.keybinds.choose=Вибрати
+morph.gui.keybinds.cancel=Скасувати
+morph.gui.keybinds.remove=Видалити
+morph.gui.keybinds.favorite=Обране
