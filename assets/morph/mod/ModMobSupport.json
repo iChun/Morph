@@ -559,6 +559,11 @@
     "lycanite.lycanitesmobs.desertmobs.entity.EntityClink": [
       "hostile"
     ],
+    "lycanite.lycanitesmobs.desertmobs.entity.EntityManticore": [
+      "fireImmunity",
+      "waterAllergy",
+      "fly|true"
+    ],
     "lycanite.lycanitesmobs.desertmobs.entity.EntityCrusk": [
       "hostile"
     ],
