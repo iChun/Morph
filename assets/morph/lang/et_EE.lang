@@ -1,0 +1,16 @@
+morph.keybinds=[Kujumuutja]Seadista juhtnuppe
+morph.gui.keybinds.title=Kujumuutja juhtnupud
+morph.gui.keybinds.hold=Hoia all
+morph.gui.keybinds.none=-Tühi-
+morph.gui.keybinds.shift=Shift
+morph.gui.keybinds.ctrl=Ctrl
+morph.gui.keybinds.alt=Alt
+morph.gui.keybinds.selector=Valik
+morph.gui.keybinds.up=Üles
+morph.gui.keybinds.down=Alla
+morph.gui.keybinds.left=Vasakule
+morph.gui.keybinds.right=Paremale
+morph.gui.keybinds.choose=Vali
+morph.gui.keybinds.cancel=Välju
+morph.gui.keybinds.remove=Kustuta
+morph.gui.keybinds.favorite=Lemmik
