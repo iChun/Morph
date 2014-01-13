@@ -85,7 +85,7 @@
     "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
       "waterAllergy"
     ],
-        "danger.orespawn.Basilisk": [
+    "danger.orespawn.Basilisk": [
       "hostile",
       "step|2F"
     ],
@@ -129,9 +129,6 @@
     "danger.orespawn.Alosaurus": [
       "hostile",
       "step|1F"
-    ],
-    "danger.orespawn.Camarasaurus": [
-      "fallNegate"
     ],
     "danger.orespawn.Bee": [
       "fly|true",
@@ -311,7 +308,6 @@
     ],
     "danger.orespawn.GammaMetroid": [
       "hostile",
-      "poisonResistance"
     ],
     "danger.orespawn.Gazelle": [
       "step|1F"
