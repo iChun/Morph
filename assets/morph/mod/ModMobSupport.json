@@ -381,10 +381,6 @@
       "climb",
       "sunburn"
     ],
-    "danger.orespawn.SunspotUrchin": [
-      "swim|true",
-      "hostile"
-    ],
     "danger.orespawn.Termite": [
       "hostile",
       "climb",
