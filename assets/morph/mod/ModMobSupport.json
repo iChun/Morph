@@ -378,8 +378,7 @@
     ],
     "danger.orespawn.StinkBug": [
       "hostile",
-      "climb",
-      "sunburn"
+      "climb"
     ],
     "danger.orespawn.Termite": [
       "hostile",
