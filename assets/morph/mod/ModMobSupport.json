@@ -322,7 +322,7 @@
       "hostile"
     ],
     "danger.orespawn.GoldFish": [
-      "swim|false,1.8F,0.6F,true"
+      "fly|false"
     ],
     "danger.orespawn.Island": [
       "fly|false",
