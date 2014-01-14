@@ -118,6 +118,7 @@
       "waterAllergy"
     ],
     "danger.orespawn.EntityUnstableAnt": [
+      "waterAllergy"
       "swim|true"
     ],
     "danger.orespawn.Lizard": [
@@ -164,7 +165,6 @@
       "step|1F"
     ],
     "danger.orespawn.Kyuubi": [
-      "waterAllergy",
       "step|1F",
       "fallNegate",
       "hostile"
@@ -215,7 +215,8 @@
       "hostile"
     ],
     "danger.orespawn.Robot1": [
-      "hostile"
+      "hostile",
+      "waterAllergy"
     ],
     "danger.orespawn.WormSmall": [
       "hostile",
@@ -285,6 +286,7 @@
     ],
     "danger.orespawn.EntityAnt": [
       "swim|true"
+      "waterAllergy"
     ],
     "danger.orespawn.EntityLunaMoth": [
       "fly|true",
@@ -296,6 +298,7 @@
       "waterAllergy"
     ],
     "danger.orespawn.EntityRainbowAnt": [
+      "waterAllergy"
       "swim|true"
     ],
     "danger.orespawn.EntityRedAnt": [
