@@ -219,13 +219,10 @@
       "waterAllergy"
     ],
     "danger.orespawn.WormSmall": [
-      "hostile",
-      "swim|true",
-      "sunburn"
+      "hostile"
     ],
     "danger.orespawn.WormMedium": [
-      "hostile",
-      "climb"
+      "hostile"
     ],
     "danger.orespawn.WormLarge": [
       "hostile",
@@ -252,9 +249,6 @@
     ],
     "danger.orespawn.CaveFisher": [
       "hostile",
-      "climb"
-    ],
-    "danger.orespawn.Chipmunk": [
       "climb"
     ],
     "danger.orespawn.CliffRacer": [
