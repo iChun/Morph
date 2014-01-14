@@ -790,6 +790,21 @@
       "fly|false",
       "hostile"
     ],
+    "thehippomaster.MutantCreatures.MutantCreeper": [
+      "hostile",
+      "fallNegate"
+    ],
+    "thehippomaster.MutantCreatures.MutantEnderman": [
+      "hostile"
+    ],
+    "thehippomaster.MutantCreatures.MutantSkeleton": [
+      "hostile",
+      "fallNegate"
+    ],
+    "thehippomaster.MutantCreatures.MutantZombie": [
+      "hostile",
+      "fallNegate"
+    ],
     "twilightforest.entity.EntityTFDeathTome": [
       "fly|true",
       "hostile"
