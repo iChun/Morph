@@ -795,7 +795,8 @@
       "fallNegate"
     ],
     "thehippomaster.MutantCreatures.MutantEnderman": [
-      "hostile"
+      "hostile",
+      "fallNegate"
     ],
     "thehippomaster.MutantCreatures.MutantSkeleton": [
       "hostile",
