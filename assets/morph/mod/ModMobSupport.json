@@ -142,7 +142,6 @@
     "danger.orespawn.Alien": [
       "hostile",
       "fallNegate",
-      "waterAllergy",
       "climb"
     ],
     "danger.orespawn.Beaver": [
