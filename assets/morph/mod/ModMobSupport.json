@@ -86,55 +86,55 @@
       "waterAllergy"
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityBee": [
-      "fly|false",
+      "fly|true",
       "waterAllergy"
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityButterfly": [
-      "fly|false"
+      "fly|true"
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityDragonfly": [
-      "fly|false"
+      "fly|true"
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityFirefly": [
-      "fly|false"
+      "fly|true"
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityFly": [
-      "fly|false"
+      "fly|true"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityDolphin": [
-      "swim|false,1.8F,0.6F,true",
+      "swim|true,1.8F,0.6F,true",
       "hostile"
     ],
     "drzhark.mocreatures.entity.MoCEntityFlyerMob": [
       "fly|true"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityFishy": [
-      "swim|false,1.4F,0.5F,true"
+      "swim|true,1.4F,0.5F,true"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityJellyFish": [
-      "swim|false,1F,0.2F,true",
+      "swim|true,1F,0.2F,true",
       "hostile"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityMediumFish": [
-      "swim|false,1.3F,0.4F,true"
+      "swim|true,1.3F,0.4F,true"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityPiranha": [
-      "swim|false,1.5F,0.4F,true",
+      "swim|true,1.5F,0.4F,true",
       "hostile"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityRay": [
-      "swim|false,1.2F,0.2F,true",
+      "swim|true,1.2F,0.2F,true",
       "hostile"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityShark": [
-      "swim|false,1.7F,0.6F,true",
+      "swim|true,1.7F,0.6F,true",
       "hostile"
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntitySmallFish": [
-      "swim|false,1.2F,0.3F,true"
+      "swim|true,1.2F,0.3F,true"
     ],
     "drzhark.mocreatures.entity.monster.MoCEntityFlameWraith": [
-      "fly|false",
+      "fly|true",
       "hostile",
       "fireImmunity"
     ],
@@ -169,7 +169,7 @@
     "drzhark.mocreatures.entity.monster.MoCEntityWraith": [
       "hostile",
       "sunburn",
-      "fly|false"
+      "fly|true"
     ],
     "drzhark.mocreatures.entity.monster.MoCEntityWWolf": [
       "hostile"
@@ -178,7 +178,7 @@
       "fly|false"
     ],
     "drzhark.mocreatures.entity.passive.MoCEntityWyvern": [
-      "fly|false"
+      "fly|true"
     ],
     "erebus.entity.EntityAntlion": [
       "hostile"
@@ -254,7 +254,7 @@
     "gaia.entity.EntityGaiaBanshee": [
       "hostile",
       "sunburn",
-      "fly|false"
+      "fly|true"
     ],
     "gaia.entity.EntityGaiaBaphomet": [
       "hostile",
