@@ -317,6 +317,23 @@
       "float|-0.114,true",
       "hostile"
     ],
+    "danger.orespawn.HerculesBeetle": [
+      "fallNegate",
+      "hostile"
+    ],
+    "danger.orespawn.Mantis": [
+      "hostile",
+      "fly|true"
+    ],
+    "danger.orespawn.Robot5": [
+      "fallNegate",
+      "hostile",
+      "step|1F"
+    ],
+    "danger.orespawn.TRex": [
+      "hostile", 
+      "step|1F"
+    ],
     "danger.orespawn.GoldFish": [
       "fly|false"
     ],
