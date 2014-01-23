@@ -156,6 +156,7 @@
       "hostile"
     ],
     "drzhark.mocreatures.entity.monster.MoCEntityScorpion": [
+      "climb",
       "hostile"
     ],
     "drzhark.mocreatures.entity.monster.MoCEntitySilverSkeleton": [ 
@@ -833,5 +834,7 @@
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
     ]
+    
+    
   }
 }
