@@ -623,7 +623,6 @@
     "lycanite.lycanitesmobs.junglesmobs.entity.EntityUvaraptor": [
       "float|-0.114,true",
       "hostile"
-      
     ],
     "mods.dungeonMobs.EntityAhriman": [
       "witherResistance",
