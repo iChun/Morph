@@ -560,9 +560,9 @@
       "hostile"
     ],
     "lycanite.lycanitesmobs.desertmobs.entity.EntityManticore": [
-      "fireImmunity",
-      "waterAllergy",
-      "fly|true"
+      "fly|true",
+      "hostile"
+      
     ],
     "lycanite.lycanitesmobs.desertmobs.entity.EntityCrusk": [
       "hostile"
@@ -577,7 +577,7 @@
       "hostile"
     ],
     "lycanite.lycanitesmobs.desertmobs.entity.EntityJoust": [
-      ""
+      "hostile"
     ],
     "lycanite.lycanitesmobs.desertmobs.entity.EntityJoustAlpha": [
       "hostile"
@@ -605,6 +605,27 @@
     ],
     "lycanite.lycanitesmobs.swampmobs.entity.EntityLurker": [
       "climb",
+      "hostile"
+    
+    ],
+    "lycanite.lycanitesmobs.swampmobs.entity.EntityRemobra": [
+      "float|-0.114,true",
+      "fly|true",
+      "hostile"  
+    
+    ],
+    "lycanite.lycanitesmobs.plainsmobs.entity.EntityKobold": [
+      "hostile"
+    
+    ],
+    "lycanite.lycanitesmobs.plainsmobs.entity.EntityVentoraptor": [
+      "float|-0.114,true",
+      "fly|true",
+      "hostile"
+    ],
+    "lycanite.lycanitesmobs.junglesmobs.entity.EntityUvaraptor": [
+      "float|-0.114,true",
+      "fly|true",
       "hostile"
     ],
     "mods.dungeonMobs.EntityAhriman": [
