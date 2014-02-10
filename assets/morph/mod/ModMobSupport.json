@@ -11,12 +11,14 @@
     "littlebreadloaf.bleach.entities.EntityHollowBat": [
       "fireImmunity",
       "hostile",
-      "fly|true"
+      "fly|true",
+      "fallNegate"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowBlaze": [
       "fireImmunity",
       "hostile",
       "fly|true",
+      "fallNegate",
       "waterAllergy"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowGolem": [
@@ -44,7 +46,7 @@
       "fireImmunity",
       "hostile",
       "fly|true",
-      "fallNegate"
+      "fallnegate"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowWolf": [
       "fireImmunity",
