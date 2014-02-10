@@ -1179,6 +1179,12 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
-    ]
+      "float|-0.114,true
+    ],
+    "orespawn.danger.orespawn.EntityAlien": [
+     "climb"
+     "hostile"
+     "fallnegate"
+   ]
   }
 }
