@@ -44,7 +44,6 @@
     ],
     "am2.entities.EntityHecate": [
       "sunburn",
-      "fly|false",
       "hostile"
     ],
     "am2.entities.EntityHellCow": [
