@@ -11,14 +11,12 @@
     "littlebreadloaf.bleach.entities.EntityHollowBat": [
       "fireImmunity",
       "hostile",
-      "fly|true",
-      "fallNegate",
+      "fly|true"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowBlaze": [
       "fireImmunity",
       "hostile",
       "fly|true",
-      "fallNegate",
       "waterAllergy"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowGolem": [
@@ -46,7 +44,7 @@
       "fireImmunity",
       "hostile",
       "fly|true",
-      "fallnegate"
+      "fallNegate"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowWolf": [
       "fireImmunity",
@@ -181,7 +179,7 @@
       "waterAllergy"
     ],
     "danger.orespawn.EntityUnstableAnt": [
-      "waterAllergy"
+      "waterAllergy",
       "swim|true"
     ],
     "danger.orespawn.Lizard": [
@@ -341,7 +339,7 @@
       "fly|true"
     ],
     "danger.orespawn.EntityAnt": [
-      "swim|true"
+      "swim|true",
       "waterAllergy"
     ],
     "danger.orespawn.EntityLunaMoth": [
@@ -354,7 +352,7 @@
       "waterAllergy"
     ],
     "danger.orespawn.EntityRainbowAnt": [
-      "waterAllergy"
+      "waterAllergy",
       "swim|true"
     ],
     "danger.orespawn.EntityRedAnt": [
@@ -366,7 +364,7 @@
       "swim|false,1.8F,0.6F,true"
     ],
     "danger.orespawn.GammaMetroid": [
-      "hostile",
+      "hostile"
     ],
     "danger.orespawn.Gazelle": [
       "step|1F"
@@ -1199,7 +1197,6 @@
     ],
     "net.aetherteam.aether.entities.mounts.EntitySwet": [
       "fallNegate"
-    ],
     ],
     "noppes.animalbikes.entity.EntityDragonBike": [
       "fly|true",
