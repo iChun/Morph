@@ -1,5 +1,69 @@
 {
   "customMobAbilityMapping": {
+    "littlebreadloaf.bleach.entities.EntityDecoy": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityFisher": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowBat": [
+      "fireImmunity",
+      "hostile",
+      "fly|true",
+      "fallNegate",
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowBlaze": [
+      "fireImmunity",
+      "hostile",
+      "fly|true",
+      "fallNegate",
+      "waterAllergy"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowGolem": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowOre": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowSnake": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowSpider": [
+      "fireImmunity",
+      "hostile",
+      "climb"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowStalker": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowWasp": [
+      "fireImmunity",
+      "hostile",
+      "fly|true",
+      "fallnegate"
+    ],
+    "littlebreadloaf.bleach.entities.EntityHollowWolf": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityMenosGrande": [
+      "fireImmunity",
+      "hostile"
+    ],
+    "littlebreadloaf.bleach.entities.EntityShinigami": [
+      ""
+    ],
+    "littlebreadloaf.bleach.entities.EntitySmallHollowLizard": [
+      "fireImmunity",
+      "hostile",
+      "climb"
+    ],
     "am2.bosses.EntityAirGuardian": [
       "hostile"
     ],
