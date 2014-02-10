@@ -1128,6 +1128,79 @@
       "fly|true",
       "float|-0.114,true"
     ],
+    "net.aetherteam.aether.entities.EntityAerwhale": [
+      "fly|true"
+    ],
+    "net.aetherteam.aether.entities.EntityAechorPlant": [
+      "poisonResistance",
+      "hostile"
+    ],
+    "net.aetherteam.aether.entities.EntityCockatrice": [
+      "hostile",
+      "poisonResistance",
+      "float|-0.114,true"
+    ],
+    "net.aetherteam.aether.entities.EntityNewZephyr": [
+      "hostile",
+      "float|-0.114,true"
+    ],
+    "net.aetherteam.aether.entities.EntitySentry": [
+      "hostile"
+    ],
+    "net.aetherteam.aether.entities.EntitySentryGolem": [
+      "hostile"
+    ],
+    "net.aetherteam.aether.entities.EntitySheepuff": [
+      "float|-0.114,true"
+    ],
+    "net.aetherteam.aether.entities.EntityTempest": [
+      "fly|false",
+      "hostile",
+      "fireImmunity"
+    ],
+    "net.aetherteam.aether.entities.EntityZephyr": [
+      "hostile",
+      "fly|true"
+    ],
+    "net.aetherteam.aether.entities.bosses.EntityCog": [
+      "hostile",
+      "fly|false",
+      "fireImmunity"
+    ],
+    "net.aetherteam.aether.entities.bosses.EntityHostEye": [
+      "hostile",
+      "fireImmunity"
+    ],
+    "net.aetherteam.aether.entities.bosses.EntityMiniSlider": [
+      "hostile",
+      "fireImmunity"
+    ],
+    "net.aetherteam.aether.entities.bosses.EntitySentryGuardian": [
+      "hostile",
+      "fireImmunity"
+    ],
+    "net.aetherteam.aether.entities.bosses.EntitySlider": [
+      "hostile",
+      "fireImmunity",
+      "fallNegate"
+    ],
+    "net.aetherteam.aether.entities.mounts.EntityAerbunny": [
+      "float|-0.114,true"
+    ],
+    "net.aetherteam.aether.entities.mounts.EntityFlyingCow": [
+      "fly|true"
+    ],
+    "net.aetherteam.aether.entities.mounts.EntityMoa": [
+      "fly|true",
+      "float|-0.114,true"
+    ],
+    "net.aetherteam.aether.entities.mounts.EntityPhyg": [
+      "fly|true"
+    ],
+    "net.aetherteam.aether.entities.mounts.EntitySwet": [
+      "fallNegate"
+    ],
+    ],
     "noppes.animalbikes.entity.EntityDragonBike": [
       "fly|true",
       "hostile"
