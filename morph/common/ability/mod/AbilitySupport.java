@@ -15,6 +15,7 @@ import morph.api.Ability;
 import morph.common.ability.AbilityHandler;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 public class AbilitySupport {
 	
@@ -55,13 +56,21 @@ public class AbilitySupport {
 				}
 			}
 			
-			if(fileIn == null)
+			if(fileIn != null)
+			{
+				try
+				{
+					instance = gson.fromJson(fileIn, AbilitySupport.class);
+				}
+				catch(JsonSyntaxException e)
+				{
+					Morph.console("ModMobSupport has invalid formatting! Mod mob abilities will be affected! Report this if the local file isn't used.", true);
+					e.printStackTrace();
+				}
+			}
+			if(instance == null)
 			{
 				instance = new AbilitySupport();
-			}
-			else
-			{
-				instance = gson.fromJson(fileIn, AbilitySupport.class);
 			}
 		}
 		return instance;
