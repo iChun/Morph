@@ -831,6 +831,8 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
-    ]
+    ],
+    "littlemaidmob.entity.passive.EntityLittleMaidMob": [
+      ""
   }
 }
