@@ -24,6 +24,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MorphState 
 	implements Comparable
 {
+	public final int NBT_PROTOCOL = 1;
+	
 	public String playerName;
 	public String playerMorph;
 	public boolean isFavourite;
@@ -112,9 +114,18 @@ public class MorphState
 			{
 				entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
 				identifier = tag.getString("identifier");
-				if(!identifier.contains("MorphModVersion"))
+				if(!tag1.hasKey("MorphNBTProtocolNumber") && entInstance != null)
+				{
+					//Assume updating from pre 0.7.0
+					tag1.setInteger("MorphNBTProtocolNumber", NBT_PROTOCOL);//changed everytime the identifier may change or requires a change.
+					identifier = entInstance.getClass().toString() + entInstance.getEntityName() + parseTag(tag1);
+					
+					tag1.setString("identifier", identifier);
+				}
+				if(tag1.getInteger("MorphNBTProtocolNumber") < NBT_PROTOCOL)
 				{
 					identifier = "";
+					invalid = true;
 				}
 			}
 			if(entInstance == null)
@@ -181,6 +192,7 @@ public class MorphState
 		}
 		tag.removeTag("bukkit");
 		tag.removeTag("InLove");
+		tag.setInteger("MorphNBTProtocolNumber", NBT_PROTOCOL);//changed everytime the identifier may change or requires a change.
 	}
 	
 	public static String parseTag(NBTTagCompound tag)
