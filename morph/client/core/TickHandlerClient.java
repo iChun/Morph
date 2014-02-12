@@ -302,7 +302,7 @@ public class TickHandlerClient
 						}
 					}
 				}
-				if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive() || !world.playerEntities.contains(info.player) || !info.player.isPlayerSleeping() && info.player.getSleepTimer() > 0))
+				if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive() || !world.playerEntities.contains(info.player) || !info.player.isPlayerSleeping() && info.player.sleepTimer > 0))
 				{
 					info.player = null;
 				}

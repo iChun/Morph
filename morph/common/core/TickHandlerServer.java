@@ -166,7 +166,7 @@ public class TickHandlerServer
 			
 			if(player != null)
 			{
-				 if(player.isPlayerSleeping() && player.getSleepTimer() > 0)
+				 if(player.isPlayerSleeping() && player.sleepTimer > 0)
 				 {
 					 info.sleeping = true;
 				 }
