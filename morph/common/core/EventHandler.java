@@ -691,16 +691,26 @@ public class EventHandler
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if(Morph.loseMorphsOnDeath == 1 && event.entityLiving instanceof EntityPlayerMP)
+			if(Morph.loseMorphsOnDeath >= 1 && event.entityLiving instanceof EntityPlayerMP)
 			{
 				EntityPlayerMP player = (EntityPlayerMP)event.entityLiving;
 				
-				Morph.proxy.tickHandlerServer.playerMorphs.remove(player.username);
+				MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
+				
 				MorphState state = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.username);
+				
+				if(Morph.loseMorphsOnDeath == 1)
+				{
+					Morph.proxy.tickHandlerServer.playerMorphs.remove(player.username);
+				}
+				else if(info != null && info.nextState != state)
+				{
+					ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.username);
+					states.remove(info.nextState);
+				}
 				
 				MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
 				
-				MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
 				if(info != null && state != null)
 				{
 					MorphInfo info2 = new MorphInfo(player.username, info.nextState, state);
