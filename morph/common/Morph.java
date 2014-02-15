@@ -43,7 +43,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "Morph", name = "Morph",
 			version = Morph.version,
-			dependencies = "required-after:Forge@[9.11.1.925,)"
+			dependencies = "required-after:Forge@[9.11.1.945,)"
 				)
 @NetworkMod(clientSideRequired = true,
 			serverSideRequired = false,
@@ -51,11 +51,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 			tinyPacketHandler = MapPacketHandler.class,
 			clientPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerClient.class),
 			serverPacketHandlerSpec = @SidedPacketHandler(channels = { "Morph" }, packetHandler = PacketHandlerServer.class),
-			versionBounds = "[0.6.0,0.7.0)"
+			versionBounds = "[0.7.0,0.8.0)"
 				)
 public class Morph 
 {
-	public static final String version = "0.6.0";
+	public static final String version = "0.7.0";
 	
 	@Instance("Morph")
 	public static Morph instance;
