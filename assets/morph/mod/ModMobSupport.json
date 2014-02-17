@@ -1270,6 +1270,10 @@
       "fly|false",
       "hostile"
     ],
+    "thaumcraft.common.entities.monster.EntityTaintSwarm": [
+      "fly|true",
+      "hostile"
+    ],
     "thehippomaster.MutantCreatures.MutantCreeper": [
       "hostile",
       "fallNegate"
