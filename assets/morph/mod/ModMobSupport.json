@@ -81,9 +81,13 @@
       "fly|true",
       "hostile"
     ],
+    "com.emoniph.witchery.entity.EntityOwl": [
+      "fly|true"
+    ],
     "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
       "waterAllergy"
     ],
+ 
     "danger.orespawn.Basilisk": [
       "hostile",
       "step|2F"
@@ -1332,6 +1336,7 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
-    ]
+    ],
+    
   }
 }
