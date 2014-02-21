@@ -1332,6 +1332,9 @@
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "fly|true"
+    ],
+    "com.emoniph.witchery.entity.EntityOwl": [
+      "fly|true"
     ]
   }
 }
