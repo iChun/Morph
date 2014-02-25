@@ -3,6 +3,8 @@ package morph.common.ability;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.core.SessionState;
@@ -155,7 +157,7 @@ public class AbilityHandler
 
 	public static ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
 	{
-		if(SessionState.abilities)
+		if(!SessionState.abilities.isEmpty())
 		{
 			ArrayList<Ability> abilities = abilityMap.get(entClass);
 			if(abilities == null)
@@ -169,6 +171,15 @@ public class AbilityHandler
 			}
 			else
 			{
+				Iterables.removeIf(abilities, new Predicate<Ability>()
+					{
+						@Override
+						public boolean apply(Ability ability)
+						{
+							return !SessionState.abilities.contains(ability.getType().toLowerCase());
+						}
+					}
+				);
 				return abilities;
 			}
 		}

@@ -183,7 +183,12 @@ public class MapPacketHandler
 				}
 				case 2:
 				{
-					SessionState.abilities = stream.readBoolean();
+					SessionState.abilities = new ArrayList<String>();
+					int abilitiesSize = stream.readByte();
+					while(abilitiesSize-- > 0)
+					{
+						SessionState.abilities.add(stream.readUTF());
+					}
 					SessionState.canSleepMorphed = stream.readBoolean();
 					SessionState.allowMorphSelection = stream.readBoolean();
 					SessionState.allowFlight = stream.readBoolean();

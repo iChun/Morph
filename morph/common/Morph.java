@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import morph.client.core.ClientProxy;
 import morph.client.core.PacketHandlerClient;
 import morph.client.render.HandRenderHandler;
+import morph.common.ability.AbilityHandler;
 import morph.common.core.CommonProxy;
 import morph.common.core.ConnectionHandler;
 import morph.common.core.MapPacketHandler;
@@ -80,7 +81,6 @@ public class Morph
 	public static int disableEarlyGameFlight;
 	public static int loseMorphsOnDeath;
 	public static int instaMorph;
-	public static int abilities;
 	public static int modAbilityPatch;
 	public static int forceLocalModAbilityPatch;
 	public static int modNBTStripper;
@@ -117,6 +117,8 @@ public class Morph
 	
 	public static int sortMorphs;
 	
+	public static ArrayList<String> abilities = new ArrayList<String>();
+	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
 	public static ArrayList<String> whitelistedPlayerNames = new ArrayList<String>();
 
@@ -147,7 +149,7 @@ public class Morph
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose your morphs on death?\n0 = No\n1 = Yes, all morphs\n2 = Yes, the morph you're currently using", 0);
 		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
 		
-		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
+		int enableAbilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
 		modAbilityPatch = addCommentAndReturnInt(config, "gameplay", "modAbilityPatch", "Enable mod mob ability patching?\nThis support is mostly provided by the community and is not officially supported by the mod\nIf a mod mob you like doesn't have an ability, you can contribute to the mappings on the Morph Github page.\n0 = No\n1 = Yes", 1);
 		forceLocalModAbilityPatch = addCommentAndReturnInt(config, "gameplay", "forceLocalModAbilityPatch", "Force the mod to use the local copy of the ModMobAbilitySupport?\nThis is meant for debugging purposes and for modified local mod mob abilities mappings.\nDo take note that mappings server and clientside are not synched so both ends will require the same mappings.\n0 = No\n1 = Yes", 0);
 		
@@ -158,6 +160,18 @@ public class Morph
 		
 		canSleepMorphed = addCommentAndReturnInt(config, "gameplay", "canSleepMorphed", "Can you sleep while morphed?\n0 = No\n1 = Yes", 0);
 		allowMorphSelection = addCommentAndReturnInt(config, "gameplay", "allowMorphSelection", "Requested by SoundLogic\nCan you open the morph GUI?\n0 = No\n1 = Yes", 1);
+		
+		if(enableAbilities == 1)
+		{
+			config.addCustomCategoryComment("abilities", "These options allow you to enable or disable particular abilities.\n0 = Disabled\n1 = Enabled");
+			for(String ability : AbilityHandler.stringToClassMap.keySet())
+			{
+				if(addCommentAndReturnInt(config, "abilities", ability, "", 1) == 1)
+				{
+					abilities.add(ability.toLowerCase());
+				}
+			}
+		}
 		
 		if(isClient)
 		{
@@ -217,7 +231,7 @@ public class Morph
 	@EventHandler
 	public void serverStarting(FMLServerAboutToStartEvent event)
 	{
-		SessionState.abilities = Morph.abilities == 1;
+		SessionState.abilities = new ArrayList<String>(abilities);
 		SessionState.canSleepMorphed = Morph.canSleepMorphed == 1;
 		SessionState.allowMorphSelection = Morph.allowMorphSelection == 1;
 		SessionState.allowFlight = true;
