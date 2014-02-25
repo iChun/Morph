@@ -335,7 +335,11 @@ public class TickHandlerServer
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			DataOutputStream stream = new DataOutputStream(bytes);
 
-			stream.writeBoolean(SessionState.abilities);
+			stream.writeByte(SessionState.abilities.size());
+			for(String ability : SessionState.abilities)
+			{
+				stream.writeUTF(ability);
+			}
 			stream.writeBoolean(SessionState.canSleepMorphed);
 			stream.writeBoolean(SessionState.allowMorphSelection);
 			stream.writeBoolean(SessionState.allowFlight);
