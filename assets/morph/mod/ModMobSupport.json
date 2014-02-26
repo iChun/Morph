@@ -1,5 +1,59 @@
 {
   "customMobAbilityMapping": {
+    "com.emoniph.witchery.entity.EntityOwl": [
+      "fly|true"
+    ],
+    "tropicraft.entities.EntityEagleRay": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityTropicalFish": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityStarfish": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntitySeaUrchin": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntitySeaTurtle": [
+      "swim|true,1.8F,0.8F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityMarlin": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityManOWar": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.land.VMonkey": [
+      "climb"
+    ],
+    "tropicraft.entities.passive.land.Iguana": [
+      "hostile"
+    ],
+    "tropicraft.entities.passive.flying.Failgull": [
+      "fly|true"
+    ],
+    "tropicraft.entities.hostile.land.tribes.ashen.AshenHunter": [
+      "hostile"
+    ],
+    "tropicraft.entities.hostile.land.tribes.ashen.Ashen": [
+      "hostile"
+    ],
+    "tropicraft.entities.hostile.land.Skeleton": [
+      "hostile",
+      "sunburn"
+    ],
+    "tropicraft.entities.hostile.land.Creeper": [
+      "hostile"
+    ],
+    "tropicraft.entities.hostile.land.SpiderAdult": [
+      "hostile",
+      "climb"
+    ],
+    "tropicraft.entities.hostile.land.SpiderChild": [
+      "hostile",
+      "climb"
+    ],
     "am2.bosses.EntityAirGuardian": [
       "hostile"
     ],
