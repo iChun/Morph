@@ -1,6 +1,4 @@
-
-<!-- saved from url=(0035)http://www.gnu.org/licenses/gpl.txt -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><style type="text/css">@media print { #feedlyMiniIcon { display: none; } }</style></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">                    GNU GENERAL PUBLIC LICENSE
+                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. &lt;http://fsf.org/&gt;
@@ -673,5 +671,4 @@ into proprietary programs.  If your program is a subroutine library, you
 may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
-&lt;http://www.gnu.org/philosophy/why-not-lgpl.html&gt;.
-</pre><img id="feedlyMiniIcon" title="feedly mini" style="position: fixed; bottom: 14px; right: 14px; z-index: 99; cursor: pointer; border: 0px; -webkit-transition: opacity 0.3s ease; transition: opacity 0.3s ease; visibility: visible; width: 24px; height: 24px; max-height: 24px; max-width: 24px; overflow: hidden; display: block; padding: 0px; opacity: 0.35;" width="24" height="24" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAYlJREFUeNrMVD1rwlAUPfkwBBxFKQQlDhmjqzj4F9w7FfwThZaW9n8UnDrrn1BEXNTBRQQhEE1ERRR0Sd990A7VaKJJ6YHzEu4N99z3zrsRGo2GAuCF8YFRQzSwGOuM7zJb3hgfES2o0SdGSWRLDfGhRgLpGAXS4q0VCoUCBEHwzd8skM/nUSqVoCjKybz8O1CtVn2LeZ4H27YxnU6xXC6x3+95PJPJoFKpoN1uY7vdnhfww3w+x3A4xGaz4d3quo5sNvuTTyaTXKTb7cJ13csCzWbzKKaqKj/zXC4HSZKO8iRcLpcxGAwwmUzC7UDTNBSLRSQSiVAeyUGNpM4v4XA4oNfr8eMMLJBKpWCaJn9fLBawLAur1Qq73Y6b/H0pyNyrTDYMA7PZDKPRCOv1+uQ3ZCqZe9UcOI6DTqfjW5zMbLVa3Bu6RaE9GI/HZ/P9fp8/qfipYROj+ukEnuQgEx0GImKGHGSC//UO/kTAibG+QwIfMQrUyeRXusaM94x3ERW2GT8Zn78EGACRmoKUJhB1TQAAAABJRU5ErkJggg=="></body></html>
+<http://www.gnu.org/philosophy/why-not-lgpl.html>.
