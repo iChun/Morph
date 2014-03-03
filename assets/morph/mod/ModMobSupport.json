@@ -395,6 +395,10 @@
       "hostile",
       "climb"
     ],
+    "danger.orespawn.Stinky": [
+      "fly|true",
+      "fireImmunity"
+    ],
     "danger.orespawn.Termite": [
       "hostile",
       "climb",
