@@ -370,7 +370,7 @@
     "danger.orespawn.Rotator": [
       "hostile",
       "fly|false",
-      "poisonResitance"
+      "poisonResistance"
     ],
     "danger.orespawn.RubyBird": [
       "fly|true"
