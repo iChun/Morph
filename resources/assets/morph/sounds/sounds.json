@@ -1,0 +1,13 @@
+{
+  "morph": {
+    "category": "player",
+    "sounds": [
+      "morph1",
+      "morph2",
+      "morph3",
+      "morph4",
+      "morph5",
+      "morph6"
+    ]
+  }
+}
