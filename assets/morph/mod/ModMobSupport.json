@@ -84,6 +84,9 @@
     "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
       "waterAllergy"
     ],
+    "com.emoniph.witchery.entity.EntityOwl": [
+      "fly|true"
+    ],
     "danger.orespawn.Basilisk": [
       "hostile",
       "step|2F"
@@ -370,7 +373,7 @@
     "danger.orespawn.Rotator": [
       "hostile",
       "fly|false",
-      "poisonResitance"
+      "poisonResistance"
     ],
     "danger.orespawn.RubyBird": [
       "fly|true"
@@ -394,6 +397,10 @@
     "danger.orespawn.StinkBug": [
       "hostile",
       "climb"
+    ],
+    "danger.orespawn.Stinky": [
+      "fly|true",
+      "fireImmunity"
     ],
     "danger.orespawn.Termite": [
       "hostile",
@@ -834,86 +841,86 @@
     "lom.LotsOMobsEntity.EntityAnt": [
       "climb"
     ],
-	"lom.LotsOMobsEntity.EntityBear": [
+    "lom.LotsOMobsEntity.EntityBear": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntityBird": [
+    "lom.LotsOMobsEntity.EntityBird": [
       "fly|true"
     ],
-	"lom.LotsOMobsEntity.EntityBirdy": [
+    "lom.LotsOMobsEntity.EntityBirdy": [
       "fly|true"
     ],
-	"lom.LotsOMobsEntity.EntityButterfly": [
+    "lom.LotsOMobsEntity.EntityButterfly": [
       "fly|true"
     ],
-	"lom.LotsOMobsEntity.EntityCroco": [
+    "lom.LotsOMobsEntity.EntityCroco": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntityFireFly": [
+    "lom.LotsOMobsEntity.EntityFireFly": [
       "fly|true"
     ],
-  	"lom.LotsOMobsEntity.EntityFishy": [
+    "lom.LotsOMobsEntity.EntityFishy": [
       "swim|false,1.2F,1F,true"
     ],
-	"lom.LotsOMobsEntity.EntityFly": [
+    "lom.LotsOMobsEntity.EntityFly": [
       "fly|true"
     ],
-  	"lom.LotsOMobsEntity.EntityBee": [
+    "lom.LotsOMobsEntity.EntityBee": [
       "fly|true"
     ],
-	"lom.LotsOMobsEntity.EntityIceBear": [
+    "lom.LotsOMobsEntity.EntityIceBear": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntityGekko": [
+    "lom.LotsOMobsEntity.EntityGekko": [
       "climb"
     ],
-	"lom.LotsOMobsEntity.EntityLizard": [
+    "lom.LotsOMobsEntity.EntityLizard": [
       "climb"
     ],
-	"lom.LotsOMobsEntity.EntityKakkerlak": [
+    "lom.LotsOMobsEntity.EntityKakkerlak": [
       "climb"
     ],
-	"lom.LotsOMobsEntity.EntityLion": [
+    "lom.LotsOMobsEntity.EntityLion": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntityNarwal": [
+    "lom.LotsOMobsEntity.EntityNarwal": [
       "swim|false,1F,1F,true"
     ],
-	"lom.LotsOMobsEntity.EntityPterosaurus": [
+    "lom.LotsOMobsEntity.EntityPterosaurus": [
       "fly|true"
     ],
-	"lom.LotsOMobsEntity.EntityRaptor": [
+    "lom.LotsOMobsEntity.EntityRaptor": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntitySaberTooth": [
+    "lom.LotsOMobsEntity.EntitySaberTooth": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntitySnake": [
+    "lom.LotsOMobsEntity.EntitySnake": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntitySquirrel": [
+    "lom.LotsOMobsEntity.EntitySquirrel": [
       "climb",
-	    "fallNegate"
+        "fallNegate"
     ],
-	"lom.LotsOMobsEntity.EntityTRex": [
+    "lom.LotsOMobsEntity.EntityTRex": [
       "hostile"
     ],
-	"lom.LotsOMobsEntity.EntityTropicalFishy": [
+    "lom.LotsOMobsEntity.EntityTropicalFishy": [
       "swim|false,1.2F,1F,true"
     ],
-	"lom.LotsOMobsEntity.EntityTurtle": [
+    "lom.LotsOMobsEntity.EntityTurtle": [
       "swim|false,1F,1F,true"
     ],
-	"lom.LotsOMobsEntity.EntityVulture": [
+    "lom.LotsOMobsEntity.EntityVulture": [
       "fly|true"
     ],
-	"lom.LotsOMobsEntity.EntityWhale": [
+    "lom.LotsOMobsEntity.EntityWhale": [
       "swim|false,1F,1F,true"
     ],
-	"lom.LotsOMobsEntity.EntitySanta": [
+    "lom.LotsOMobsEntity.EntitySanta": [
       "fly|true"
     ],
-	"lom.LotsOMobsEntity.EntityGorilla": [
+    "lom.LotsOMobsEntity.EntityGorilla": [
       "hostile"
     ],
     "lycanite.lycanitesmobs.demonmobs.entity.EntityAsmodi": [
@@ -1289,6 +1296,57 @@
     "thehippomaster.MutantCreatures.MutantZombie": [
       "hostile",
       "fallNegate"
+    ],
+    "tropicraft.entities.EntityEagleRay": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityTropicalFish": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityStarfish": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntitySeaUrchin": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntitySeaTurtle": [
+      "swim|true,1.8F,0.8F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityMarlin": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.water.EntityManOWar": [
+      "swim|false,1.8F,0.6F,true"
+    ],
+    "tropicraft.entities.passive.land.VMonkey": [
+      "climb"
+    ],
+    "tropicraft.entities.passive.land.Iguana": [
+      "hostile"
+    ],
+    "tropicraft.entities.passive.flying.Failgull": [
+      "fly|true"
+    ],
+    "tropicraft.entities.hostile.land.tribes.ashen.AshenHunter": [
+      "hostile"
+    ],
+    "tropicraft.entities.hostile.land.tribes.ashen.Ashen": [
+      "hostile"
+    ],
+    "tropicraft.entities.hostile.land.Skeleton": [
+      "hostile",
+      "sunburn"
+    ],
+    "tropicraft.entities.hostile.land.Creeper": [
+      "hostile"
+    ],
+    "tropicraft.entities.hostile.land.SpiderAdult": [
+      "hostile",
+      "climb"
+    ],
+    "tropicraft.entities.hostile.land.SpiderChild": [
+      "hostile",
+      "climb"
     ],
     "twilightforest.entity.EntityTFDeathTome": [
       "fly|true",
