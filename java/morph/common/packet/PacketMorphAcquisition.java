@@ -31,7 +31,6 @@ public class PacketMorphAcquisition extends AbstractPacket
         buffer.writeInt(entityID2);
     }
 
-    //TODO not sure if need sideonly.
     @Override
     public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
     {

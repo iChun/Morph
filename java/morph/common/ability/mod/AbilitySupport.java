@@ -23,6 +23,7 @@ public class AbilitySupport {
 	public static AbilitySupport instance = null;
 	private HashMap<String, String[]> customMobAbilityMapping = new HashMap<String, String[]>();
 
+    //TODO move this and add minecraft mappings too.
 	public static AbilitySupport getInstance()
 	{
 		if(instance == null)

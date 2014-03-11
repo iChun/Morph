@@ -4,6 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import ichun.client.render.RendererHelper;
 import ichun.core.network.PacketHandler;
 import morph.api.Ability;
 import morph.client.gui.GuiKeyBinds;
@@ -41,6 +42,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL30;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,6 +115,40 @@ public class TickHandlerClient
             }
             else
             {
+                /******************/
+
+//                ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+//
+//                GL11.glEnable(GL11.GL_STENCIL_TEST);
+//
+//                GL11.glColorMask(false, false, false, false);
+//                GL11.glDepthMask(false);
+//
+//                GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
+//                GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
+//
+//                GL11.glStencilMask(0xFF);
+//                GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+//
+//                RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, 60, 60, 0);
+//
+//                GL11.glColorMask(true, true, true, true);
+//                GL11.glDepthMask(true);
+//
+//                GL11.glStencilMask(0x00);
+//
+//                GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
+//
+//                GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+//
+//                RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, reso1.getScaledWidth_double(), reso1.getScaledHeight_double(), 0);
+//
+//                GL11.glDisable(GL11.GL_STENCIL_TEST);
+
+
+                /******************/
+
+
                 MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
                 if(info != null)
                 {
@@ -436,6 +472,7 @@ public class TickHandlerClient
 
                         GL11.glDisable(GL11.GL_TEXTURE_2D);
 
+                        //TODO stencil helper.
                         final int stencilBit = MinecraftForgeClient.reserveStencilBit();
 
                         if(stencilBit >= 0)

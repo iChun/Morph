@@ -90,7 +90,6 @@ public class PacketGuiInput extends AbstractPacket
                         MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
                         break;
                     }
-                    //TODO remember that the favourite key has been merged into this packet
                     case 2:
                     {
                         //favourite
