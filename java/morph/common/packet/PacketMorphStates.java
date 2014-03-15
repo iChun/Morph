@@ -40,6 +40,7 @@ public class PacketMorphStates extends AbstractPacket
         ByteBufUtils.writeUTF8String(buffer, "##end");
     }
 
+    //TODO make sure this side.isClient works on the server
     @Override
     public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
     {

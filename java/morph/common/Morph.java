@@ -127,7 +127,7 @@ public class Morph
 		
 		disableEarlyGameFlight = addCommentAndReturnInt(config, "gameplay", "disableEarlyGameFlight", "Disable the flight ability until a player...\n0 = Enable early game flight\n1 = ...has reached the nether\n2 = ...has killed the Wither", 0);
 		loseMorphsOnDeath = addCommentAndReturnInt(config, "gameplay", "loseMorphsOnDeath", "Will you lose your morphs on death?\n0 = No\n1 = Yes, all morphs\n2 = Yes, the morph you're currently using", 0);
-		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 1);
+		instaMorph = addCommentAndReturnInt(config, "gameplay", "instaMorph", "Will you insta-morph into a new morph acquired?\n0 = No\n1 = Yes", 0);
 		
 		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
 		modAbilityPatch = addCommentAndReturnInt(config, "gameplay", "modAbilityPatch", "Enable mod mob ability patching?\nThis support is mostly provided by the community and is not officially supported by the mod\nIf a mod mob you like doesn't have an ability, you can contribute to the mappings on the Morph Github page.\n0 = No\n1 = Yes", 1);

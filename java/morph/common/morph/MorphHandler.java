@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 public class MorphHandler 
 {
 
+    //TODO find out that getting named morphs (eg name tags) still work as intended
 	public static MorphState addOrGetMorphState(ArrayList<MorphState> states, MorphState state)
 	{
 		int pos = -1;

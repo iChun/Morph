@@ -179,7 +179,7 @@ public class EventHandler
 			e.printStackTrace();
 		}
 		
-		
+		//TODO look into issues with this and Sync
 		if(Morph.proxy.tickHandlerClient.allowRender)
 		{
 			Morph.proxy.tickHandlerClient.allowRender = false;
