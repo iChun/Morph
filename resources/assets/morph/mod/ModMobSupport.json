@@ -74,6 +74,13 @@
       "climb",
       "hostile"
     ],
+    "biomesoplenty.entities.EntityPhantom": [
+      "float|-0.114,true",
+      "hostile"
+    ],
+    "biomesoplenty.entities.EntityPixie": [
+      "fly|true"
+    ],
     "biomesoplenty.entities.EntityRosester": [
       "float|-0.114,true"
     ],
@@ -604,9 +611,6 @@
       "hostile",
       "sunburn"
     ],
-    "gaia.entity.EntityGaiaBoomer": [
-      "hostile"
-    ],
     "gaia.entity.EntityGaiaCentaur": [
       "step|1F"
     ],
@@ -621,6 +625,9 @@
     "gaia.entity.EntityGaiaCockatrice": [
       "hostile",
       "float|-0.114,true"
+    ],
+    "gaia.entity.EntityGaiaCreep": [
+      "hostile"
     ],
     "gaia.entity.EntityGaiaCyclops": [
       "hostile",
@@ -648,6 +655,9 @@
       "sunburn",
       "poisonResistance"
     ],
+    "gaia.entity.EntityGaiaFutakuchiOnna": [
+      "hostile"
+    ],
     "gaia.entity.EntityGaiaGigaKnight": [
       "hostile",
       "swim|true,1F,1F,false"
@@ -658,6 +668,11 @@
     "gaia.entity.EntityGaiaHarpy": [
       "hostile",
       "fly|true"
+    ],
+    "gaia.entity.EntityGaiaJorogumo": [
+      "hostile",
+      "climb",
+      "poisonResistance"
     ],
     "gaia.entity.EntityGaiaMandragora": [
       "poisonResistance"
@@ -694,6 +709,10 @@
       "hostile",
       "swim|true,1.2F,1F,true"
     ],
+    "gaia.entity.EntityGaiaSelkie": [
+      "hostile",
+      "swim|true,1.2F,1F,true"
+    ],
     "gaia.entity.EntityGaiaShaman": [
       "hostile"
     ],
@@ -709,11 +728,6 @@
       "hostile",
       "fireImmunity",
       "fly|true"
-    ],
-    "gaia.entity.EntityGaiaSpiderQueen": [
-      "hostile",
-      "climb",
-      "poisonResistance"
     ],
     "gaia.entity.EntityGaiaSpriggan": [
       "hostile"
