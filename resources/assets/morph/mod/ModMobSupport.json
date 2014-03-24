@@ -294,10 +294,10 @@
     ],
     "danger.orespawn.EntityMosquito": [
       "hostile",
-      "fly|true",
+      "fly|true"
     ],
     "danger.orespawn.EntityRainbowAnt": [
-      "waterAllergy",
+      "waterAllergy"
     ],
     "danger.orespawn.EntityRedAnt": [
       "hostile",
