@@ -127,8 +127,7 @@
       "waterAllergy"
     ],
     "danger.orespawn.EntityUnstableAnt": [
-      "waterAllergy",
-      "swim|true"
+      "waterAllergy"
     ],
     "danger.orespawn.Lizard": [
       "swim|true"
@@ -287,7 +286,6 @@
       "fly|true"
     ],
     "danger.orespawn.EntityAnt": [
-      "swim|true",
       "waterAllergy"
     ],
     "danger.orespawn.EntityLunaMoth": [
@@ -297,14 +295,11 @@
     "danger.orespawn.EntityMosquito": [
       "hostile",
       "fly|true",
-      "waterAllergy"
     ],
     "danger.orespawn.EntityRainbowAnt": [
       "waterAllergy",
-      "swim|true"
     ],
     "danger.orespawn.EntityRedAnt": [
-      "swim|true",
       "hostile",
       "waterAllergy"
     ],
