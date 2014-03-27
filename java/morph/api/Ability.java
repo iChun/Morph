@@ -1,6 +1,7 @@
 package morph.api;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
@@ -174,6 +175,21 @@ public abstract class Ability
 			return false;
 		}
 	}
+
+    /**
+     * Checks to see if the player's current morph has a mapped ability type.
+     * @param player
+     * @param Ability type
+     * @return Player's current morph has ability type
+     */
+    public static boolean playerHaveAbility(EntityPlayer player, String type)
+    {
+        try {
+            return (Boolean)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("playerHaveAbility", EntityPlayer.class, String.class).invoke(null, player, type);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 	
 	/**
 	 * The following are helper functions to create abilities packaged with Morph.
@@ -254,4 +270,12 @@ public abstract class Ability
 		}
 	}
 
+    public static Ability getNewAbilityFear(int radius, double speed, Class<?>... entityClass)
+    {
+        try {
+            return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("getNewAbilityFear", int.class, double.class, Class.class).invoke(null, radius, speed, entityClass);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

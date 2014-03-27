@@ -73,6 +73,8 @@ public class Morph
 	
 	public static int hostileAbilityMode;
 	public static int hostileAbilityDistanceCheck;
+
+    public static boolean fearAbilityEnabled;
 	
 	public static int canSleepMorphed;
 	
@@ -137,6 +139,8 @@ public class Morph
 		
 		hostileAbilityMode = addCommentAndReturnInt(config, "gameplay", "hostileAbilityMode", "Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\nIf you'd like to turn on Hostile Ability, I'd recommend Mode 2 (personal preference)", 0);
 		hostileAbilityDistanceCheck = addCommentAndReturnInt(config, "gameplay", "hostileAbilityDistanceCheck", "Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6", 6);
+
+        fearAbilityEnabled = addCommentAndReturnBoolean(config, "gameplay", "fearAbilityEnabled", "Fear Ability Mode\nIf true, certain mobs will be afraid to go near you", true);
 		
 		canSleepMorphed = addCommentAndReturnInt(config, "gameplay", "canSleepMorphed", "Can you sleep while morphed?\n0 = No\n1 = Yes", 0);
 		allowMorphSelection = addCommentAndReturnInt(config, "gameplay", "allowMorphSelection", "Requested by SoundLogic\nCan you open the morph GUI?\n0 = No\n1 = Yes", 1);
@@ -306,7 +310,17 @@ public class Morph
 		}
 		return prop.getString();
 	}
-	
+
+    public static boolean addCommentAndReturnBoolean(Configuration config, String cat, String s, String comment, boolean bool)
+    {
+        Property prop = config.get(cat, s, bool);
+        if(!comment.equalsIgnoreCase(""))
+        {
+            prop.comment = comment;
+        }
+        return prop.getBoolean(bool);
+    }
+    
     public static void console(String s, boolean warning)
     {
     	StringBuilder sb = new StringBuilder();

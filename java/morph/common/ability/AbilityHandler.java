@@ -6,6 +6,8 @@ import java.util.HashMap;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.core.SessionState;
+import morph.common.morph.MorphInfo;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
@@ -30,6 +32,7 @@ import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class AbilityHandler 
 {
@@ -52,6 +55,7 @@ public class AbilityHandler
 		registerAbility("poisonResistance", AbilityPoisonResistance.class);
 		registerAbility("step"			  , AbilityStep.class			);
 		registerAbility("witherResistance", AbilityWitherResistance.class);
+        registerAbility("fear"            , AbilityFear.class           );
 		
 		mapAbilities(EntityBat.class, new AbilityFly(true));
 		mapAbilities(EntityBlaze.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
@@ -66,7 +70,7 @@ public class AbilityHandler
 		mapAbilities(EntityHorse.class, new AbilityStep(1.0F));
 		mapAbilities(EntityIronGolem.class, new AbilityFallNegate(), new AbilitySwim(true));
 		mapAbilities(EntityMagmaCube.class, new AbilityFallNegate(), new AbilityFireImmunity(), new AbilityHostile());
-		mapAbilities(EntityOcelot.class, new AbilityFallNegate());
+		mapAbilities(EntityOcelot.class, new AbilityFallNegate(), new AbilityFear(6, 1.2D, EntityCreeper.class));
 		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity(), new AbilityHostile());
 		mapAbilities(EntitySilverfish.class, new AbilityHostile());
 		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile(), new AbilitySunburn(), new AbilityWitherResistance());
@@ -75,7 +79,7 @@ public class AbilityHandler
 		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
 		mapAbilities(EntitySquid.class, new AbilitySwim(false, 1.2f, 0.4f, true));
 		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile(), new AbilityWitherResistance());
-		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
+		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn(), new AbilityFear(9, 0.6D, EntityVillager.class));
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
@@ -153,6 +157,17 @@ public class AbilityHandler
 		return false;
 	}
 
+    public static boolean playerHaveAbility(EntityPlayer player, String type) {
+        if(Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName())) {
+            MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+            for(Ability ab: info.morphAbilities) {
+                if(ab.getType().equalsIgnoreCase(type))
+                    return true;
+            }
+        }
+        return false;
+    }
+
 	public static ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
 	{
 		if(SessionState.abilities)
@@ -215,4 +230,8 @@ public class AbilityHandler
 		return new AbilityWaterAllergy();
 	}
 
+    public static Ability getNewAbilityFear(int radius, double speed, Class<?>... entityClass)
+    {
+        return new AbilityFear(radius, speed, entityClass);
+    }
 }
