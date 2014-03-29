@@ -418,6 +418,18 @@
       "climb",
       "fallNegate"
     ],
+    "danger.orespawn.TheKing": [
+      "step|4F",
+      "swim|true",
+      "fly|true",
+      "fireImmunity",
+      "poisonResistance",
+      "witherResistance",
+      "hostile"
+    ],
+    "danger.orespawn.ThePrince": [
+      "fly|true"
+    ],
     "danger.orespawn.Urchin": [
       "swim|true",
       "hostile"
