@@ -2,6 +2,7 @@ package morph.common.core;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.core.EntityHelperBase;
 import ichun.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
@@ -23,20 +24,8 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import java.util.List;
 
-//TODO move parts of this into iChunUtil
-public class EntityHelper 
+public class EntityHelper extends EntityHelperBase
 {
-	@SideOnly(Side.CLIENT)
-    public static Render getEntityClassRenderObject(Class par1Class)
-    {
-        Render render = (Render)RenderManager.instance.entityRenderMap.get(par1Class);
-        if (render == null && par1Class != Entity.class)
-        {
-            render = getEntityClassRenderObject(par1Class.getSuperclass());
-        }
-        return render;
-    }
-	
 	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill)
 	{
 		return morphPlayer(player, living, kill, false);
@@ -170,123 +159,4 @@ public class EntityHelper
 		}
 		return false;
 	}
-	
-	/*
-	 * The following helper functions were taken out of iChunUtil. 
-	 */
-	
-	public static MovingObjectPosition getEntityLook(EntityLivingBase ent, double d, boolean ignoreEntities, float renderTick)
-	{
-		if (ent == null)
-		{
-			return null;
-		}
-
-		double d1 = d;
-		MovingObjectPosition mop = rayTrace(ent, d, renderTick);
-		Vec3 vec3d = getPosition(ent, renderTick);
-
-		if (mop != null)
-		{
-			d1 = mop.hitVec.distanceTo(vec3d);
-		}
-
-		double dd2 = d;
-
-		if (d1 > dd2)
-		{
-			d1 = dd2;
-		}
-
-		d = d1;
-		Vec3 vec3d1 = ent.getLook(renderTick);
-		Vec3 vec3d2 = vec3d.addVector(vec3d1.xCoord * d, vec3d1.yCoord * d, vec3d1.zCoord * d);
-
-		if (!ignoreEntities)
-		{
-			Entity entity1 = null;
-			float f1 = 1.0F;
-			List list = ent.worldObj.getEntitiesWithinAABBExcludingEntity(ent, ent.boundingBox.addCoord(vec3d1.xCoord * d, vec3d1.yCoord * d, vec3d1.zCoord * d).expand(f1, f1, f1));
-			double d2 = 0.0D;
-
-			for (int i = 0; i < list.size(); i++)
-			{
-				Entity entity = (Entity)list.get(i);
-
-				if (!entity.canBeCollidedWith())
-				{
-					continue;
-				}
-
-				float f2 = entity.getCollisionBorderSize();
-				AxisAlignedBB axisalignedbb = entity.boundingBox.expand(f2, f2, f2);
-				MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3d, vec3d2);
-
-				if (axisalignedbb.isVecInside(vec3d))
-				{
-					if (0.0D < d2 || d2 == 0.0D)
-					{
-						entity1 = entity;
-						d2 = 0.0D;
-					}
-
-					continue;
-				}
-
-				if (movingobjectposition == null)
-				{
-					continue;
-				}
-
-				double d3 = vec3d.distanceTo(movingobjectposition.hitVec);
-
-				if (d3 < d2 || d2 == 0.0D)
-				{
-					entity1 = entity;
-					d2 = d3;
-				}
-			}
-
-			if (entity1 != null)
-			{
-				mop = new MovingObjectPosition(entity1);
-			}
-		}
-
-		return mop;
-	}
-
-	public static Vec3 getPosition(Entity ent, float par1)
-	{
-		return getPosition(ent, par1, false);
-	}
-
-	public static Vec3 getPosition(Entity ent, float par1, boolean midPoint)
-	{
-		if (par1 == 1.0F)
-		{
-			return ent.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX, midPoint ? ((ent.boundingBox.minY + ent.boundingBox.maxY) / 2D) : (ent.posY + (ent.worldObj.isRemote ? 0.0D : (ent.getEyeHeight() - 0.09D))), ent.posZ);
-		}
-		else
-		{
-			double var2 = ent.prevPosX + (ent.posX - ent.prevPosX) * (double)par1;
-			double var4 = midPoint ? ((ent.boundingBox.minY + ent.boundingBox.maxY) / 2D) : (ent.prevPosY + (ent.worldObj.isRemote ? 0.0D : (ent.getEyeHeight() - 0.09D)) + (ent.posY - ent.prevPosY) * (double)par1);
-			double var6 = ent.prevPosZ + (ent.posZ - ent.prevPosZ) * (double)par1;
-			return ent.worldObj.getWorldVec3Pool().getVecFromPool(var2, var4, var6);
-		}
-	}
-
-	public static MovingObjectPosition rayTrace(EntityLivingBase ent, double distance, float par3)
-	{
-		return rayTrace(ent, distance, par3, false);
-	}
-
-	public static MovingObjectPosition rayTrace(EntityLivingBase ent, double distance, float par3, boolean midPoint)
-	{
-		Vec3 var4 = getPosition(ent, par3, midPoint);
-		Vec3 var5 = ent.getLook(par3);
-		Vec3 var6 = var4.addVector(var5.xCoord * distance, var5.yCoord * distance, var5.zCoord * distance);
-		return ent.worldObj.func_147447_a(var4, var6, false, false, true);
-	}
-	
 }
