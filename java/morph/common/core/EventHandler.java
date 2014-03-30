@@ -590,53 +590,39 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event)
 	{
-		if(Morph.hostileAbilityMode > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(event.entityLiving.getClass());
-			boolean hostile = false;
-			for(Ability ab : mobAbilities)
-			{
-				if(ab.getType().equalsIgnoreCase("hostile"))
-				{
-					hostile = true;
-					break;
-				}
-			}
-			if(hostile && event.target instanceof EntityPlayer)
-			{
-				EntityPlayer player = (EntityPlayer)event.target;
-				if(Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName()))
-				{
-					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
-					if(!info.getMorphing() && info.morphProgress >= 80)
-					{
-						boolean playerHostile = false;
-						for(Ability ab: info.morphAbilities)
-						{
-							if(ab.getType().equalsIgnoreCase("hostile"))
-							{
-								playerHostile = true;
-								break;
-							}
-						}
-						if(hostile && playerHostile)
-						{
-							if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.hostileAbilityMode == 2 || info.nextState.entInstance.getClass() != event.entityLiving.getClass() && Morph.hostileAbilityMode == 3)
-							{
-								return;
-							}
-							if(Morph.hostileAbilityMode == 4)
-							{
-								double dist = event.entityLiving.getDistanceToEntity(player);
-								if(dist < Morph.hostileAbilityDistanceCheck)
-								{
-									return;
-								}
-							}
-							event.entityLiving.setRevengeTarget(null);
-							if(event.entityLiving instanceof EntityLiving)
-							{
-								((EntityLiving)event.entityLiving).setAttackTarget(null);
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+        {
+		    if(Morph.hostileAbilityMode > 0)
+		    {
+			    boolean hostile = AbilityHandler.hasAbility(event.entityLiving.getClass(), "hostile");
+			    if(hostile && event.target instanceof EntityPlayer)
+			    {
+				    EntityPlayer player = (EntityPlayer)event.target;
+				    if(Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName()))
+				    {
+					    MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+					    if(!info.getMorphing() && info.morphProgress >= 80)
+					    {
+						    boolean playerHostile = AbilityHandler.playerHaveAbility(player, "hostile");
+						    if(hostile && playerHostile)
+						    {
+							    if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.hostileAbilityMode == 2 || info.nextState.entInstance.getClass() != event.entityLiving.getClass() && Morph.hostileAbilityMode == 3)
+							    {
+								    return;
+							    }
+							    if(Morph.hostileAbilityMode == 4)
+							    {
+								    double dist = event.entityLiving.getDistanceToEntity(player);
+								    if(dist < Morph.hostileAbilityDistanceCheck)
+								    {
+									    return;
+							    	}
+							    }
+						    	event.entityLiving.setRevengeTarget(null);
+							    if(event.entityLiving instanceof EntityLiving)
+							    {
+								    ((EntityLiving)event.entityLiving).setAttackTarget(null);
+                                }
 							}
 						}
 					}
