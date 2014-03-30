@@ -32,6 +32,7 @@ import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class AbilityHandler 
