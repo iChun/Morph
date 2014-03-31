@@ -1,0 +1,96 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge' // adds the forge dependency
+
+version = "0.8.0"
+releaseType = "Beta"
+
+//not used in morph
+ext.buildnumber = 0 // this will be referenced as simply project.buildnumber from now on.
+
+group= "morph"
+archivesBaseName = "Morph" // the name that all artifacts will use as a base.
+
+minecraft {
+	//ichun, you might want to switch this to whatever forge version you want to build for, for compatibility, but this works.
+    version = "1.7.2-10.12.0.1047"    
+
+	//this is the minecraft specific way to replace tokens in source
+    replaceIn "/java/morph/common/Morph.java"
+    replace "@version@", project.version
+
+}
+
+
+dependencies {
+    compile files("lib/iChunUtil-deobf.jar")
+}
+
+// configure  the source folders
+sourceSets {
+    main {
+        java {
+            srcDir 'java'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
+
+processResources
+{
+    processResources{
+    }
+
+    // replace stuff in mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        expand 'version':project.version
+    }
+        
+    // copy everything else, that's not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+// --------------------
+// extra jar section
+// -------------------
+
+project.releaseType + '-' + project.version
+//^ appended to the end of the jar name
+
+// add source jar
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'source'
+}
+
+// deobf jars
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+// make sure all of these happen when we run build
+build.dependsOn sourceJar, deobfJar

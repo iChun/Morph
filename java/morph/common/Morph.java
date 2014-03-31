@@ -39,7 +39,7 @@ import java.util.EnumMap;
 				)
 public class Morph
 {
-	public static final String version = "0.8.0";
+	public static final String version = "@version@";
 	
 	@Instance("Morph")
 	public static Morph instance;

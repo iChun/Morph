@@ -1,0 +1,15 @@
+[
+{
+  "modid": "Morph",
+  "name": "Morph",
+  "description": "Morph into other things!",
+  "version": "${version}",
+  "authorList": [
+    "iChun"
+  ],
+  "parent":"",
+  "dependencies": [
+    "iChunUtil"
+  ],
+}
+]
