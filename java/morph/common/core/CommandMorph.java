@@ -6,6 +6,7 @@ import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.command.WrongUsageException;
@@ -313,6 +314,18 @@ public class CommandMorph extends CommandBase
 			return list;
 		}
         return null;
+    }
+	
+	@Override
+	public int compareTo(ICommand par1ICommand)
+    {
+        return this.getCommandName().compareTo(par1ICommand.getCommandName());
+    }
+
+	@Override
+    public int compareTo(Object par1Obj)
+    {
+        return this.compareTo((ICommand)par1Obj);
     }
 	
 }
