@@ -33,7 +33,7 @@ public class AbilitySupport {
 			{
 				try
 				{
-					fileIn = new InputStreamReader(new URL("https://raw.github.com/iChun/Morph/master" + jsonPath).openStream());
+					fileIn = new InputStreamReader(new URL(Morph.remoteModAbilityPatch + jsonPath).openStream());
 				}
 				catch(Exception e)
 				{

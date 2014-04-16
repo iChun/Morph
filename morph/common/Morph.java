@@ -83,6 +83,7 @@ public class Morph
 	public static int abilities;
 	public static int modAbilityPatch;
 	public static int forceLocalModAbilityPatch;
+	public static String remoteModAbilityPatch;
 	public static int modNBTStripper;
 	
 	public static int hostileAbilityMode;
@@ -150,7 +151,9 @@ public class Morph
 		abilities = addCommentAndReturnInt(config, "gameplay", "abilities", "Enable abilities?\n0 = No\n1 = Yes", 1);
 		modAbilityPatch = addCommentAndReturnInt(config, "gameplay", "modAbilityPatch", "Enable mod mob ability patching?\nThis support is mostly provided by the community and is not officially supported by the mod\nIf a mod mob you like doesn't have an ability, you can contribute to the mappings on the Morph Github page.\n0 = No\n1 = Yes", 1);
 		forceLocalModAbilityPatch = addCommentAndReturnInt(config, "gameplay", "forceLocalModAbilityPatch", "Force the mod to use the local copy of the ModMobAbilitySupport?\nThis is meant for debugging purposes and for modified local mod mob abilities mappings.\nDo take note that mappings server and clientside are not synched so both ends will require the same mappings.\n0 = No\n1 = Yes", 0);
-		
+		remoteModAbilityPatch = addCommentAndReturnString(config, "gameplay", "remoteModAbilityPatch", "Force the mod to use Your distributed copy of", "https://raw.github.com/iChun/Morph/master");
+
+
 		modNBTStripper = addCommentAndReturnInt(config, "gameplay", "modNBTStripper", "Enable mod mob NBT Stripping?\nThis support is mostly provided by the community and is not officially supported by the mod\nThe stripper was added to remove non-essential information from the Entity NBT to remove duplicate morphs.\n0 = No\n1 = Yes", 1);
 		
 		hostileAbilityMode = addCommentAndReturnInt(config, "gameplay", "hostileAbilityMode", "Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\nIf you'd like to turn on Hostile Ability, I'd recommend Mode 2 (personal preference)", 0);
@@ -272,17 +275,17 @@ public class Morph
 		ConfigCategory category = config.getCategory(cat);
 		if(category.containsKey(propName))
 		{
-            Property prop = category.get(propName);
+			Property prop = category.get(propName);
 
-            if (prop.getType() == null)
-            {
-                prop = new Property(prop.getName(), Integer.toString(value), Property.Type.INTEGER);
-                category.put(propName, prop);
-            }
-            else
-            {
-            	prop.set(Integer.toString(value));
-            }
+			if (prop.getType() == null)
+			{
+				prop = new Property(prop.getName(), Integer.toString(value), Property.Type.INTEGER);
+				category.put(propName, prop);
+			}
+			else
+			{
+				prop.set(Integer.toString(value));
+			}
 		}
 	}
 	
@@ -291,50 +294,50 @@ public class Morph
 		ConfigCategory category = config.getCategory(cat);
 		if(category.containsKey(propName))
 		{
-            Property prop = category.get(propName);
+			Property prop = category.get(propName);
 
-            if (prop.getType() == null)
-            {
-                prop = new Property(prop.getName(), value, Property.Type.STRING);
-                category.put(propName, prop);
-            }
-            else
-            {
-            	prop.set(value);
-            }
+			if (prop.getType() == null)
+			{
+				prop = new Property(prop.getName(), value, Property.Type.STRING);
+				category.put(propName, prop);
+			}
+			else
+			{
+				prop.set(value);
+			}
 		}
 	}
 	
-    public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException
-    {
-        short short1 = par0DataInput.readShort();
+	public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException
+	{
+		short short1 = par0DataInput.readShort();
 
-        if (short1 < 0)
-        {
-            return null;
-        }
-        else
-        {
-            byte[] abyte = new byte[short1];
-            par0DataInput.readFully(abyte);
-            return CompressedStreamTools.decompress(abyte);
-        }
-    }
+		if (short1 < 0)
+		{
+			return null;
+		}
+		else
+		{
+			byte[] abyte = new byte[short1];
+			par0DataInput.readFully(abyte);
+			return CompressedStreamTools.decompress(abyte);
+		}
+	}
 
-    public static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException
-    {
-        if (par0NBTTagCompound == null)
-        {
-            par1DataOutput.writeShort(-1);
-        }
-        else
-        {
-            byte[] abyte = CompressedStreamTools.compress(par0NBTTagCompound);
-            par1DataOutput.writeShort((short)abyte.length);
-            par1DataOutput.write(abyte);
-        }
-    }
-    
+	public static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException
+	{
+		if (par0NBTTagCompound == null)
+		{
+			par1DataOutput.writeShort(-1);
+		}
+		else
+		{
+			byte[] abyte = CompressedStreamTools.compress(par0NBTTagCompound);
+			par1DataOutput.writeShort((short)abyte.length);
+			par1DataOutput.write(abyte);
+		}
+	}
+	
 	public static int addCommentAndReturnInt(Configuration config, String cat, String s, String comment, int i) //Taken from iChun Util
 	{
 		Property prop = config.get(cat, s, i);
@@ -355,14 +358,14 @@ public class Morph
 		return prop.getString();
 	}
 	
-    public static int getNetId()
-    {
-    	return ((NetworkModHandler)FMLNetworkHandler.instance().findNetworkModHandler(Morph.instance)).getNetworkId();
-    }
+	public static int getNetId()
+	{
+		return ((NetworkModHandler)FMLNetworkHandler.instance().findNetworkModHandler(Morph.instance)).getNetworkId();
+	}
 
-    public static void console(String s, boolean warning)
-    {
-    	StringBuilder sb = new StringBuilder();
-    	logger.log(warning ? Level.WARNING : Level.INFO, sb.append("[").append(version).append("] ").append(s).toString());
-    }
+	public static void console(String s, boolean warning)
+	{
+		StringBuilder sb = new StringBuilder();
+		logger.log(warning ? Level.WARNING : Level.INFO, sb.append("[").append(version).append("] ").append(s).toString());
+	}
 }

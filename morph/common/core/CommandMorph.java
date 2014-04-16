@@ -62,10 +62,10 @@ public class CommandMorph extends CommandBase
 				{
 					player = getCommandSenderAsPlayer(icommandsender);
 				}
-		        if (player == null)
-		        {
-		        	player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
-		        }
+				if (player == null)
+				{
+					player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+				}
 				if(player != null)
 				{
 					if(EntityHelper.demorphPlayer(player))
@@ -115,10 +115,10 @@ public class CommandMorph extends CommandBase
 				{
 					player = getCommandSenderAsPlayer(icommandsender);
 				}
-		        if (player == null)
-		        {
-		        	player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
-		        }
+				if (player == null)
+				{
+					player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+				}
 				if(player != null)
 				{
 					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.username);
@@ -179,33 +179,33 @@ public class CommandMorph extends CommandBase
 				{
 					player = getCommandSenderAsPlayer(icommandsender);
 				}
-		        if (player == null)
-		        {
-		        	player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
-		        }
-		        if(player != null)
-		        {
-		        	MovingObjectPosition mop = EntityHelper.getEntityLook(player, 4D, false, 1.0F);
-		        	if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase)
-		        	{
-		        		if(!EntityHelper.morphPlayer(player, (EntityLivingBase)mop.entityHit, false, true))
-		        		{
-		        			icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not looking at a morphable mob."));
-		        		}
-		        		else
-		        		{
-		        			notifyAdmins(icommandsender, "Forcing " + player.username + " to morph into it's target.");
-		        		}
-		        	}
-		        	else
-		        	{
-		        		icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not looking at a morphable mob."));
-		        	}
-		        }
-		        else if(args.length > 1)
-		        {
-		        	icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText("Cannot find player: " + args[1]));
-		        }
+				if (player == null)
+				{
+					player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+				}
+				if(player != null)
+				{
+					MovingObjectPosition mop = EntityHelper.getEntityLook(player, 4D, false, 1.0F);
+					if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase)
+					{
+						if(!EntityHelper.morphPlayer(player, (EntityLivingBase)mop.entityHit, false, true))
+						{
+							icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not looking at a morphable mob."));
+						}
+						else
+						{
+							notifyAdmins(icommandsender, "Forcing " + player.username + " to morph into it's target.");
+						}
+					}
+					else
+					{
+						icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText(player.username + " is not looking at a morphable mob."));
+					}
+				}
+				else if(args.length > 1)
+				{
+					icommandsender.sendChatToPlayer(ChatMessageComponent.createFromText("Cannot find player: " + args[1]));
+				}
 			}
 			else if(args[0].equalsIgnoreCase("whitelist"))
 			{
@@ -297,8 +297,8 @@ public class CommandMorph extends CommandBase
 	}
 
 	@Override
-    public List addTabCompletionOptions(ICommandSender ics, String[] args)
-    {
+	public List addTabCompletionOptions(ICommandSender ics, String[] args)
+	{
 		if(args.length == 1)
 		{
 			return getListOfStringsMatchingLastWord(args, new String[] { "demorph", "clear", "morphtarget" });
@@ -313,7 +313,7 @@ public class CommandMorph extends CommandBase
 			list.add("true");
 			return list;
 		}
-        return null;
-    }
+		return null;
+	}
 	
 }
