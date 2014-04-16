@@ -1,8 +1,8 @@
 {
   "customMobAbilityMapping": {
-    "net.minecraft.entity.passive.EntityBat":[
+    "net.minecraft.entity.passive.EntityBat": [
       "fly|false"
-    ]
+    ],
     "am2.bosses.EntityAirGuardian": [
       "hostile"
     ],
