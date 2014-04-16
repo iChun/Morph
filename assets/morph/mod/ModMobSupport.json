@@ -78,14 +78,14 @@
       "float|-0.114,true"
     ],
     "biomesoplenty.entities.EntityWasp": [
-      "fly|false",
+      
       "hostile"
     ],
     "com.xcompwiz.mystcraft.entity.EntityLinkbook": [
       "waterAllergy"
     ],
     "com.emoniph.witchery.entity.EntityOwl": [
-      "fly|false"
+      
     ],
     "danger.orespawn.Basilisk": [
       "hostile",
@@ -93,11 +93,11 @@
     ],
     "danger.orespawn.Cephadrome": [
       "hostile",
-      "fly|false",
+      
       "step|1F"
     ],
     "danger.orespawn.Kraken": [
-      "fly|false",
+      
       "swim|true",
       "poisonResistance",
       "hostile"
@@ -116,7 +116,7 @@
       "hostile"
     ],
     "danger.orespawn.Fairy": [
-      "fly|false",
+      
       "waterAllergy"
     ],
     "danger.orespawn.EntityUnstableAnt": [
@@ -134,7 +134,7 @@
       "step|1F"
     ],
     "danger.orespawn.Bee": [
-      "fly|false",
+      
       "waterAllergy"
     ],
     "danger.orespawn.Ostrich": [
@@ -150,11 +150,11 @@
       "swim|true"
     ],
     "danger.orespawn.EntityButterfly": [
-      "fly|false",
+      
       "waterAllergy"
     ],
     "danger.orespawn.Firefly": [
-      "fly|false",
+      
       "waterAllergy"
     ],
     "danger.orespawn.Hydrolisc": [
@@ -182,7 +182,7 @@
     "danger.orespawn.Vortex": [
       "swim|true",
       "hostile",
-      "fly|false",
+      
       "float|-0.114,true",
       "fireImmunity",
       "climb"
@@ -194,25 +194,25 @@
       "step|1F"
     ],
     "danger.orespawn.Spyro": [
-      "fly|false",
+      
       "hostile"
     ],
     "danger.orespawn.Dragon": [
       "hostile",
       "fireImmunity",
-      "fly|false"
+      
     ],
     "danger.orespawn.Mothra": [
       "hostile",
       "waterAllergy",
-      "fly|false"
+      
     ],
     "danger.orespawn.Dragonfly": [
-      "fly|false",
+      
       "waterAllergy"
     ],
     "danger.orespawn.PitchBlack": [
-      "fly|false",
+      
       "hostile"
     ],
     "danger.orespawn.Robot1": [
@@ -242,18 +242,18 @@
       "float|-0.114,true"
     ],
     "danger.orespawn.CloudShark": [
-      "fly|false",
+      
       "hostile"
     ],
     "danger.orespawn.Cockateil": [
-      "fly|false"
+      
     ],
     "danger.orespawn.CaveFisher": [
       "hostile",
       "climb"
     ],
     "danger.orespawn.CliffRacer": [
-      "fly|false"
+      
     ],
     "danger.orespawn.CreepingHorror": [
       "hostile",
@@ -264,7 +264,7 @@
     ],
     "danger.orespawn.Elevator": [
       "hostile",
-      "fly|false"
+      
     ],
     "danger.orespawn.EnchantedCow": [
       "fireImmunity",
@@ -277,19 +277,19 @@
     "danger.orespawn.EnderReaper": [
       "hostile",
       "waterAllergy",
-      "fly|false"
+      
     ],
     "danger.orespawn.EntityAnt": [
       "swim|true",
       "waterAllergy"
     ],
     "danger.orespawn.EntityLunaMoth": [
-      "fly|false",
+      
       "waterAllergy"
     ],
     "danger.orespawn.EntityMosquito": [
       "hostile",
-      "fly|false",
+      
       "waterAllergy"
     ],
     "danger.orespawn.EntityRainbowAnt": [
@@ -311,7 +311,7 @@
       "step|1F"
     ],
     "danger.orespawn.Ghost": [
-      "fly|false",
+      
       "fireImmunity",
       "hostile"
     ],
@@ -325,7 +325,7 @@
     ],
     "danger.orespawn.Mantis": [
       "hostile",
-      "fly|false"
+      
     ],
     "danger.orespawn.Robot5": [
       "fallNegate",
@@ -337,14 +337,14 @@
       "step|1F"
     ],
     "danger.orespawn.GoldFish": [
-      "fly|false"
+      
     ],
     "danger.orespawn.Island": [
-      "fly|false",
+      
       "hostile"
     ],
     "danger.orespawn.IslandToo": [
-      "fly|false",
+      
       "hostile"
     ],
     "danger.orespawn.LeafMonster": [
@@ -353,7 +353,7 @@
     ],
     "danger.orespawn.LurkingTerror": [
       "hostile",
-      "fly|false"
+      
     ],
     "danger.orespawn.Peacock": [
       "float|-0.114,true"
@@ -372,11 +372,11 @@
     ],
     "danger.orespawn.Rotator": [
       "hostile",
-      "fly|false",
+      
       "poisonResistance"
     ],
     "danger.orespawn.RubyBird": [
-      "fly|false"
+      
     ],
     "danger.orespawn.Scorpion": [
       "hostile",
@@ -399,7 +399,7 @@
       "climb"
     ],
     "danger.orespawn.Stinky": [
-      "fly|false",
+      
       "fireImmunity"
     ],
     "danger.orespawn.Termite": [
@@ -409,7 +409,7 @@
     ],
     "danger.orespawn.TerribleTerror": [
       "hostile",
-      "fly|false"
+      
     ],
     "danger.orespawn.TrooperBug": [
       "hostile",
@@ -424,27 +424,27 @@
       "fallNegate"
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityBee": [
-      "fly|false",
+      
       "waterAllergy"
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityButterfly": [
-      "fly|false"
+      
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityDragonfly": [
-      "fly|false"
+      
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityFirefly": [
-      "fly|false"
+      
     ],
     "drzhark.mocreatures.entity.ambient.MoCEntityFly": [
-      "fly|false"
+      
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityDolphin": [
       "swim|false,1.8F,0.6F,true",
       "hostile"
     ],
     "drzhark.mocreatures.entity.MoCEntityFlyerMob": [
-      "fly|false"
+      
     ],
     "drzhark.mocreatures.entity.aquatic.MoCEntityFishy": [
       "swim|false,1.4F,0.5F,true"
@@ -472,7 +472,7 @@
       "swim|false,1.2F,0.3F,true"
     ],
     "drzhark.mocreatures.entity.monster.MoCEntityFlameWraith": [
-      "fly|false",
+      
       "hostile",
       "fireImmunity"
     ],
@@ -508,7 +508,7 @@
     "drzhark.mocreatures.entity.monster.MoCEntityWraith": [
       "hostile",
       "sunburn",
-      "fly|false"
+      
     ],
     "drzhark.mocreatures.entity.monster.MoCEntityWWolf": [
       "hostile"
@@ -517,7 +517,7 @@
       "float|-0.114,true"
     ],
     "drzhark.mocreatures.entity.passive.MoCEntityWyvern": [
-      "fly|false"
+      
     ],
     "erebus.entity.EntityAntlion": [
       "hostile"
@@ -531,7 +531,7 @@
       "hostile"
     ],
     "erebus.entity.EntityBotFly": [
-      "fly|false",
+      
       "hostile"
     ],
     "erebus.entity.EntityCentipede": [
@@ -550,7 +550,7 @@
       "fireImmunity"
     ],
     "erebus.entity.EntityFly": [
-      "fly|false"
+      
     ],
     "erebus.entity.EntityGrasshopper": [
       "fallNegate",
@@ -562,11 +562,11 @@
       "hostile"
     ],
     "erebus.entity.EntityMosquito": [
-      "fly|false",
+      
       "hostile"
     ],
     "erebus.entity.EntityMoth": [
-      "fly|false"
+      
     ],
     "erebus.entity.EntityScorpion": [
       "hostile",
@@ -585,7 +585,7 @@
     ],
     "erebus.entity.EntityWasp": [
       "hostile",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaAnubis": [
       "hostile"
@@ -593,7 +593,7 @@
     "gaia.entity.EntityGaiaBanshee": [
       "hostile",
       "sunburn",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaBaphomet": [
       "hostile",
@@ -636,12 +636,12 @@
     "gaia.entity.EntityGaiaEnderDragonGirl": [
       "hostile",
       "waterAllergy",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaEnderEye": [
       "hostile",
       "waterAllergy",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaFleshLich": [
       "hostile",
@@ -653,11 +653,11 @@
       "swim|true,1F,1F,false"
     ],
     "gaia.entity.EntityGaiaGryphon": [
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaHarpy": [
       "hostile",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaMandragora": [
       "poisonResistance"
@@ -708,7 +708,7 @@
     "gaia.entity.EntityGaiaSphinx": [
       "hostile",
       "fireImmunity",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaSpiderQueen": [
       "hostile",
@@ -720,19 +720,19 @@
     ],
     "gaia.entity.EntityGaiaSuccubus": [
       "hostile",
-      "fly|false",
+      
       "fireImmunity"
     ],
     "gaia.entity.EntityGaiaValkyrie": [
       "hostile",
       "fireImmunity",
-      "fly|false",
+      
       "step|1F"
     ],
     "gaia.entity.EntityGaiaVampire": [
       "hostile",
       "sunburn",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaWerecat": [
       "hostile",
@@ -743,7 +743,7 @@
     "gaia.entity.EntityGaiaWitch": [
       "hostile",
       "poisonResistance",
-      "fly|false"
+      
     ],
     "gaia.entity.EntityGaiaWitherCow": [
       "hostile",
@@ -787,12 +787,12 @@
     "littlebreadloaf.bleach.entities.EntityHollowBat": [
       "fireImmunity",
       "hostile",
-      "fly|false"
+      
     ],
     "littlebreadloaf.bleach.entities.EntityHollowBlaze": [
       "fireImmunity",
       "hostile",
-      "fly|false",
+      
       "waterAllergy"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowGolem": [
@@ -819,7 +819,7 @@
     "littlebreadloaf.bleach.entities.EntityHollowWasp": [
       "fireImmunity",
       "hostile",
-      "fly|false",
+      
       "fallNegate"
     ],
     "littlebreadloaf.bleach.entities.EntityHollowWolf": [
@@ -851,22 +851,22 @@
       "float|-0.114,true"
     ],
     "lom.LotsOMobsEntity.EntityButterfly": [
-      "fly|false"
+      
     ],
     "lom.LotsOMobsEntity.EntityCroco": [
       "hostile"
     ],
     "lom.LotsOMobsEntity.EntityFireFly": [
-      "fly|false"
+      
     ],
     "lom.LotsOMobsEntity.EntityFishy": [
       "swim|false,1.2F,1F,true"
     ],
     "lom.LotsOMobsEntity.EntityFly": [
-      "fly|false"
+      
     ],
     "lom.LotsOMobsEntity.EntityBee": [
-      "fly|false"
+      
     ],
     "lom.LotsOMobsEntity.EntityIceBear": [
       "hostile"
@@ -887,7 +887,7 @@
       "swim|false,1F,1F,true"
     ],
     "lom.LotsOMobsEntity.EntityPterosaurus": [
-      "fly|false"
+      
     ],
     "lom.LotsOMobsEntity.EntityRaptor": [
       "hostile"
@@ -912,13 +912,13 @@
       "swim|false,1F,1F,true"
     ],
     "lom.LotsOMobsEntity.EntityVulture": [
-      "fly|false"
+      
     ],
     "lom.LotsOMobsEntity.EntityWhale": [
       "swim|false,1F,1F,true"
     ],
     "lom.LotsOMobsEntity.EntitySanta": [
-      "fly|false"
+      
     ],
     "lom.LotsOMobsEntity.EntityGorilla": [
       "hostile"
@@ -939,13 +939,13 @@
     "lycanite.lycanitesmobs.demonmobs.entity.EntityCacodemon": [
       "fireImmunity",
       "waterAllergy",
-      "fly|false",
+      
       "hostile"
     ],
     "lycanite.lycanitesmobs.demonmobs.entity.EntityNetherSoul": [
       "fireImmunity",
       "waterAllergy",
-      "fly|false",
+      
       "hostile"
     ],
     "lycanite.lycanitesmobs.demonmobs.entity.EntityPinky": [
@@ -963,7 +963,7 @@
     "lycanite.lycanitesmobs.desertmobs.entity.EntityManticore": [
       "fireImmunity",
       "waterAllergy",
-      "fly|false",
+      
       "hostile"
     ],
     "lycanite.lycanitesmobs.desertmobs.entity.EntityCrusk": [
@@ -1011,7 +1011,7 @@
       ],
     "lycanite.lycanitesmobs.swampmobs.entity.EntityRemobra": [
       "poisonResistance",
-      "fly|false",
+      
       "hostile"  
     ],
     "lycanite.lycanitesmobs.plainsmobs.entity.EntityVentoraptor": [
@@ -1030,7 +1030,7 @@
       "poisonResistance",
       "waterAllergy",
       "fireImmunity",
-      "fly|false",
+      
       "hostile"
     ],
     "mods.dungeonMobs.EntityCaveFisher": [
@@ -1121,7 +1121,7 @@
       "hostile"
     ],
     "morenature.entity.passive.EntityWingedBug": [
-      "fly|false"
+      
     ],
     "morenature.entity.passive.EntitySnake": [
       "hostile"
@@ -1130,11 +1130,11 @@
       "hostile"
     ],
     "morenature.entity.passive.EntityBird": [
-      "fly|false",
+      
       "float|-0.114,true"
     ],
     "net.aetherteam.aether.entities.EntityAerwhale": [
-      "fly|false"
+      
     ],
     "net.aetherteam.aether.entities.EntityAechorPlant": [
       "poisonResistance",
@@ -1159,17 +1159,17 @@
       "float|-0.114,true"
     ],
     "net.aetherteam.aether.entities.EntityTempest": [
-      "fly|false",
+      
       "hostile",
       "fireImmunity"
     ],
     "net.aetherteam.aether.entities.EntityZephyr": [
       "hostile",
-      "fly|false"
+      
     ],
     "net.aetherteam.aether.entities.bosses.EntityCog": [
       "hostile",
-      "fly|false",
+      
       "fireImmunity"
     ],
     "net.aetherteam.aether.entities.bosses.EntityHostEye": [
@@ -1193,30 +1193,30 @@
       "float|-0.114,true"
     ],
     "net.aetherteam.aether.entities.mounts.EntityFlyingCow": [
-      "fly|false"
+      
     ],
     "net.aetherteam.aether.entities.mounts.EntityMoa": [
-      "fly|false",
+      
       "float|-0.114,true"
     ],
     "net.aetherteam.aether.entities.mounts.EntityPhyg": [
-      "fly|false"
+      
     ],
     "net.aetherteam.aether.entities.mounts.EntitySwet": [
       "fallNegate"
     ],
     "noppes.animalbikes.entity.EntityDragonBike": [
-      "fly|false",
+      
       "hostile"
     ],
     "noppes.animalbikes.entity.EntityPonyFlyingBike": [
-      "fly|false"
+      
     ],
     "noppes.animalbikes.entity.EntityNotchBike": [
       "hostile"
     ],
     "noppes.animalbikes.entity.EntityGhastBike": [
-      "fly|false",
+      
       "hostile"
     ],
     "noppes.animalbikes.entity.EntityCreeperBike": [
@@ -1229,13 +1229,13 @@
       "float|-0.114,true"
     ],
     "noppes.animalbikes.entity.EntityChineseDragonBike": [
-      "fly|false"
+      
     ],
     "noppes.animalbikes.entity.EntityChickenBike": [
       "float|-0.114,true"
     ],
     "noppes.animalbikes.entity.EntityBatBike": [
-      "fly|false"
+      
     ],
     "noppes.animalbikes.entity.EntitySquidBike": [
       "swim|false"
@@ -1247,7 +1247,7 @@
       "swim|false"
     ],
     "noppes.animalbikes.entity.types.EntityRidableFlying": [
-      "fly|false"
+      
     ],
     "tconstruct.entity.BlueSlime": [
       "hostile"
@@ -1262,7 +1262,7 @@
     "thaumcraft.common.entities.monster.EntityFireBat": [
       "fireImmunity",
       "waterAllergy",
-      "fly|false",
+      
       "hostile"
     ],
     "thaumcraft.common.entities.monster.EntityGiantBrainyZombie": [
@@ -1274,11 +1274,11 @@
       "hostile"
     ],
     "thaumcraft.common.entities.monster.EntityWisp": [
-      "fly|false",
+      
       "hostile"
     ],
     "thaumcraft.common.entities.monster.EntityTaintSwarm": [
-      "fly|false",
+      
       "hostile"
     ],
     "thehippomaster.MutantCreatures.MutantCreeper": [
@@ -1325,7 +1325,7 @@
       "hostile"
     ],
     "tropicraft.entities.passive.flying.Failgull": [
-      "fly|false"
+      
     ],
     "tropicraft.entities.hostile.land.tribes.ashen.AshenHunter": [
       "hostile"
@@ -1349,7 +1349,7 @@
       "climb"
     ],
     "twilightforest.entity.EntityTFDeathTome": [
-      "fly|false",
+      
       "hostile"
     ],
     "twilightforest.entity.EntityTFFireBeetle": [
@@ -1361,11 +1361,11 @@
       "hostile"
     ],
     "twilightforest.entity.EntityTFMiniGhast": [
-      "fly|false",
+      
       "hostile"
     ],
     "twilightforest.entity.EntityTFMosquitoSwarm": [
-      "fly|false",
+      
       "hostile"
     ],
     "twilightforest.entity.EntityTFPinchBeetle": [
@@ -1383,10 +1383,10 @@
       "fallNegate"
     ],
     "twilightforest.entity.passive.EntityTFMobileFirefly": [
-      "fly|false"
+      
     ],
     "twilightforest.entity.passive.EntityTFRaven": [
-      "fly|false"
+      
     ],
     "twilightforest.entity.passive.EntityTFTinyBird": [
       "float|-0.114,true"
