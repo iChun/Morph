@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import morph.api.Ability;
 import morph.common.Morph;
-import morph.common.core.SessionState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
@@ -155,7 +154,7 @@ public class AbilityHandler
 
 	public static ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
 	{
-		if(SessionState.abilities)
+		if(Morph.config.getSessionInt("abilities") == 1)
 		{
 			ArrayList<Ability> abilities = abilityMap.get(entClass);
 			if(abilities == null)

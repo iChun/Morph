@@ -1,7 +1,7 @@
 package morph.common.packet;
 
 import cpw.mods.fml.relauncher.Side;
-import ichun.core.network.AbstractPacket;
+import ichun.common.core.network.AbstractPacket;
 import io.netty.buffer.ByteBuf;
 import morph.client.entity.EntityMorphAcquisition;
 import net.minecraft.client.Minecraft;

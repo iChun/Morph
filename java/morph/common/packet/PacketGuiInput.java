@@ -2,8 +2,8 @@ package morph.common.packet;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
-import ichun.core.network.AbstractPacket;
-import ichun.core.network.PacketHandler;
+import ichun.common.core.network.AbstractPacket;
+import ichun.common.core.network.PacketHandler;
 import io.netty.buffer.ByteBuf;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;

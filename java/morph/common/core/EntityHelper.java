@@ -1,28 +1,18 @@
 package morph.common.core;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import ichun.core.EntityHelperBase;
-import ichun.core.network.PacketHandler;
+import ichun.common.core.EntityHelperBase;
+import ichun.common.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketMorphAcquisition;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
-
-import java.util.List;
 
 public class EntityHelper extends EntityHelperBase
 {
@@ -33,7 +23,7 @@ public class EntityHelper extends EntityHelperBase
 	
 	public static boolean morphPlayer(EntityPlayerMP player, EntityLivingBase living, boolean kill, boolean forced)
 	{
-		if(Morph.childMorphs == 0 && living.isChild() || Morph.playerMorphs == 0 && living instanceof EntityPlayer || Morph.bossMorphs == 0 && living instanceof IBossDisplayData || player.getClass() == FakePlayer.class || player.playerNetServerHandler == null)
+		if(Morph.config.getInt("childMorphs") == 0 && living.isChild() || Morph.config.getInt("playerMorphs") == 0 && living instanceof EntityPlayer || Morph.config.getInt("bossMorphs") == 0 && living instanceof IBossDisplayData || player.getClass() == FakePlayer.class || player.playerNetServerHandler == null)
 		{
 			return false;
 		}
@@ -101,7 +91,7 @@ public class EntityHelper extends EntityHelperBase
 			return false;
 		}
 		
-		if(Morph.instaMorph == 1 || forced)
+		if(Morph.config.getInt("instaMorph") == 1 || forced)
 		{
 			MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), prevState, nextState);
 			info2.setMorphing(true);

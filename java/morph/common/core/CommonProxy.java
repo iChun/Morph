@@ -2,7 +2,7 @@ package morph.common.core;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import ichun.core.network.ChannelHandler;
+import ichun.common.core.network.ChannelHandler;
 import morph.client.core.TickHandlerClient;
 import morph.common.Morph;
 import morph.common.ability.mod.AbilitySupport;
@@ -23,55 +23,9 @@ public class CommonProxy
 {
 	public void initMod()
 	{
-		String[] classes = Morph.blacklistedMobs.split(", *");
-		for(String className : classes)
-		{
-			if(!className.trim().isEmpty())
-			{
-				try
-				{
-					Class clz = Class.forName(className.trim());
-					if(EntityLivingBase.class.isAssignableFrom(clz) && !Morph.blacklistedClasses.contains(clz))
-					{
-						Morph.blacklistedClasses.add(clz);
-						Morph.console("Blacklisting class: " + clz.getName(), false);
-					}
-				}
-				catch(Exception e)
-				{
-					Morph.console("Could not find class to blacklist: " + className.trim(), true);
-				}
-			}
-		}
-		
-		String[] names = Morph.whitelistedPlayers.split(", *");
-		boolean added = false;
-		for(String playerName : names)
-		{
-			if(!playerName.trim().isEmpty())
-			{
-				added = true;
-				if(!Morph.whitelistedPlayerNames.contains(playerName.trim()))
-				{
-					Morph.whitelistedPlayerNames.add(playerName.trim());
-				}
-			}
-		}
-		if(!Morph.whitelistedPlayerNames.isEmpty())
-		{
-			StringBuilder sb = new StringBuilder("Whitelisted players: ");
-			for(int i = 0; i < Morph.whitelistedPlayerNames.size(); i++)
-			{
-				sb.append(Morph.whitelistedPlayerNames.get(i));
-				if(i < Morph.whitelistedPlayerNames.size() - 1)
-				{
-					sb.append(", ");
-				}
-			}
-			Morph.console(sb.toString(), false);
-		}
+        Morph.parseBlacklist(Morph.config.getString("blacklistedMobs"));
+        Morph.parseWhitelist(Morph.config.getString("whitelistedPlayers"));
 
-        //TODO remember to add packets to register.
         Morph.channels = NetworkRegistry.INSTANCE.newChannel("Morph", new ChannelHandler("Morph", PacketGuiInput.class, PacketMorphInfo.class, PacketSession.class, PacketMorphAcquisition.class, PacketCompleteDemorph.class, PacketMorphStates.class));
 	}
 	
@@ -89,11 +43,11 @@ public class CommonProxy
 		}
 		compatibleEntities.add(EntityPlayer.class);
 		
-		if(Morph.modAbilityPatch == 1)
+		if(Morph.config.getInt("modAbilityPatch") == 1)
 		{
 			AbilitySupport.getInstance().mapAbilities();
 		}
-		if(Morph.modNBTStripper == 1)
+		if(Morph.config.getInt("modNBTStripper") == 1)
 		{
 			NBTStripper.getInstance().mapStripperInfo();
 		}

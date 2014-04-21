@@ -39,7 +39,7 @@ public class HandRenderHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onRenderWorldLast(RenderWorldLastEvent event)
 	{
-		if(Morph.handRenderOverride == 1)
+		if(Morph.config.getInt("handRenderOverride") == 1)
 		{
 			GL11.glPushMatrix();
 			Minecraft mc = Minecraft.getMinecraft();

@@ -1,6 +1,6 @@
 package morph.common.morph;
 
-import ichun.core.network.PacketHandler;
+import ichun.common.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.packet.PacketMorphStates;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,6 +15,7 @@ public class MorphHandler
 {
 
     //TODO find out that getting named morphs (eg name tags) still work as intended
+    //TODO migrate name tags to player UUID in the future...? Do it now... or in 1.7.9?
 	public static MorphState addOrGetMorphState(ArrayList<MorphState> states, MorphState state)
 	{
 		int pos = -1;
@@ -43,7 +44,7 @@ public class MorphHandler
 			states.add(state);
 		}
 		state.isFavourite = isFavourite;
-		if(Morph.sortMorphs == 2)
+		if(Morph.config.getInt("sortMorphs") == 2)
 		{
 			Collections.sort(states);
 		}
@@ -86,7 +87,7 @@ public class MorphHandler
 
 	public static void reorderMorphs(String starter, LinkedHashMap<String, ArrayList<MorphState>> morphMap) 
 	{
-		if(Morph.sortMorphs == 1 || Morph.sortMorphs == 2)
+		if(Morph.config.getInt("sortMorphs") == 1 || Morph.config.getInt("sortMorphs") == 2)
 		{
 			ArrayList<String> order = new ArrayList<String>();
 			Iterator<String> ite = morphMap.keySet().iterator();

@@ -2,7 +2,7 @@ package morph.common.packet;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
-import ichun.core.network.AbstractPacket;
+import ichun.common.core.network.AbstractPacket;
 import io.netty.buffer.ByteBuf;
 import morph.api.Ability;
 import morph.client.morph.MorphInfoClient;
@@ -172,7 +172,7 @@ public class PacketMorphInfo extends AbstractPacket
 
             info.flying = flying;
 
-            if(Morph.sortMorphs == 3 && info.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName()))
+            if(Morph.config.getInt("sortMorphs") == 3 && info.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName()))
             {
                 String name1 = info.nextState.entInstance.getCommandSenderName();
 

@@ -30,7 +30,7 @@ public class AbilitySupport {
 		{
 			Gson gson = new Gson();
 			Reader fileIn = null;
-			if(Morph.forceLocalModAbilityPatch != 1)
+			if(Morph.config.getInt("forceLocalModAbilityPatch") != 1)
 			{
 				try
 				{

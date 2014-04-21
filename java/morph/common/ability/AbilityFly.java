@@ -4,12 +4,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import morph.api.Ability;
 import morph.common.Morph;
-import morph.common.core.SessionState;
 import morph.common.morph.MorphInfo;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -45,7 +42,7 @@ public class AbilityFly extends Ability {
 	{
 		if(getParent() instanceof EntityPlayer)
 		{
-			if(!SessionState.allowFlight)
+			if(Morph.config.getSessionInt("allowFlight") == 0)
 			{
 				return;
 			}
@@ -150,7 +147,7 @@ public class AbilityFly extends Ability {
 	@Override
 	public ResourceLocation getIcon() 
 	{
-		return SessionState.allowFlight ? iconResource : null;
+		return Morph.config.getSessionInt("allowFlight") == 1 ? iconResource : null;
 	}
 	
 	public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/fly.png");

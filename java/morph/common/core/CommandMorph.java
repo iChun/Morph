@@ -1,6 +1,6 @@
 package morph.common.core;
 
-import ichun.core.network.PacketHandler;
+import ichun.common.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
@@ -136,7 +136,7 @@ public class CommandMorph extends CommandBase
 
                         PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
 
-						player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);//TODO test this
+						player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 					}
 					Morph.proxy.tickHandlerServer.playerMorphs.remove(player.getCommandSenderName());
 					
@@ -237,9 +237,8 @@ public class CommandMorph extends CommandBase
 								sb1.append(", ");
 							}
 						}
-						Morph.whitelistedPlayers = sb1.toString();
-						
-						Morph.saveConfig();
+                        Morph.config.get("whitelistedPlayers").set(sb1.toString());
+                        Morph.config.config.save();
 					}
 					else
 					{
@@ -278,9 +277,8 @@ public class CommandMorph extends CommandBase
 								sb1.append(", ");
 							}
 						}
-						Morph.whitelistedPlayers = sb1.toString();
-						
-						Morph.saveConfig();
+                        Morph.config.get("whitelistedPlayers").set(sb1.toString());
+                        Morph.config.config.save();
 					}
 					else
 					{

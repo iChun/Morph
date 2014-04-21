@@ -3,7 +3,7 @@ package morph.common.core;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import ichun.core.network.PacketHandler;
+import ichun.common.core.network.PacketHandler;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.ability.AbilityFly;
@@ -272,29 +272,14 @@ public class TickHandlerServer
 
 	public void updateSession(EntityPlayer player) 
 	{
-		try
-		{
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			DataOutputStream stream = new DataOutputStream(bytes);
-
-			stream.writeBoolean(SessionState.abilities);
-			stream.writeBoolean(SessionState.canSleepMorphed);
-			stream.writeBoolean(SessionState.allowMorphSelection);
-			stream.writeBoolean(SessionState.allowFlight);
-			
-			if(player != null)
-			{
-                PacketHandler.sendToPlayer(Morph.channels, new PacketSession(), player);
-			}
-			else
-			{
-                PacketHandler.sendToAll(Morph.channels, new PacketSession());
-			}
-		}
-		catch(IOException e)
-		{
-			
-		}
+        if(player != null)
+        {
+            PacketHandler.sendToPlayer(Morph.channels, new PacketSession(), player);
+        }
+        else
+        {
+            PacketHandler.sendToAll(Morph.channels, new PacketSession());
+        }
 	}
 
 	public long clock;

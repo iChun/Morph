@@ -1,13 +1,10 @@
 package morph.client.core;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ichun.client.render.RendererHelper;
-import ichun.core.network.PacketHandler;
+import ichun.common.core.network.PacketHandler;
 import morph.api.Ability;
-import morph.client.gui.GuiKeyBinds;
 import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
@@ -18,9 +15,7 @@ import morph.common.core.ObfHelper;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -28,7 +23,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
@@ -42,7 +36,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL30;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,44 +104,9 @@ public class TickHandlerClient
                 //		{
                 //			MorphInfoClient info = e.getValue();
                 //		}
-                //TODO make the keybind page in iChunUtil's keybinds stuff. Make a keybind class to do something that handles SHIFT/CTRL/ALT stuffs.
             }
             else
             {
-                /******************/
-
-//                ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-//
-//                GL11.glEnable(GL11.GL_STENCIL_TEST);
-//
-//                GL11.glColorMask(false, false, false, false);
-//                GL11.glDepthMask(false);
-//
-//                GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
-//                GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
-//
-//                GL11.glStencilMask(0xFF);
-//                GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-//
-//                RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, 60, 60, 0);
-//
-//                GL11.glColorMask(true, true, true, true);
-//                GL11.glDepthMask(true);
-//
-//                GL11.glStencilMask(0x00);
-//
-//                GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
-//
-//                GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-//
-//                RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, reso1.getScaledWidth_double(), reso1.getScaledHeight_double(), 0);
-//
-//                GL11.glDisable(GL11.GL_STENCIL_TEST);
-
-
-                /******************/
-
-
                 MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
                 if(info != null)
                 {
@@ -452,7 +410,6 @@ public class TickHandlerClient
                     int radius = 80;
                     radius *= Math.pow(prog, 0.5D);
 
-                    //TODO stencils are broken in 1.7
                     if(!mc.gameSettings.hideGUI)
                     {
                         GL11.glEnable(GL11.GL_BLEND);
@@ -472,12 +429,12 @@ public class TickHandlerClient
 
                         GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-                        //TODO stencil helper.
                         final int stencilBit = MinecraftForgeClient.reserveStencilBit();
 
                         if(stencilBit >= 0)
                         {
                             GL11.glEnable(GL11.GL_STENCIL_TEST);
+                            GL11.glDepthMask(false);
                             GL11.glColorMask(false, false, false, false);
 
                             final int stencilMask = 1 << stencilBit;
@@ -516,6 +473,7 @@ public class TickHandlerClient
                             GL11.glStencilMask(0x00);
                             GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
 
+                            GL11.glDepthMask(true);
                             GL11.glColorMask(true, true, true, true);
                         }
 
@@ -549,9 +507,9 @@ public class TickHandlerClient
 
                     GL11.glPushMatrix();
 
-                    int showAb = Morph.showAbilitiesInGui;
+                    int showAb = Morph.config.getSessionInt("showAbilitiesInGui");
 
-                    Morph.showAbilitiesInGui = 0;
+                    Morph.config.updateSession("showAbilitiesInGui", 0);
 
                     double radialAngle = -720F;
                     if(mag > magAcceptance)
@@ -611,7 +569,7 @@ public class TickHandlerClient
                         favouriteStates.get(i).isFavourite = true;
                     }
 
-                    Morph.showAbilitiesInGui = showAb;
+                    Morph.config.updateSession("showAbilitiesInGui", showAb);
 
                     GL11.glPopMatrix();
                 }
@@ -944,453 +902,8 @@ public class TickHandlerClient
                     }
                     info.firstUpdate = false;
                 }
-
-                if((Morph.keySelectorUpHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorUpHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorUpHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorUpHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorUpDown && isPressed(Morph.keySelectorUp))
-                {
-                    abilityScroll = 0;
-                    if(!selectorShow && mc.currentScreen == null)
-                    {
-                        selectorShow = true;
-                        selectorTimer = selectorShowTime - selectorTimer;
-                        scrollTimerHori = scrollTime;
-
-                        selectorSelected = 0;
-                        selectorSelectedHori = 0;
-
-                        MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
-                        if(info != null)
-                        {
-                            MorphState state = info.nextState;
-
-                            String entName = state.entInstance.getCommandSenderName();
-
-                            int i = 0;
-
-                            Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                            while(ite.hasNext())
-                            {
-                                Entry<String, ArrayList<MorphState>> e = ite.next();
-                                if(e.getKey().equalsIgnoreCase(entName))
-                                {
-                                    selectorSelected = i;
-                                    ArrayList<MorphState> states = e.getValue();
-
-                                    for(int j = 0; j < states.size(); j++)
-                                    {
-                                        if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
-                                        {
-                                            selectorSelectedHori = j;
-                                            break;
-                                        }
-                                    }
-
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        selectorSelectedHori = 0;
-                        selectorSelectedPrev = selectorSelected;
-                        scrollTimerHori = scrollTimer = scrollTime;
-
-                        selectorSelected--;
-                        if(selectorSelected < 0)
-                        {
-                            selectorSelected = playerMorphCatMap.size() - 1;
-                        }
-                    }
-                }
-                if((Morph.keySelectorDownHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorDownHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorDownHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorDownHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorDownDown && isPressed(Morph.keySelectorDown))
-                {
-                    abilityScroll = 0;
-                    if(!selectorShow && mc.currentScreen == null)
-                    {
-                        selectorShow = true;
-                        selectorTimer = selectorShowTime - selectorTimer;
-                        scrollTimerHori = scrollTime;
-
-                        selectorSelected = 0;
-                        selectorSelectedHori = 0;
-
-                        MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
-                        if(info != null)
-                        {
-                            MorphState state = info.nextState;
-                            String entName = state.entInstance.getCommandSenderName();
-
-                            int i = 0;
-
-                            Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                            while(ite.hasNext())
-                            {
-                                Entry<String, ArrayList<MorphState>> e = ite.next();
-                                if(e.getKey().equalsIgnoreCase(entName))
-                                {
-                                    selectorSelected = i;
-                                    ArrayList<MorphState> states = e.getValue();
-
-                                    for(int j = 0; j < states.size(); j++)
-                                    {
-                                        if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
-                                        {
-                                            selectorSelectedHori = j;
-                                            break;
-                                        }
-                                    }
-
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        selectorSelectedHori = 0;
-                        selectorSelectedPrev = selectorSelected;
-                        scrollTimerHori = scrollTimer = scrollTime;
-
-                        selectorSelected++;
-                        if(selectorSelected > playerMorphCatMap.size() - 1)
-                        {
-                            selectorSelected = 0;
-                        }
-                    }
-                }
-
-                if((Morph.keySelectorLeftHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorLeftHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorLeftHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorLeftHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorLeftDown && isPressed(Morph.keySelectorLeft))
-                {
-                    abilityScroll = 0;
-                    if(!selectorShow && mc.currentScreen == null)
-                    {
-                        selectorShow = true;
-                        selectorTimer = selectorShowTime - selectorTimer;
-                        scrollTimerHori = scrollTime;
-
-                        selectorSelected = 0;
-                        selectorSelectedHori = 0;
-
-                        MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
-                        if(info != null)
-                        {
-                            MorphState state = info.nextState;
-
-                            String entName = state.entInstance.getCommandSenderName();
-
-                            int i = 0;
-
-                            Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                            while(ite.hasNext())
-                            {
-                                Entry<String, ArrayList<MorphState>> e = ite.next();
-                                if(e.getKey().equalsIgnoreCase(entName))
-                                {
-                                    selectorSelected = i;
-                                    ArrayList<MorphState> states = e.getValue();
-
-                                    for(int j = 0; j < states.size(); j++)
-                                    {
-                                        if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
-                                        {
-                                            selectorSelectedHori = j;
-                                            break;
-                                        }
-                                    }
-
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        selectorSelectedHoriPrev = selectorSelectedHori;
-                        scrollTimerHori = scrollTime;
-
-                        selectorSelectedHori--;
-                    }
-                }
-                if((Morph.keySelectorRightHold == 0 && !GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown() && !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || Morph.keySelectorRightHold == 1 && GuiScreen.isShiftKeyDown() || Morph.keySelectorRightHold == 2 && GuiScreen.isCtrlKeyDown() || Morph.keySelectorRightHold == 3 && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))) && !keySelectorRightDown && isPressed(Morph.keySelectorRight))
-                {
-                    abilityScroll = 0;
-                    if(!selectorShow && mc.currentScreen == null)
-                    {
-                        selectorShow = true;
-                        selectorTimer = selectorShowTime - selectorTimer;
-                        scrollTimerHori = scrollTime;
-
-                        selectorSelected = 0;
-                        selectorSelectedHori = 0;
-
-                        MorphInfoClient info = playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
-                        if(info != null)
-                        {
-                            MorphState state = info.nextState;
-
-                            String entName = state.entInstance.getCommandSenderName();
-
-                            int i = 0;
-
-                            Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                            while(ite.hasNext())
-                            {
-                                Entry<String, ArrayList<MorphState>> e = ite.next();
-                                if(e.getKey().equalsIgnoreCase(entName))
-                                {
-                                    selectorSelected = i;
-                                    ArrayList<MorphState> states = e.getValue();
-
-                                    for(int j = 0; j < states.size(); j++)
-                                    {
-                                        if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
-                                        {
-                                            selectorSelectedHori = j;
-                                            break;
-                                        }
-                                    }
-
-                                    break;
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        selectorSelectedHoriPrev = selectorSelectedHori;
-                        scrollTimerHori = scrollTime;
-
-                        selectorSelectedHori++;
-                    }
-                }
-
-                if(!keySelectorChooseDown && (isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.getKeyCode())))
-                {
-                    if(selectorShow)
-                    {
-                        selectorShow = false;
-                        selectorTimer = selectorShowTime - selectorTimer;
-                        scrollTimerHori = scrollTime;
-
-                        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
-
-                        MorphState selectedState = null;
-
-                        int i = 0;
-
-                        Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                        while(ite.hasNext())
-                        {
-                            Entry<String, ArrayList<MorphState>> e = ite.next();
-                            if(i == selectorSelected)
-                            {
-                                ArrayList<MorphState> states = e.getValue();
-
-                                for(int j = 0; j < states.size(); j++)
-                                {
-                                    if(j == selectorSelectedHori)
-                                    {
-                                        selectedState = states.get(j);
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            i++;
-                        }
-
-                        if(selectedState != null && (info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier) || info == null && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())))
-                        {
-                            PacketHandler.sendToServer(Morph.channels, new PacketGuiInput(0, selectedState.identifier, false));
-                        }
-
-                    }
-                    else if(radialShow)
-                    {
-                        selectRadialMenu();
-                        radialShow = false;
-                    }
-                }
-                if(!keySelectorReturnDown && (isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.getKeyCode())))
-                {
-                    if(selectorShow)
-                    {
-                        selectorShow = false;
-                        selectorTimer = selectorShowTime - selectorTimer;
-                        scrollTimerHori = scrollTime;
-                    }
-                    if(radialShow)
-                    {
-                        radialShow = false;
-                    }
-                }
-                if(!keySelectorDeleteDown && (isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE)))
-                {
-                    if(selectorShow)
-                    {
-                        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
-
-                        MorphState selectedState = null;
-
-                        int i = 0;
-
-                        Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                        boolean multiple = false;
-                        boolean decrease = false;
-
-                        while(ite.hasNext())
-                        {
-                            Entry<String, ArrayList<MorphState>> e = ite.next();
-                            if(i == selectorSelected)
-                            {
-                                ArrayList<MorphState> states = e.getValue();
-
-                                for(int j = 0; j < states.size(); j++)
-                                {
-                                    if(j == selectorSelectedHori)
-                                    {
-                                        selectedState = states.get(j);
-                                        if(j == states.size() - 1)
-                                        {
-                                            decrease = true;
-                                        }
-                                        break;
-                                    }
-                                }
-
-                                if(states.size() > 1)
-                                {
-                                    multiple = true;
-                                }
-
-                                break;
-                            }
-                            i++;
-                        }
-
-                        if(selectedState != null && !selectedState.isFavourite && ((info == null || info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier)) && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())))
-                        {
-                            PacketHandler.sendToServer(Morph.channels, new PacketGuiInput(1, selectedState.identifier, false));
-
-                            if(!multiple)
-                            {
-                                selectorSelected--;
-                                if(selectorSelected < 0)
-                                {
-                                    selectorSelected = playerMorphCatMap.size() - 1;
-                                }
-                            }
-                            else if(decrease)
-                            {
-                                selectorSelectedHori--;
-                                if(selectorSelected < 0)
-                                {
-                                    selectorSelected = 0;
-                                }
-                            }
-                        }
-
-                    }
-                }
-                if(!keyFavouriteDown && isPressed(Morph.keyFavourite))
-                {
-                    if(selectorShow)
-                    {
-                        MorphState selectedState = null;
-
-                        int i = 0;
-
-                        Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                        while(ite.hasNext())
-                        {
-                            Entry<String, ArrayList<MorphState>> e = ite.next();
-                            if(i == selectorSelected)
-                            {
-                                ArrayList<MorphState> states = e.getValue();
-
-                                for(int j = 0; j < states.size(); j++)
-                                {
-                                    if(j == selectorSelectedHori)
-                                    {
-                                        selectedState = states.get(j);
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            i++;
-                        }
-
-                        if(selectedState != null && !selectedState.playerMorph.equalsIgnoreCase(selectedState.playerName))
-                        {
-                            selectedState.isFavourite = !selectedState.isFavourite;
-
-                            PacketHandler.sendToServer(Morph.channels, new PacketGuiInput(2, selectedState.identifier, selectedState.isFavourite));
-                        }
-                    }
-                    else if(mc.currentScreen == null)
-                    {
-                        favouriteStates.clear();
-
-                        Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-
-                        while(ite.hasNext())
-                        {
-                            Entry<String, ArrayList<MorphState>> e = ite.next();
-                            ArrayList<MorphState> states = e.getValue();
-
-                            for(int j = 0; j < states.size(); j++)
-                            {
-                                if(states.get(j).isFavourite)
-                                {
-                                    favouriteStates.add(states.get(j));
-                                }
-                            }
-                        }
-
-                        radialPlayerYaw = mc.renderViewEntity.rotationYaw;
-                        radialPlayerPitch = mc.renderViewEntity.rotationPitch;
-
-                        radialDeltaX = radialDeltaY = 0;
-
-                        radialShow = true;
-                        radialTime = 3;
-
-                    }
-                }
-                if(keyFavouriteDown && !isPressed(Morph.keyFavourite))
-                {
-                    if(radialShow)
-                    {
-                        selectRadialMenu();
-                        radialShow = false;
-                    }
-                }
-                keySelectorUpDown = isPressed(Morph.keySelectorUp);
-                keySelectorDownDown = isPressed(Morph.keySelectorDown);
-                keySelectorLeftDown = isPressed(Morph.keySelectorLeft);
-                keySelectorRightDown = isPressed(Morph.keySelectorRight);
-
-                keySelectorChooseDown = isPressed(Morph.keySelectorSelect) || isPressed(mc.gameSettings.keyBindAttack.getKeyCode());
-                keySelectorReturnDown = isPressed(Morph.keySelectorCancel) || isPressed(mc.gameSettings.keyBindUseItem.getKeyCode());
-                keySelectorDeleteDown = isPressed(Morph.keySelectorRemoveMorph) || isPressed(Keyboard.KEY_DELETE);
-
-                keyFavouriteDown = isPressed(Morph.keyFavourite);
             }
-            if(Morph.allowMorphSelection == 0 && selectorShow)
+            if(Morph.config.getSessionInt("allowMorphSelection") == 0 && selectorShow)
             {
                 selectorShow = false;
                 selectorTimer = 0;
@@ -1467,9 +980,9 @@ public class TickHandlerClient
 	        GL11.glPushMatrix();
 
 	        GL11.glTranslatef((float)posX, (float)posY, 50.0F);
-	        
-	        GL11.glEnable(3042 /*GL_BLEND*/);
-	        GL11.glBlendFunc(770, 771);
+
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
 	        
@@ -1528,14 +1041,14 @@ public class TickHandlerClient
 		        tessellator.draw();
         	}
 	        
-        	if(Morph.showAbilitiesInGui == 1)
+        	if(Morph.config.getSessionInt("showAbilitiesInGui") == 1)
         	{
 	        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
 	        	
 	        	int abilitiesSize = abilities.size();
 	    		for(int i = abilities.size() - 1; i >= 0; i--)
 	    		{
-	    			if(!abilities.get(i).entityHasAbility(ent))
+	    			if(!abilities.get(i).entityHasAbility(ent) || abilities.get(i).getIcon() == null)
 	    			{
 	    				abilitiesSize--;
 	    			}
@@ -1543,7 +1056,6 @@ public class TickHandlerClient
 	        	
 	        	boolean shouldScroll = false; 
 
-                //TODO change this to a scissor helper. Write one in iChunUtil.
 	        	final int stencilBit = MinecraftForgeClient.reserveStencilBit();
 	        	
 				if(stencilBit >= 0 && abilitiesSize > 3)
@@ -1585,6 +1097,7 @@ public class TickHandlerClient
 						final int stencilMask = 1 << stencilBit;
 						
 				        GL11.glEnable(GL11.GL_STENCIL_TEST);
+                        GL11.glDepthMask(false);
 				        GL11.glColorMask(false, false, false, false);
 	
 				        GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
@@ -1592,12 +1105,12 @@ public class TickHandlerClient
 				        GL11.glStencilMask(stencilMask);
 				        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 	
-						drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
+						RendererHelper.drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
 						
 						GL11.glStencilMask(0x00);
 						GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
-	
-						
+
+                        GL11.glDepthMask(true);
 				        GL11.glColorMask(true, true, true, true);
 					}
 				}
@@ -1608,7 +1121,7 @@ public class TickHandlerClient
 	        	{
 	        		Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
 	        		
-	        		if(!ability.entityHasAbility(ent) || (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3) && !shouldScroll && i >= 3)
+	        		if(!ability.entityHasAbility(ent) || ability.getIcon() == null || (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3) && !shouldScroll && i >= 3)
 	        		{
 	        			continue;
 	        		}
@@ -1673,8 +1186,7 @@ public class TickHandlerClient
         	}
         	GL11.glTranslatef(0.0F, 0.0F, -100F);
 
-	        
-	        GL11.glDisable(3042 /*GL_BLEND*/);
+            GL11.glDisable(GL11.GL_BLEND);
 
 	        GL11.glPopMatrix();
 	        
@@ -1765,20 +1277,6 @@ public class TickHandlerClient
     	return Keyboard.isKeyDown(key);
     }
     
-	public static void drawColourOnScreen(int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
-	{
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.setColorRGBA(r, g, b, alpha);
-        tessellator.addVertex(posX		  , posY + height	, zLevel);
-        tessellator.addVertex(posX + width, posY + height	, zLevel);
-        tessellator.addVertex(posX + width, posY			, zLevel);
-        tessellator.addVertex(posX		  , posY			, zLevel);
-        tessellator.draw();
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-	}
-	
 	public long clock;
 	
 	public RenderMorph renderMorphInstance;
@@ -1801,16 +1299,6 @@ public class TickHandlerClient
 	public boolean forceRender;
 	public boolean renderingMorph;
 	public byte renderingPlayer;
-	
-	public boolean keySelectorUpDown;
-	public boolean keySelectorDownDown;
-	public boolean keySelectorLeftDown;
-	public boolean keySelectorRightDown;
-	
-	public boolean keySelectorChooseDown;
-	public boolean keySelectorReturnDown;
-	public boolean keySelectorDeleteDown;
-	public boolean keyFavouriteDown;
 	
 	public boolean selectorShow;
 	public int selectorTimer;

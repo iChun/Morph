@@ -4,12 +4,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ichun.core.network.PacketHandler;
+import ichun.client.keybind.KeyEvent;
+import ichun.common.core.network.PacketHandler;
 import morph.api.Ability;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
@@ -17,6 +19,7 @@ import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
+import morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -47,26 +50,17 @@ import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
 public class EventHandler 
 {
 
-//	@SideOnly(Side.CLIENT)
-//	@SubscribeEvent
-//    //TODO FIX THIS
-//	public void onSoundLoad(SoundLoadEvent event)
-//	{
-//		for(int i = 1; i <= 6; i++)
-//		{
-//			event.manager.soundPoolSounds.addSound("morph:morph" + i + ".ogg");
-//		}
-//	}
-	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onRenderGameOverlayPre(RenderGameOverlayEvent.Pre event)
@@ -75,7 +69,7 @@ public class EventHandler
 		{
 			if(Morph.proxy.tickHandlerClient.radialShow)
 			{
-				if(Morph.renderCrosshairInRadialMenu == 1)
+				if(Morph.config.getInt("renderCrosshairInRadialMenu") == 1)
 				{
 			    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
 			    	double magAcceptance = 0.8D;
@@ -123,7 +117,7 @@ public class EventHandler
 		{
 			if(Morph.proxy.tickHandlerClient.radialShow)
 			{
-				if(Morph.renderCrosshairInRadialMenu == 1)
+				if(Morph.config.getInt("renderCrosshairInRadialMenu") == 1)
 				{
 			    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
 			    	double magAcceptance = 0.8D;
@@ -179,7 +173,6 @@ public class EventHandler
 			e.printStackTrace();
 		}
 		
-		//TODO look into issues with this and Sync
 		if(Morph.proxy.tickHandlerClient.allowRender)
 		{
 			Morph.proxy.tickHandlerClient.allowRender = false;
@@ -526,7 +519,353 @@ public class EventHandler
 //			}
 //		}
 	}
-	
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onKeyBindEvent(KeyEvent event)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        if(event.keyBind.isPressed())
+        {
+            if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorUp")) || event.keyBind.equals(Morph.config.getKeyBind("keySelectorDown")))
+            {
+                Morph.proxy.tickHandlerClient.abilityScroll = 0;
+                if(!Morph.proxy.tickHandlerClient.selectorShow && mc.currentScreen == null)
+                {
+                    Morph.proxy.tickHandlerClient.selectorShow = true;
+                    Morph.proxy.tickHandlerClient.selectorTimer = Morph.proxy.tickHandlerClient.selectorShowTime - Morph.proxy.tickHandlerClient.selectorTimer;
+                    Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTime;
+
+                    Morph.proxy.tickHandlerClient.selectorSelected = 0;
+                    Morph.proxy.tickHandlerClient.selectorSelectedHori = 0;
+
+                    MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
+                    if(info != null)
+                    {
+                        MorphState state = info.nextState;
+
+                        String entName = state.entInstance.getCommandSenderName();
+
+                        int i = 0;
+
+                        Iterator<Entry<String, ArrayList<MorphState>>> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.entrySet().iterator();
+
+                        while(ite.hasNext())
+                        {
+                            Entry<String, ArrayList<MorphState>> e = ite.next();
+                            if(e.getKey().equalsIgnoreCase(entName))
+                            {
+                                Morph.proxy.tickHandlerClient.selectorSelected = i;
+                                ArrayList<MorphState> states = e.getValue();
+
+                                for(int j = 0; j < states.size(); j++)
+                                {
+                                    if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
+                                    {
+                                        Morph.proxy.tickHandlerClient.selectorSelectedHori = j;
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                }
+                else
+                {
+                    Morph.proxy.tickHandlerClient.selectorSelectedHori = 0;
+                    Morph.proxy.tickHandlerClient.selectorSelectedPrev = Morph.proxy.tickHandlerClient.selectorSelected;
+                    Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTimer = Morph.proxy.tickHandlerClient.scrollTime;
+
+                    if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorUp")))
+                    {
+                        Morph.proxy.tickHandlerClient.selectorSelected--;
+                        if(Morph.proxy.tickHandlerClient.selectorSelected < 0)
+                        {
+                            Morph.proxy.tickHandlerClient.selectorSelected = Morph.proxy.tickHandlerClient.playerMorphCatMap.size() - 1;
+                        }
+                    }
+                    else
+                    {
+                        Morph.proxy.tickHandlerClient.selectorSelected++;
+                        if(Morph.proxy.tickHandlerClient.selectorSelected > Morph.proxy.tickHandlerClient.playerMorphCatMap.size() - 1)
+                        {
+                            Morph.proxy.tickHandlerClient.selectorSelected = 0;
+                        }
+                    }
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorLeft")) || event.keyBind.equals(Morph.config.getKeyBind("keySelectorRight")))
+            {
+                Morph.proxy.tickHandlerClient.abilityScroll = 0;
+                if(!Morph.proxy.tickHandlerClient.selectorShow && mc.currentScreen == null)
+                {
+                    Morph.proxy.tickHandlerClient.selectorShow = true;
+                    Morph.proxy.tickHandlerClient.selectorTimer = Morph.proxy.tickHandlerClient.selectorShowTime - Morph.proxy.tickHandlerClient.selectorTimer;
+                    Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTime;
+
+                    Morph.proxy.tickHandlerClient.selectorSelected = 0;
+                    Morph.proxy.tickHandlerClient.selectorSelectedHori = 0;
+
+                    MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
+                    if(info != null)
+                    {
+                        MorphState state = info.nextState;
+
+                        String entName = state.entInstance.getCommandSenderName();
+
+                        int i = 0;
+
+                        Iterator<Entry<String, ArrayList<MorphState>>> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.entrySet().iterator();
+
+                        while(ite.hasNext())
+                        {
+                            Entry<String, ArrayList<MorphState>> e = ite.next();
+                            if(e.getKey().equalsIgnoreCase(entName))
+                            {
+                                Morph.proxy.tickHandlerClient.selectorSelected = i;
+                                ArrayList<MorphState> states = e.getValue();
+
+                                for(int j = 0; j < states.size(); j++)
+                                {
+                                    if(states.get(j).identifier.equalsIgnoreCase(state.identifier))
+                                    {
+                                        Morph.proxy.tickHandlerClient.selectorSelectedHori = j;
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                }
+                else
+                {
+                    Morph.proxy.tickHandlerClient.selectorSelectedHoriPrev = Morph.proxy.tickHandlerClient.selectorSelectedHori;
+                    Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTime;
+
+                    if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorLeft")))
+                    {
+                        Morph.proxy.tickHandlerClient.selectorSelectedHori--;
+                    }
+                    else
+                    {
+                        Morph.proxy.tickHandlerClient.selectorSelectedHori++;
+                    }
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorSelect")) || event.keyBind.keyIndex == mc.gameSettings.keyBindAttack.getKeyCode())
+            {
+                if(Morph.proxy.tickHandlerClient.selectorShow)
+                {
+                    Morph.proxy.tickHandlerClient.selectorShow = false;
+                    Morph.proxy.tickHandlerClient.selectorTimer = Morph.proxy.tickHandlerClient.selectorShowTime - Morph.proxy.tickHandlerClient.selectorTimer;
+                    Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTime;
+
+                    MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
+
+                    MorphState selectedState = null;
+
+                    int i = 0;
+
+                    Iterator<Entry<String, ArrayList<MorphState>>> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.entrySet().iterator();
+
+                    while(ite.hasNext())
+                    {
+                        Entry<String, ArrayList<MorphState>> e = ite.next();
+                        if(i == Morph.proxy.tickHandlerClient.selectorSelected)
+                        {
+                            ArrayList<MorphState> states = e.getValue();
+
+                            for(int j = 0; j < states.size(); j++)
+                            {
+                                if(j == Morph.proxy.tickHandlerClient.selectorSelectedHori)
+                                {
+                                    selectedState = states.get(j);
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+                        i++;
+                    }
+
+                    if(selectedState != null && (info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier) || info == null && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())))
+                    {
+                        PacketHandler.sendToServer(Morph.channels, new PacketGuiInput(0, selectedState.identifier, false));
+                    }
+
+                }
+                else if(Morph.proxy.tickHandlerClient.radialShow)
+                {
+                    Morph.proxy.tickHandlerClient.selectRadialMenu();
+                    Morph.proxy.tickHandlerClient.radialShow = false;
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorCancel")) || event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode())
+            {
+                if(Morph.proxy.tickHandlerClient.selectorShow)
+                {
+                    Morph.proxy.tickHandlerClient.selectorShow = false;
+                    Morph.proxy.tickHandlerClient.selectorTimer = Morph.proxy.tickHandlerClient.selectorShowTime - Morph.proxy.tickHandlerClient.selectorTimer;
+                    Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTime;
+                }
+                if(Morph.proxy.tickHandlerClient.radialShow)
+                {
+                    Morph.proxy.tickHandlerClient.radialShow = false;
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorRemoveMorph")) || event.keyBind.keyIndex == Keyboard.KEY_DELETE)
+            {
+                if(Morph.proxy.tickHandlerClient.selectorShow)
+                {
+                    MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
+
+                    MorphState selectedState = null;
+
+                    int i = 0;
+
+                    Iterator<Entry<String, ArrayList<MorphState>>> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.entrySet().iterator();
+
+                    boolean multiple = false;
+                    boolean decrease = false;
+
+                    while(ite.hasNext())
+                    {
+                        Entry<String, ArrayList<MorphState>> e = ite.next();
+                        if(i == Morph.proxy.tickHandlerClient.selectorSelected)
+                        {
+                            ArrayList<MorphState> states = e.getValue();
+
+                            for(int j = 0; j < states.size(); j++)
+                            {
+                                if(j == Morph.proxy.tickHandlerClient.selectorSelectedHori)
+                                {
+                                    selectedState = states.get(j);
+                                    if(j == states.size() - 1)
+                                    {
+                                        decrease = true;
+                                    }
+                                    break;
+                                }
+                            }
+
+                            if(states.size() > 1)
+                            {
+                                multiple = true;
+                            }
+
+                            break;
+                        }
+                        i++;
+                    }
+
+                    if(selectedState != null && !selectedState.isFavourite && ((info == null || info != null && !info.nextState.identifier.equalsIgnoreCase(selectedState.identifier)) && !selectedState.playerMorph.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())))
+                    {
+                        PacketHandler.sendToServer(Morph.channels, new PacketGuiInput(1, selectedState.identifier, false));
+
+                        if(!multiple)
+                        {
+                            Morph.proxy.tickHandlerClient.selectorSelected--;
+                            if(Morph.proxy.tickHandlerClient.selectorSelected < 0)
+                            {
+                                Morph.proxy.tickHandlerClient.selectorSelected = Morph.proxy.tickHandlerClient.playerMorphCatMap.size() - 1;
+                            }
+                        }
+                        else if(decrease)
+                        {
+                            Morph.proxy.tickHandlerClient.selectorSelectedHori--;
+                            if(Morph.proxy.tickHandlerClient.selectorSelected < 0)
+                            {
+                                Morph.proxy.tickHandlerClient.selectorSelected = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.getKeyBind("keyFavourite")))
+            {
+                if(Morph.proxy.tickHandlerClient.selectorShow)
+                {
+                    MorphState selectedState = null;
+
+                    int i = 0;
+
+                    Iterator<Entry<String, ArrayList<MorphState>>> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.entrySet().iterator();
+
+                    while(ite.hasNext())
+                    {
+                        Entry<String, ArrayList<MorphState>> e = ite.next();
+                        if(i == Morph.proxy.tickHandlerClient.selectorSelected)
+                        {
+                            ArrayList<MorphState> states = e.getValue();
+
+                            for(int j = 0; j < states.size(); j++)
+                            {
+                                if(j == Morph.proxy.tickHandlerClient.selectorSelectedHori)
+                                {
+                                    selectedState = states.get(j);
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+                        i++;
+                    }
+
+                    if(selectedState != null && !selectedState.playerMorph.equalsIgnoreCase(selectedState.playerName))
+                    {
+                        selectedState.isFavourite = !selectedState.isFavourite;
+
+                        PacketHandler.sendToServer(Morph.channels, new PacketGuiInput(2, selectedState.identifier, selectedState.isFavourite));
+                    }
+                }
+                else if(mc.currentScreen == null)
+                {
+                    Morph.proxy.tickHandlerClient.favouriteStates.clear();
+
+                    Iterator<Entry<String, ArrayList<MorphState>>> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.entrySet().iterator();
+
+                    while(ite.hasNext())
+                    {
+                        Entry<String, ArrayList<MorphState>> e = ite.next();
+                        ArrayList<MorphState> states = e.getValue();
+
+                        for(int j = 0; j < states.size(); j++)
+                        {
+                            if(states.get(j).isFavourite)
+                            {
+                                Morph.proxy.tickHandlerClient.favouriteStates.add(states.get(j));
+                            }
+                        }
+                    }
+
+                    Morph.proxy.tickHandlerClient.radialPlayerYaw = mc.renderViewEntity.rotationYaw;
+                    Morph.proxy.tickHandlerClient.radialPlayerPitch = mc.renderViewEntity.rotationPitch;
+
+                    Morph.proxy.tickHandlerClient.radialDeltaX = Morph.proxy.tickHandlerClient.radialDeltaY = 0;
+
+                    Morph.proxy.tickHandlerClient.radialShow = true;
+                    Morph.proxy.tickHandlerClient.radialTime = 3;
+                }
+            }
+        }
+        else if(event.keyBind.equals(Morph.config.getKeyBind("keyFavourite")))
+        {
+            if(Morph.proxy.tickHandlerClient.radialShow)
+            {
+                Morph.proxy.tickHandlerClient.selectRadialMenu();
+                Morph.proxy.tickHandlerClient.radialShow = false;
+            }
+        }
+    }
+
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event)
@@ -590,7 +929,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event)
 	{
-		if(Morph.hostileAbilityMode > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(Morph.config.getInt("hostileAbilityMode") > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(event.entityLiving.getClass());
 			boolean hostile = false;
@@ -621,14 +960,14 @@ public class EventHandler
 						}
 						if(hostile && playerHostile)
 						{
-							if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.hostileAbilityMode == 2 || info.nextState.entInstance.getClass() != event.entityLiving.getClass() && Morph.hostileAbilityMode == 3)
+							if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.config.getInt("hostileAbilityMode") == 2 || info.nextState.entInstance.getClass() != event.entityLiving.getClass() && Morph.config.getInt("hostileAbilityMode") == 3)
 							{
 								return;
 							}
-							if(Morph.hostileAbilityMode == 4)
+							if(Morph.config.getInt("hostileAbilityMode") == 4)
 							{
 								double dist = event.entityLiving.getDistanceToEntity(player);
-								if(dist < Morph.hostileAbilityDistanceCheck)
+								if(dist < Morph.config.getInt("hostileAbilityDistanceCheck"))
 								{
 									return;
 								}
@@ -650,7 +989,7 @@ public class EventHandler
 	{
 		EntityPlayer player = (EntityPlayer)event.entityPlayer;
 		EnumStatus stats = EnumStatus.OTHER_PROBLEM;
-		if(!SessionState.canSleepMorphed)
+		if(Morph.config.getSessionInt("canSleepMorphed") == 0)
 		{
 			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName()))
 			{
@@ -688,7 +1027,7 @@ public class EventHandler
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if(Morph.loseMorphsOnDeath >= 1 && event.entityLiving instanceof EntityPlayerMP)
+			if(Morph.config.getInt("loseMorphsOnDeath") >= 1 && event.entityLiving instanceof EntityPlayerMP)
 			{
 				EntityPlayerMP player = (EntityPlayerMP)event.entityLiving;
 				
@@ -696,7 +1035,7 @@ public class EventHandler
 				
 				MorphState state = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.getCommandSenderName());
 				
-				if(Morph.loseMorphsOnDeath == 1)
+				if(Morph.config.getInt("loseMorphsOnDeath") == 1)
 				{
 					Morph.proxy.tickHandlerServer.playerMorphs.remove(player.getCommandSenderName());
 				}
@@ -732,9 +1071,9 @@ public class EventHandler
 			if(event.entityLiving instanceof EntityWither && !Morph.proxy.tickHandlerServer.saveData.getBoolean("killedWither"))
 			{
 				Morph.proxy.tickHandlerServer.saveData.setBoolean("killedWither", true);
-				if(Morph.disableEarlyGameFlight == 2)
+				if(Morph.config.getInt("disableEarlyGameFlight") == 2)
 				{
-					SessionState.allowFlight = true;
+                    Morph.config.updateSession("allowFlight", 1);
 					Morph.proxy.tickHandlerServer.updateSession(null);
 				}
 			}
@@ -820,9 +1159,9 @@ public class EventHandler
 	    	
 			if(Morph.proxy.tickHandlerServer.saveData != null)
 			{
-				if(Morph.disableEarlyGameFlight == 1 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether") || Morph.disableEarlyGameFlight == 2 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("killedWither"))
+				if(Morph.config.getInt("disableEarlyGameFlight") == 1 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether") || Morph.config.getInt("disableEarlyGameFlight") == 2 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("killedWither"))
 				{
-					SessionState.allowFlight = false;
+                    Morph.config.updateSession("allowFlight", 0);
 				}
 			}
 		}
@@ -1027,9 +1366,9 @@ public class EventHandler
             if(!Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether"))
             {
                 Morph.proxy.tickHandlerServer.saveData.setBoolean("travelledToNether", true);
-                if(Morph.disableEarlyGameFlight == 1)
+                if(Morph.config.getInt("disableEarlyGameFlight") == 1)
                 {
-                    SessionState.allowFlight = true;
+                    Morph.config.updateSession("allowFlight", 1);
                     Morph.proxy.tickHandlerServer.updateSession(null);
                 }
             }
