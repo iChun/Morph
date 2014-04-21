@@ -11,3 +11,4 @@ Gameplay:
 - Hit DELETE/BACKSPACE to delete a Morph.
 
 Config file for more options.
+Requires iChunUtil for Minecraft 1.7 and later.
