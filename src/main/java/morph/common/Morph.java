@@ -13,7 +13,6 @@ import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
 import ichun.common.iChunUtil;
-import morph.client.render.HandRenderHandler;
 import morph.common.core.CommonProxy;
 import morph.common.core.ObfHelper;
 import net.minecraft.client.Minecraft;
@@ -152,8 +151,6 @@ public class Morph
 	public void postLoad(FMLPostInitializationEvent event)
 	{
 		proxy.initPostMod();
-		
-		MinecraftForge.EVENT_BUS.register(new HandRenderHandler());
 	}
 	
 	@EventHandler

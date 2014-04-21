@@ -13,21 +13,26 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.keybind.KeyEvent;
 import ichun.common.core.network.PacketHandler;
 import morph.api.Ability;
+import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
+import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketGuiInput;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityWither;
@@ -38,12 +43,11 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -154,6 +158,121 @@ public class EventHandler
 			}
 		}
 	}
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onRenderHand(RenderHandEvent event)
+    {
+        if(Morph.config.getInt("handRenderOverride") == 1)
+        {
+            GL11.glPushMatrix();
+            Minecraft mc = Minecraft.getMinecraft();
+            if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(mc.thePlayer.getCommandSenderName()))
+            {
+                event.setCanceled(true);
+
+                MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(mc.thePlayer.getCommandSenderName());
+
+                GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+
+                if(info.morphProgress <= 40)
+                {
+                    if(info.prevModelInfo != null && info.morphProgress < 10)
+                    {
+                        RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+
+                        ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.prevModelInfo.getRenderer(), info.prevModelInfo.getRenderer().getClass(), info.prevState.entInstance);
+
+                        Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F;
+                        Morph.proxy.tickHandlerClient.renderHandInstance.setParent(rend);
+                        Morph.proxy.tickHandlerClient.renderHandInstance.resourceLoc = resourceLoc;
+                        Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.prevModelInfo.assumedArm;
+                        RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
+
+                        ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+
+                        if(info.getMorphing())
+                        {
+                            float progress = ((float)info.morphProgress + Morph.proxy.tickHandlerClient.renderTick) / 10F;
+                            Morph.proxy.tickHandlerClient.renderHandInstance.progress = progress;
+
+                            String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                            String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                            ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                        }
+                        RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
+                    }
+                }
+                else
+                {
+                    if(info.nextModelInfo != null && info.morphProgress >= 70)
+                    {
+                        RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+
+                        ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(info.nextModelInfo.getRenderer(), info.nextModelInfo.getRenderer().getClass(), info.nextState.entInstance);
+
+                        Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F;
+                        Morph.proxy.tickHandlerClient.renderHandInstance.setParent(rend);
+                        Morph.proxy.tickHandlerClient.renderHandInstance.resourceLoc = resourceLoc;
+                        Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.nextModelInfo.assumedArm;
+                        RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
+
+                        ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+
+                        if(info.getMorphing())
+                        {
+                            float progress = ((float)info.morphProgress - 70 + Morph.proxy.tickHandlerClient.renderTick) / 10F;
+
+                            if(progress > 1.0F)
+                            {
+                                progress = 1.0F;
+                            }
+                            Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F - progress;
+
+                            String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                            String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                            ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                            ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+                        }
+                        RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
+                    }
+                }
+                if(info.prevModelInfo != null && info.nextModelInfo != null && info.morphProgress >= 10 && info.morphProgress < 70)
+                {
+                    RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+
+                    ResourceLocation resourceLoc = RenderMorph.morphSkin;
+
+                    Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F;
+                    Morph.proxy.tickHandlerClient.renderHandInstance.setParent(rend);
+                    Morph.proxy.tickHandlerClient.renderHandInstance.resourceLoc = resourceLoc;
+                    Morph.proxy.tickHandlerClient.renderHandInstance.replacement = ModelHelper.createMorphArm(info.interimModel, info.prevModelInfo.assumedArm, info.nextModelInfo.assumedArm, info.morphProgress, Morph.proxy.tickHandlerClient.renderTick);
+
+                    RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
+
+                    ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+
+                    RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
+                }
+            }
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glPopMatrix();
+        }
+    }
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
