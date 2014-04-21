@@ -14,7 +14,6 @@ import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
 import ichun.common.iChunUtil;
 import morph.common.core.CommonProxy;
-import morph.common.core.ObfHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.MinecraftForge;
@@ -132,8 +131,6 @@ public class Morph
             config.createIntBoolProperty("renderCrosshairInRadialMenu", "Render Crosshair in Radial Menu", "As per request, render the crosshair position when in the radial menu.", true, false, false);
 		}
 		
-        ObfHelper.detectObfuscation();
-
         morph.common.core.EventHandler eventHandler = new morph.common.core.EventHandler();
 
 		MinecraftForge.EVENT_BUS.register(eventHandler);

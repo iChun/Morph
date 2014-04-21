@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.mojang.authlib.GameProfile;
-import morph.common.Morph;
-import morph.common.core.ObfHelper;
+import ichun.common.core.util.ObfHelper;
 import morph.common.morph.mod.NBTStripper;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;

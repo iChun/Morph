@@ -12,6 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.keybind.KeyEvent;
 import ichun.common.core.network.PacketHandler;
+import ichun.common.core.util.ObfHelper;
 import morph.api.Ability;
 import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
@@ -189,7 +190,7 @@ public class EventHandler
                         Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.prevModelInfo.assumedArm;
                         RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
 
-                        ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                        EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
 
                         if(info.getMorphing())
                         {
@@ -202,7 +203,7 @@ public class EventHandler
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 
-                            ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                            EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
 
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -225,7 +226,7 @@ public class EventHandler
                         Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.nextModelInfo.assumedArm;
                         RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
 
-                        ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                        EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
 
                         if(info.getMorphing())
                         {
@@ -243,7 +244,7 @@ public class EventHandler
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 
-                            ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                            EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
 
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -264,7 +265,7 @@ public class EventHandler
 
                     RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
 
-                    ObfHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                    EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
 
                     RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
                 }
@@ -1131,12 +1132,12 @@ public class EventHandler
 			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName()))
 			{
 				MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
-				event.name = ObfHelper.invokeGetHurtSound(info.nextState.entInstance.getClass(), info.nextState.entInstance);
+				event.name = EntityHelper.getHurtSound(info.nextState.entInstance.getClass(), info.nextState.entInstance);
 			}
 			else if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(player.getCommandSenderName()))
 			{
 				MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.getCommandSenderName());
-				event.name = ObfHelper.invokeGetHurtSound(info.nextState.entInstance.getClass(), info.nextState.entInstance);
+				event.name = EntityHelper.getHurtSound(info.nextState.entInstance.getClass(), info.nextState.entInstance);
 			}
 		}
 	}
@@ -1435,7 +1436,7 @@ public class EventHandler
 
         if(info != null)
         {
-            ObfHelper.forceSetSize(event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+            ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
         }
@@ -1475,7 +1476,7 @@ public class EventHandler
 
         if(info != null)
         {
-            ObfHelper.forceSetSize(event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+            ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
         }
@@ -1501,7 +1502,7 @@ public class EventHandler
 
         if(info != null)
         {
-            ObfHelper.forceSetSize(event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+            ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
         }

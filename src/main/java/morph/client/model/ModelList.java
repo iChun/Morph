@@ -2,16 +2,12 @@ package morph.client.model;
 
 import java.util.HashMap;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import morph.common.Morph;
-import morph.common.core.ObfHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class ModelList 
 {

@@ -4,6 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ichun.common.core.network.PacketHandler;
+import ichun.common.core.util.ObfHelper;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.ability.AbilityFly;
@@ -104,7 +105,7 @@ public class TickHandlerServer
 
                         if(player != null)
                         {
-                            ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                            ObfHelper.forceSetSize(player.getClass(), player, info.nextState.entInstance.width, info.nextState.entInstance.height);
                             player.setPosition(player.posX, player.posY, player.posZ);
                             player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 
@@ -172,7 +173,7 @@ public class TickHandlerServer
                     else if(info.sleeping)
                     {
                         info.sleeping = false;
-                        ObfHelper.forceSetSize(player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                        ObfHelper.forceSetSize(player.getClass(), player, info.nextState.entInstance.width, info.nextState.entInstance.height);
                         player.setPosition(player.posX, player.posY, player.posZ);
                         player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
                     }

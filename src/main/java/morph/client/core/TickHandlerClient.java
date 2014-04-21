@@ -4,6 +4,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ichun.client.render.RendererHelper;
 import ichun.common.core.network.PacketHandler;
+import ichun.common.core.util.ObfHelper;
 import morph.api.Ability;
 import morph.client.model.ModelMorph;
 import morph.client.morph.MorphInfoClient;
@@ -11,7 +12,6 @@ import morph.client.render.RenderMorph;
 import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
-import morph.common.core.ObfHelper;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
@@ -54,7 +54,8 @@ public class TickHandlerClient
 		renderHandInstance = new RenderPlayerHand();
 		renderHandInstance.setRenderManager(RenderManager.instance);
 	}
-	
+
+    //TODO find out issues with block attack/placement esp as a squid.
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event)
     {
@@ -693,7 +694,7 @@ public class TickHandlerClient
                             info.setMorphing(false);
                             if(info.player != null)
                             {
-                                ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                                ObfHelper.forceSetSize(info.player.getClass(), info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
                                 info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
                                 info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 
@@ -742,7 +743,7 @@ public class TickHandlerClient
                         info.player = world.getPlayerEntityByName(e.getKey());
                         if(info.player != null && !info.getMorphing())
                         {
-                            ObfHelper.forceSetSize(info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                            ObfHelper.forceSetSize(info.player.getClass(), info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
                             info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
                             info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 

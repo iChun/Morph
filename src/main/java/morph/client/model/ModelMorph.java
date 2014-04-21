@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import ichun.common.core.util.ObfHelper;
 import org.lwjgl.opengl.GL11;
 
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
-import morph.common.core.ObfHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;

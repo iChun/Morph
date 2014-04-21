@@ -3,13 +3,12 @@ package morph.client.model;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import ichun.common.core.util.ObfHelper;
 import org.lwjgl.opengl.GL11;
 
 import morph.client.entity.EntityMorphAcquisition;
 import morph.common.Morph;
-import morph.common.core.ObfHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.entity.Entity;

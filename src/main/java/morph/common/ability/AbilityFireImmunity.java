@@ -1,8 +1,8 @@
 package morph.common.ability;
 
+import ichun.common.core.util.ObfHelper;
 import morph.api.Ability;
 import morph.common.Morph;
-import morph.common.core.ObfHelper;
 import morph.common.morph.MorphInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
