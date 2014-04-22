@@ -30,13 +30,14 @@ public class NBTStripper {
 		{
 			Gson gson = new Gson();
 			Reader fileIn = null;
-			try
+            String customPatch = Morph.config.getString("customPatchLink");
+            try
 			{
-				fileIn = new InputStreamReader(new URL("https://raw.github.com/iChun/Morph/master" + jsonPath).openStream());
+				fileIn = new InputStreamReader(new URL((customPatch.isEmpty() ? "https://raw.github.com/iChun/Morph/master" : customPatch) + jsonPath).openStream());
 			}
 			catch(Exception e)
 			{
-				Morph.console("Failed to retrieve nbt stripper mappings from GitHub!", true);
+				Morph.console("Failed to retrieve nbt stripper mappings from " + (customPatch.isEmpty() ? "GitHub!" : customPatch), true);
 				e.printStackTrace();
 				try
 				{

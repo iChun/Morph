@@ -32,14 +32,15 @@ public class AbilitySupport {
 			Reader fileIn = null;
 			if(Morph.config.getInt("forceLocalModAbilityPatch") != 1)
 			{
+                String customPatch = Morph.config.getString("customPatchLink");
 				try
 				{
-					fileIn = new InputStreamReader(new URL("https://raw.github.com/iChun/Morph/master" + jsonPath).openStream());
+					fileIn = new InputStreamReader(new URL((customPatch.isEmpty() ? "https://raw.github.com/iChun/Morph/master" : customPatch) + jsonPath).openStream());
 				}
 				catch(Exception e)
 				{
 					fileIn = null;
-					Morph.console("Failed to retrieve mod mob ability mappings from GitHub!", true);
+					Morph.console("Failed to retrieve mod mob ability mappings from " + (customPatch.isEmpty() ? "GitHub!" : customPatch), true);
 					e.printStackTrace();
 				}
 			}
