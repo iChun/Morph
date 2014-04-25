@@ -53,18 +53,20 @@ public class Morph
     @Override
     public boolean onConfigChange(Config cfg, Property prop)
     {
-        //TODO update blacklistedClasses and whitelistedPlayers and abilities and canSleepMorphed and allowMorphSelection when this is triggered. (basically all the configs and session stuff)
-        if(prop.getName().equalsIgnoreCase("blacklistedMobs"))
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
         {
-            parseBlacklist(prop.getString());
-        }
-        if(prop.getName().equalsIgnoreCase("whitelistedPlayers"))
-        {
-            parseWhitelist(prop.getString());
-        }
-        if(prop.getName().equalsIgnoreCase("abilities") || prop.getName().equalsIgnoreCase("canSleepMorphed") || prop.getName().equalsIgnoreCase("allowMorphSelection"))
-        {
-            Morph.proxy.tickHandlerServer.updateSession(null);
+            if(prop.getName().equalsIgnoreCase("blacklistedMobs"))
+            {
+                parseBlacklist(prop.getString());
+            }
+            if(prop.getName().equalsIgnoreCase("whitelistedPlayers"))
+            {
+                parseWhitelist(prop.getString());
+            }
+            if(prop.getName().equalsIgnoreCase("abilities") || prop.getName().equalsIgnoreCase("canSleepMorphed") || prop.getName().equalsIgnoreCase("allowMorphSelection"))
+            {
+                Morph.proxy.tickHandlerServer.updateSession(null);
+            }
         }
         return true;
     }
@@ -79,7 +81,7 @@ public class Morph
         config.setCurrentCategory("gameplay", "Gameplay", "These options affect the gameplay while using the mod.");
         config.createIntBoolProperty("childMorphs", "Child Morphs", "Can you acquire child mob morphs?\nDisabled by default due to improper morph transitions", true, false, false);
         config.createIntBoolProperty("playerMorphs", "Player Morphs", "Can you acquire player morphs?", true, false, true);
-        config.createIntBoolProperty("childMorphs", "Child Morphs", "Can you acquire boss morphs?\nThis is disabled by default due to morphing issues with mobs like the EnderDragon, Twilight Forest's Hydra and Naga, etc.", true, false, false);
+        config.createIntBoolProperty("bossMorphs", "Boss Morphs", "Can you acquire boss morphs?\nThis is disabled by default due to morphing issues with mobs like the EnderDragon, Twilight Forest's Hydra and Naga, etc.", true, false, false);
 
         config.createStringProperty("blacklistedMobs", "Blacklisted Mobs", "Prevent players from acquiring these mobs as a morph.\nLeave blank to allow acquisition of all compatible mobs.\nFormatting is as follows: <class>, <class>, <class>\nExample: am2.entities.EntityBattleChicken, biomesoplenty.entities.EntityJungleSpider, thaumcraft.common.entities.monster.EntityWisp", true, false, "");
         config.createStringProperty("whitelistedPlayers", "Whitelisted Players", "Only allow these players to use the Morph skill.\nLeave blank to allow all players to use the skill.\nFormatting is as follows: <name>, <name>, <name>\nExample: Cojomax99, pahimar, ohaiiChun", true, false, "");
