@@ -11,3 +11,4 @@
 # Gradle #
 /.gradle
 /build
+/lib
