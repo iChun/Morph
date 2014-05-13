@@ -28,7 +28,7 @@ import java.util.EnumMap;
 
 @Mod(modid = "Morph", name = "Morph",
 			version = Morph.version,
-			dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".5.0,)"
+			dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".0.0,)"
 				)
 public class Morph
     implements IConfigUser
