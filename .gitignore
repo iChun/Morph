@@ -4,8 +4,9 @@
 *.war
 *.ear
 
-# IDEA module file #
+# IDEA Files #
 *.iml
+/.idea
 
 # Gradle #
 /.gradle
