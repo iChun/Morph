@@ -1,5 +1,6 @@
 package morph.common.morph;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import ichun.common.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.packet.PacketMorphStates;
@@ -44,7 +45,7 @@ public class MorphHandler
 			states.add(state);
 		}
 		state.isFavourite = isFavourite;
-		if(Morph.config.getInt("sortMorphs") == 2)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.config.getInt("sortMorphs") == 2)
 		{
 			Collections.sort(states);
 		}

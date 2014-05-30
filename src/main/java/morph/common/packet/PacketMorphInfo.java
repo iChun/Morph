@@ -2,6 +2,7 @@ package morph.common.packet;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.network.AbstractPacket;
 import io.netty.buffer.ByteBuf;
 import morph.api.Ability;
@@ -91,116 +92,123 @@ public class PacketMorphInfo extends AbstractPacket
 
         if(side.isClient())
         {
-            Minecraft mc = Minecraft.getMinecraft();
+            handleClient(buffer, player);
+        }
+    }
 
-            if(hasNextState)
+    @SideOnly(Side.CLIENT)
+    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if(hasNextState)
+        {
+            EntityPlayer player1 = mc.theWorld.getPlayerEntityByName(playerName);
+            if(player1 != null)
             {
-                EntityPlayer player1 = mc.theWorld.getPlayerEntityByName(playerName);
-                if(player1 != null)
+                if (!player1.getActivePotionEffects().isEmpty())
                 {
-                    if (!player1.getActivePotionEffects().isEmpty())
-                    {
-                        NBTTagList nbttaglist = new NBTTagList();
-                        Iterator iterator = player1.getActivePotionEffects().iterator();
+                    NBTTagList nbttaglist = new NBTTagList();
+                    Iterator iterator = player1.getActivePotionEffects().iterator();
 
-                        while (iterator.hasNext())
-                        {
-                            PotionEffect potioneffect = (PotionEffect)iterator.next();
-                            nbttaglist.appendTag(potioneffect.writeCustomPotionEffectToNBT(new NBTTagCompound()));
-                        }
-                        nextTag.setTag("ActiveEffects", nbttaglist);
+                    while (iterator.hasNext())
+                    {
+                        PotionEffect potioneffect = (PotionEffect)iterator.next();
+                        nbttaglist.appendTag(potioneffect.writeCustomPotionEffectToNBT(new NBTTagCompound()));
                     }
+                    nextTag.setTag("ActiveEffects", nbttaglist);
                 }
             }
+        }
 
-            MorphState prevState = new MorphState(mc.theWorld, playerName, "", null, true);
-            MorphState nextState = new MorphState(mc.theWorld, playerName, "", null, true);
+        MorphState prevState = new MorphState(mc.theWorld, playerName, "", null, true);
+        MorphState nextState = new MorphState(mc.theWorld, playerName, "", null, true);
 
-            prevState.readTag(mc.theWorld, prevTag);
-            nextState.readTag(mc.theWorld, nextTag);
+        prevState.readTag(mc.theWorld, prevTag);
+        nextState.readTag(mc.theWorld, nextTag);
 
-            //TODO check for mc.theplayer morphstate
-            //					prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), prevState);
-            //					nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), nextState);
+        //TODO check for mc.theplayer morphstate
+        //					prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), prevState);
+        //					nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerClient.getPlayerMorphs(event.entityPlayer.worldObj, event.entityPlayer.username), nextState);
 
-            if(prevState.entInstance != null)
+        if(prevState.entInstance != null)
+        {
+            if(prevState.entInstance != mc.thePlayer)
             {
-                if(prevState.entInstance != mc.thePlayer)
+                prevState.entInstance.noClip = true;
+            }
+        }
+
+        if(nextState.entInstance != null)
+        {
+            if(nextState.entInstance != mc.thePlayer)
+            {
+                nextState.entInstance.noClip = true;
+            }
+        }
+
+        //					System.out.println(prevEnt);
+        //					System.out.println(nextEnt);
+
+        MorphInfoClient info = new MorphInfoClient(playerName, prevState, nextState);
+        info.setMorphing(morphing);
+        info.morphProgress = morphProgress;
+
+        MorphInfoClient info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(playerName);
+        if(info1 != null)
+        {
+            info.morphAbilities = info1.morphAbilities;
+        }
+        else
+        {
+            ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+            info.morphAbilities = new ArrayList<Ability>();
+            for(Ability ability : newAbilities)
+            {
+                try
                 {
-                    prevState.entInstance.noClip = true;
+                    Ability clone = ability.clone();
+                    info.morphAbilities.add(clone);
+                }
+                catch(Exception e1)
+                {
                 }
             }
+        }
 
-            if(nextState.entInstance != null)
+        Morph.proxy.tickHandlerClient.playerMorphInfo.put(playerName, info);
+
+        info.flying = flying;
+
+        if(Morph.config.getInt("sortMorphs") == 3 && info.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName()))
+        {
+            String name1 = info.nextState.entInstance.getCommandSenderName();
+
+            if(name1 != null)
             {
-                if(nextState.entInstance != mc.thePlayer)
+                ArrayList<String> order = new ArrayList<String>();
+                Iterator<String> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.keySet().iterator();
+                while(ite.hasNext())
                 {
-                    nextState.entInstance.noClip = true;
+                    order.add(ite.next());
                 }
-            }
 
-            //					System.out.println(prevEnt);
-            //					System.out.println(nextEnt);
+                order.remove(name1);
+                order.remove(mc.thePlayer.getCommandSenderName());
 
-            MorphInfoClient info = new MorphInfoClient(playerName, prevState, nextState);
-            info.setMorphing(morphing);
-            info.morphProgress = morphProgress;
+                order.add(0, name1);
+                order.add(0, mc.thePlayer.getCommandSenderName());
 
-            MorphInfoClient info1 = Morph.proxy.tickHandlerClient.playerMorphInfo.get(playerName);
-            if(info1 != null)
-            {
-                info.morphAbilities = info1.morphAbilities;
-            }
-            else
-            {
-                ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
-                info.morphAbilities = new ArrayList<Ability>();
-                for(Ability ability : newAbilities)
+                LinkedHashMap<String, ArrayList<MorphState>> bufferList = new LinkedHashMap<String, ArrayList<MorphState>>(Morph.proxy.tickHandlerClient.playerMorphCatMap);
+
+                Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
+
+                for(int i = 0; i < order.size(); i++)
                 {
-                    try
-                    {
-                        Ability clone = ability.clone();
-                        info.morphAbilities.add(clone);
-                    }
-                    catch(Exception e1)
-                    {
-                    }
-                }
-            }
-
-            Morph.proxy.tickHandlerClient.playerMorphInfo.put(playerName, info);
-
-            info.flying = flying;
-
-            if(Morph.config.getInt("sortMorphs") == 3 && info.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName()))
-            {
-                String name1 = info.nextState.entInstance.getCommandSenderName();
-
-                if(name1 != null)
-                {
-                    ArrayList<String> order = new ArrayList<String>();
-                    Iterator<String> ite = Morph.proxy.tickHandlerClient.playerMorphCatMap.keySet().iterator();
-                    while(ite.hasNext())
-                    {
-                        order.add(ite.next());
-                    }
-
-                    order.remove(name1);
-                    order.remove(mc.thePlayer.getCommandSenderName());
-
-                    order.add(0, name1);
-                    order.add(0, mc.thePlayer.getCommandSenderName());
-
-                    LinkedHashMap<String, ArrayList<MorphState>> bufferList = new LinkedHashMap<String, ArrayList<MorphState>>(Morph.proxy.tickHandlerClient.playerMorphCatMap);
-
-                    Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
-
-                    for(int i = 0; i < order.size(); i++)
-                    {
-                        Morph.proxy.tickHandlerClient.playerMorphCatMap.put(order.get(i), bufferList.get(order.get(i)));
-                    }
+                    Morph.proxy.tickHandlerClient.playerMorphCatMap.put(order.get(i), bufferList.get(order.get(i)));
                 }
             }
         }
     }
+
 }

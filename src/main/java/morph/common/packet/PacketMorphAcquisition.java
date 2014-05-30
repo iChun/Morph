@@ -1,6 +1,7 @@
 package morph.common.packet;
 
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.network.AbstractPacket;
 import io.netty.buffer.ByteBuf;
 import morph.client.entity.EntityMorphAcquisition;
@@ -36,16 +37,23 @@ public class PacketMorphAcquisition extends AbstractPacket
     {
         if(side.isClient())
         {
-            Minecraft mc = Minecraft.getMinecraft();
-
-            Entity ent = mc.theWorld.getEntityByID(buffer.readInt());
-            Entity ent1 = mc.theWorld.getEntityByID(buffer.readInt());
-
-            if(ent instanceof EntityLivingBase && ent1 instanceof EntityLivingBase)
-            {
-                mc.theWorld.spawnEntityInWorld(new EntityMorphAcquisition(mc.theWorld, (EntityLivingBase)ent, (EntityLivingBase)ent1));
-                ent.setDead();
-            }
+            handleClient(buffer, player);
         }
     }
+
+    @SideOnly(Side.CLIENT)
+    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        Entity ent = mc.theWorld.getEntityByID(buffer.readInt());
+        Entity ent1 = mc.theWorld.getEntityByID(buffer.readInt());
+
+        if(ent instanceof EntityLivingBase && ent1 instanceof EntityLivingBase)
+        {
+            mc.theWorld.spawnEntityInWorld(new EntityMorphAcquisition(mc.theWorld, (EntityLivingBase)ent, (EntityLivingBase)ent1));
+            ent.setDead();
+        }
+    }
+
 }

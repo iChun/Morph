@@ -2,6 +2,7 @@ package morph.common.packet;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.network.AbstractPacket;
 import io.netty.buffer.ByteBuf;
 import morph.common.Morph;
@@ -40,51 +41,56 @@ public class PacketMorphStates extends AbstractPacket
         ByteBufUtils.writeUTF8String(buffer, "##end");
     }
 
-    //TODO make sure this side.isClient works on the server
     @Override
     public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
     {
         if(side.isClient())
         {
-            Minecraft mc = Minecraft.getMinecraft();
-            clear = buffer.readBoolean();
+            handleClient(buffer, player);
+        }
+    }
 
-            if(clear)
+    @SideOnly(Side.CLIENT)
+    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        clear = buffer.readBoolean();
+
+        if(clear)
+        {
+            Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
+        }
+
+        boolean requireReorder = false;
+        while(ByteBufUtils.readUTF8String(buffer).equalsIgnoreCase("state"))
+        {
+            MorphState state = new MorphState(mc.theWorld, mc.thePlayer.getCommandSenderName(), "", null, true);
+
+            NBTTagCompound tag = ByteBufUtils.readTag(buffer);
+
+            if(tag != null)
             {
-                Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
-            }
+                state.readTag(mc.theWorld, tag);
 
-            boolean requireReorder = false;
-            while(ByteBufUtils.readUTF8String(buffer).equalsIgnoreCase("state"))
-            {
-                MorphState state = new MorphState(mc.theWorld, mc.thePlayer.getCommandSenderName(), "", null, true);
+                String name = state.entInstance.getCommandSenderName();
 
-                NBTTagCompound tag = ByteBufUtils.readTag(buffer);
-
-                if(tag != null)
+                if(name != null)
                 {
-                    state.readTag(mc.theWorld, tag);
-
-                    String name = state.entInstance.getCommandSenderName();
-
-                    if(name != null)
+                    ArrayList<MorphState> states = Morph.proxy.tickHandlerClient.playerMorphCatMap.get(name);
+                    if(states == null)
                     {
-                        ArrayList<MorphState> states = Morph.proxy.tickHandlerClient.playerMorphCatMap.get(name);
-                        if(states == null)
-                        {
-                            requireReorder = true;
-                            states = new ArrayList<MorphState>();
-                            Morph.proxy.tickHandlerClient.playerMorphCatMap.put(name, states);
-                        }
-                        MorphHandler.addOrGetMorphState(states, state);
+                        requireReorder = true;
+                        states = new ArrayList<MorphState>();
+                        Morph.proxy.tickHandlerClient.playerMorphCatMap.put(name, states);
                     }
+                    MorphHandler.addOrGetMorphState(states, state);
                 }
             }
+        }
 
-            if(requireReorder)
-            {
-                MorphHandler.reorderMorphs(Minecraft.getMinecraft().thePlayer.getCommandSenderName(), Morph.proxy.tickHandlerClient.playerMorphCatMap);
-            }
+        if(requireReorder)
+        {
+            MorphHandler.reorderMorphs(Minecraft.getMinecraft().thePlayer.getCommandSenderName(), Morph.proxy.tickHandlerClient.playerMorphCatMap);
         }
     }
 }

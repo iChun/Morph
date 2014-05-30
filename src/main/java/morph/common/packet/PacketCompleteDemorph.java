@@ -2,6 +2,7 @@ package morph.common.packet;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.network.AbstractPacket;
 import ichun.common.core.util.ObfHelper;
 import io.netty.buffer.ByteBuf;
@@ -34,34 +35,41 @@ public class PacketCompleteDemorph extends AbstractPacket
     {
         if(side.isClient())
         {
-            String name = ByteBufUtils.readUTF8String(buffer);
-            EntityPlayer player1 = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(name);
-            if(player1 != null)
-            {
-                player1.ignoreFrustumCheck = true;
-                MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
-                if(info != null)
-                {
-                    ObfHelper.forceSetSize(player1.getClass(), player1, info.nextState.entInstance.width, info.nextState.entInstance.height);
-                    player1.setPosition(player1.posX, player1.posY, player1.posZ);
-                    player1.eyeHeight = player1.getDefaultEyeHeight();
-                    player1.ignoreFrustumCheck = false;
-                }
-            }
-
-            MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
-            if(info != null)
-            {
-                for(Ability ability : info.morphAbilities)
-                {
-                    if(ability.getParent() != null)
-                    {
-                        ability.kill();
-                    }
-                }
-            }
-
-            Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
+            handleClient(buffer, player);
         }
     }
+
+    @SideOnly(Side.CLIENT)
+    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    {
+        String name = ByteBufUtils.readUTF8String(buffer);
+        EntityPlayer player1 = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(name);
+        if(player1 != null)
+        {
+            player1.ignoreFrustumCheck = true;
+            MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+            if(info != null)
+            {
+                ObfHelper.forceSetSize(player1.getClass(), player1, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                player1.setPosition(player1.posX, player1.posY, player1.posZ);
+                player1.eyeHeight = player1.getDefaultEyeHeight();
+                player1.ignoreFrustumCheck = false;
+            }
+        }
+
+        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+        if(info != null)
+        {
+            for(Ability ability : info.morphAbilities)
+            {
+                if(ability.getParent() != null)
+                {
+                    ability.kill();
+                }
+            }
+        }
+
+        Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
+    }
+
 }
