@@ -68,7 +68,7 @@ public class PacketMorphInfo extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
+    public void readFrom(ByteBuf buffer, Side side)
     {
         prevTag = new NBTTagCompound();
         nextTag = new NBTTagCompound();
@@ -89,15 +89,19 @@ public class PacketMorphInfo extends AbstractPacket
         morphProgress = buffer.readInt();
 
         flying = buffer.readBoolean();
+    }
 
+    @Override
+    public void execute(Side side, EntityPlayer player)
+    {
         if(side.isClient())
         {
-            handleClient(buffer, player);
+            handleClient(side, player);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    public void handleClient(Side side, EntityPlayer player)
     {
         Minecraft mc = Minecraft.getMinecraft();
 

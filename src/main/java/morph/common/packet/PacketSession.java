@@ -21,11 +21,14 @@ public class PacketSession extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
+    public void readFrom(ByteBuf buffer, Side side)
     {
         Morph.config.updateSession("abilities", buffer.readInt());
         Morph.config.updateSession("canSleepMorphed", buffer.readInt());
         Morph.config.updateSession("allowMorphSelection", buffer.readInt());
         Morph.config.updateSession("allowFlight", buffer.readInt());
     }
+
+    @Override
+    public void execute(Side side, EntityPlayer player){} //hacky fix
 }

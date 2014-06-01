@@ -18,14 +18,17 @@ public class PacketMorphStates extends AbstractPacket
 {
 
     public boolean clear;
-    public ArrayList<MorphState> states;
+    public ArrayList<NBTTagCompound> stateTags = new ArrayList<NBTTagCompound>();
 
     public PacketMorphStates(){}
 
     public PacketMorphStates(boolean clear, ArrayList<MorphState> states)
     {
         this.clear = clear;
-        this.states = states;
+        for(MorphState state : states)
+        {
+            stateTags.add(state.getTag());
+        }
     }
 
     @Override
@@ -33,28 +36,37 @@ public class PacketMorphStates extends AbstractPacket
     {
         buffer.writeBoolean(clear);
 
-        for(int i = 0; i < states.size(); i++)
+        for(NBTTagCompound tag : stateTags)
         {
             ByteBufUtils.writeUTF8String(buffer, "state");
-            ByteBufUtils.writeTag(buffer, states.get(i).getTag());
+            ByteBufUtils.writeTag(buffer, tag);
         }
         ByteBufUtils.writeUTF8String(buffer, "##end");
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
+    public void readFrom(ByteBuf buffer, Side side)
+    {
+        clear = buffer.readBoolean();
+        while(ByteBufUtils.readUTF8String(buffer).equalsIgnoreCase("state"))
+        {
+            stateTags.add(ByteBufUtils.readTag(buffer));
+        }
+    }
+
+    @Override
+    public void execute(Side side, EntityPlayer player)
     {
         if(side.isClient())
         {
-            handleClient(buffer, player);
+            handleClient(side, player);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    public void handleClient(Side side, EntityPlayer player)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        clear = buffer.readBoolean();
 
         if(clear)
         {
@@ -62,11 +74,9 @@ public class PacketMorphStates extends AbstractPacket
         }
 
         boolean requireReorder = false;
-        while(ByteBufUtils.readUTF8String(buffer).equalsIgnoreCase("state"))
+        for(NBTTagCompound tag : stateTags)
         {
             MorphState state = new MorphState(mc.theWorld, mc.thePlayer.getCommandSenderName(), "", null, true);
-
-            NBTTagCompound tag = ByteBufUtils.readTag(buffer);
 
             if(tag != null)
             {

@@ -31,23 +31,28 @@ public class PacketCompleteDemorph extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
+    public void readFrom(ByteBuf buffer, Side side)
+    {
+        playerName = ByteBufUtils.readUTF8String(buffer);
+    }
+
+    @Override
+    public void execute(Side side, EntityPlayer player)
     {
         if(side.isClient())
         {
-            handleClient(buffer, player);
+            handleClient(side, player);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    public void handleClient(Side side, EntityPlayer player)
     {
-        String name = ByteBufUtils.readUTF8String(buffer);
-        EntityPlayer player1 = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(name);
+        EntityPlayer player1 = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(playerName);
         if(player1 != null)
         {
             player1.ignoreFrustumCheck = true;
-            MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+            MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(playerName);
             if(info != null)
             {
                 ObfHelper.forceSetSize(player1.getClass(), player1, info.nextState.entInstance.width, info.nextState.entInstance.height);
@@ -57,7 +62,7 @@ public class PacketCompleteDemorph extends AbstractPacket
             }
         }
 
-        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(name);
+        MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(playerName);
         if(info != null)
         {
             for(Ability ability : info.morphAbilities)
@@ -69,7 +74,7 @@ public class PacketCompleteDemorph extends AbstractPacket
             }
         }
 
-        Morph.proxy.tickHandlerClient.playerMorphInfo.remove(name);
+        Morph.proxy.tickHandlerClient.playerMorphInfo.remove(playerName);
     }
 
 }

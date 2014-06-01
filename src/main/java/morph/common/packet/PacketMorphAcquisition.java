@@ -33,21 +33,28 @@ public class PacketMorphAcquisition extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
+    public void readFrom(ByteBuf buffer, Side side)
+    {
+        entityID1 = buffer.readInt();
+        entityID2 = buffer.readInt();
+    }
+
+    @Override
+    public void execute(Side side, EntityPlayer player)
     {
         if(side.isClient())
         {
-            handleClient(buffer, player);
+            handleClient(side, player);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleClient(ByteBuf buffer, EntityPlayer player)
+    public void handleClient(Side side, EntityPlayer player)
     {
         Minecraft mc = Minecraft.getMinecraft();
 
-        Entity ent = mc.theWorld.getEntityByID(buffer.readInt());
-        Entity ent1 = mc.theWorld.getEntityByID(buffer.readInt());
+        Entity ent = mc.theWorld.getEntityByID(entityID1);
+        Entity ent1 = mc.theWorld.getEntityByID(entityID2);
 
         if(ent instanceof EntityLivingBase && ent1 instanceof EntityLivingBase)
         {

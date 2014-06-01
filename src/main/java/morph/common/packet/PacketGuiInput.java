@@ -40,12 +40,16 @@ public class PacketGuiInput extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side, EntityPlayer player)
+    public void readFrom(ByteBuf buffer, Side side)
     {
         //Should always be serverside
         input = buffer.readInt();
         identifier = ByteBufUtils.readUTF8String(buffer);
+    }
 
+    @Override
+    public void execute(Side side, EntityPlayer player)
+    {
         MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
 
         if(!(info != null && info.getMorphing()) || input == 2)

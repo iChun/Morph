@@ -26,7 +26,7 @@ public class CommonProxy
         Morph.parseBlacklist(Morph.config.getString("blacklistedMobs"));
         Morph.parseWhitelist(Morph.config.getString("whitelistedPlayers"));
 
-        Morph.channels = NetworkRegistry.INSTANCE.newChannel("Morph", new ChannelHandler("Morph", PacketGuiInput.class, PacketMorphInfo.class, PacketSession.class, PacketMorphAcquisition.class, PacketCompleteDemorph.class, PacketMorphStates.class));
+        Morph.channels = ChannelHandler.getChannelHandlers("Morph", PacketGuiInput.class, PacketMorphInfo.class, PacketSession.class, PacketMorphAcquisition.class, PacketCompleteDemorph.class, PacketMorphStates.class);
 	}
 	
 	public void initPostMod()
