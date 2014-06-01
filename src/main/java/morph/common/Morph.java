@@ -78,63 +78,57 @@ public class Morph
 
         config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "morph", "Morph", logger, instance);
 
-        config.setCurrentCategory("gameplay", "Gameplay", "These options affect the gameplay while using the mod.");
-        config.createIntBoolProperty("childMorphs", "Child Morphs", "Can you acquire child mob morphs?\nDisabled by default due to improper morph transitions", true, false, false);
-        config.createIntBoolProperty("playerMorphs", "Player Morphs", "Can you acquire player morphs?", true, false, true);
-        config.createIntBoolProperty("bossMorphs", "Boss Morphs", "Can you acquire boss morphs?\nThis is disabled by default due to morphing issues with mobs like the EnderDragon, Twilight Forest's Hydra and Naga, etc.", true, false, false);
+        config.setCurrentCategory("gameplay", "morph.config.cat.gameplay.name", "morph.config.cat.gameplay.comment");
+        config.createIntBoolProperty("childMorphs", "morph.config.prop.childMorphs.name", "morph.config.prop.childMorphs.comment", true, false, false);
+        config.createIntBoolProperty("playerMorphs", "morph.config.prop.playerMorphs.name", "morph.config.prop.playerMorphs.comment", true, false, true);
+        config.createIntBoolProperty("bossMorphs", "morph.config.prop.bossMorphs.name", "morph.config.prop.bossMorphs.comment", true, false, false);
 
-        config.createStringProperty("blacklistedMobs", "Blacklisted Mobs", "Prevent players from acquiring these mobs as a morph.\nLeave blank to allow acquisition of all compatible mobs.\nFormatting is as follows: <class>, <class>, <class>\nExample: am2.entities.EntityBattleChicken, biomesoplenty.entities.EntityJungleSpider, thaumcraft.common.entities.monster.EntityWisp", true, false, "");
-        config.createStringProperty("whitelistedPlayers", "Whitelisted Players", "Only allow these players to use the Morph skill.\nLeave blank to allow all players to use the skill.\nFormatting is as follows: <name>, <name>, <name>\nExample: Cojomax99, pahimar, ohaiiChun", true, false, "");
+        config.createStringProperty("blacklistedMobs", "morph.config.prop.blacklistedMobs.name", "morph.config.prop.blacklistedMobs.comment", true, false, "");
+        config.createStringProperty("whitelistedPlayers", "morph.config.prop.whitelistedPlayers.name", "morph.config.prop.whitelistedPlayers.comment", true, false, "");
 
-        config.createIntProperty("loseMorphsOnDeath", "Lose Morphs on Death", "Will you lose your morphs on death?\n0 = No\n1 = Yes, all morphs\n2 = Yes, the morph you're currently using", true, false, 0, 0, 2);
-        config.createIntBoolProperty("instaMorph", "Insta-Morph", "Will you insta-morph into a new morph acquired?", true, false, false);
+        config.createIntProperty("loseMorphsOnDeath", "morph.config.prop.loseMorphsOnDeath.name", "morph.config.prop.loseMorphsOnDeath.comment", true, false, 0, 0, 2);
+        config.createIntBoolProperty("instaMorph", "morph.config.prop.instaMorph.name", "morph.config.prop.instaMorph.comment", true, false, false);
 
-        config.createIntBoolProperty("modNBTStripper", "Mod NBT Stripper", "Enable mod mob NBT Stripping?\nThis support is mostly provided by the community and is not officially supported by the mod\nThe stripper was added to remove non-essential information from the Entity NBT to remove duplicate morphs.", false, false, true);
+        config.createIntBoolProperty("modNBTStripper", "morph.config.prop.modNBTStripper.name", "morph.config.prop.modNBTStripper.comment", false, false, true);
 
-        config.createIntBoolProperty("canSleepMorphed", "Can Sleep Morphed?", "Can you sleep while morphed?", true, true, false);
-        config.createIntBoolProperty("allowMorphSelection", "Allow Morph Selection?", "Requested by SoundLogic\nCan you open the morph GUI?", true, true, true);
+        config.createIntBoolProperty("canSleepMorphed", "morph.config.prop.canSleepMorphed.name", "morph.config.prop.canSleepMorphed.comment", true, true, false);
+        config.createIntBoolProperty("allowMorphSelection", "morph.config.prop.allowMorphSelection.name", "morph.config.prop.allowMorphSelection.comment", true, true, true);
 
         //TODO custom config to link to other places?
-        config.setCurrentCategory("abilities", "Abilities", "These settings are related to Morph's Abilities feature.");
-        config.createIntBoolProperty("abilities", "Abilities", "Enable abilities?", false, true, true);
-        config.createIntBoolProperty("modAbilityPatch", "Mod Ability Patch", "Enable mod mob ability patching?\nThis support is mostly provided by the community and is not officially supported by the mod\nIf a mod mob you like doesn't have an ability, you can contribute to the mappings on the Morph Github page.", false, false, true);
-        config.createIntBoolProperty("forceLocalModAbilityPatch", "Force Local Mod Ability Patch", "Force the mod to use the local copy of the ModMobAbilitySupport?\nThis is meant for debugging purposes and for modified local mod mob abilities mappings.\nDo take note that mappings server and clientside are not synched so both ends will require the same mappings.", false, false, false);
+        config.setCurrentCategory("abilities", "morph.config.cat.abilities.name", "morph.config.cat.abilities.comment");
+        config.createIntBoolProperty("abilities", "morph.config.prop.abilities.name", "morph.config.prop.abilities.comment", false, true, true);
+        config.createIntBoolProperty("modAbilityPatch", "morph.config.prop.modAbilityPatch.name", "morph.config.prop.modAbilityPatch.comment", false, false, true);
+        config.createIntBoolProperty("forceLocalModAbilityPatch", "morph.config.prop.forceLocalModAbilityPatch.name", "morph.config.prop.forceLocalModAbilityPatch.comment", false, false, false);
 
-        config.createStringProperty("customPatchLink", "Custom Mod Ability Patch Link", "Redirect the mod to a different JSON patch location rather then the default patch hosted on GitHub.\nIf you would like to use the default, leave this blank.\nThis also affects NBTStripper.json.\nIf the link to your file is \"https://raw.github.com/iChun/Morph/master/assets/morph/mod/ModMobSupport.json\", put \"https://raw.github.com/iChun/Morph/master\", you cannot change the \"/assets/morph/mod/ModMobSupport.json\" part of the link.", false, false, "");
+        config.createStringProperty("customPatchLink", "morph.config.prop.customPatchLink.name", "morph.config.prop.customPatchLink.comment", false, false, "");
 
-        config.createIntProperty("hostileAbilityMode", "Hostile Ability Mode", "Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\nIf you'd like to turn on Hostile Ability, I'd recommend Mode 2 (personal preference)", true, false, 0, 0, 4);
-        config.createIntProperty("hostileAbilityDistanceCheck", "Hostile Ability Distance Check", "Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6", true, false, 6, 0, 128);
+        config.createIntProperty("hostileAbilityMode", "morph.config.prop.hostileAbilityMode.name", "morph.config.prop.hostileAbilityMode.comment", true, false, 0, 0, 4);
+        config.createIntProperty("hostileAbilityDistanceCheck", "morph.config.prop.hostileAbilityDistanceCheck.name", "morph.config.prop.hostileAbilityDistanceCheck.comment", true, false, 6, 0, 128);
 
         //TODO make a per-player or per-server config
-        config.createIntProperty("disableEarlyGameFlight", "Disable Early Game Flight", "Disable the flight ability until a player...\n0 = Enable early game flight\n1 = ...has reached the nether\n2 = ...has killed the Wither", true, false, 0, 0, 2);
+        config.createIntProperty("disableEarlyGameFlight", "morph.config.prop.disableEarlyGameFlight.name", "morph.config.prop.disableEarlyGameFlight.comment", true, false, 0, 0, 2);
 
         if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-            config.setCurrentCategory("clientOnly", "Client Only", "These settings are client-only.");
-			config.createKeybindProperty("keySelectorUp", "Selector Up", "Key Code to go up on the selector\nDefault: 26 ([)", 26, false, false, false, false, 0, false);
-            config.createKeybindProperty("keySelectorDown", "Selector Down", "Key Code to go down on the selector\nDefault: 27 (])", 27, false, false, false, false, 0, false);
-            config.createKeybindProperty("keySelectorLeft", "Selector Left", "Key Code to go left on the selector\nDefault: 26 ([)", 26, true, false, false, false, 0, false);
-            config.createKeybindProperty("keySelectorRight", "Selector Right", "Key Code to go right on the selector\nDefault: 27 (])", 27, true, false, false, false, 0, false);
+        {
+            config.setCurrentCategory("clientOnly", "morph.config.cat.clientOnly.name", "morph.config.cat.clientOnly.comment");
+            config.createKeybindProperty("keySelectorUp", "morph.config.prop.keySelectorUp.name", "morph.config.prop.keySelectorUp.comment", 26, false, false, false, false, 0, false);
+            config.createKeybindProperty("keySelectorDown", "morph.config.prop.keySelectorDown.name", "morph.config.prop.keySelectorDown.comment", 27, false, false, false, false, 0, false);
+            config.createKeybindProperty("keySelectorLeft", "morph.config.prop.keySelectorLeft.name", "morph.config.prop.keySelectorLeft.comment", 26, true, false, false, false, 0, false);
+            config.createKeybindProperty("keySelectorRight", "morph.config.prop.keySelectorRight.name", "morph.config.prop.keySelectorRight.comment", 27, true, false, false, false, 0, false);
 
-            //TODO will this throw a classnotfound error?
             iChunUtil.proxy.registerMinecraftKeyBind(Minecraft.getMinecraft().gameSettings.keyBindAttack);
             iChunUtil.proxy.registerMinecraftKeyBind(Minecraft.getMinecraft().gameSettings.keyBindUseItem);
             iChunUtil.proxy.registerKeyBind(new KeyBind(Keyboard.KEY_DELETE, false, false, false, false), null);
-            config.createKeybindProperty("keySelectorSelect", "Selector Select", "Key Code to select morph on the selector\nDefault: 28 (Enter/Return)", 28, false, false, false, false, 0, false);
-            config.createKeybindProperty("keySelectorCancel", "Selector Cancel", "Key Code to close the selector\nDefault: 1 (Esc)", 1, false, false, false, false, 0, false);
-            config.createKeybindProperty("keySelectorRemoveMorph", "Selector Remove Morph", "Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)", 14, false, false, false, false, 0, false);
+            config.createKeybindProperty("keySelectorSelect", "morph.config.prop.keySelectorSelect.name", "morph.config.prop.keySelectorSelect.comment", 28, false, false, false, false, 0, false);
+            config.createKeybindProperty("keySelectorCancel", "morph.config.prop.keySelectorCancel.name", "morph.config.prop.keySelectorCancel.comment", 1, false, false, false, false, 0, false);
+            config.createKeybindProperty("keySelectorRemoveMorph", "morph.config.prop.keySelectorRemoveMorph.name", "morph.config.prop.keySelectorRemoveMorph.comment", 14, false, false, false, false, 0, false);
+            config.createKeybindProperty("keyFavourite", "morph.config.prop.keyFavourite.name", "morph.config.prop.keyFavourite.comment", 41, false, false, false, false, 0, false);
 
-            config.createKeybindProperty("keyFavourite", "Selector Favourite/Radial Menu", "Key Code to favourite/unfavourite morph on the selector and show the radial menu.\nDefault: 41 (` [also known as ~])", 41, false, false, false, false, 0, false);
-
-            config.createIntBoolProperty("handRenderOverride", "Hand Render Override", "Allow the mod to override player hand rendering?", true, false, true);
-
-            config.createIntBoolProperty("showAbilitiesInGui", "Show Abilities In GUI", "Show the abilities the morph has in the GUI?", true, true, true);
-
-            config.createIntProperty("sortMorphs", "Sort Morphs", "Sort the morphs in the GUI?\n0 = Order of acquisition (Server default)\n1 = Alphabetically (according to Operating System)\n2 = Alphabetically, and attempt to sort grouped morphs as well\n3 = Most recently used since connecting to the server", true, false, 0, 0, 3);
-
-            config.createIntBoolProperty("renderCrosshairInRadialMenu", "Render Crosshair in Radial Menu", "As per request, render the crosshair position when in the radial menu.", true, false, false);
-		}
-		
+            config.createIntBoolProperty("handRenderOverride", "morph.config.prop.handRenderOverride.name", "morph.config.prop.handRenderOverride.comment", true, false, true);
+            config.createIntBoolProperty("showAbilitiesInGui", "morph.config.prop.showAbilitiesInGui.name", "morph.config.prop.showAbilitiesInGui.comment", true, true, true);
+            config.createIntProperty("sortMorphs", "morph.config.prop.sortMorphs.name", "morph.config.prop.sortMorphs.comment", true, false, 0, 0, 3);
+            config.createIntBoolProperty("renderCrosshairInRadialMenu", "morph.config.prop.renderCrosshairInRadialMenu.name", "morph.config.prop.renderCrosshairInRadialMenu.comment", true, false, false);
+        }
         morph.common.core.EventHandler eventHandler = new morph.common.core.EventHandler();
 
 		MinecraftForge.EVENT_BUS.register(eventHandler);
