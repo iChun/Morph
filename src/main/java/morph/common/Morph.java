@@ -12,6 +12,8 @@ import ichun.client.keybind.KeyBind;
 import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
+import ichun.common.core.updateChecker.ModVersionChecker;
+import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.iChunUtil;
 import morph.common.core.CommonProxy;
 import net.minecraft.client.Minecraft;
@@ -28,7 +30,8 @@ import java.util.EnumMap;
 
 @Mod(modid = "Morph", name = "Morph",
 			version = Morph.version,
-			dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".0.0,)"
+			dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".0.0,)",
+            acceptableRemoteVersions = "[0.8.0,0.9.0)"
 				)
 public class Morph
     implements IConfigUser
@@ -133,6 +136,8 @@ public class Morph
 
 		MinecraftForge.EVENT_BUS.register(eventHandler);
 		FMLCommonHandler.instance().bus().register(eventHandler);
+
+        ModVersionChecker.register_iChunMod(new ModVersionInfo("Morph", "1.7", version, false));
     }
 	
 	@EventHandler
