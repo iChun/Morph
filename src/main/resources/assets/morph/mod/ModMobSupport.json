@@ -704,6 +704,11 @@
       "hostile",
       "swim|true,1.2F,1F,true"
     ],
+    "gaia.entity.EntityGaiaSalamander": [
+      "hostile",
+      "step|1F",
+      "fireImmunity"
+    ],
     "gaia.entity.EntityGaiaSelkie": [
       "hostile",
       "swim|true,1.2F,1F,true"
@@ -718,6 +723,10 @@
     "gaia.entity.EntityGaiaSiren": [
       "hostile",
       "swim|true,1.2F,1F,true"
+    ],
+    "gaia.entity.EntityGaiaSludgeGirl": [
+      "hostile",
+      "fallNegate"
     ],
     "gaia.entity.EntityGaiaSphinx": [
       "hostile",
