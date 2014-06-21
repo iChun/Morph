@@ -238,7 +238,7 @@ public class CommandMorph extends CommandBase
 							}
 						}
                         Morph.config.get("whitelistedPlayers").set(sb1.toString());
-                        Morph.config.config.save();
+                        Morph.config.save();
 					}
 					else
 					{
@@ -278,7 +278,7 @@ public class CommandMorph extends CommandBase
 							}
 						}
                         Morph.config.get("whitelistedPlayers").set(sb1.toString());
-                        Morph.config.config.save();
+                        Morph.config.save();
 					}
 					else
 					{

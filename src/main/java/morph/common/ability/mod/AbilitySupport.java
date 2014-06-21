@@ -69,6 +69,11 @@ public class AbilitySupport {
 					Morph.console("ModMobSupport has invalid formatting! Mod mob abilities will be affected! Report this if the local file isn't used.", true);
 					e.printStackTrace();
 				}
+                try
+                {
+                    fileIn.close();
+                }
+                catch(IOException e){}
 			}
 			if(instance == null)
 			{
