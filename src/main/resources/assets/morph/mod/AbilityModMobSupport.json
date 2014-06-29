@@ -99,9 +99,6 @@
   "com.emoniph.witchery.entity.EntityBroom": [
     "fly|true"
   ],
-  "com.emoniph.witchery.entity.EntityBroom": [
-    "fly|true"
-  ],
   "com.emoniph.witchery.entity.EntityCorpse": [
     "hostile"
   ],
@@ -110,9 +107,6 @@
   ],
   "com.emoniph.witchery.entity.EntityEnt": [
     "hostile"
-  ],
-  "com.emoniph.witchery.entity.EntityBroom": [
-    "fly|true"
   ],
   "com.emoniph.witchery.entity.EntityNightmare": [
     "fly|true",

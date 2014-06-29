@@ -66,7 +66,7 @@ public class ThreadGetOnlineResources extends Thread
                     }
                     else
                     {
-                        Morph.console("Failed to retrieve mod mob ability mappings from " + (sitePrefix.isEmpty() ? "GitHub!" : sitePrefix), true);
+                        Morph.console("Failed to retrieve mod mob ability mappings from " + (Morph.config.getString("customPatchLink").isEmpty() ? "GitHub!" : sitePrefix), true);
                     }
                     Reader fileIn = new InputStreamReader(Morph.class.getResourceAsStream("/assets/morph/mod/AbilityModMobSupport.json"));
                     json = gson.fromJson(fileIn, mapType);
