@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.WeakHashMap;
 
 public class TickHandlerServer 
 {
@@ -209,6 +210,24 @@ public class TickHandlerServer
                 //						info.nextState.entInstance.onUpdate();
                 //					}
             }
+
+            Iterator<Entry<EntityPlayer, ArrayList<MorphState>>> ite1 = saveList.entrySet().iterator();
+            while(ite1.hasNext())
+            {
+                Entry<EntityPlayer, ArrayList<MorphState>> e = ite1.next();
+
+                NBTTagCompound tag = getMorphDataFromPlayer(e.getKey());
+
+                tag.setInteger("morphStatesCount", e.getValue().size());
+
+                for(int i = 0; i < e.getValue().size(); i++)
+                {
+                    MorphState state = e.getValue().get(i);
+                    tag.setTag("morphState" + i, state.getTag());
+                }
+
+                ite1.remove();
+            }
         }
 	}
 
@@ -249,16 +268,7 @@ public class TickHandlerServer
 			list.add(0, new MorphState(world, name, name, null, world.isRemote));
 		}
 
-        NBTTagCompound tag = getMorphDataFromPlayer(player);
-
-        tag.setInteger("morphStatesCount", list.size());
-
-        for(int i = 0; i < list.size(); i++)
-        {
-            MorphState state = list.get(i);
-            tag.setTag("morphState" + i, state.getTag());
-        }
-
+        saveList.put(player, list);
 
         return list;
 	}
@@ -345,4 +355,6 @@ public class TickHandlerServer
     public MorphSaveData saveData = null;
 	public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
 	public HashMap<String, ArrayList<MorphState>> playerMorphs = new HashMap<String, ArrayList<MorphState>>();
+
+    public WeakHashMap<EntityPlayer, ArrayList<MorphState>> saveList = new WeakHashMap<EntityPlayer, ArrayList<MorphState>>();
 }

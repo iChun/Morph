@@ -1191,6 +1191,7 @@ public class EventHandler
 			if(event.entityLiving instanceof EntityWither && !Morph.proxy.tickHandlerServer.saveData.hasKilledWither)
 			{
 				Morph.proxy.tickHandlerServer.saveData.hasKilledWither = true;
+                Morph.proxy.tickHandlerServer.saveData.markDirty();
 				if(Morph.config.getInt("disableEarlyGameFlight") == 2)
 				{
                     Morph.config.updateSession("allowFlight", 1);
@@ -1364,6 +1365,7 @@ public class EventHandler
             if(!Morph.proxy.tickHandlerServer.saveData.hasTravelledToNether)
             {
                 Morph.proxy.tickHandlerServer.saveData.hasTravelledToNether = true;
+                Morph.proxy.tickHandlerServer.saveData.markDirty();
                 if(Morph.config.getInt("disableEarlyGameFlight") == 1)
                 {
                     Morph.config.updateSession("allowFlight", 1);
