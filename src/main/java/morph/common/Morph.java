@@ -44,7 +44,7 @@ public class Morph
 	@SidedProxy(clientSide = "morph.client.core.ClientProxy", serverSide = "morph.common.core.CommonProxy")
 	public static CommonProxy proxy;
 	
-	private static Logger logger;
+	private static Logger logger = LogManager.getLogger("Morph");
 	
     public static EnumMap<Side, FMLEmbeddedChannel> channels;
 
@@ -77,8 +77,6 @@ public class Morph
     @EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
 	{
-		logger = LogManager.getLogger("Morph");
-
         config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "morph", "Morph", logger, instance);
 
         config.setCurrentCategory("gameplay", "morph.config.cat.gameplay.name", "morph.config.cat.gameplay.comment");
