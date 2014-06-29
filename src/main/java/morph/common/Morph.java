@@ -108,6 +108,7 @@ public class Morph
 
         //TODO make a per-player or per-server config
         config.createIntProperty("disableEarlyGameFlight", "morph.config.prop.disableEarlyGameFlight.name", "morph.config.prop.disableEarlyGameFlight.comment", true, false, 0, 0, 2);
+        config.createIntBoolProperty("disableEarlyGameFlightMode", "morph.config.prop.disableEarlyGameFlightMode.name", "morph.config.prop.disableEarlyGameFlightMode.comment", true, false, false);
 
         if(FMLCommonHandler.instance().getEffectiveSide().isClient())
         {

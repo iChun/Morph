@@ -308,11 +308,11 @@ public class TickHandlerServer
 	{
         if(player != null)
         {
-            PacketHandler.sendToPlayer(Morph.channels, new PacketSession(), player);
+            PacketHandler.sendToPlayer(Morph.channels, new PacketSession(player), player);
         }
         else
         {
-            PacketHandler.sendToAll(Morph.channels, new PacketSession());
+            PacketHandler.sendToAll(Morph.channels, new PacketSession(player));
         }
 	}
 

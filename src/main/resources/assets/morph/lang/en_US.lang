@@ -41,6 +41,7 @@ morph.config.prop.customPatchLink.name=Custom Mod Ability Patch Link
 morph.config.prop.hostileAbilityMode.name=Hostile Ability Mode
 morph.config.prop.hostileAbilityDistanceCheck.name=Hostile Ability Distance Check
 morph.config.prop.disableEarlyGameFlight.name=Disable Early Game Flight
+morph.config.prop.disableEarlyGameFlightMode.name=Disable Early Game Flight Mode
 morph.config.prop.keySelectorUp.name=Selector Up
 morph.config.prop.keySelectorDown.name=Selector Down
 morph.config.prop.keySelectorLeft.name=Selector Left
@@ -71,6 +72,7 @@ morph.config.prop.customPatchLink.comment=Redirect the mod to a different JSON p
 morph.config.prop.hostileAbilityMode.comment=Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\nIf you'd like to turn on Hostile Ability, I'd recommend Mode 2 (personal preference)
 morph.config.prop.hostileAbilityDistanceCheck.comment=Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6
 morph.config.prop.disableEarlyGameFlight.comment=Disable the flight ability until a player...\n0 = Enable early game flight\n1 = ...has reached the nether\n2 = ...has killed the Wither
+morph.config.prop.disableEarlyGameFlightMode.comment=Disable Early Game Flight Mode\n0 = Serverwide toggle\n1 = Player specific toggle (Every player has to travel to the nether/kill a wither to get flight for themselves)
 morph.config.prop.keySelectorUp.comment=Key Code to go up on the selector\nDefault: 26 ([)
 morph.config.prop.keySelectorDown.comment=Key Code to go down on the selector\nDefault: 27 (])
 morph.config.prop.keySelectorLeft.comment=Key Code to go left on the selector\nDefault: 26 ([)

@@ -1183,22 +1183,37 @@ public class EventHandler
 			{
 				EntityPlayerMP player = (EntityPlayerMP)event.source.getEntity();
 
-				if(EntityHelper.morphPlayer(player, event.entityLiving, true))
+				if(EntityHelper.morphPlayer(player, event.entityLiving, true) && !(event.entityLiving instanceof EntityPlayerMP))
 				{
 					event.entityLiving.setDead();
 				}
-			}
-			if(event.entityLiving instanceof EntityWither && !Morph.proxy.tickHandlerServer.saveData.hasKilledWither)
-			{
-				Morph.proxy.tickHandlerServer.saveData.hasKilledWither = true;
-                Morph.proxy.tickHandlerServer.saveData.markDirty();
-				if(Morph.config.getInt("disableEarlyGameFlight") == 2)
-				{
-                    Morph.config.updateSession("allowFlight", 1);
-					Morph.proxy.tickHandlerServer.updateSession(null);
-				}
-			}
-		}
+            }
+            if(event.entityLiving instanceof EntityWither)
+            {
+                if(event.source.getEntity() instanceof EntityPlayerMP)
+                {
+                    EntityPlayerMP player = (EntityPlayerMP)event.source.getEntity();
+
+                    boolean firstKill = !Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getBoolean("hasTravelledToNether");
+                    Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setBoolean("hasTravelledToNether", true);
+                    if(Morph.config.getInt("disableEarlyGameFlight") == 2 && firstKill)
+                    {
+                        Morph.proxy.tickHandlerServer.updateSession(player);
+                    }
+                }
+
+                if(!Morph.proxy.tickHandlerServer.saveData.hasKilledWither)
+                {
+                    Morph.proxy.tickHandlerServer.saveData.hasKilledWither = true;
+                    Morph.proxy.tickHandlerServer.saveData.markDirty();
+                    if(Morph.config.getInt("disableEarlyGameFlight") == 2)
+                    {
+                        Morph.config.updateSession("allowFlight", 1);
+                        Morph.proxy.tickHandlerServer.updateSession(null);
+                    }
+                }
+            }
+        }
 	}
 
 	@SubscribeEvent
@@ -1359,9 +1374,15 @@ public class EventHandler
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
         }
-        //TODO make this per-player only
         if(event.player.dimension == -1 && Morph.proxy.tickHandlerServer.saveData != null)
         {
+            boolean firstVisit = !Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player).getBoolean("hasTravelledToNether");
+            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player).setBoolean("hasTravelledToNether", true);
+            if(Morph.config.getInt("disableEarlyGameFlight") == 1 && firstVisit)
+            {
+                Morph.proxy.tickHandlerServer.updateSession(event.player);
+            }
+
             if(!Morph.proxy.tickHandlerServer.saveData.hasTravelledToNether)
             {
                 Morph.proxy.tickHandlerServer.saveData.hasTravelledToNether = true;
