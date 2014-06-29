@@ -25,7 +25,7 @@ public class ApiHandler
 		}
 		else
 		{
-			return Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(playerName);
+			return Morph.proxy.tickHandlerServer.getPlayerMorphInfo(playerName) != null;
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class ApiHandler
 		}
 		else
 		{
-			info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(playerName);
+			info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(playerName);
 		}
 		if(info != null)
 		{
@@ -61,7 +61,7 @@ public class ApiHandler
 		}
 		else
 		{
-			info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(playerName);
+			info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(playerName);
 		}
 		if(info != null && info.prevState != null)
 		{
@@ -79,7 +79,7 @@ public class ApiHandler
 		}
 		else
 		{
-			info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(playerName);
+			info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(playerName);
 		}
 		if(info != null)
 		{

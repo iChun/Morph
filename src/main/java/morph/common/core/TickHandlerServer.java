@@ -3,6 +3,7 @@ package morph.common.core;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import ichun.common.core.EntityHelperBase;
 import ichun.common.core.network.PacketHandler;
 import ichun.common.core.util.ObfHelper;
 import morph.api.Ability;
@@ -13,6 +14,7 @@ import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketCompleteDemorph;
 import morph.common.packet.PacketSession;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -56,7 +58,7 @@ public class TickHandlerServer
         if(event.phase == TickEvent.Phase.END && event.side.isServer())
         {
             EntityPlayer player = event.player;
-            MorphInfo info = playerMorphInfo.get(player.getCommandSenderName());
+            MorphInfo info = getPlayerMorphInfo(player);
             if(info != null)
             {
                 float prog = info.morphProgress > 10 ? (((float)info.morphProgress) / 60F) : 0.0F;
@@ -155,7 +157,10 @@ public class TickHandlerServer
                                 }
                             }
 
-                            saveData.removeTag(e.getKey() + "_morphData");
+                            if(player != null)
+                            {
+                                getMorphDataFromPlayer(player).removeTag("morphData");
+                            }
 
                             ite.remove();
                         }
@@ -207,9 +212,9 @@ public class TickHandlerServer
         }
 	}
 
-	public MorphState getSelfState(World world, String name)
+	public MorphState getSelfState(World world, EntityPlayer player)
 	{
-		ArrayList<MorphState> list = getPlayerMorphs(world, name);
+		ArrayList<MorphState> list = getPlayerMorphs(world, player);
 		for(MorphState state : list)
 		{
 			if(state.playerName.equalsIgnoreCase(state.playerMorph))
@@ -217,11 +222,12 @@ public class TickHandlerServer
 				return state;
 			}
 		}
-		return new MorphState(world, name, name, null, world.isRemote);
+		return new MorphState(world, player.getCommandSenderName(), player.getCommandSenderName(), null, world.isRemote);
 	}
 
-	public ArrayList<MorphState> getPlayerMorphs(World world, String name)
+	public ArrayList<MorphState> getPlayerMorphs(World world, EntityPlayer player)
 	{
+        String name = player.getCommandSenderName();
 		ArrayList<MorphState> list = playerMorphs.get(name);
 		if(list == null)
 		{
@@ -242,12 +248,29 @@ public class TickHandlerServer
 		{
 			list.add(0, new MorphState(world, name, name, null, world.isRemote));
 		}
-		return list;
+
+        NBTTagCompound tag = getMorphDataFromPlayer(player);
+
+        tag.setInteger("morphStatesCount", list.size());
+
+        for(int i = 0; i < list.size(); i++)
+        {
+            MorphState state = list.get(i);
+            tag.setTag("morphState" + i, state.getTag());
+        }
+
+
+        return list;
 	}
 
-	public boolean hasMorphState(EntityPlayer player, MorphState state)
+    public void removeAllPlayerMorphsExcludingCurrentMorph(EntityPlayer player)
+    {
+        getMorphDataFromPlayer(player).removeTag("morphStatesCount");
+    }
+
+    public boolean hasMorphState(EntityPlayer player, MorphState state)
 	{
-		ArrayList<MorphState> states = getPlayerMorphs(player.worldObj, player.getCommandSenderName());
+		ArrayList<MorphState> states = getPlayerMorphs(player.worldObj, player);
 		if(!state.playerMorph.equalsIgnoreCase(""))
 		{
 			for(MorphState mState : states)
@@ -283,12 +306,43 @@ public class TickHandlerServer
         }
 	}
 
+    public NBTTagCompound getMorphDataFromPlayer(EntityPlayer player)
+    {
+        NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player).getCompoundTag("MorphSave");
+        EntityHelperBase.getPlayerPersistentData(player).setTag("MorphSave", tag);
+        return tag;
+    }
+
+    public void setPlayerMorphInfo(EntityPlayer player, MorphInfo info)
+    {
+        if(info != null)
+        {
+            NBTTagCompound tag1 = new NBTTagCompound();
+            info.writeNBT(tag1);
+            getMorphDataFromPlayer(player).setTag("morphData", tag1);
+            playerMorphInfo.put(player.getCommandSenderName(), info);
+        }
+        else
+        {
+            getMorphDataFromPlayer(player).removeTag("morphData");
+            playerMorphInfo.remove(player.getCommandSenderName());
+        }
+    }
+
+    public MorphInfo getPlayerMorphInfo(EntityPlayer player)
+    {
+        return playerMorphInfo.get(player.getCommandSenderName());
+    }
+
+    public MorphInfo getPlayerMorphInfo(String playerName)
+    {
+        return playerMorphInfo.get(playerName);
+    }
+
 	public long clock;
 
-	public int lastIndex;
-	
-	public NBTTagCompound saveData;
 
+    public MorphSaveData saveData = null;
 	public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
 	public HashMap<String, ArrayList<MorphState>> playerMorphs = new HashMap<String, ArrayList<MorphState>>();
 }

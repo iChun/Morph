@@ -48,7 +48,7 @@ public class AbilityStep extends Ability
 			EntityPlayer player = (EntityPlayer)getParent();
 			if(!player.worldObj.isRemote)
 			{
-				info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+				info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 			}
 			else
 			{

@@ -31,7 +31,7 @@ public class AbilitySunburn extends Ability {
 		if(!getParent().worldObj.isRemote && getParent() instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer)getParent();
-			MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+			MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 			
 			if(player.capabilities.isCreativeMode)
 			{

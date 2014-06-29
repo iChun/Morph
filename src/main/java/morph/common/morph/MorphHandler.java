@@ -61,7 +61,7 @@ public class MorphHandler
 		ArrayList<MorphState> states;
 		if(morphState == null)
 		{
-			states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.getCommandSenderName());
+			states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player);
 		}
 		else
 		{
@@ -74,7 +74,7 @@ public class MorphHandler
 
 	public static MorphState getMorphState(EntityPlayerMP player, String identifier) 
 	{
-		ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.getCommandSenderName());
+		ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player);
 		
 		for(MorphState state : states)
 		{

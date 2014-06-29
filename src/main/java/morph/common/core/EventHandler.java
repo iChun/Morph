@@ -1064,9 +1064,9 @@ public class EventHandler
 			if(hostile && event.target instanceof EntityPlayer)
 			{
 				EntityPlayer player = (EntityPlayer)event.target;
-				if(Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName()))
+				if(Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player) != null)
 				{
-					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+					MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 					if(!info.getMorphing() && info.morphProgress >= 80)
 					{
 						boolean playerHostile = false;
@@ -1111,7 +1111,7 @@ public class EventHandler
 		EnumStatus stats = EnumStatus.OTHER_PROBLEM;
 		if(Morph.config.getSessionInt("canSleepMorphed") == 0)
 		{
-			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName()))
+			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player) != null)
 			{
 				event.result = stats;
 				player.addChatMessage(new ChatComponentTranslation("morph.denySleep"));
@@ -1129,9 +1129,9 @@ public class EventHandler
 		if(event.entity instanceof EntityPlayer && event.name.equalsIgnoreCase("damage.hit"))
 		{
 			EntityPlayer player = (EntityPlayer)event.entity;
-			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.playerMorphInfo.containsKey(player.getCommandSenderName()))
+			if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player) != null)
 			{
-				MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+				MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 				event.name = EntityHelper.getHurtSound(info.nextState.entInstance.getClass(), info.nextState.entInstance);
 			}
 			else if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(player.getCommandSenderName()))
@@ -1151,17 +1151,17 @@ public class EventHandler
 			{
 				EntityPlayerMP player = (EntityPlayerMP)event.entityLiving;
 
-				MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+				MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 
-				MorphState state = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.getCommandSenderName());
+				MorphState state = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player);
 
 				if(Morph.config.getInt("loseMorphsOnDeath") == 1)
 				{
-					Morph.proxy.tickHandlerServer.playerMorphs.remove(player.getCommandSenderName());
+					Morph.proxy.tickHandlerServer.removeAllPlayerMorphsExcludingCurrentMorph(player);
 				}
 				else if(info != null && info.nextState != state)
 				{
-					ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.getCommandSenderName());
+					ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player);
 					states.remove(info.nextState);
 				}
 
@@ -1172,7 +1172,7 @@ public class EventHandler
 					MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), info.nextState, state);
 					info2.setMorphing(true);
 
-					Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.getCommandSenderName(), info2);
+					Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
                     PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
 
@@ -1188,9 +1188,9 @@ public class EventHandler
 					event.entityLiving.setDead();
 				}
 			}
-			if(event.entityLiving instanceof EntityWither && !Morph.proxy.tickHandlerServer.saveData.getBoolean("killedWither"))
+			if(event.entityLiving instanceof EntityWither && !Morph.proxy.tickHandlerServer.saveData.hasKilledWither)
 			{
-				Morph.proxy.tickHandlerServer.saveData.setBoolean("killedWither", true);
+				Morph.proxy.tickHandlerServer.saveData.hasKilledWither = true;
 				if(Morph.config.getInt("disableEarlyGameFlight") == 2)
 				{
                     Morph.config.updateSession("allowFlight", 1);
@@ -1228,131 +1228,19 @@ public class EventHandler
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.world.provider.dimensionId == 0)
 		{
 			WorldServer world = (WorldServer)event.world;
-	    	try
-	    	{
-	    		File file = new File(world.getChunkSaveLocation(), "morph.dat");
-	    		if(!file.exists())
-	    		{
-	    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
-	    			if(world.getWorldInfo().getWorldTotalTime() > 0)
-	    			{
-	    				Morph.console("Save data does not exist!", true);
-	    			}
-	    		}
-	    		else
-	    		{
-	    			Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
-	    		}
-	    	}
-	    	catch(EOFException e)
-	    	{
-	    		Morph.console("Save data is corrupted! Attempting to read from backup.", true);
-	    		try
-	    		{
-		    		File file = new File(world.getChunkSaveLocation(), "morph_backup.dat");
-		    		if(!file.exists())
-		    		{
-		    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
-		    			Morph.console("No backup detected!", true);
-		    		}
-		    		else
-		    		{
-			    		Morph.proxy.tickHandlerServer.saveData = CompressedStreamTools.readCompressed(new FileInputStream(file));
+            MorphSaveData saveData = (MorphSaveData)world.perWorldStorage.loadData(MorphSaveData.class, "MorphSaveData");
 
-			    		File file1 = new File(world.getChunkSaveLocation(), "morph.dat");
-			    		file1.delete();
-			    		file.renameTo(file1);
-			    		Morph.console("Restoring data from backup.", false);
-		    		}
-	    		}
-	    		catch(Exception e1)
-	    		{
-	    			Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
-	    			Morph.console("Even your backup data is corrupted. What have you been doing?!", true);
-	    		}
-	    	}
-	    	catch(IOException e)
-	    	{
-	    		Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
-	    		Morph.console("Failed to read save data!", true);
-	    	}
-
-			if(Morph.proxy.tickHandlerServer.saveData != null)
-			{
-				if(Morph.config.getInt("disableEarlyGameFlight") == 1 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether") || Morph.config.getInt("disableEarlyGameFlight") == 2 && !Morph.proxy.tickHandlerServer.saveData.getBoolean("killedWither"))
-				{
-                    Morph.config.updateSession("allowFlight", 0);
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onWorldSave(WorldEvent.Save event)
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer() && event.world.provider.dimensionId == 0)
-		{
-			WorldServer world = (WorldServer)event.world;
-			if(Morph.proxy.tickHandlerServer.saveData == null)
-			{
-				Morph.proxy.tickHandlerServer.saveData = new NBTTagCompound();
-			}
-
-            //write data
-
-            //TODO remove this out of custom save file and move this to player-persistent NBT?
-			NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
-
-            for(Entry<String, MorphInfo> e : Morph.proxy.tickHandlerServer.playerMorphInfo.entrySet())
+            if(saveData == null)
             {
-            	NBTTagCompound tag1 = new NBTTagCompound();
-            	e.getValue().writeNBT(tag1);
-            	tag.setTag(e.getKey() + "_morphData", tag1);
+                saveData = new MorphSaveData("MorphSaveData");
+                world.perWorldStorage.setData("MorphSaveData", saveData);
             }
-            for(Entry<String, ArrayList<MorphState>> e : Morph.proxy.tickHandlerServer.playerMorphs.entrySet())
-            {
-            	String name = e.getKey();
-            	ArrayList<MorphState> states = e.getValue();
-            	tag.setInteger(name + "_morphStatesCount", states.size());
-            	for(int i = 0; i < states.size(); i++)
-            	{
-            		tag.setTag(name + "_morphState" + i, states.get(i).getTag());
-            	}
-            }
-            //end write data
 
-            try
-            {
-            	if(world.getChunkSaveLocation().exists())
-            	{
-	                File file = new File(world.getChunkSaveLocation(), "morph.dat");
-	                if(file.exists())
-	                {
-	                	File file1 = new File(world.getChunkSaveLocation(), "morph_backup.dat");
-	                	if(file1.exists())
-	                	{
-	                		if(file1.delete())
-	                		{
-	                			file.renameTo(file1);
-	                		}
-	                		else
-	                		{
-	                			Morph.console("Failed to delete mod backup data!", true);
-	                		}
-	                	}
-	                	else
-	                	{
-	                		file.renameTo(file1);
-	                	}
-	                }
+            Morph.proxy.tickHandlerServer.saveData = saveData;
 
-	                CompressedStreamTools.writeCompressed(tag, new FileOutputStream(file));
-            	}
-            }
-            catch(IOException ioexception)
+            if(Morph.config.getInt("disableEarlyGameFlight") == 1 && !Morph.proxy.tickHandlerServer.saveData.hasTravelledToNether || Morph.config.getInt("disableEarlyGameFlight") == 2 && !Morph.proxy.tickHandlerServer.saveData.hasKilledWither)
             {
-                ioexception.printStackTrace();
-                throw new RuntimeException("Failed to save morph data");
+                Morph.config.updateSession("allowFlight", 0);
             }
 		}
 	}
@@ -1385,41 +1273,34 @@ public class EventHandler
     {
         Morph.proxy.tickHandlerServer.updateSession(event.player);
 
-        ArrayList list = Morph.proxy.tickHandlerServer.getPlayerMorphs(event.player.worldObj, event.player.getCommandSenderName());
+        ArrayList list = Morph.proxy.tickHandlerServer.getPlayerMorphs(event.player.worldObj, event.player);
 
-        if(Morph.proxy.tickHandlerServer.saveData != null)
+        NBTTagCompound tag = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player);
+
+        MorphHandler.addOrGetMorphState(list, new MorphState(event.player.worldObj, event.player.getCommandSenderName(), event.player.getCommandSenderName(), null, event.player.worldObj.isRemote));
+
+        int count = tag.getInteger("morphStatesCount");
+        for(int i = 0; i < count; i++)
         {
-            NBTTagCompound tag = Morph.proxy.tickHandlerServer.saveData;
-
-            MorphHandler.addOrGetMorphState(list, new MorphState(event.player.worldObj, event.player.getCommandSenderName(), event.player.getCommandSenderName(), null, event.player.worldObj.isRemote));
-
-            int count = tag.getInteger(event.player.getCommandSenderName() + "_morphStatesCount");
-            if(count > 0)
+            MorphState state = new MorphState(event.player.worldObj, event.player.getCommandSenderName(), event.player.getCommandSenderName(), null, false);
+            state.readTag(event.player.worldObj, tag.getCompoundTag("morphState" + i));
+            if(!state.identifier.equalsIgnoreCase(""))
             {
-
-                for(int i = 0; i < count; i++)
-                {
-                    MorphState state = new MorphState(event.player.worldObj, event.player.getCommandSenderName(), event.player.getCommandSenderName(), null, false);
-                    state.readTag(event.player.worldObj, tag.getCompoundTag(event.player.getCommandSenderName() + "_morphState" + i));
-                    if(!state.identifier.equalsIgnoreCase(""))
-                    {
-                        MorphHandler.addOrGetMorphState(list, state);
-                    }
-                }
+                MorphHandler.addOrGetMorphState(list, state);
             }
+        }
 
-            NBTTagCompound tag1 = tag.getCompoundTag(event.player.getCommandSenderName() + "_morphData");
-            if(tag1.hasKey("playerName"))
+        NBTTagCompound tag1 = tag.getCompoundTag("morphData");
+        if(tag1.hasKey("playerName"))
+        {
+            MorphInfo info = new MorphInfo();
+            info.readNBT(tag1);
+            if(!info.nextState.playerName.equals(info.nextState.playerMorph))
             {
-                MorphInfo info = new MorphInfo();
-                info.readNBT(tag1);
-                if(!info.nextState.playerName.equals(info.nextState.playerMorph))
-                {
-                    Morph.proxy.tickHandlerServer.playerMorphInfo.put(info.playerName, info);
-                    MorphHandler.addOrGetMorphState(list, info.nextState);
+                Morph.proxy.tickHandlerServer.setPlayerMorphInfo(event.player, info);
+                MorphHandler.addOrGetMorphState(list, info.nextState);
 
-                    PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
-                }
+                PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
             }
         }
 
@@ -1433,7 +1314,7 @@ public class EventHandler
             PacketHandler.sendToPlayer(Morph.channels, e.getValue().getMorphInfoAsPacket(), event.player);
         }
 
-        MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.player.getCommandSenderName());
+        MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(event.player);
 
         if(info != null)
         {
@@ -1447,25 +1328,21 @@ public class EventHandler
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if(Morph.proxy.tickHandlerServer.saveData != null)
+        MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.player.getCommandSenderName());
+        if(info != null)
         {
-            MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.player.getCommandSenderName());
-            if(info != null)
-            {
-                NBTTagCompound tag1 = new NBTTagCompound();
-                info.writeNBT(tag1);
-                Morph.proxy.tickHandlerServer.saveData.setTag(event.player.getCommandSenderName() + "_morphData", tag1);
-            }
+            NBTTagCompound tag1 = new NBTTagCompound();
+            info.writeNBT(tag1);
+            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player).setTag("morphData", tag1);
+        }
 
-            ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.playerMorphs.get(event.player.getCommandSenderName());
-            if(states != null)
+        ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.playerMorphs.get(event.player.getCommandSenderName());
+        if(states != null)
+        {
+            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player).setInteger("morphStatesCount", states.size());
+            for(int i = 0; i < states.size(); i++)
             {
-                Morph.proxy.tickHandlerServer.saveData.setInteger(event.player.getCommandSenderName() + "_morphStatesCount", states.size());
-                for(int i = 0; i < states.size(); i++)
-                {
-                    Morph.proxy.tickHandlerServer.saveData.setTag(event.player.getCommandSenderName() + "_morphState" + i, states.get(i).getTag());
-                }
-
+                Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player).setTag("morphState" + i, states.get(i).getTag());
             }
         }
     }
@@ -1473,7 +1350,7 @@ public class EventHandler
     @SubscribeEvent
     public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
     {
-        MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.player.getCommandSenderName());
+        MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(event.player);
 
         if(info != null)
         {
@@ -1484,9 +1361,9 @@ public class EventHandler
         //TODO make this per-player only
         if(event.player.dimension == -1 && Morph.proxy.tickHandlerServer.saveData != null)
         {
-            if(!Morph.proxy.tickHandlerServer.saveData.getBoolean("travelledToNether"))
+            if(!Morph.proxy.tickHandlerServer.saveData.hasTravelledToNether)
             {
-                Morph.proxy.tickHandlerServer.saveData.setBoolean("travelledToNether", true);
+                Morph.proxy.tickHandlerServer.saveData.hasTravelledToNether = true;
                 if(Morph.config.getInt("disableEarlyGameFlight") == 1)
                 {
                     Morph.config.updateSession("allowFlight", 1);
@@ -1499,7 +1376,7 @@ public class EventHandler
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event)
     {
-        MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.player.getCommandSenderName());
+        MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(event.player);
 
         if(info != null)
         {

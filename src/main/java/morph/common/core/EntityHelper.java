@@ -39,7 +39,7 @@ public class EntityHelper extends EntityHelperBase
 			return false;
 		}
 		
-		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+		MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 		
 //				EntityGiantZombie zomb = new EntityGiantZombie(living.worldObj);
 //				zomb.setLocationAndAngles(event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, event.entityLiving.rotationYaw, event.entityLiving.rotationPitch);
@@ -52,7 +52,7 @@ public class EntityHelper extends EntityHelperBase
 		
 		if(info == null)
 		{
-			info = new MorphInfo(player.getCommandSenderName(), null, Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.getCommandSenderName()));
+			info = new MorphInfo(player.getCommandSenderName(), null, Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player));
 		}
 		else if(info.getMorphing() || info.nextState.entInstance == living)
 		{
@@ -83,8 +83,8 @@ public class EntityHelper extends EntityHelperBase
 			return false;
 		}
 		
-		prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.getCommandSenderName()), prevState);
-		nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.getCommandSenderName()), nextState);
+		prevState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player), prevState);
+		nextState = MorphHandler.addOrGetMorphState(Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player), nextState);
 		
 		if(nextState.identifier.equalsIgnoreCase(info.nextState.identifier))
 		{
@@ -96,13 +96,13 @@ public class EntityHelper extends EntityHelperBase
 			MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), prevState, nextState);
 			info2.setMorphing(true);
 
-			MorphInfo info3 = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+			MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 			if(info3 != null)
 			{
 				info2.morphAbilities = info3.morphAbilities;
 			}
 			
-			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.getCommandSenderName(), info2);
+			Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
             PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
 
@@ -121,11 +121,11 @@ public class EntityHelper extends EntityHelperBase
 	
 	public static boolean demorphPlayer(EntityPlayerMP player)
 	{
-		MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+		MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 		
 		MorphState state1;
 		
-		MorphState state2 = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.getCommandSenderName());
+		MorphState state2 = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player);
 		
 		if(info != null)
 		{
@@ -133,13 +133,13 @@ public class EntityHelper extends EntityHelperBase
 			MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), state1, state2);
 			info2.setMorphing(true);
 			
-			MorphInfo info3 = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+			MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 			if(info3 != null)
 			{
 				info2.morphAbilities = info3.morphAbilities;
 			}
 			
-			Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.getCommandSenderName(), info2);
+			Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
             PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
 

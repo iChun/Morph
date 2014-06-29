@@ -1,5 +1,7 @@
 package morph.common.core;
 
+import com.mojang.authlib.GameProfile;
+import cpw.mods.fml.common.FMLCommonHandler;
 import ichun.common.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
@@ -13,6 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ItemInWorldManager;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
@@ -36,6 +39,7 @@ public class CommandMorph extends CommandBase
 		return "/" + this.getCommandName() + " help";
 	}
 
+    //TODO localize this.
 	@Override
 	public void processCommand(ICommandSender icommandsender, String[] args) 
 	{
@@ -78,25 +82,39 @@ public class CommandMorph extends CommandBase
 				}
 				else if(args.length > 2 && args[2].equalsIgnoreCase("true"))
 				{
-					if(Morph.proxy.tickHandlerServer.saveData.hasKey(args[1] + "_morphData"))
-					{
-						Morph.proxy.tickHandlerServer.saveData.removeTag(args[1] + "_morphData");
-						
-						MorphState state = Morph.proxy.tickHandlerServer.getSelfState(DimensionManager.getWorld(0), args[1]);
-						
-						MorphInfo info = new MorphInfo(args[1], state, state);
-						info.morphProgress = 80;
+                    try
+                    {
+                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile("MorphFakePlayer", args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().readPlayerDataFromFile(player1);
+                        if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))
+                        {
+                            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphData");
 
-                        PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
+                            MorphState state = Morph.proxy.tickHandlerServer.getSelfState(DimensionManager.getWorld(0), player1);
 
-						Morph.proxy.tickHandlerServer.playerMorphInfo.remove(args[1]);
-						
-						notifyAdmins(icommandsender, "Forcing " + args[1] + " to demorph");
-					}
-					else
-					{
-						icommandsender.addChatMessage(new ChatComponentText(args[1] + " has no morph data!"));
-					}
+                            MorphInfo info = new MorphInfo(args[1], state, state);
+                            info.morphProgress = 80;
+
+                            PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
+
+                            Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player1, null);
+
+                            notifyAdmins(icommandsender, "Forcing " + args[1] + " to demorph");
+
+                            //Workaround to force save.
+                            FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.add(player1);
+                            FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().saveAllPlayerData();
+                            FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.remove(player1);
+                        }
+                        else
+                        {
+                            icommandsender.addChatMessage(new ChatComponentText(args[1] + " has no morph data!"));
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        icommandsender.addChatMessage(new ChatComponentText("Could not read Morph Data from " + args[1]));
+                    }
 				}
 				else
 				{
@@ -120,11 +138,11 @@ public class CommandMorph extends CommandBase
 		        }
 				if(player != null)
 				{
-					MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+					MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 					
 					MorphState state1;
 					
-					MorphState state2 = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.getCommandSenderName());
+					MorphState state2 = Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player);
 					
 					if(info != null)
 					{
@@ -132,13 +150,13 @@ public class CommandMorph extends CommandBase
 						MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), state1, state2);
 						info2.setMorphing(true);
 						
-						Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.getCommandSenderName(), info2);
+						Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
                         PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
 
 						player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
 					}
-					Morph.proxy.tickHandlerServer.playerMorphs.remove(player.getCommandSenderName());
+					Morph.proxy.tickHandlerServer.removeAllPlayerMorphsExcludingCurrentMorph(player);
 					
 					MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
 					
@@ -146,25 +164,39 @@ public class CommandMorph extends CommandBase
 				}
 				else
 				{
-					if(Morph.proxy.tickHandlerServer.saveData.hasKey(args[1] + "_morphData"))
-					{
-						Morph.proxy.tickHandlerServer.saveData.removeTag(args[1] + "_morphData");
-						
-						MorphState state = Morph.proxy.tickHandlerServer.getSelfState(DimensionManager.getWorld(0), args[1]);
-						
-						MorphInfo info = new MorphInfo(args[1], state, state);
-						info.morphProgress = 80;
+                    try
+                    {
+                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile("MorphFakePlayer", args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().readPlayerDataFromFile(player1);
 
-                        PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
+                        if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))
+                        {
+                            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphData");
 
-						Morph.proxy.tickHandlerServer.playerMorphInfo.remove(args[1]);
-					}
-					Morph.proxy.tickHandlerServer.playerMorphs.remove(args[1]);
-					if(Morph.proxy.tickHandlerServer.saveData.hasKey(args[1] + "_morphStatesCount"))
-					{
-						Morph.proxy.tickHandlerServer.saveData.removeTag(args[1] + "_morphStatesCount");
-					}
-					notifyAdmins(icommandsender, "Clearing " + args[1] + "'s morphs");
+                            MorphState state = Morph.proxy.tickHandlerServer.getSelfState(DimensionManager.getWorld(0), player1);
+
+                            MorphInfo info = new MorphInfo(args[1], state, state);
+                            info.morphProgress = 80;
+
+                            PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
+
+                            Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player1, null);
+                        }
+                        Morph.proxy.tickHandlerServer.removeAllPlayerMorphsExcludingCurrentMorph(player1);
+                        if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphStatesCount"))
+                        {
+                            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphStatesCount");
+                        }
+                        notifyAdmins(icommandsender, "Clearing " + args[1] + "'s morphs");
+
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.add(player1);
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().saveAllPlayerData();
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.remove(player1);
+                    }
+                    catch(Exception e)
+                    {
+                        icommandsender.addChatMessage(new ChatComponentText("Failed to clear " + args[1] + "'s Morphs"));
+                    }
 				}
 			}
 			else if(args[0].equalsIgnoreCase("morphtarget"))

@@ -168,9 +168,9 @@ public class Morph
 	@EventHandler
 	public void serverStopped(FMLServerStoppedEvent event)
 	{
+        proxy.tickHandlerServer.saveData = null;
 		proxy.tickHandlerServer.playerMorphInfo.clear();
 		proxy.tickHandlerServer.playerMorphs.clear();
-		proxy.tickHandlerServer.saveData = null;
 	}
 
     public static void parseBlacklist(String s)

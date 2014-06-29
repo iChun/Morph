@@ -50,7 +50,7 @@ public class PacketGuiInput extends AbstractPacket
     @Override
     public void execute(Side side, EntityPlayer player)
     {
-        MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+        MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 
         if(!(info != null && info.getMorphing()) || input == 2)
         {
@@ -63,18 +63,18 @@ public class PacketGuiInput extends AbstractPacket
                     case 0:
                     {
                         //select
-                        MorphState old = info != null ? info.nextState : Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player.getCommandSenderName());
+                        MorphState old = info != null ? info.nextState : Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player);
 
                         MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), old, state);
                         info2.setMorphing(true);
 
-                        MorphInfo info3 = Morph.proxy.tickHandlerServer.playerMorphInfo.get(player.getCommandSenderName());
+                        MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
                         if(info3 != null)
                         {
                             info2.morphAbilities = info3.morphAbilities;
                         }
 
-                        Morph.proxy.tickHandlerServer.playerMorphInfo.put(player.getCommandSenderName(), info2);
+                        Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
                         PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
 
@@ -88,7 +88,7 @@ public class PacketGuiInput extends AbstractPacket
                         {
                             break;
                         }
-                        ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player.getCommandSenderName());
+                        ArrayList<MorphState> states = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.worldObj, player);
                         states.remove(state);
 
                         MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
