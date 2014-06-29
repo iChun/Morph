@@ -1304,6 +1304,16 @@
     "noppes.animalbikes.entity.types.EntityRidableFlying": [
       "fly|true"
     ],
+	"sekwah.mods.NarutoMod.Entitys.EntityPuppet": [
+      "fly|false"
+    ],
+    "sekwah.mods.NarutoMod.Entitys.EntityRogueNinja": [
+      "fallNegate",
+      "hostile"
+    ],
+    "sekwah.mods.NarutoMod.Entitys.EntityBandit": [
+      "hostile"
+	],
     "tconstruct.entity.BlueSlime": [
       "hostile"
     ],
