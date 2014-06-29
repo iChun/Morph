@@ -90,7 +90,8 @@ public class Morph
         config.createIntProperty("loseMorphsOnDeath", "morph.config.prop.loseMorphsOnDeath.name", "morph.config.prop.loseMorphsOnDeath.comment", true, false, 0, 0, 2);
         config.createIntBoolProperty("instaMorph", "morph.config.prop.instaMorph.name", "morph.config.prop.instaMorph.comment", true, false, false);
 
-        config.createIntBoolProperty("modNBTStripper", "morph.config.prop.modNBTStripper.name", "morph.config.prop.modNBTStripper.comment", false, false, true);
+        config.createIntBoolProperty("NBTStripper", "morph.config.prop.NBTStripper.name", "morph.config.prop.NBTStripper.comment", false, false, true); //TODO remove this.
+        config.createIntBoolProperty("useLocalResources", "morph.config.prop.useLocalResources.name", "morph.config.prop.useLocalResources.comment", false, false, false);
 
         config.createIntBoolProperty("canSleepMorphed", "morph.config.prop.canSleepMorphed.name", "morph.config.prop.canSleepMorphed.comment", true, true, false);
         config.createIntBoolProperty("allowMorphSelection", "morph.config.prop.allowMorphSelection.name", "morph.config.prop.allowMorphSelection.comment", true, true, true);
@@ -98,10 +99,10 @@ public class Morph
         //TODO custom config to link to other places?
         config.setCurrentCategory("abilities", "morph.config.cat.abilities.name", "morph.config.cat.abilities.comment");
         config.createIntBoolProperty("abilities", "morph.config.prop.abilities.name", "morph.config.prop.abilities.comment", false, true, true);
-        config.createIntBoolProperty("modAbilityPatch", "morph.config.prop.modAbilityPatch.name", "morph.config.prop.modAbilityPatch.comment", false, false, true);
-        config.createIntBoolProperty("forceLocalModAbilityPatch", "morph.config.prop.forceLocalModAbilityPatch.name", "morph.config.prop.forceLocalModAbilityPatch.comment", false, false, false);
-
         config.createStringProperty("customPatchLink", "morph.config.prop.customPatchLink.name", "morph.config.prop.customPatchLink.comment", false, false, "");
+
+        config.createIntBoolProperty("modAbilityPatch", "morph.config.prop.modAbilityPatch.name", "morph.config.prop.modAbilityPatch.comment", false, false, true); //TODO remove this
+        config.createIntBoolProperty("forceLocalModAbilityPatch", "morph.config.prop.forceLocalModAbilityPatch.name", "morph.config.prop.forceLocalModAbilityPatch.comment", false, false, false); //TODO remove this
 
         config.createIntProperty("hostileAbilityMode", "morph.config.prop.hostileAbilityMode.name", "morph.config.prop.hostileAbilityMode.comment", true, false, 0, 0, 4);
         config.createIntProperty("hostileAbilityDistanceCheck", "morph.config.prop.hostileAbilityDistanceCheck.name", "morph.config.prop.hostileAbilityDistanceCheck.comment", true, false, 6, 0, 128);

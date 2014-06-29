@@ -4,16 +4,15 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import ichun.common.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.packet.PacketMorphStates;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.util.FakePlayer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 public class MorphHandler 
 {
+    public static HashMap<Class<? extends EntityLivingBase>, ArrayList<String>> stripperMappings = new HashMap<Class<? extends EntityLivingBase>, ArrayList<String>>();
 
     //TODO find out that getting named morphs (eg name tags) still work as intended
     //TODO migrate name tags to player UUID in the future...? Do it now... or in 1.7.9?
@@ -112,5 +111,27 @@ public class MorphHandler
 			}
 		}
 	}
-	
+
+    public static ArrayList<String> getNBTTagsToStrip(EntityLivingBase ent)
+    {
+        ArrayList<String> tagsToStrip = new ArrayList<String>();
+        Class clz = ent.getClass();
+        while(clz != EntityLivingBase.class)
+        {
+            tagsToStrip.addAll(getNBTTagsToStrip(clz));
+            clz = clz.getSuperclass();
+        }
+        return tagsToStrip;
+    }
+
+    public static ArrayList<String> getNBTTagsToStrip(Class<? extends EntityLivingBase> clz)
+    {
+        ArrayList<String> list = MorphHandler.stripperMappings.get(clz);
+        if(list == null)
+        {
+            list = new ArrayList<String>();
+            MorphHandler.stripperMappings.put(clz, list);
+        }
+        return list;
+    }
 }
