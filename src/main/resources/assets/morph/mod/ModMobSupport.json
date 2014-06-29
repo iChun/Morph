@@ -94,6 +94,40 @@
     "com.emoniph.witchery.entity.EntityOwl": [
       "fly|true"
     ],
+	"com.emoniph.witchery.entity.EntityBabaYaga": [
+      "hostile"
+    ],
+    "com.emoniph.witchery.entity.EntityBroom": [
+      "fly|true"
+    ],
+    "com.emoniph.witchery.entity.EntityBroom": [
+      "fly|true"
+    ],
+    "com.emoniph.witchery.entity.EntityCorpse": [
+      "hostile"
+    ],
+    "com.emoniph.witchery.entity.EntityDemon": [
+      "hostile"
+    ],
+    "com.emoniph.witchery.entity.EntityEnt": [
+      "hostile"
+    ],
+    "com.emoniph.witchery.entity.EntityBroom": [
+      "fly|true"
+    ],
+    "com.emoniph.witchery.entity.EntityNightmare": [
+      "fly|true",
+      "hostile"
+    ],
+    "com.emoniph.witchery.entity.EntityToad": [
+      "fallNegate"
+    ],
+    "com.emoniph.witchery.entity.EntityTreefyd": [
+      "hostile"
+    ],
+    "com.emoniph.witchery.entity.EntityParasyticLouse": [
+      "hostile"
+    ],
     "danger.orespawn.Basilisk": [
       "hostile",
       "step|2F"
