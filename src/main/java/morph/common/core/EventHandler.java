@@ -18,6 +18,7 @@ import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
+import morph.common.ability.AbilityPotionEffect;
 import morph.common.ability.AbilitySwim;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
@@ -39,13 +40,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
@@ -1043,7 +1047,7 @@ public class EventHandler
     @SubscribeEvent
     public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event)
     {
-        if(Morph.config.getInt("hostileAbilityMode") > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if(Morph.config.getInt("hostileAbilityMode") > 0 && !event.entityLiving.worldObj.isRemote)
         {
             ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(event.entityLiving.getClass());
             boolean hostile = false;
@@ -1307,9 +1311,31 @@ public class EventHandler
     }
 
     @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event)
+    {
+        if(event.source.getEntity() instanceof EntityPlayerMP && !(event.source instanceof EntityDamageSourceIndirect))
+        {
+            EntityPlayer player = (EntityPlayer)event.source.getEntity();
+            MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
+
+            if(info != null && player.getCurrentEquippedItem() == null)
+            {
+                for(Ability ab : info.morphAbilities)
+                {
+                    if(ab instanceof AbilityPotionEffect)
+                    {
+                        AbilityPotionEffect abPot = (AbilityPotionEffect)ab;
+                        event.entityLiving.addPotionEffect(new PotionEffect(abPot.potionId, abPot.duration, abPot.amplifier, abPot.ambient));
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
-        if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if(!event.entityLiving.worldObj.isRemote)
         {
             if(Morph.config.getInt("loseMorphsOnDeath") >= 1 && event.entityLiving instanceof EntityPlayerMP)
             {
