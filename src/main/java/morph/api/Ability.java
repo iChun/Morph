@@ -84,6 +84,7 @@ public abstract class Ability
 	 * Saving of ability to NBTTagCompound. 
 	 * Mainly used for synching Abilities between the client-server for mod mobs which do not use the API to add abilities.
 	 * The ability type (getType()) is appended to nbt before function is called.
+     * Not actually used.
 	 * @param NBTTagCompound saveData
 	 */
 	public abstract void save(NBTTagCompound tag);
@@ -91,6 +92,7 @@ public abstract class Ability
 	/**
 	 * Loading of ability from NBTTagCompound.
 	 * Mainly used to load custom fields from NBT.
+     * Not actually used.
 	 * @param NBTTagCompound saveData
 	 */
 	public abstract void load(NBTTagCompound tag);

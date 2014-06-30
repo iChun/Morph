@@ -17,6 +17,7 @@ import morph.client.model.ModelHelper;
 import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
+import morph.common.ability.AbilityFear;
 import morph.common.ability.AbilityHandler;
 import morph.common.ability.AbilityPotionEffect;
 import morph.common.ability.AbilitySwim;
@@ -1047,7 +1048,7 @@ public class EventHandler
     @SubscribeEvent
     public void onLivingSetAttackTarget(LivingSetAttackTargetEvent event)
     {
-        if(Morph.config.getInt("hostileAbilityMode") > 0 && !event.entityLiving.worldObj.isRemote)
+        if(!event.entityLiving.worldObj.isRemote)
         {
             ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(event.entityLiving.getClass());
             boolean hostile = false;
@@ -1059,41 +1060,65 @@ public class EventHandler
                     break;
                 }
             }
-            if(hostile && event.target instanceof EntityPlayer)
+            if(event.target instanceof EntityPlayer)
             {
                 EntityPlayer player = (EntityPlayer)event.target;
-                if(Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player) != null)
+                MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
+
+                if(info != null)
                 {
-                    MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
-                    if(!info.getMorphing() && info.morphProgress >= 80)
+                    for(Ability ab : info.morphAbilities)
                     {
-                        boolean playerHostile = false;
-                        for(Ability ab: info.morphAbilities)
+                        if(ab instanceof AbilityFear)
                         {
-                            if(ab.getType().equalsIgnoreCase("hostile"))
+                            AbilityFear abFear = (AbilityFear)ab;
+                            for(Class clz : abFear.classList)
                             {
-                                playerHostile = true;
-                                break;
+                                if(clz.isInstance(event.entityLiving))
+                                {
+                                    event.entityLiving.setRevengeTarget(null);
+                                    if(event.entityLiving instanceof EntityLiving)
+                                    {
+                                        ((EntityLiving)event.entityLiving).setAttackTarget(null);
+                                    }
+                                }
                             }
+                            break;
                         }
-                        if(hostile && playerHostile)
+                    }
+
+                    if(Morph.config.getInt("hostileAbilityMode") > 0 && hostile)
+                    {
+                        if(!info.getMorphing() && info.morphProgress >= 80)
                         {
-                            if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.config.getInt("hostileAbilityMode") == 2 || info.nextState.entInstance.getClass() != event.entityLiving.getClass() && Morph.config.getInt("hostileAbilityMode") == 3)
+                            boolean playerHostile = false;
+                            for(Ability ab : info.morphAbilities)
                             {
-                                return;
+                                if(ab.getType().equalsIgnoreCase("hostile"))
+                                {
+                                    playerHostile = true;
+                                    break;
+                                }
                             }
-                            if(Morph.config.getInt("hostileAbilityMode") == 4)
+                            if(hostile && playerHostile)
                             {
-                                double dist = event.entityLiving.getDistanceToEntity(player);
-                                if(dist < Morph.config.getInt("hostileAbilityDistanceCheck"))
+                                if(info.nextState.entInstance.getClass() == event.entityLiving.getClass() && Morph.config.getInt("hostileAbilityMode") == 2 || info.nextState.entInstance.getClass() != event.entityLiving.getClass() && Morph.config.getInt("hostileAbilityMode") == 3)
                                 {
                                     return;
                                 }
-                            }
-                            event.entityLiving.setRevengeTarget(null);
-                            if(event.entityLiving instanceof EntityLiving)
-                            {
-                                ((EntityLiving)event.entityLiving).setAttackTarget(null);
+                                if(Morph.config.getInt("hostileAbilityMode") == 4)
+                                {
+                                    double dist = event.entityLiving.getDistanceToEntity(player);
+                                    if(dist < Morph.config.getInt("hostileAbilityDistanceCheck"))
+                                    {
+                                        return;
+                                    }
+                                }
+                                event.entityLiving.setRevengeTarget(null);
+                                if(event.entityLiving instanceof EntityLiving)
+                                {
+                                    ((EntityLiving)event.entityLiving).setAttackTarget(null);
+                                }
                             }
                         }
                     }

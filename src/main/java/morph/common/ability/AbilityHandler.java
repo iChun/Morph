@@ -18,6 +18,7 @@ public class AbilityHandler
     {
         registerAbility("climb"			  , AbilityClimb.class			    );
         registerAbility("fallNegate"	  , AbilityFallNegate.class		    );
+        registerAbility("fear"	          , AbilityFear.class		        );
         registerAbility("fly"			  , AbilityFly.class			    );
         registerAbility("float"			  , AbilityFloat.class			    );
         registerAbility("fireImmunity"	  , AbilityFireImmunity.class	    );
