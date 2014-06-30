@@ -228,8 +228,14 @@ public class AbilitySwim extends Ability {
         tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + 0), (double)0.0D, (double)((float)(par3 + 0) * f), (double)((float)(par4 + 0) * f1));
         tessellator.draw();
     }
-	
-	@Override
+
+    @Override
+    public boolean requiresInactiveClone()
+    {
+        return true;
+    }
+
+    @Override
 	public void save(NBTTagCompound tag) 
 	{
 		tag.setBoolean("canSurviveOutOfWater", canSurviveOutOfWater);

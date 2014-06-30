@@ -125,6 +125,10 @@ public class TickHandlerServer
                             }
                             for(Ability ability : oldAbilities)
                             {
+                                if(ability.inactive)
+                                {
+                                    continue;
+                                }
                                 boolean isRemoved = true;
                                 for(Ability newAbility : info.morphAbilities)
                                 {
@@ -148,6 +152,10 @@ public class TickHandlerServer
 
                             for(Ability ability : info.morphAbilities)
                             {
+                                if(ability.inactive)
+                                {
+                                    continue;
+                                }
                                 if(ability.getParent() != null)
                                 {
                                     ability.kill();
@@ -185,6 +193,10 @@ public class TickHandlerServer
                 {
                     if(player != null && ability.getParent() == player || player == null && ability.getParent() != null)
                     {
+                        if(ability.inactive)
+                        {
+                            continue;
+                        }
                         ability.tick();
                         if(!info.firstUpdate && ability instanceof AbilityFly && player != null)
                         {

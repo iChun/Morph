@@ -5,7 +5,9 @@ import cpw.mods.fml.relauncher.Side;
 import ichun.common.core.network.AbstractPacket;
 import ichun.common.core.network.PacketHandler;
 import io.netty.buffer.ByteBuf;
+import morph.api.Ability;
 import morph.common.Morph;
+import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -73,6 +75,23 @@ public class PacketGuiInput extends AbstractPacket
                         if(info3 != null)
                         {
                             info2.morphAbilities = info3.morphAbilities;
+
+                            ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+                            for(Ability ability : newAbilities)
+                            {
+                                if(ability.requiresInactiveClone())
+                                {
+                                    try
+                                    {
+                                        Ability clone = ability.clone();
+                                        clone.inactive = true;
+                                        info.morphAbilities.add(clone);
+                                    }
+                                    catch(Exception e1)
+                                    {
+                                    }
+                                }
+                            }
                         }
 
                         Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);

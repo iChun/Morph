@@ -592,6 +592,10 @@ public class TickHandlerClient
                     MorphInfoClient morphInfo = e.getValue();
                     for(Ability ability : morphInfo.morphAbilities)
                     {
+                        if(ability.inactive)
+                        {
+                            continue;
+                        }
                         ability.postRender();
                     }
                 }
@@ -718,6 +722,10 @@ public class TickHandlerClient
                                 }
                                 for(Ability ability : oldAbilities)
                                 {
+                                    if(ability.inactive)
+                                    {
+                                        continue;
+                                    }
                                     boolean isRemoved = true;
                                     for(Ability newAbility : info.morphAbilities)
                                     {
@@ -765,6 +773,10 @@ public class TickHandlerClient
                     {
                         for(Ability ability : info.morphAbilities)
                         {
+                            if(ability.inactive)
+                            {
+                                continue;
+                            }
                             if(ability.getParent() != null)
                             {
                                 ability.tick();

@@ -67,6 +67,10 @@ public class PacketCompleteDemorph extends AbstractPacket
         {
             for(Ability ability : info.morphAbilities)
             {
+                if(ability.inactive)
+                {
+                    continue;
+                }
                 if(ability.getParent() != null)
                 {
                     ability.kill();

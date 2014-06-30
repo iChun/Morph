@@ -9,6 +9,7 @@ import morph.api.Ability;
 import morph.client.morph.MorphInfoClient;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
+import morph.common.ability.AbilitySwim;
 import morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -162,6 +163,22 @@ public class PacketMorphInfo extends AbstractPacket
         if(info1 != null)
         {
             info.morphAbilities = info1.morphAbilities;
+            ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+            for(Ability ability : newAbilities)
+            {
+                if(ability.requiresInactiveClone())
+                {
+                    try
+                    {
+                        Ability clone = ability.clone();
+                        clone.inactive = true;
+                        info.morphAbilities.add(clone);
+                    }
+                    catch(Exception e1)
+                    {
+                    }
+                }
+            }
         }
         else
         {
