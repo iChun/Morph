@@ -33,6 +33,7 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class AbilityHandler 
@@ -80,7 +81,9 @@ public class AbilityHandler
 		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
 		mapAbilities(EntitySquid.class, new AbilitySwim(false, 1.2f, 0.4f, true));
 		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile(), new AbilityWitherResistance());
+		mapAbilities(EntityWolf.class, new AbilityFear(6, 1D, EntitySkeleton.class));
 		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn(), new AbilityFear(9, 0.6D, EntityVillager.class));
+
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
