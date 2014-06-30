@@ -1041,11 +1041,11 @@ public class TickHandlerClient
 		        tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
 		        tessellator.draw();
         	}
-	        
+
         	if(Morph.config.getSessionInt("showAbilitiesInGui") == 1)
         	{
 	        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
-	        	
+
 	        	int abilitiesSize = abilities.size();
 	    		for(int i = abilities.size() - 1; i >= 0; i--)
 	    		{
@@ -1054,8 +1054,8 @@ public class TickHandlerClient
 	    				abilitiesSize--;
 	    			}
 	    		}
-	        	
-	        	boolean shouldScroll = false; 
+
+	        	boolean shouldScroll = false;
 
 	        	final int stencilBit = MinecraftForgeClient.reserveStencilBit();
 	        	

@@ -15,6 +15,7 @@ import ichun.common.core.config.IConfigUser;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.iChunUtil;
+import morph.common.ability.AbilityHandler;
 import morph.common.core.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
@@ -157,7 +158,7 @@ public class Morph
 	public void serverStarting(FMLServerAboutToStartEvent event)
 	{
         Morph.config.resetSession();
-        Morph.config.updateSession("allowFlight", true); // Adds this custom field to the session.
+        Morph.config.updateSession("allowFlight", 1); // Adds this custom field to the session.
 
 		proxy.initCommands(event.getServer());
 	}

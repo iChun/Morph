@@ -1270,6 +1270,7 @@ public class EventHandler
 
     public void onClientConnection()
     {
+        Morph.config.resetSession();
         Morph.proxy.tickHandlerClient.playerMorphInfo.clear();
         Morph.proxy.tickHandlerClient.playerMorphCatMap.clear();
     }

@@ -39,42 +39,18 @@ public class AbilityHandler
 	
 	static
 	{
-		registerAbility("climb"			  , AbilityClimb.class			);
-		registerAbility("fallNegate"	  , AbilityFallNegate.class		);
-		registerAbility("fly"			  , AbilityFly.class			);
-		registerAbility("float"			  , AbilityFloat.class			);
-		registerAbility("fireImmunity"	  , AbilityFireImmunity.class	);
-		registerAbility("hostile"		  , AbilityHostile.class		);
-		registerAbility("sunburn"		  , AbilitySunburn.class		);
-		registerAbility("swim"			  , AbilitySwim.class			);
-		registerAbility("waterAllergy"    , AbilityWaterAllergy.class	);
-		registerAbility("poisonResistance", AbilityPoisonResistance.class);
-		registerAbility("step"			  , AbilityStep.class			);
-		registerAbility("witherResistance", AbilityWitherResistance.class);
-		
-		mapAbilities(EntityBat.class, new AbilityFly(true));
-		mapAbilities(EntityBlaze.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityWaterAllergy(), new AbilityHostile());
-		mapAbilities(EntityCaveSpider.class, new AbilityClimb(), new AbilityHostile(), new AbilityPoisonResistance());
-		mapAbilities(EntityChicken.class, new AbilityFloat(-0.1141748D, true));
-		mapAbilities(EntityCreeper.class, new AbilityHostile());
-		mapAbilities(EntityDragon.class, new AbilityFly(false), new AbilityHostile());
-		mapAbilities(EntityEnderman.class, new AbilityWaterAllergy(), new AbilityHostile());
-		mapAbilities(EntityGhast.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile());
-		mapAbilities(EntityGolem.class, new AbilityFallNegate());
-		mapAbilities(EntityGiantZombie.class, new AbilityHostile());
-		mapAbilities(EntityHorse.class, new AbilityStep(1.0F));
-		mapAbilities(EntityIronGolem.class, new AbilityFallNegate(), new AbilitySwim(true));
-		mapAbilities(EntityMagmaCube.class, new AbilityFallNegate(), new AbilityFireImmunity(), new AbilityHostile());
-		mapAbilities(EntityOcelot.class, new AbilityFallNegate());
-		mapAbilities(EntityPigZombie.class, new AbilityFireImmunity(), new AbilityHostile());
-		mapAbilities(EntitySilverfish.class, new AbilityHostile());
-		mapAbilities(EntitySkeleton.class, new AbilityFireImmunity(), new AbilityHostile(), new AbilitySunburn(), new AbilityWitherResistance());
-		mapAbilities(EntitySlime.class, new AbilityHostile());
-		mapAbilities(EntitySnowman.class, new AbilityWaterAllergy());
-		mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
-		mapAbilities(EntitySquid.class, new AbilitySwim(false, 1.2f, 0.4f, true));
-		mapAbilities(EntityWither.class, new AbilityFly(false), new AbilityFireImmunity(), new AbilityHostile(), new AbilityWitherResistance());
-		mapAbilities(EntityZombie.class, new AbilityHostile(), new AbilitySunburn());
+		registerAbility("climb"			  , AbilityClimb.class			    );
+		registerAbility("fallNegate"	  , AbilityFallNegate.class		    );
+		registerAbility("fly"			  , AbilityFly.class			    );
+		registerAbility("float"			  , AbilityFloat.class			    );
+		registerAbility("fireImmunity"	  , AbilityFireImmunity.class	    );
+		registerAbility("hostile"		  , AbilityHostile.class		    );
+		registerAbility("sunburn"		  , AbilitySunburn.class		    );
+		registerAbility("swim"			  , AbilitySwim.class			    );
+		registerAbility("waterAllergy"    , AbilityWaterAllergy.class	    );
+		registerAbility("poisonResistance", AbilityPoisonResistance.class   );
+		registerAbility("step"			  , AbilityStep.class			    );
+		registerAbility("witherResistance", AbilityWitherResistance.class   );
 	}
 
 	public static void registerAbility(String name, Class<? extends Ability> clz)
@@ -121,7 +97,7 @@ public class AbilityHandler
 				abilityList.add(ability);
 			}
 		}
-	}
+    }
 	
 	public static void removeAbility(Class<? extends EntityLivingBase> entClass, String type)
 	{

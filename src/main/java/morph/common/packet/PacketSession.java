@@ -21,7 +21,7 @@ public class PacketSession extends AbstractPacket
     @Override
     public void writeTo(ByteBuf buffer, Side side)
     {
-        buffer.writeBoolean(player == null); //is serverwide session packet
+        buffer.writeBoolean(player == null && Morph.config.getSessionInt("disableEarlyGameFlight") > 0); //is serverwide session packet
         buffer.writeInt(Morph.config.getSessionInt("abilities"));
         buffer.writeInt(Morph.config.getSessionInt("canSleepMorphed"));
         buffer.writeInt(Morph.config.getSessionInt("allowMorphSelection"));
