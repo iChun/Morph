@@ -188,7 +188,7 @@ public abstract class Ability
 		} catch (Exception e) {
 			return null;
 		}
-	}
+	}//TODO add new abilities
 	public static Ability getNewAbilityFireImmunity()
 	{
 		try {

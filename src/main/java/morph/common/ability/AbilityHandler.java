@@ -46,6 +46,7 @@ public class AbilityHandler
 		registerAbility("fireImmunity"	  , AbilityFireImmunity.class	    );
 		registerAbility("hostile"		  , AbilityHostile.class		    );
         registerAbility("poisonResistance", AbilityPoisonResistance.class   );
+        registerAbility("potionEffect"    , AbilityPotionEffect.class       );
         registerAbility("sink"			  , AbilitySink.class			    );
         registerAbility("step"			  , AbilityStep.class			    );
         registerAbility("sunburn"		  , AbilitySunburn.class		    );

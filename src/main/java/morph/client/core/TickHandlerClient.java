@@ -12,6 +12,7 @@ import morph.client.render.RenderMorph;
 import morph.client.render.RenderPlayerHand;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
+import morph.common.ability.AbilityPotionEffect;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
@@ -26,8 +27,10 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -43,17 +46,17 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-public class TickHandlerClient 
+public class TickHandlerClient
 {
-	
-	public TickHandlerClient()
-	{
-		renderMorphInstance = new RenderMorph(new ModelMorph(), 0.0F);
-		renderMorphInstance.setRenderManager(RenderManager.instance);
-		
-		renderHandInstance = new RenderPlayerHand();
-		renderHandInstance.setRenderManager(RenderManager.instance);
-	}
+
+    public TickHandlerClient()
+    {
+        renderMorphInstance = new RenderMorph(new ModelMorph(), 0.0F);
+        renderMorphInstance.setRenderManager(RenderManager.instance);
+
+        renderHandInstance = new RenderPlayerHand();
+        renderHandInstance.setRenderManager(RenderManager.instance);
+    }
 
     //TODO find out issues with block attack/placement esp as a squid.
     @SubscribeEvent
@@ -597,8 +600,8 @@ public class TickHandlerClient
     }
 
     @SubscribeEvent
-	public void worldTick(TickEvent.ClientTickEvent event)
-	{
+    public void worldTick(TickEvent.ClientTickEvent event)
+    {
         if(event.phase == TickEvent.Phase.END && Minecraft.getMinecraft().theWorld != null)
         {
             Minecraft mc = Minecraft.getMinecraft();
@@ -910,424 +913,471 @@ public class TickHandlerClient
                 selectorTimer = 0;
             }
         }
- 	}
+    }
 
     public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, float scale, float par4, float par5, float renderTick, boolean selected, boolean text)
     {
-    	forceRender = true;
-    	if(ent != null)
-    	{
-        	boolean hideGui = Minecraft.getMinecraft().gameSettings.hideGUI;
-        	
-        	Minecraft.getMinecraft().gameSettings.hideGUI = true;
-        	
-	        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-	        GL11.glPushMatrix();
+        forceRender = true;
+        if(ent != null)
+        {
+            boolean hideGui = Minecraft.getMinecraft().gameSettings.hideGUI;
 
-	        GL11.glDisable(GL11.GL_ALPHA_TEST);
+            Minecraft.getMinecraft().gameSettings.hideGUI = true;
 
-	        GL11.glTranslatef((float)posX, (float)posY, 50.0F);
-	        
-	        GL11.glScalef((float)(-scale), (float)scale, (float)scale);
-	        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-	        float f2 = ent.renderYawOffset;
-	        float f3 = ent.rotationYaw;
-	        float f4 = ent.rotationPitch;
-	        float f5 = ent.rotationYawHead;
-	        
-	        GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
-	        RenderHelper.enableStandardItemLighting();
-	        GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
-	        GL11.glRotatef(-((float)Math.atan((double)(par5 / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
-	        GL11.glRotatef(15.0F, 1.0F, 0.0F, 0.0F);
-	        GL11.glRotatef(25.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glPushMatrix();
 
-	        ent.renderYawOffset = (float)Math.atan((double)(par4 / 40.0F)) * 20.0F;
-	        ent.rotationYaw = (float)Math.atan((double)(par4 / 40.0F)) * 40.0F;
-	        ent.rotationPitch = -((float)Math.atan((double)(par5 / 40.0F))) * 20.0F;
-	        ent.rotationYawHead = ent.renderYawOffset;
-	        GL11.glTranslatef(0.0F, ent.yOffset, 0.0F);
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
 
-	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	        
-			if(ent instanceof EntityDragon)
-			{
-				GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
-			}
-	        
-	        float viewY = RenderManager.instance.playerViewY;
-	        RenderManager.instance.playerViewY = 180.0F;
-	        RenderManager.instance.renderEntityWithPosYaw(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
-	        
-			if(ent instanceof EntityDragon)
-			{
-				GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
-			}
+            GL11.glTranslatef((float)posX, (float)posY, 50.0F);
 
-	        GL11.glTranslatef(0.0F, -0.22F, 0.0F);
-	        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 255.0F * 0.8F, 255.0F * 0.8F);
-	        Tessellator.instance.setBrightness(240);
-	        
-	        RenderManager.instance.playerViewY = viewY;
-	        ent.renderYawOffset = f2;
-	        ent.rotationYaw = f3;
-	        ent.rotationPitch = f4;
-	        ent.rotationYawHead = f5;
+            GL11.glScalef((float)(-scale), (float)scale, (float)scale);
+            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+            float f2 = ent.renderYawOffset;
+            float f3 = ent.rotationYaw;
+            float f4 = ent.rotationPitch;
+            float f5 = ent.rotationYawHead;
 
-	        GL11.glPopMatrix();
-	        
-	        RenderHelper.disableStandardItemLighting();
-	        
-	        GL11.glPushMatrix();
+            GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
+            RenderHelper.enableStandardItemLighting();
+            GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(-((float)Math.atan((double)(par5 / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(15.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(25.0F, 0.0F, 1.0F, 0.0F);
 
-	        GL11.glTranslatef((float)posX, (float)posY, 50.0F);
+            ent.renderYawOffset = (float)Math.atan((double)(par4 / 40.0F)) * 20.0F;
+            ent.rotationYaw = (float)Math.atan((double)(par4 / 40.0F)) * 40.0F;
+            ent.rotationPitch = -((float)Math.atan((double)(par5 / 40.0F))) * 20.0F;
+            ent.rotationYawHead = ent.renderYawOffset;
+            GL11.glTranslatef(0.0F, ent.yOffset, 0.0F);
+
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+            if(ent instanceof EntityDragon)
+            {
+                GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+            }
+
+            float viewY = RenderManager.instance.playerViewY;
+            RenderManager.instance.playerViewY = 180.0F;
+            RenderManager.instance.renderEntityWithPosYaw(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+
+            if(ent instanceof EntityDragon)
+            {
+                GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+            }
+
+            GL11.glTranslatef(0.0F, -0.22F, 0.0F);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 255.0F * 0.8F, 255.0F * 0.8F);
+            Tessellator.instance.setBrightness(240);
+
+            RenderManager.instance.playerViewY = viewY;
+            ent.renderYawOffset = f2;
+            ent.rotationYaw = f3;
+            ent.rotationPitch = f4;
+            ent.rotationYawHead = f5;
+
+            GL11.glPopMatrix();
+
+            RenderHelper.disableStandardItemLighting();
+
+            GL11.glPushMatrix();
+
+            GL11.glTranslatef((float)posX, (float)posY, 50.0F);
 
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
-	        
-        	GL11.glTranslatef(0.0F, 0.0F, 100F);
-	        if(text)
-	        {
-	        	if(radialShow)
-	        	{
-	        		GL11.glPushMatrix();
-	        		float scaleee = 0.75F;
-	        		GL11.glScalef(scaleee, scaleee, scaleee);
-	        		String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || info == null && state.playerMorph.equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName();
-	        		Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2) * scaleee), 5, 16777215);
-	        		GL11.glPopMatrix();
-	        	}
-	        	else
-	        	{
-	        		Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getCommandSenderName().equalsIgnoreCase(state.entInstance.getCommandSenderName()) || info == null && ent.getCommandSenderName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName(), 26, -32, 16777215);
-	        	}
-	        	
-	        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	        }
-	        
-        	if(state != null && !state.playerMorph.equalsIgnoreCase(state.playerName) && state.isFavourite)
-        	{
-    			double pX = 9.5D;
-    			double pY = -33.5D;
-				double size = 9D;
-    			
-	        	Minecraft.getMinecraft().getTextureManager().bindTexture(rlFavourite);
-	        	
-				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		        Tessellator tessellator = Tessellator.instance;
-				tessellator.setColorRGBA(255, 255, 255, 255);
-				
-		        tessellator.startDrawingQuads();
-				double iconX = pX;
-				double iconY = pY;
-				
-		        tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
-		        tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
-		        tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
-		        tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
-		        tessellator.draw();
-		        
-		        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
-		        
-		        tessellator.startDrawingQuads();
-				iconX = pX + 1D;
-				iconY = pY + 1D;
-				
-		        tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
-		        tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
-		        tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
-		        tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
-		        tessellator.draw();
-        	}
+            MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
 
-        	if(Morph.config.getSessionInt("showAbilitiesInGui") == 1)
-        	{
-	        	ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
+            GL11.glTranslatef(0.0F, 0.0F, 100F);
+            if(text)
+            {
+                if(radialShow)
+                {
+                    GL11.glPushMatrix();
+                    float scaleee = 0.75F;
+                    GL11.glScalef(scaleee, scaleee, scaleee);
+                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.identifier.equalsIgnoreCase(state.identifier) || info == null && state.playerMorph.equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName();
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2) * scaleee), 5, 16777215);
+                    GL11.glPopMatrix();
+                }
+                else
+                {
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.entInstance.getCommandSenderName().equalsIgnoreCase(state.entInstance.getCommandSenderName()) || info == null && ent.getCommandSenderName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName(), 26, -32, 16777215);
+                }
 
-	        	int abilitiesSize = abilities.size();
-	    		for(int i = abilities.size() - 1; i >= 0; i--)
-	    		{
-	    			if(!abilities.get(i).entityHasAbility(ent) || abilities.get(i).getIcon() == null)
-	    			{
-	    				abilitiesSize--;
-	    			}
-	    		}
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            }
 
-	        	boolean shouldScroll = false;
+            if(state != null && !state.playerMorph.equalsIgnoreCase(state.playerName) && state.isFavourite)
+            {
+                double pX = 9.5D;
+                double pY = -33.5D;
+                double size = 9D;
 
-	        	final int stencilBit = MinecraftForgeClient.reserveStencilBit();
-	        	
-				if(stencilBit >= 0 && abilitiesSize > 3)
-				{
-					MorphState selectedState = null;
-					
-					int i = 0;
-					
-					Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
-					
-					while(ite.hasNext())
-					{
-						Entry<String, ArrayList<MorphState>> e = ite.next();
-						if(i == selectorSelected)
-						{
-							ArrayList<MorphState> states = e.getValue();
-							
-							for(int j = 0; j < states.size(); j++)
-							{
-								if(j == selectorSelectedHori)
-								{
-									selectedState = states.get(j);
-									break;
-								}
-							}
-							
-							break;
-						}
-						i++;
-					}
+                Minecraft.getMinecraft().getTextureManager().bindTexture(rlFavourite);
 
-					if(state != null && selectedState == state)
-					{
-						shouldScroll = true;
-					}
-					
-					if(shouldScroll)
-					{
-						final int stencilMask = 1 << stencilBit;
-						
-				        GL11.glEnable(GL11.GL_STENCIL_TEST);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                Tessellator tessellator = Tessellator.instance;
+                tessellator.setColorRGBA(255, 255, 255, 255);
+
+                tessellator.startDrawingQuads();
+                double iconX = pX;
+                double iconY = pY;
+
+                tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
+                tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
+                tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
+                tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
+                tessellator.draw();
+
+                GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
+
+                tessellator.startDrawingQuads();
+                iconX = pX + 1D;
+                iconY = pY + 1D;
+
+                tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
+                tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
+                tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
+                tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
+                tessellator.draw();
+            }
+
+            if(Morph.config.getSessionInt("showAbilitiesInGui") == 1)
+            {
+                ArrayList<Ability> abilities = AbilityHandler.getEntityAbilities(ent.getClass());
+
+                int abilitiesSize = abilities.size();
+                for(int i = abilities.size() - 1; i >= 0; i--)
+                {
+                    if(!abilities.get(i).entityHasAbility(ent) || (abilities.get(i).getIcon() == null && !(abilities.get(i) instanceof AbilityPotionEffect)) || abilities.get(i) instanceof AbilityPotionEffect && Potion.potionTypes[((AbilityPotionEffect)abilities.get(i)).potionId] != null && !Potion.potionTypes[((AbilityPotionEffect)abilities.get(i)).potionId].hasStatusIcon())
+                    {
+                        abilitiesSize--;
+                    }
+                }
+
+                boolean shouldScroll = false;
+
+                final int stencilBit = MinecraftForgeClient.reserveStencilBit();
+
+                if(stencilBit >= 0 && abilitiesSize > 3)
+                {
+                    MorphState selectedState = null;
+
+                    int i = 0;
+
+                    Iterator<Entry<String, ArrayList<MorphState>>> ite = playerMorphCatMap.entrySet().iterator();
+
+                    while(ite.hasNext())
+                    {
+                        Entry<String, ArrayList<MorphState>> e = ite.next();
+                        if(i == selectorSelected)
+                        {
+                            ArrayList<MorphState> states = e.getValue();
+
+                            for(int j = 0; j < states.size(); j++)
+                            {
+                                if(j == selectorSelectedHori)
+                                {
+                                    selectedState = states.get(j);
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+                        i++;
+                    }
+
+                    if(state != null && selectedState == state)
+                    {
+                        shouldScroll = true;
+                    }
+
+                    if(shouldScroll)
+                    {
+                        final int stencilMask = 1 << stencilBit;
+
+                        GL11.glEnable(GL11.GL_STENCIL_TEST);
                         GL11.glDepthMask(false);
-				        GL11.glColorMask(false, false, false, false);
-	
-				        GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
-				        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
-				        GL11.glStencilMask(stencilMask);
-				        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
-	
-						RendererHelper.drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
-						
-						GL11.glStencilMask(0x00);
-						GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
+                        GL11.glColorMask(false, false, false, false);
+
+                        GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
+                        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
+                        GL11.glStencilMask(stencilMask);
+                        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+
+                        RendererHelper.drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
+
+                        GL11.glStencilMask(0x00);
+                        GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
 
                         GL11.glDepthMask(true);
-				        GL11.glColorMask(true, true, true, true);
-					}
-				}
-	        	
-        		int offsetX = 0;
-        		int offsetY = 0;
-	        	for(int i = 0; i < (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
-	        	{
-	        		Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
-	        		
-	        		if(!ability.entityHasAbility(ent) || ability.getIcon() == null || (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3) && !shouldScroll && i >= 3)
-	        		{
-	        			continue;
-	        		}
-	        		ResourceLocation loc = ability.getIcon();
-	        		if(loc != null)
-	        		{
-	        			double pX = -20.5D;
-	        			double pY = -33.5D;
-						double size = 12D;
-	        			
-						if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
-						{
-		        			int round = abilityScroll % (30 * abilities.size());
-		        			
-		        			pY -= (size + 1) * (double)(round + (double)renderTick) / 30D;
-						}
-	        			
-			        	Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
-			        	
-						GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				        Tessellator tessellator = Tessellator.instance;
-						tessellator.setColorRGBA(255, 255, 255, 255);
-						
-				        tessellator.startDrawingQuads();
-						double iconX = pX + (offsetX * (size + 1));
-						double iconY = pY + (offsetY * (size + 1));
-						
-				        tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
-				        tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
-				        tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
-				        tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
-				        tessellator.draw();
-				        
-				        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
-				        
-				        tessellator.startDrawingQuads();
-						size = 12D;
-						iconX = pX + 1D + (offsetX * (size + 1));
-						iconY = pY + 1D + (offsetY * (size + 1));
-						
-				        tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
-				        tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
-				        tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
-				        tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
-				        tessellator.draw();
+                        GL11.glColorMask(true, true, true, true);
+                    }
+                }
 
-				        offsetY++;
-				        if(offsetY == 3 && stencilBit < 0)
-				        {
-				        	offsetY = 0;
-				        	offsetX++;
-				        }
-	        		}
-	        	}
-	        	
-				if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
-				{
-			        GL11.glDisable(GL11.GL_STENCIL_TEST);
-				}
-				
-				MinecraftForgeClient.releaseStencilBit(stencilBit);
-        	}
-        	GL11.glTranslatef(0.0F, 0.0F, -100F);
+                int offsetX = 0;
+                int offsetY = 0;
+                int renders = 0;
+                for(int i = 0; i < (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
+                {
+                    Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
+
+                    if(!ability.entityHasAbility(ent) || (ability.getIcon() == null && !(ability instanceof AbilityPotionEffect)) || ability instanceof AbilityPotionEffect && Potion.potionTypes[((AbilityPotionEffect)ability).potionId] != null && !Potion.potionTypes[((AbilityPotionEffect)ability).potionId].hasStatusIcon() || (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3) && !shouldScroll && renders >= 3)
+                    {
+                        continue;
+                    }
+
+                    ResourceLocation loc = ability.getIcon();
+                    if(loc != null || ability instanceof AbilityPotionEffect)
+                    {
+                        double pX = -20.5D;
+                        double pY = -33.5D;
+                        double size = 12D;
+
+                        if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
+                        {
+                            int round = abilityScroll % (30 * abilities.size());
+
+                            pY -= (size + 1) * (double)(round + (double)renderTick) / 30D;
+                        }
+
+                        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                        Tessellator tessellator = Tessellator.instance;
+                        tessellator.setColorRGBA(255, 255, 255, 255);
+
+                        double iconX = pX + (offsetX * (size + 1));
+                        double iconY = pY + (offsetY * (size + 1));
+
+                        if(loc != null)
+                        {
+                            Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
+
+                            tessellator.startDrawingQuads();
+                            tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
+                            tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
+                            tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
+                            tessellator.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
+                            tessellator.draw();
+                        }
+                        else
+                        {
+                            Minecraft.getMinecraft().getTextureManager().bindTexture(rlGuiInventory);
+                            int l = Potion.potionTypes[((AbilityPotionEffect)ability).potionId].getStatusIconIndex();
+
+                            float f = 0.00390625F;
+                            float f1 = 0.00390625F;
+
+                            int xStart = l % 8 * 18;
+                            int yStart = 198 + l / 8 * 18;
+
+                            tessellator.startDrawingQuads();
+                            tessellator.addVertexWithUV(iconX, iconY + size, 0.0D, xStart * f, (yStart + 18) * f1);
+                            tessellator.addVertexWithUV(iconX + size, iconY + size, 0.0D, (xStart + 18) * f, (yStart + 18) * f1);
+                            tessellator.addVertexWithUV(iconX + size, iconY, 0.0D, (xStart + 18) * f, yStart * f1);
+                            tessellator.addVertexWithUV(iconX, iconY, 0.0D, xStart * f, yStart * f1);
+                            tessellator.draw();
+
+                        }
+
+                        GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.6F);
+
+                        size = 12D;
+                        iconX = pX + 1D + (offsetX * (size + 1));
+                        iconY = pY + 1D + (offsetY * (size + 1));
+
+                        if(loc != null)
+                        {
+                            tessellator.startDrawingQuads();
+                            tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
+                            tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
+                            tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
+                            tessellator.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
+                            tessellator.draw();
+                        }
+                        else
+                        {
+                            Minecraft.getMinecraft().getTextureManager().bindTexture(rlGuiInventory);
+                            int l = Potion.potionTypes[((AbilityPotionEffect)ability).potionId].getStatusIconIndex();
+
+                            float f = 0.00390625F;
+                            float f1 = 0.00390625F;
+
+                            int xStart = l % 8 * 18;
+                            int yStart = 198 + l / 8 * 18;
+
+                            tessellator.startDrawingQuads();
+                            tessellator.addVertexWithUV(iconX, iconY + size, -1.0D, xStart * f, (yStart + 18) * f1);
+                            tessellator.addVertexWithUV(iconX + size, iconY + size, -1.0D, (xStart + 18) * f, (yStart + 18) * f1);
+                            tessellator.addVertexWithUV(iconX + size, iconY, -1.0D, (xStart + 18) * f, yStart * f1);
+                            tessellator.addVertexWithUV(iconX, iconY, -1.0D, xStart * f, yStart * f1);
+                            tessellator.draw();
+                        }
+
+                        offsetY++;
+                        if(offsetY == 3 && stencilBit < 0)
+                        {
+                            offsetY = 0;
+                            offsetX++;
+                        }
+                    }
+                    renders++;
+                }
+
+                if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
+                {
+                    GL11.glDisable(GL11.GL_STENCIL_TEST);
+                }
+
+                MinecraftForgeClient.releaseStencilBit(stencilBit);
+            }
+            GL11.glTranslatef(0.0F, 0.0F, -100F);
 
             GL11.glDisable(GL11.GL_BLEND);
 
-	        GL11.glPopMatrix();
-	        
-	        GL11.glEnable(GL11.GL_ALPHA_TEST);
-	        
-	        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-	        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-	        GL11.glDisable(GL11.GL_TEXTURE_2D);
-	        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-	        
-	        Minecraft.getMinecraft().gameSettings.hideGUI = hideGui;
-    	}
-    	forceRender = false;
+            GL11.glPopMatrix();
+
+            GL11.glEnable(GL11.GL_ALPHA_TEST);
+
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+
+            Minecraft.getMinecraft().gameSettings.hideGUI = hideGui;
+        }
+        forceRender = false;
     }
-    
+
     public void selectRadialMenu()
     {
-    	double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
-    	double magAcceptance = 0.8D;
+        double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
+        double magAcceptance = 0.8D;
 
-    	double radialAngle = -720F;
-    	if(mag > magAcceptance)
-    	{
-    		//is on radial menu
-    		double aSin = Math.toDegrees(Math.asin(Morph.proxy.tickHandlerClient.radialDeltaX));
-    		
-    		if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
-    		{
-    			radialAngle = aSin;
-    		}
-    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
-    		{
-    			radialAngle = 90D + (90D - aSin);
-    		}
-    		else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
-    		{
-    			radialAngle = 180D - aSin;
-    		}
-    		else if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
-    		{
-    			radialAngle = 270D + (90D + aSin);
-    		}
-    	}
-    	else
-    	{
-    		return;
-    	}
-    	
-    	if(mag > 0.9999999D)
-    	{
-    		mag = Math.round(mag);
-    	}
-    	
-    	for(int i = 0; i < favouriteStates.size(); i++)
-    	{
-    		double angle = Math.PI * 2 * i / favouriteStates.size();
-    		
-    		angle -= Math.toRadians(90D);
-    		
-    		int radius = 80;
-    		
-    		float leeway = 360F / favouriteStates.size();
-    		
-    		boolean selected = false;
-    		
-    		if(mag > magAcceptance * 0.75D && (i == 0 && (radialAngle < (leeway / 2) && radialAngle >= 0F || radialAngle > (360F) - (leeway / 2)) || i != 0 && radialAngle < (leeway * i) + (leeway / 2) && radialAngle > (leeway * i ) - (leeway / 2)))
-    		{
-    			favouriteStates.get(i);
-    			
-    	        MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
-    	        
-    			if(info != null && !info.nextState.identifier.equalsIgnoreCase(favouriteStates.get(i).identifier) || info == null && !favouriteStates.get(i).playerMorph.equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName()))
-    			{
+        double radialAngle = -720F;
+        if(mag > magAcceptance)
+        {
+            //is on radial menu
+            double aSin = Math.toDegrees(Math.asin(Morph.proxy.tickHandlerClient.radialDeltaX));
+
+            if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+            {
+                radialAngle = aSin;
+            }
+            else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
+            {
+                radialAngle = 90D + (90D - aSin);
+            }
+            else if(Morph.proxy.tickHandlerClient.radialDeltaY < 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+            {
+                radialAngle = 180D - aSin;
+            }
+            else if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX < 0)
+            {
+                radialAngle = 270D + (90D + aSin);
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        if(mag > 0.9999999D)
+        {
+            mag = Math.round(mag);
+        }
+
+        for(int i = 0; i < favouriteStates.size(); i++)
+        {
+            double angle = Math.PI * 2 * i / favouriteStates.size();
+
+            angle -= Math.toRadians(90D);
+
+            int radius = 80;
+
+            float leeway = 360F / favouriteStates.size();
+
+            boolean selected = false;
+
+            if(mag > magAcceptance * 0.75D && (i == 0 && (radialAngle < (leeway / 2) && radialAngle >= 0F || radialAngle > (360F) - (leeway / 2)) || i != 0 && radialAngle < (leeway * i) + (leeway / 2) && radialAngle > (leeway * i ) - (leeway / 2)))
+            {
+                favouriteStates.get(i);
+
+                MorphInfoClient info = playerMorphInfo.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
+
+                if(info != null && !info.nextState.identifier.equalsIgnoreCase(favouriteStates.get(i).identifier) || info == null && !favouriteStates.get(i).playerMorph.equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName()))
+                {
                     PacketHandler.sendToServer(Morph.channels, new PacketGuiInput(0, favouriteStates.get(i).identifier, false));
-	    			break;
-    			}
-    		}
-    	}
+                    break;
+                }
+            }
+        }
 
     }
-	
+
     public static boolean isPressed(int key)
     {
-    	if(key < 0)
-    	{
-    		return Mouse.isButtonDown(key + 100);
-    	}
-    	return Keyboard.isKeyDown(key);
+        if(key < 0)
+        {
+            return Mouse.isButtonDown(key + 100);
+        }
+        return Keyboard.isKeyDown(key);
     }
-    
-	public long clock;
-	
-	public RenderMorph renderMorphInstance;
-	public RenderPlayerHand renderHandInstance;
-	public float playerRenderShadowSize = -1F;
-	
-	public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
-	
-	public LinkedHashMap<String, ArrayList<MorphState>> playerMorphCatMap = new LinkedHashMap<String, ArrayList<MorphState>>();
 
-	public float renderTick;
-	
-	public float playerHeight = 1.8F;
-	public float ySize;
-	public float eyeHeight;
-	public boolean shiftedPosY;
-	
-	public boolean allowRender;
-	
-	public boolean forceRender;
-	public boolean renderingMorph;
-	public byte renderingPlayer;
-	
-	public boolean selectorShow;
-	public int selectorTimer;
-	public int selectorSelectedPrev;
-	public int selectorSelected;
-	public int selectorSelectedHoriPrev;
-	public int selectorSelectedHori;
-	public long systemTime;
-	public int currentItem;
-	public int scrollTimer;
-	public int scrollTimerHori;
-	
-	public int abilityScroll;
-	
-	public boolean radialShow;
-	public float radialPlayerYaw;
-	public float radialPlayerPitch;
-	public double radialDeltaX;
-	public double radialDeltaY;
-	public int radialTime;
-	
-	public ArrayList<MorphState> favouriteStates = new ArrayList<MorphState>();
-	
-	public final int selectorShowTime = 10;
-	public final int scrollTime = 3;
+    public long clock;
 
-	public static final ResourceLocation rlFavourite = new ResourceLocation("morph", "textures/gui/fav.png");
-	public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
-	public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");
-	public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");
+    public RenderMorph renderMorphInstance;
+    public RenderPlayerHand renderHandInstance;
+    public float playerRenderShadowSize = -1F;
+
+    public HashMap<String, MorphInfoClient> playerMorphInfo = new HashMap<String, MorphInfoClient>();
+
+    public LinkedHashMap<String, ArrayList<MorphState>> playerMorphCatMap = new LinkedHashMap<String, ArrayList<MorphState>>();
+
+    public float renderTick;
+
+    public float playerHeight = 1.8F;
+    public float ySize;
+    public float eyeHeight;
+    public boolean shiftedPosY;
+
+    public boolean allowRender;
+
+    public boolean forceRender;
+    public boolean renderingMorph;
+    public byte renderingPlayer;
+
+    public boolean selectorShow;
+    public int selectorTimer;
+    public int selectorSelectedPrev;
+    public int selectorSelected;
+    public int selectorSelectedHoriPrev;
+    public int selectorSelectedHori;
+    public long systemTime;
+    public int currentItem;
+    public int scrollTimer;
+    public int scrollTimerHori;
+
+    public int abilityScroll;
+
+    public boolean radialShow;
+    public float radialPlayerYaw;
+    public float radialPlayerPitch;
+    public double radialDeltaX;
+    public double radialDeltaY;
+    public int radialTime;
+
+    public ArrayList<MorphState> favouriteStates = new ArrayList<MorphState>();
+
+    public final int selectorShowTime = 10;
+    public final int scrollTime = 3;
+
+    public static final ResourceLocation rlFavourite = new ResourceLocation("morph", "textures/gui/fav.png");
+    public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
+    public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");
+    public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");
+    public static final ResourceLocation rlGuiInventory = new ResourceLocation("textures/gui/container/inventory.png");
 }
