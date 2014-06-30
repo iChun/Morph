@@ -1472,7 +1472,8 @@
   "net.minecraft.entity.monster.EntityCaveSpider": [
     "climb",
     "hostile",
-    "poisonResistance"
+    "poisonResistance",
+	"potionEffect|19,140,0,false"
   ],
   "net.minecraft.entity.passive.EntityChicken": [
     "float|-0.114,true"
@@ -1527,7 +1528,8 @@
     "fireImmunity",
     "hostile",
     "sunburn",
-    "witherResistance"
+    "witherResistance",
+	"potionEffect|20,200,0,false"
   ],
   "net.minecraft.entity.monster.EntitySlime": [
     "hostile",

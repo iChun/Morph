@@ -146,6 +146,19 @@ public class AbilityHandler
 			}
 			else
 			{
+                String[] disabledAbilities = Morph.config.getSessionString("disabledAbilities").split(",");
+                for(int i = abilities.size() - 1; i >= 0 ; i--)
+                {
+                    Ability ab = abilities.get(i);
+                    for(String s : disabledAbilities)
+                    {
+                        if(!s.isEmpty() && ab.getType().equals(s))
+                        {
+                            abilities.remove(i);
+                            break;
+                        }
+                    }
+                }
 				return abilities;
 			}
 		}
