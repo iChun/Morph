@@ -45,6 +45,7 @@ public class PacketGuiInput extends AbstractPacket
         //Should always be serverside
         input = buffer.readInt();
         identifier = ByteBufUtils.readUTF8String(buffer);
+        favourite = buffer.readBoolean();
     }
 
     @Override

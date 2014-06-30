@@ -14,22 +14,18 @@ import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketCompleteDemorph;
 import morph.common.packet.PacketSession;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
-public class TickHandlerServer 
+public class TickHandlerServer
 {
 
     @SubscribeEvent
@@ -77,17 +73,17 @@ public class TickHandlerServer
                 player.prevPosY += ySize;
                 player.posY += ySize;
             }
-//            ArrayList<MorphState> states = getPlayerMorphs(event.player.worldObj, "ohaiiChun");
-//            for(MorphState state : states)
-//            {
-//                System.out.println(state.identifier);
-//            }
+            //            ArrayList<MorphState> states = getPlayerMorphs(event.player.worldObj, "ohaiiChun");
+            //            for(MorphState state : states)
+            //            {
+            //                System.out.println(state.identifier);
+            //            }
         }
     }
 
     @SubscribeEvent
-	public void serverTick(TickEvent.ServerTickEvent event)
-	{
+    public void serverTick(TickEvent.ServerTickEvent event)
+    {
         if(event.phase == TickEvent.Phase.END)
         {
             Iterator<Entry<String, MorphInfo>> ite = playerMorphInfo.entrySet().iterator();
@@ -171,7 +167,7 @@ public class TickHandlerServer
                 if(player != null)
                 {
                     //TODO check that the sleep timer doesn't affect the bounding box
-    //				if(player.isPlayerSleeping() && player.sleepTimer > 0)
+                    //				if(player.isPlayerSleeping() && player.sleepTimer > 0)
                     if(player.isPlayerSleeping())
                     {
                         info.sleeping = true;
@@ -229,49 +225,49 @@ public class TickHandlerServer
                 ite1.remove();
             }
         }
-	}
+    }
 
-	public MorphState getSelfState(World world, EntityPlayer player)
-	{
-		ArrayList<MorphState> list = getPlayerMorphs(world, player);
-		for(MorphState state : list)
-		{
-			if(state.playerName.equalsIgnoreCase(state.playerMorph))
-			{
-				return state;
-			}
-		}
-		return new MorphState(world, player.getCommandSenderName(), player.getCommandSenderName(), null, world.isRemote);
-	}
+    public MorphState getSelfState(World world, EntityPlayer player)
+    {
+        ArrayList<MorphState> list = getPlayerMorphs(world, player);
+        for(MorphState state : list)
+        {
+            if(state.playerName.equalsIgnoreCase(state.playerMorph))
+            {
+                return state;
+            }
+        }
+        return new MorphState(world, player.getCommandSenderName(), player.getCommandSenderName(), null, world.isRemote);
+    }
 
-	public ArrayList<MorphState> getPlayerMorphs(World world, EntityPlayer player)
-	{
+    public ArrayList<MorphState> getPlayerMorphs(World world, EntityPlayer player)
+    {
         String name = player.getCommandSenderName();
-		ArrayList<MorphState> list = playerMorphs.get(name);
-		if(list == null)
-		{
-			list = new ArrayList<MorphState>();
-			playerMorphs.put(name, list);
-			list.add(0, new MorphState(world, name, name, null, world.isRemote));
-		}
-		boolean found = false;
-		for(MorphState state : list)
-		{
-			if(state.playerMorph.equals(name))
-			{
-				found = true;
-				break;
-			}
-		}
-		if(!found)
-		{
-			list.add(0, new MorphState(world, name, name, null, world.isRemote));
-		}
+        ArrayList<MorphState> list = playerMorphs.get(name);
+        if(list == null)
+        {
+            list = new ArrayList<MorphState>();
+            playerMorphs.put(name, list);
+            list.add(0, new MorphState(world, name, name, null, world.isRemote));
+        }
+        boolean found = false;
+        for(MorphState state : list)
+        {
+            if(state.playerMorph.equals(name))
+            {
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+        {
+            list.add(0, new MorphState(world, name, name, null, world.isRemote));
+        }
 
         saveList.put(player, list);
 
         return list;
-	}
+    }
 
     public void removeAllPlayerMorphsExcludingCurrentMorph(EntityPlayer player)
     {
@@ -279,33 +275,33 @@ public class TickHandlerServer
     }
 
     public boolean hasMorphState(EntityPlayer player, MorphState state)
-	{
-		ArrayList<MorphState> states = getPlayerMorphs(player.worldObj, player);
-		if(!state.playerMorph.equalsIgnoreCase(""))
-		{
-			for(MorphState mState : states)
-			{
-				if(mState.playerMorph.equalsIgnoreCase(state.playerMorph))
-				{
-					return true;
-				}
-			}
-		}
-		else
-		{
-			for(MorphState mState : states)
-			{
-				if(mState.identifier.equalsIgnoreCase(state.identifier))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    {
+        ArrayList<MorphState> states = getPlayerMorphs(player.worldObj, player);
+        if(!state.playerMorph.equalsIgnoreCase(""))
+        {
+            for(MorphState mState : states)
+            {
+                if(mState.playerMorph.equalsIgnoreCase(state.playerMorph))
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            for(MorphState mState : states)
+            {
+                if(mState.identifier.equalsIgnoreCase(state.identifier))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	public void updateSession(EntityPlayer player) 
-	{
+    public void updateSession(EntityPlayer player)
+    {
         if(player != null)
         {
             PacketHandler.sendToPlayer(Morph.channels, new PacketSession(player), player);
@@ -314,7 +310,7 @@ public class TickHandlerServer
         {
             PacketHandler.sendToAll(Morph.channels, new PacketSession(player));
         }
-	}
+    }
 
     public NBTTagCompound getMorphDataFromPlayer(EntityPlayer player)
     {
@@ -349,12 +345,12 @@ public class TickHandlerServer
         return playerMorphInfo.get(playerName);
     }
 
-	public long clock;
+    public long clock;
 
 
     public MorphSaveData saveData = null;
-	public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
-	public HashMap<String, ArrayList<MorphState>> playerMorphs = new HashMap<String, ArrayList<MorphState>>();
+    public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();
+    public HashMap<String, ArrayList<MorphState>> playerMorphs = new HashMap<String, ArrayList<MorphState>>();
 
     public WeakHashMap<EntityPlayer, ArrayList<MorphState>> saveList = new WeakHashMap<EntityPlayer, ArrayList<MorphState>>();
 }

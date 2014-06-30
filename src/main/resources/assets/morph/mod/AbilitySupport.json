@@ -1504,12 +1504,14 @@
   ],
   "net.minecraft.entity.monster.EntityIronGolem": [
     "fallNegate",
-    "swim|true,1F,1F,false"
+    "swim|true,1F,1F,false",
+	"sink"
   ],
   "net.minecraft.entity.monster.EntityMagmaCube": [
     "fallNegate",
     "fireImmunity",
-    "hostile"
+    "hostile",
+	"sink"
   ],
   "net.minecraft.entity.passive.EntityOcelot": [
     "fallNegate"
@@ -1528,7 +1530,8 @@
     "witherResistance"
   ],
   "net.minecraft.entity.monster.EntitySlime": [
-    "hostile"
+    "hostile",
+	"sink"
   ],
   "net.minecraft.entity.monster.EntitySnowman": [
     "waterAllergy"

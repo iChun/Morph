@@ -86,42 +86,55 @@ public class ThreadGetOnlineResources extends Thread
                             ArrayList<Ability> abilityObjs = new ArrayList<Ability>();
                             for(String ability : e.getValue()){
                                 boolean hasArgs = false;
-                                if(ability.contains("|")){
-                                    ArrayList<String> argVars = new ArrayList<String>();
-                                    hasArgs = true;
-                                    String args = ability.split("\\|")[1];
-                                    ability = ability.split("\\|")[0];
-                                    if(args.contains(",")){
-                                        for(String arg : args.split(",")){
-                                            argVars.add(arg.trim());
-                                        }
-                                    }
-                                    else
+                                if(ability != null)
+                                {
+                                    if(ability.contains("|"))
                                     {
-                                        argVars.add(args.trim());
-                                    }
-                                    try {
-                                        Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
-                                        Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
+                                        ArrayList<String> argVars = new ArrayList<String>();
+                                        hasArgs = true;
+                                        String args = ability.split("\\|")[1];
+                                        ability = ability.split("\\|")[0];
+                                        if(args.contains(","))
+                                        {
+                                            for(String arg : args.split(","))
+                                            {
+                                                argVars.add(arg.trim());
+                                            }
+                                        }
+                                        else
+                                        {
+                                            argVars.add(args.trim());
+                                        }
                                         try
                                         {
-                                            ab.parse(argVars.toArray(new String[0]));
+                                            Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
+                                            Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
+                                            try
+                                            {
+                                                ab.parse(argVars.toArray(new String[0]));
+                                            }
+                                            catch(Exception e2)
+                                            {
+                                                Morph.console("Mappings are erroring! These mappings are probably invalid or outdated: " + ability, true);
+                                            }
+                                            abilityObjs.add(ab);
                                         }
                                         catch(Exception e2)
                                         {
-                                            Morph.console("Mappings are erroring! These mappings are probably invalid or outdated: " + ability, true);
+                                            e2.printStackTrace();
                                         }
-                                        abilityObjs.add(ab);
-                                    } catch (Exception e2){
-                                        e2.printStackTrace();
                                     }
-                                }
-                                if(!ability.isEmpty() && !hasArgs){
-                                    Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
-                                    try {
-                                        abilityObjs.add((Ability)abilityClass.getConstructor().newInstance());
-                                    } catch (Exception e2){
-                                        e2.printStackTrace();
+                                    if(!ability.isEmpty() && !hasArgs)
+                                    {
+                                        Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
+                                        try
+                                        {
+                                            abilityObjs.add((Ability)abilityClass.getConstructor().newInstance());
+                                        }
+                                        catch(Exception e2)
+                                        {
+                                            e2.printStackTrace();
+                                        }
                                     }
                                 }
                             }

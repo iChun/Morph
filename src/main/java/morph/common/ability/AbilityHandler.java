@@ -45,11 +45,12 @@ public class AbilityHandler
 		registerAbility("float"			  , AbilityFloat.class			    );
 		registerAbility("fireImmunity"	  , AbilityFireImmunity.class	    );
 		registerAbility("hostile"		  , AbilityHostile.class		    );
-		registerAbility("sunburn"		  , AbilitySunburn.class		    );
+        registerAbility("poisonResistance", AbilityPoisonResistance.class   );
+        registerAbility("sink"			  , AbilitySink.class			    );
+        registerAbility("step"			  , AbilityStep.class			    );
+        registerAbility("sunburn"		  , AbilitySunburn.class		    );
 		registerAbility("swim"			  , AbilitySwim.class			    );
 		registerAbility("waterAllergy"    , AbilityWaterAllergy.class	    );
-		registerAbility("poisonResistance", AbilityPoisonResistance.class   );
-		registerAbility("step"			  , AbilityStep.class			    );
 		registerAbility("witherResistance", AbilityWitherResistance.class   );
 	}
 
