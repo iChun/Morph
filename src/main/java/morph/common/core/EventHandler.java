@@ -18,6 +18,7 @@ import morph.client.morph.MorphInfoClient;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
+import morph.common.ability.AbilitySwim;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -1090,6 +1091,176 @@ public class EventHandler
                             {
                                 ((EntityLiving)event.entityLiving).setAttackTarget(null);
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onSetupFog(EntityViewRenderEvent.FogColors event)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if(player != null && Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.getCommandSenderName()) != null)
+        {
+            MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.getCommandSenderName());
+            if(!info.getMorphing() && info.morphProgress >= 80 || info.getMorphing() && info.morphProgress <= 80)
+            {
+                for(Ability ab: info.morphAbilities)
+                {
+                    if(ab.getType().equalsIgnoreCase("swim"))
+                    {
+                        AbilitySwim abilitySwim = (AbilitySwim)ab;
+                        if(!abilitySwim.canSurviveOutOfWater)
+                        {
+                            if(player.isInWater())
+                            {
+                                float multi = 7.5F;
+
+                                boolean hasSwim = false;
+                                ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+                                for(Ability ab1 : mobAbilities)
+                                {
+                                    if(ab1.getType().equalsIgnoreCase("swim"))
+                                    {
+                                        hasSwim = true;
+                                        break;
+                                    }
+                                }
+
+                                boolean alsoHasSwim = false;
+                                mobAbilities = AbilityHandler.getEntityAbilities(info.prevState.entInstance.getClass());
+                                for(Ability ab1 : mobAbilities)
+                                {
+                                    if(ab1.getType().equalsIgnoreCase("swim"))
+                                    {
+                                        alsoHasSwim = true;
+                                        break;
+                                    }
+                                }
+
+                                if(info.getMorphing())
+                                {
+                                    if(!hasSwim)
+                                    {
+                                        multi -= 6.5F * MathHelper.clamp_float((float)info.morphProgress / 80F, 0.0F, 1.0F);
+                                    }
+                                    else if(!alsoHasSwim)
+                                    {
+                                        multi -= 6.5F * MathHelper.clamp_float((80F - (float)info.morphProgress) / 80F, 0.0F, 1.0F);
+                                    }
+                                }
+
+                                event.red *= multi;
+                                event.blue *= multi;
+                                event.green *= multi;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onSetupFog(EntityViewRenderEvent.FogDensity event)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if(player != null && Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.getCommandSenderName()) != null)
+        {
+            MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player.getCommandSenderName());
+            if(!info.getMorphing() && info.morphProgress >= 80 || info.getMorphing() && info.morphProgress <= 80)
+            {
+                for(Ability ab: info.morphAbilities)
+                {
+                    if(ab.getType().equalsIgnoreCase("swim"))
+                    {
+                        AbilitySwim abilitySwim = (AbilitySwim)ab;
+                        if(!abilitySwim.canSurviveOutOfWater)
+                        {
+                            GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_EXP);
+                            if(player.isInWater())
+                            {
+                                event.density = 0.025F;
+
+                                boolean hasSwim = false;
+                                ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+                                for(Ability ab1 : mobAbilities)
+                                {
+                                    if(ab1.getType().equalsIgnoreCase("swim"))
+                                    {
+                                        hasSwim = true;
+                                        break;
+                                    }
+                                }
+
+                                boolean alsoHasSwim = false;
+                                mobAbilities = AbilityHandler.getEntityAbilities(info.prevState.entInstance.getClass());
+                                for(Ability ab1 : mobAbilities)
+                                {
+                                    if(ab1.getType().equalsIgnoreCase("swim"))
+                                    {
+                                        alsoHasSwim = true;
+                                        break;
+                                    }
+                                }
+
+                                if(info.getMorphing())
+                                {
+                                    if(!hasSwim)
+                                    {
+                                        event.density += 0.05F * MathHelper.clamp_float((float)info.morphProgress / 80F, 0.0F, 1.0F);
+                                    }
+                                    else if(!alsoHasSwim)
+                                    {
+                                        event.density += 0.05F * MathHelper.clamp_float((80F - (float)info.morphProgress) / 80F, 0.0F, 1.0F);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                event.density = 0.075F;
+
+                                boolean hasSwim = false;
+                                ArrayList<Ability> mobAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+                                for(Ability ab1 : mobAbilities)
+                                {
+                                    if(ab1.getType().equalsIgnoreCase("swim"))
+                                    {
+                                        hasSwim = true;
+                                        break;
+                                    }
+                                }
+
+                                boolean alsoHasSwim = false;
+                                mobAbilities = AbilityHandler.getEntityAbilities(info.prevState.entInstance.getClass());
+                                for(Ability ab1 : mobAbilities)
+                                {
+                                    if(ab1.getType().equalsIgnoreCase("swim"))
+                                    {
+                                        alsoHasSwim = true;
+                                        break;
+                                    }
+                                }
+
+                                if(info.getMorphing())
+                                {
+                                    if(!hasSwim)
+                                    {
+                                        event.density -= 0.073F * MathHelper.clamp_float((float)info.morphProgress / 80F, 0.0F, 1.0F);
+                                    }
+                                    else if(!alsoHasSwim)
+                                    {
+                                        event.density -= 0.073F * MathHelper.clamp_float((80F - (float)info.morphProgress) / 80F, 0.0F, 1.0F);
+                                    }
+                                }
+                            }
+                            event.setCanceled(true);
+                            break;
                         }
                     }
                 }

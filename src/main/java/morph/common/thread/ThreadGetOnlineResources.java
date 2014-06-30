@@ -46,14 +46,14 @@ public class ThreadGetOnlineResources extends Thread
                 {
                     if(Morph.config.getInt("useLocalResources") == 1)
                     {
-                        InputStream con = new FileInputStream(new File(ResourceHelper.getConfigFolder(), "AbilityModMobSupport.json"));
+                        InputStream con = new FileInputStream(new File(ResourceHelper.getConfigFolder(), "AbilitySupport.json"));
                         String data = new String(ByteStreams.toByteArray(con));
                         con.close();
                         json = gson.fromJson(data, mapType);
                     }
                     else
                     {
-                        Reader fileIn = new InputStreamReader(new URL(sitePrefix + "AbilityModMobSupport.json").openStream());
+                        Reader fileIn = new InputStreamReader(new URL(sitePrefix + "AbilitySupport.json").openStream());
                         json = gson.fromJson(fileIn, mapType);
                         fileIn.close();
                     }

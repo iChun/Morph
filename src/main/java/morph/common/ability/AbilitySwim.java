@@ -37,7 +37,7 @@ public class AbilitySwim extends Ability {
 		landSpeed = 1f;
 		canMaintainDepth = false;
 	}
-	
+
 	public AbilitySwim(boolean airBreather)
 	{
 		this();
@@ -99,11 +99,11 @@ public class AbilitySwim extends Ability {
 			{
 				if(getParent().motionX > -swimSpeed && getParent().motionX < swimSpeed)
 				{
-					getParent().motionX *= swimSpeed;
+					getParent().motionX *= swimSpeed * 0.995F;
 				}
 				if(getParent().motionZ > -swimSpeed && getParent().motionZ < swimSpeed)
 				{
-					getParent().motionZ *= swimSpeed;
+					getParent().motionZ *= swimSpeed * 0.995F;
 				}
 			}
 			if(canMaintainDepth)
