@@ -49,7 +49,7 @@ public class AbilityFear extends Ability {
                         EntityCreature creature = (EntityCreature) entity;
                         if (classList.contains(creature.getClass())) {
                             boolean canRun = false;
-                            Vec3 vec3 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(creature, 16, 7, creature.worldObj.getWorldVec3Pool().getVecFromPool(getParent().posX, getParent().posY, getParent().posZ));
+                            Vec3 vec3 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(creature, 16, 7, Vec3.createVectorHelper(getParent().posX, getParent().posY, getParent().posZ));
                             if (vec3 != null && !(getParent().getDistanceSq(vec3.xCoord, vec3.yCoord, vec3.zCoord) < getParent().getDistanceSqToEntity(creature))) {
                                 PathEntity newPath = new PathEntity(new PathPoint[]{new PathPoint((int) vec3.xCoord, (int) vec3.yCoord, (int) vec3.zCoord)});
                                 creature.getNavigator().setPath(newPath, 1D);
