@@ -30,6 +30,7 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
@@ -907,6 +908,11 @@ public class TickHandlerClient
                                 {
                                     info.nextState.entInstance.setCurrentItemOrArmor(i, info.player.getEquipmentInSlot(i) != null ? info.player.getEquipmentInSlot(i).copy() : null);
                                 }
+                            }
+
+                            if(info.nextState.entInstance instanceof EntityPlayer && ((EntityPlayer)info.nextState.entInstance).getItemInUse() != info.player.getItemInUse())
+                            {
+                                ((EntityPlayer)info.nextState.entInstance).setItemInUse(info.player.getItemInUse() == null ? null : info.player.getItemInUse().copy(), info.player.getItemInUseCount());
                             }
                         }
                         if(info.flying && info.firstUpdate)
