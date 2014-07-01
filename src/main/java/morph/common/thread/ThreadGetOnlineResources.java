@@ -115,7 +115,7 @@ public class ThreadGetOnlineResources extends Thread
                                             }
                                             catch(Exception e2)
                                             {
-                                                Morph.console("Mappings are erroring! These mappings are probably invalid or outdated: " + ability, true);
+                                                Morph.console("Mappings are erroring! These mappings are probably invalid or outdated: "  + abilityClass.getName() + ", "+ ability + ", args: " + args, true);
                                             }
                                             abilityObjs.add(ab);
                                         }
