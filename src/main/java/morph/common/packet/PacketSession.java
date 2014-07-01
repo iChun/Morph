@@ -1,5 +1,6 @@
 package morph.common.packet;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import ichun.common.core.network.AbstractPacket;
@@ -26,6 +27,7 @@ public class PacketSession extends AbstractPacket
         buffer.writeInt(Morph.config.getSessionInt("abilities"));
         buffer.writeInt(Morph.config.getSessionInt("canSleepMorphed"));
         buffer.writeInt(Morph.config.getSessionInt("allowMorphSelection"));
+        buffer.writeInt(Morph.config.getSessionInt("showPlayerLabel"));
         ByteBufUtils.writeUTF8String(buffer, Morph.config.getSessionString("disabledAbilities"));
         buffer.writeInt(player != null && Morph.config.getSessionInt("disableEarlyGameFlightMode") == 1 && Morph.config.getSessionInt("disableEarlyGameFlight") > 0 ? Morph.config.getSessionInt("disableEarlyGameFlight") == 1 ? (Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getBoolean("hasTravelledToNether") ? 1 : 0) : (Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getBoolean("hasKilledWither") ? 1 : 0) : Morph.config.getSessionInt("allowFlight"));
     }
@@ -37,6 +39,7 @@ public class PacketSession extends AbstractPacket
         Morph.config.updateSession("abilities", buffer.readInt());
         Morph.config.updateSession("canSleepMorphed", buffer.readInt());
         Morph.config.updateSession("allowMorphSelection", buffer.readInt());
+        Morph.config.updateSession("showPlayerLabel", buffer.readInt());
         Morph.config.updateSession("disabledAbilities", ByteBufUtils.readUTF8String(buffer));
         if(!isServerwideSession)
         {

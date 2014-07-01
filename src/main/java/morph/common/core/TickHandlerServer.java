@@ -245,6 +245,11 @@ public class TickHandlerServer
 
                 ite1.remove();
             }
+            if(purgeSession)
+            {
+                purgeSession = false;
+                updateSession(null);
+            }
         }
     }
 
@@ -368,6 +373,7 @@ public class TickHandlerServer
 
     public long clock;
 
+    public boolean purgeSession;
 
     public MorphSaveData saveData = null;
     public HashMap<String, MorphInfo> playerMorphInfo = new HashMap<String, MorphInfo>();

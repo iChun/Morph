@@ -26,14 +26,17 @@ import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -60,11 +63,14 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 public class EventHandler
 {
+
+    public boolean forcedSpecialRenderCall;
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
@@ -601,6 +607,53 @@ public class EventHandler
             ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
         }
         Morph.proxy.tickHandlerClient.renderingPlayer--;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onRenderSpecials(RenderLivingEvent.Specials.Pre event)
+    {
+        Iterator<Entry<String, MorphInfoClient>> ite = Morph.proxy.tickHandlerClient.playerMorphInfo.entrySet().iterator();
+        while(ite.hasNext())
+        {
+            Entry<String, MorphInfoClient> e = ite.next();
+            if(e.getValue().nextState.entInstance == event.entity || e.getValue().prevState != null && e.getValue().prevState.entInstance == event.entity)
+            {
+                if(e.getValue().prevState != null && e.getValue().prevState.entInstance instanceof EntityPlayer && !((EntityPlayer)e.getValue().prevState.entInstance).getCommandSenderName().equals(e.getKey()))
+                {
+                    event.setCanceled(true);
+                }
+                EntityPlayer player = event.entity.worldObj.getPlayerEntityByName(e.getKey());
+                if(player != null && !(e.getValue().nextState.entInstance instanceof EntityPlayer && ((EntityPlayer)e.getValue().nextState.entInstance).getCommandSenderName().equals(e.getKey())))
+                {
+                    if(Morph.config.getSessionInt("showPlayerLabel") == 1)
+                    {
+                        if(e.getValue().nextState.entInstance instanceof EntityPlayer && !((EntityPlayer)e.getValue().nextState.entInstance).getCommandSenderName().equals(e.getKey()))
+                        {
+                            event.setCanceled(true);
+                        }
+                        RenderPlayer rend = (RenderPlayer)RenderManager.instance.getEntityRenderObject(player);
+
+                        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+
+                        if(Minecraft.isGuiEnabled() && player != Minecraft.getMinecraft().thePlayer && !player.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) && player.riddenByEntity == null)
+                        {
+                            float f = 1.6F;
+                            float f1 = 0.016666668F * f;
+                            double d3 = player.getDistanceSqToEntity(Minecraft.getMinecraft().thePlayer);
+                            float f2 = player.isSneaking() ? RendererLivingEntity.NAME_TAG_RANGE_SNEAK : RendererLivingEntity.NAME_TAG_RANGE;
+
+                            if(d3 < (double)(f2 * f2))
+                            {
+                                String s = player.func_145748_c_().getFormattedText();
+                                ObfHelper.invokeRenderLivingLabel(rend, player, event.x, event.y, event.z, s, f1, d3);
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
     }
 
     //	@SideOnly(Side.CLIENT)

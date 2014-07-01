@@ -7,6 +7,10 @@
     "nbttagname2"
   ],
   
+  
+  "tropicraft.entities.hostile.land.SpiderAdult": [
+    "maxEggsToSpawn"
+  ],
   "tropicraft.entities.hostile.EntityLand": [
     "ICoroAI_entID",
 	"homeX",

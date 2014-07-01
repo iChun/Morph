@@ -66,10 +66,14 @@ public class Morph
             {
                 parsePlayerList(prop.getString());
             }
-            if(prop.getName().equalsIgnoreCase("abilities") || prop.getName().equalsIgnoreCase("canSleepMorphed") || prop.getName().equalsIgnoreCase("allowMorphSelection"))
+            if(prop.getName().equalsIgnoreCase("abilities") || prop.getName().equalsIgnoreCase("canSleepMorphed") || prop.getName().equalsIgnoreCase("allowMorphSelection") || prop.getName().equalsIgnoreCase("showPlayerLabel") || prop.getName().equalsIgnoreCase("disabledAbilities"))
             {
                 Morph.proxy.tickHandlerServer.updateSession(null);
             }
+        }
+        else
+        {
+            Morph.proxy.tickHandlerServer.purgeSession = true;
         }
         return true;
     }
@@ -96,6 +100,8 @@ public class Morph
 
         config.createIntBoolProperty("canSleepMorphed", "morph.config.prop.canSleepMorphed.name", "morph.config.prop.canSleepMorphed.comment", true, true, false);
         config.createIntBoolProperty("allowMorphSelection", "morph.config.prop.allowMorphSelection.name", "morph.config.prop.allowMorphSelection.comment", true, true, true);
+
+        config.createIntBoolProperty("showPlayerLabel", "morph.config.prop.showPlayerLabel.name", "morph.config.prop.showPlayerLabel.comment", true, true, false);
 
         config.setCurrentCategory("abilities", "morph.config.cat.abilities.name", "morph.config.cat.abilities.comment");
         config.createIntBoolProperty("abilities", "morph.config.prop.abilities.name", "morph.config.prop.abilities.comment", false, true, true);
@@ -163,6 +169,7 @@ public class Morph
 	@EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
 	{
+        proxy.tickHandlerServer.purgeSession = false;
 	}
 	
 	@EventHandler
