@@ -2,6 +2,7 @@ package morph.client.model;
 
 import java.util.ArrayList;
 
+import morph.common.Morph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -43,7 +44,14 @@ public class ModelInfo
 		
 		if(RenderManager.instance.renderEngine != null && RenderManager.instance.livingPlayer != null)
 		{
-			entRender.doRender(ent, d, d1, d2, f, f1);
+            try
+            {
+                entRender.doRender(ent, d, d1, d2, f, f1);
+            }
+            catch(Exception e)
+            {
+                Morph.console("A morph/model is causing an exception when Morph tries to render it! You might want to report this to the author of the Morphed mob (Not to Morph!)", true);
+            }
 		}
 		
 	    BossStatus.healthScale = bossHealthScale;
