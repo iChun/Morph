@@ -5,6 +5,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.network.AbstractPacket;
 import io.netty.buffer.ByteBuf;
 import morph.client.entity.EntityMorphAcquisition;
+import morph.client.morph.MorphInfoClient;
+import morph.common.Morph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -58,6 +60,26 @@ public class PacketMorphAcquisition extends AbstractPacket
 
         if(ent instanceof EntityLivingBase && ent1 instanceof EntityLivingBase)
         {
+            if(ent instanceof EntityPlayer)
+            {
+                EntityPlayer player1 = (EntityPlayer)ent;
+                MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(player1.getCommandSenderName());
+                if(info != null)
+                {
+                    if(info.getMorphing())
+                    {
+                        ent = info.prevState.entInstance;
+                    }
+                    else
+                    {
+                        ent = info.nextState.entInstance;
+                    }
+                    if(player1 != mc.thePlayer)
+                    {
+                        player1.setDead();
+                    }
+                }
+            }
             mc.theWorld.spawnEntityInWorld(new EntityMorphAcquisition(mc.theWorld, (EntityLivingBase)ent, (EntityLivingBase)ent1));
             ent.setDead();
         }

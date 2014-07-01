@@ -63,27 +63,27 @@
   "am2.entities.EntityWaterElemental": [
     "hostile"
   ],
-  "biomesoplenty.entities.EntityBird": [
+  "biomesoplenty.common.entities.EntityBird": [
     "fly|true"
   ],
-  "biomesoplenty.entities.EntityGlob": [
+  "biomesoplenty.common.entities.EntityGlob": [
     "hostile"
   ],
-  "biomesoplenty.entities.EntityJungleSpider": [
+  "biomesoplenty.common.entities.EntityJungleSpider": [
     "climb",
     "hostile"
   ],
-  "biomesoplenty.entities.EntityPhantom": [
+  "biomesoplenty.common.entities.EntityPhantom": [
     "float|-0.114,true",
     "hostile"
   ],
-  "biomesoplenty.entities.EntityPixie": [
+  "biomesoplenty.common.entities.EntityPixie": [
     "fly|true"
   ],
-  "biomesoplenty.entities.EntityRosester": [
+  "biomesoplenty.common.entities.EntityRosester": [
     "float|-0.114,true"
   ],
-  "biomesoplenty.entities.EntityWasp": [
+  "biomesoplenty.common.entities.EntityWasp": [
     "fly|true",
     "hostile"
   ],

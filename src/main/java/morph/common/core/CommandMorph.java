@@ -220,7 +220,27 @@ public class CommandMorph extends CommandBase
                     MovingObjectPosition mop = EntityHelper.getEntityLook(player, 4D, false, 1.0F);
                     if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase)
                     {
-                        if(!EntityHelper.morphPlayer(player, (EntityLivingBase)mop.entityHit, false, true))
+                        EntityLivingBase living = (EntityLivingBase)mop.entityHit;
+
+                        if(living instanceof EntityPlayerMP)
+                        {
+                            EntityPlayerMP player1 = (EntityPlayerMP)living;
+
+                            MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player1);
+                            if(info != null)
+                            {
+                                if(info.getMorphing())
+                                {
+                                    living = info.prevState.entInstance;
+                                }
+                                else
+                                {
+                                    living = info.nextState.entInstance;
+                                }
+                            }
+                        }
+
+                        if(!EntityHelper.morphPlayer(player, living, false, true))
                         {
                             icommandsender.addChatMessage(new ChatComponentTranslation("morph.command.notLookingAtMorphable", player.getCommandSenderName()));
                         }

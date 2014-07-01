@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityWither;
@@ -1398,9 +1399,29 @@ public class EventHandler
             {
                 EntityPlayerMP player = (EntityPlayerMP)event.source.getEntity();
 
-                if(EntityHelper.morphPlayer(player, event.entityLiving, true) && !(event.entityLiving instanceof EntityPlayerMP))
+                EntityLivingBase living = event.entityLiving;
+
+                if(event.entityLiving instanceof EntityPlayerMP)
                 {
-                    event.entityLiving.setDead();
+                    EntityPlayerMP player1 = (EntityPlayerMP)event.entityLiving;
+
+                    MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player1);
+                    if(info != null)
+                    {
+                        if(info.getMorphing())
+                        {
+                            living = info.prevState.entInstance;
+                        }
+                        else
+                        {
+                            living = info.nextState.entInstance;
+                        }
+                    }
+                }
+
+                if(EntityHelper.morphPlayer(player, living, true) && !(event.entityLiving instanceof EntityPlayerMP))
+                {
+                    living.setDead();
                 }
             }
             if(event.entityLiving instanceof EntityWither)

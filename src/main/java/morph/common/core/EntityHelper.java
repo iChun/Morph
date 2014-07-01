@@ -25,7 +25,7 @@ public class EntityHelper extends EntityHelperBase
 	{
 		if(Morph.config.getInt("childMorphs") == 0 && living.isChild() || Morph.config.getInt("playerMorphs") == 0 && living instanceof EntityPlayer || Morph.config.getInt("bossMorphs") == 0 && living instanceof IBossDisplayData || player.getClass() == FakePlayer.class || player.playerNetServerHandler == null)
 		{
-			return false;
+            return false;
 		}
 		for(Class<? extends EntityLivingBase> clz : Morph.blacklistedClasses)
 		{

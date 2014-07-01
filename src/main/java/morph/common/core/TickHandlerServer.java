@@ -187,6 +187,15 @@ public class TickHandlerServer
                         player.setPosition(player.posX, player.posY, player.posZ);
                         player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
                     }
+
+                    if(info.prevState != null)
+                    {
+                        info.prevState.entInstance.setEntityId(player.getEntityId());
+                    }
+                    if(info.nextState != null)
+                    {
+                        info.nextState.entInstance.setEntityId(player.getEntityId());
+                    }
                 }
 
                 for(Ability ability : info.morphAbilities)
