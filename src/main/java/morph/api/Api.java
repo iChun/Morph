@@ -1,6 +1,8 @@
 package morph.api;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
@@ -151,4 +153,18 @@ public final class Api
 			return AbstractClientPlayer.locationStevePng;
 		}
 	}
+
+    /**
+     * Assign a specific arm to a model for rendering in First Person.
+     * @param model Model which arm you are registering for
+     * @param arm The arm in a ModelRenderer form.
+     */
+    @SideOnly(Side.CLIENT)
+    public static void registerArmForModel(ModelBase model, ModelRenderer arm)
+    {
+        try {
+            Class.forName("morph.common.core.ApiHandler").getDeclaredMethod("registerArmForModel", ModelBase.class, ModelRenderer.class).invoke(null, model, arm);
+        } catch (Exception e) {
+        }
+    }
 }

@@ -2,6 +2,7 @@ package morph.client.model;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import ichun.common.core.util.ObfHelper;
@@ -27,6 +28,8 @@ import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
 public class ModelHelper 
 {
 	public static Random rand = new Random();
+
+    public static HashMap<Class<? extends ModelBase>, ModelRenderer> armMappings = new HashMap<Class<? extends ModelBase>, ModelRenderer>();
 
 	public static ArrayList<ModelRenderer> getModelCubesCopy(ModelInfo info, ModelBase base, EntityLivingBase ent)
 	{
@@ -88,6 +91,10 @@ public class ModelHelper
 	
 	public static ModelRenderer getPotentialArm(ModelBase parent)
 	{
+        if(armMappings.containsKey(parent.getClass()))
+        {
+            return armMappings.get(parent.getClass());
+        }
 		if(parent != null)
 		{
 			Class clz = parent.getClass();

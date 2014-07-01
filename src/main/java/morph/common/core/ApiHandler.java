@@ -6,10 +6,13 @@ import java.util.Map.Entry;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import morph.client.model.ModelHelper;
 import morph.client.render.RenderMorph;
 import morph.common.Morph;
 import morph.common.morph.MorphInfo;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
@@ -139,4 +142,10 @@ public class ApiHandler
 	{
 		return RenderMorph.morphSkin;
 	}
+
+    @SideOnly(Side.CLIENT)
+    public static void registerArmForModel(ModelBase model, ModelRenderer arm)
+    {
+        ModelHelper.armMappings.put(model.getClass(), arm);
+    }
 }
