@@ -5,5 +5,14 @@
   "example.class.Two": [
     "nbttagname1",
     "nbttagname2"
+  ],
+  
+  "net.minecraft.entity.passive.EntityHorse": [
+    "HasReproduced",
+	"Bred",
+	"Temper",
+	"Tame",
+	"OwnerName",
+	"Items"
   ]
 }

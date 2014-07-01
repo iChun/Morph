@@ -1515,7 +1515,8 @@
 	"sink"
   ],
   "net.minecraft.entity.passive.EntityOcelot": [
-    "fallNegate"
+    "fallNegate",
+	"fear|6,1.05D,net.minecraft.entity.monster.EntityCreeper"
   ],
   "net.minecraft.entity.monster.EntityPigZombie": [
     "fireImmunity",
@@ -1551,8 +1552,12 @@
     "hostile",
     "witherResistance"
   ],
+  "net.minecraft.entity.passive.EntityWolf": [
+    "fear|6,1.05D,net.minecraft.entity.monster.EntitySkeleton"
+  ],
   "net.minecraft.entity.monster.EntityZombie": [
     "hostile",
+	"fear|9,0.6D,net.minecraft.entity.passive.EntityVillager",
     "sunburn"
   ]
 }
