@@ -7,6 +7,13 @@
     "nbttagname2"
   ],
   
+  "tropicraft.entities.hostile.EntityLand": [
+    "ICoroAI_entID",
+	"homeX",
+	"homeY",
+	"homeZ",
+	"tamedByUser"
+  ],
   "net.minecraft.entity.passive.EntityHorse": [
     "HasReproduced",
 	"Bred",
