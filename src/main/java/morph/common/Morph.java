@@ -15,7 +15,6 @@ import ichun.common.core.config.IConfigUser;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.iChunUtil;
-import morph.common.ability.AbilityHandler;
 import morph.common.core.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
@@ -52,7 +51,7 @@ public class Morph
     public static Config config;
 	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
-	public static ArrayList<String> whitelistedPlayerNames = new ArrayList<String>();
+    public static ArrayList<String> playerList = new ArrayList<String>();
 
     @Override
     public boolean onConfigChange(Config cfg, Property prop)
@@ -63,9 +62,9 @@ public class Morph
             {
                 parseBlacklist(prop.getString());
             }
-            if(prop.getName().equalsIgnoreCase("whitelistedPlayers"))
+            if(prop.getName().equalsIgnoreCase("blackwhitelistedPlayers"))
             {
-                parseWhitelist(prop.getString());
+                parsePlayerList(prop.getString());
             }
             if(prop.getName().equalsIgnoreCase("abilities") || prop.getName().equalsIgnoreCase("canSleepMorphed") || prop.getName().equalsIgnoreCase("allowMorphSelection"))
             {
@@ -86,7 +85,8 @@ public class Morph
         config.createIntBoolProperty("bossMorphs", "morph.config.prop.bossMorphs.name", "morph.config.prop.bossMorphs.comment", true, false, false);
 
         config.createStringProperty("blacklistedMobs", "morph.config.prop.blacklistedMobs.name", "morph.config.prop.blacklistedMobs.comment", true, false, "");
-        config.createStringProperty("whitelistedPlayers", "morph.config.prop.whitelistedPlayers.name", "morph.config.prop.whitelistedPlayers.comment", true, false, ""); //TODO blackwhitelist.
+        config.createStringProperty("blackwhitelistedPlayers", "morph.config.prop.blackwhitelistedPlayers.name", "morph.config.prop.blackwhitelistedPlayers.comment", true, false, ""); //TODO blackwhitelist.
+        config.createIntBoolProperty("listIsBlacklist", "morph.config.prop.listIsBlacklist.name", "morph.config.prop.listIsBlacklist.comment", true, false, false);
 
         config.createIntProperty("loseMorphsOnDeath", "morph.config.prop.loseMorphsOnDeath.name", "morph.config.prop.loseMorphsOnDeath.comment", true, false, 0, 0, 2);
         config.createIntBoolProperty("instaMorph", "morph.config.prop.instaMorph.name", "morph.config.prop.instaMorph.comment", true, false, false);
@@ -199,9 +199,9 @@ public class Morph
         }
     }
 
-    public static void parseWhitelist(String s)
+    public static void parsePlayerList(String s)
     {
-        Morph.whitelistedPlayerNames.clear();
+        Morph.playerList.clear();
 
         String[] names = s.split(", *");
         boolean added = false;
@@ -210,19 +210,19 @@ public class Morph
             if(!playerName.trim().isEmpty())
             {
                 added = true;
-                if(!Morph.whitelistedPlayerNames.contains(playerName.trim()))
+                if(!Morph.playerList.contains(playerName.trim()))
                 {
-                    Morph.whitelistedPlayerNames.add(playerName.trim());
+                    Morph.playerList.add(playerName.trim());
                 }
             }
         }
-        if(!Morph.whitelistedPlayerNames.isEmpty())
+        if(!Morph.playerList.isEmpty())
         {
-            StringBuilder sb = new StringBuilder("Whitelisted players: ");
-            for(int i = 0; i < Morph.whitelistedPlayerNames.size(); i++)
+            StringBuilder sb = new StringBuilder(Morph.config.getInt("listIsBlacklist") == 0 ? "Blacklisted players: " : "Whitelisted players: ");
+            for(int i = 0; i < Morph.playerList.size(); i++)
             {
-                sb.append(Morph.whitelistedPlayerNames.get(i));
-                if(i < Morph.whitelistedPlayerNames.size() - 1)
+                sb.append(Morph.playerList.get(i));
+                if(i < Morph.playerList.size() - 1)
                 {
                     sb.append(", ");
                 }

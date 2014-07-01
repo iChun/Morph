@@ -22,7 +22,7 @@ public class CommonProxy
     public void initMod()
     {
         Morph.parseBlacklist(Morph.config.getString("blacklistedMobs"));
-        Morph.parseWhitelist(Morph.config.getString("whitelistedPlayers"));
+        Morph.parsePlayerList(Morph.config.getString("blackwhitelistedPlayers"));
 
         Morph.channels = ChannelHandler.getChannelHandlers("Morph", PacketGuiInput.class, PacketMorphInfo.class, PacketSession.class, PacketMorphAcquisition.class, PacketCompleteDemorph.class, PacketMorphStates.class);
     }

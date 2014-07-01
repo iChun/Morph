@@ -34,7 +34,7 @@ public class EntityHelper extends EntityHelperBase
 				return false;
 			}
 		}
-		if(!Morph.whitelistedPlayerNames.isEmpty() && !Morph.whitelistedPlayerNames.contains(player.getCommandSenderName()))
+		if(!Morph.playerList.isEmpty() && (Morph.config.getInt("listIsBlacklist") == 0 ? Morph.playerList.contains(player.getCommandSenderName()) : !Morph.playerList.contains(player.getCommandSenderName())))
 		{
 			return false;
 		}

@@ -256,21 +256,21 @@ public class CommandMorph extends CommandBase
                             sb.append(" ");
                         }
                     }
-                    if(!Morph.whitelistedPlayerNames.contains(sb.toString().trim()))
+                    if(!Morph.playerList.contains(sb.toString().trim()))
                     {
                         notifyAdmins(icommandsender, "morph.command.addingToBlackWhite", sb.toString().trim());
-                        Morph.whitelistedPlayerNames.add(sb.toString().trim());
+                        Morph.playerList.add(sb.toString().trim());
 
                         StringBuilder sb1 = new StringBuilder();
-                        for(int i = 0; i < Morph.whitelistedPlayerNames.size(); i++)
+                        for(int i = 0; i < Morph.playerList.size(); i++)
                         {
-                            sb1.append(Morph.whitelistedPlayerNames.get(i));
-                            if(i < Morph.whitelistedPlayerNames.size() - 1)
+                            sb1.append(Morph.playerList.get(i));
+                            if(i < Morph.playerList.size() - 1)
                             {
                                 sb1.append(", ");
                             }
                         }
-                        Morph.config.get("whitelistedPlayers").set(sb1.toString());
+                        Morph.config.get("blackwhitelistedPlayers").set(sb1.toString());
                         Morph.config.save();
                     }
                     else
@@ -296,21 +296,21 @@ public class CommandMorph extends CommandBase
                             sb.append(" ");
                         }
                     }
-                    if(Morph.whitelistedPlayerNames.contains(sb.toString().trim()))
+                    if(Morph.playerList.contains(sb.toString().trim()))
                     {
                         notifyAdmins(icommandsender, "morph.command.removingFromBlackWhite", sb.toString().trim());
-                        Morph.whitelistedPlayerNames.remove(sb.toString().trim());
+                        Morph.playerList.remove(sb.toString().trim());
 
                         StringBuilder sb1 = new StringBuilder();
-                        for(int i = 0; i < Morph.whitelistedPlayerNames.size(); i++)
+                        for(int i = 0; i < Morph.playerList.size(); i++)
                         {
-                            sb1.append(Morph.whitelistedPlayerNames.get(i));
-                            if(i < Morph.whitelistedPlayerNames.size() - 1)
+                            sb1.append(Morph.playerList.get(i));
+                            if(i < Morph.playerList.size() - 1)
                             {
                                 sb1.append(", ");
                             }
                         }
-                        Morph.config.get("whitelistedPlayers").set(sb1.toString());
+                        Morph.config.get("blackwhitelistedPlayers").set(sb1.toString());
                         Morph.config.save();
                     }
                     else
