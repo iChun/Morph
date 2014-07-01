@@ -80,8 +80,11 @@ public class PacketMorphAcquisition extends AbstractPacket
                     }
                 }
             }
+            else
+            {
+                ent.setDead();
+            }
             mc.theWorld.spawnEntityInWorld(new EntityMorphAcquisition(mc.theWorld, (EntityLivingBase)ent, (EntityLivingBase)ent1));
-            ent.setDead();
         }
     }
 

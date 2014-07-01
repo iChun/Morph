@@ -58,7 +58,7 @@ public class AbilityFly extends Ability {
 				double motionZ = player.worldObj.isRemote ? player.motionZ : player.posZ - player.lastTickPosZ;
                 int i = Math.round(MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ) * 100.0F);
 
-                if (i > 0)
+                if (i > 0 && i < 10)
                 {
                 	if(player.isInWater() && slowdownInWater)
                 	{
