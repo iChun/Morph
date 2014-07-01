@@ -5,6 +5,7 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.util.ObfHelper;
+import morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -78,7 +79,15 @@ public class MorphState
         NBTTagCompound tag1 = new NBTTagCompound();
         if(entInstance != null)
         {
-            entInstance.writeToNBTOptional(tag1);
+            try
+            {
+                entInstance.writeToNBTOptional(tag1);
+            }
+            catch(Exception e)
+            {
+                Morph.console(entInstance.toString() + " threw an exception when trying to save!", true);
+                e.printStackTrace();
+            }
             writeFakeTags(entInstance, tag1);
         }
 
@@ -112,19 +121,28 @@ public class MorphState
             }
             else
             {
-                entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
-                identifier = tag.getString("identifier");
-                if(!tag1.hasKey("MorphNBTProtocolNumber") && entInstance != null || identifier.contains(":[") && identifier.endsWith("]"))
+                try
                 {
-                    //Assume updating from pre 0.7.0 or updating from 1.6 to 1.7
-                    tag1.setInteger("MorphNBTProtocolNumber", NBT_PROTOCOL);//changed everytime the identifier may change or requires a change.
-                    identifier = entInstance.getClass().toString() + entInstance.getCommandSenderName() + parseTag(tag1);
+                    entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
+                    identifier = tag.getString("identifier");
+                    if(!tag1.hasKey("MorphNBTProtocolNumber") && entInstance != null || identifier.contains(":[") && identifier.endsWith("]"))
+                    {
+                        //Assume updating from pre 0.7.0 or updating from 1.6 to 1.7
+                        tag1.setInteger("MorphNBTProtocolNumber", NBT_PROTOCOL);//changed everytime the identifier may change or requires a change.
+                        identifier = entInstance.getClass().toString() + entInstance.getCommandSenderName() + parseTag(tag1);
 
-                    tag1.setString("identifier", identifier);
+                        tag1.setString("identifier", identifier);
+                    }
+                    if(tag1.getInteger("MorphNBTProtocolNumber") < NBT_PROTOCOL)
+                    {
+                        identifier = "";
+                        invalid = true;
+                    }
                 }
-                if(tag1.getInteger("MorphNBTProtocolNumber") < NBT_PROTOCOL)
+                catch(Exception e)
                 {
-                    identifier = "";
+                    Morph.console("A mob (as a morph) is throwing an error when being read from NBT!", true);
+                    e.printStackTrace();
                     invalid = true;
                 }
             }
