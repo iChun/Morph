@@ -41,6 +41,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -1472,7 +1473,7 @@ public class EventHandler
                     }
                 }
 
-                if(EntityHelper.morphPlayer(player, living, true) && !(event.entityLiving instanceof EntityPlayerMP))
+                if(EntityHelper.morphPlayer(player, living, true) && !(event.entityLiving instanceof EntityPlayerMP) && !(event.entityLiving instanceof IBossDisplayData))
                 {
                     living.setDead();
                 }

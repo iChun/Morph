@@ -163,13 +163,14 @@ public class Morph
         Morph.config.resetSession();
         Morph.config.updateSession("allowFlight", 1); // Adds this custom field to the session.
 
+        proxy.tickHandlerServer.purgeSession = false;
+
 		proxy.initCommands(event.getServer());
 	}
 	
 	@EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
 	{
-        proxy.tickHandlerServer.purgeSession = false;
 	}
 	
 	@EventHandler
