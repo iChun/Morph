@@ -95,7 +95,7 @@ public class AbilitySwim extends Ability {
 			}
 			getParent().setAir(300);
 			air = 300;
-			if(swimSpeed != 1f)
+			if(swimSpeed != 1f && !(getParent() instanceof EntityPlayer && ((EntityPlayer)getParent()).capabilities.isFlying))
 			{
 				if(getParent().motionX > -swimSpeed && getParent().motionX < swimSpeed)
 				{
