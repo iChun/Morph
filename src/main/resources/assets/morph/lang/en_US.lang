@@ -85,3 +85,9 @@ morph.config.prop.handRenderOverride.comment=Allow the mod to override player ha
 morph.config.prop.showAbilitiesInGui.comment=Show the abilities the morph has in the GUI?
 morph.config.prop.sortMorphs.comment=Sort the morphs in the GUI?\n0 = Order of acquisition (Server default)\n1 = Alphabetically (according to Operating System)\n2 = Alphabetically, and attempt to sort grouped morphs as well\n3 = Most recently used since connecting to the server
 morph.config.prop.renderCrosshairInRadialMenu.comment=As per request, render the crosshair position when in the radial menu.
+
+morph.command.demorph=/morph demorph [player] [force demorph even if offline (true/false)] - Makes a player demorph
+morph.command.clear=/morph clear [player] - Clears a player's morphs
+morph.command.morphtarget=/morph morphtarget [player] - Tries to make the player morph the mob they're looking at
+morph.command.addtolist=/morph whitelist <player> - Adds a player to the morph skill whitelist, turning it on
+morph.command.removefromlist=/morph unwhitelist <player> - Removes a player from the morph skill whitelist

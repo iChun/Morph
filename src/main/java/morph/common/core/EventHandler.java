@@ -1499,7 +1499,6 @@ public class EventHandler
 
     //IPlayerTracker stuff
 
-    //TODO find out why favourites aren't saving.
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {

@@ -14,7 +14,6 @@ public class MorphHandler
 {
     public static HashMap<Class<? extends EntityLivingBase>, ArrayList<String>> stripperMappings = new HashMap<Class<? extends EntityLivingBase>, ArrayList<String>>();
 
-    //TODO find out that getting named morphs (eg name tags) still work as intended
     //TODO migrate name tags to player UUID in the future...? Do it now... or in 1.7.9?
 	public static MorphState addOrGetMorphState(ArrayList<MorphState> states, MorphState state)
 	{

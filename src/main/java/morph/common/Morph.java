@@ -86,12 +86,12 @@ public class Morph
         config.createIntBoolProperty("bossMorphs", "morph.config.prop.bossMorphs.name", "morph.config.prop.bossMorphs.comment", true, false, false);
 
         config.createStringProperty("blacklistedMobs", "morph.config.prop.blacklistedMobs.name", "morph.config.prop.blacklistedMobs.comment", true, false, "");
-        config.createStringProperty("whitelistedPlayers", "morph.config.prop.whitelistedPlayers.name", "morph.config.prop.whitelistedPlayers.comment", true, false, "");
+        config.createStringProperty("whitelistedPlayers", "morph.config.prop.whitelistedPlayers.name", "morph.config.prop.whitelistedPlayers.comment", true, false, ""); //TODO blackwhitelist.
 
         config.createIntProperty("loseMorphsOnDeath", "morph.config.prop.loseMorphsOnDeath.name", "morph.config.prop.loseMorphsOnDeath.comment", true, false, 0, 0, 2);
         config.createIntBoolProperty("instaMorph", "morph.config.prop.instaMorph.name", "morph.config.prop.instaMorph.comment", true, false, false);
 
-        config.createIntBoolProperty("NBTStripper", "morph.config.prop.NBTStripper.name", "morph.config.prop.NBTStripper.comment", false, false, true); //TODO remove this.
+        config.createIntBoolProperty("NBTStripper", "morph.config.prop.NBTStripper.name", "morph.config.prop.NBTStripper.comment", false, false, true);
         config.createIntBoolProperty("useLocalResources", "morph.config.prop.useLocalResources.name", "morph.config.prop.useLocalResources.comment", false, false, false);
 
         config.createIntBoolProperty("canSleepMorphed", "morph.config.prop.canSleepMorphed.name", "morph.config.prop.canSleepMorphed.comment", true, true, false);
