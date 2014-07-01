@@ -27,6 +27,7 @@ import morph.common.morph.MorphState;
 import morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
@@ -885,6 +886,10 @@ public class EventHandler
             {
                 if(Morph.proxy.tickHandlerClient.selectorShow)
                 {
+                    if(mc.currentScreen instanceof GuiIngameMenu)
+                    {
+                        mc.displayGuiScreen(null);
+                    }
                     Morph.proxy.tickHandlerClient.selectorShow = false;
                     Morph.proxy.tickHandlerClient.selectorTimer = Morph.proxy.tickHandlerClient.selectorShowTime - Morph.proxy.tickHandlerClient.selectorTimer;
                     Morph.proxy.tickHandlerClient.scrollTimerHori = Morph.proxy.tickHandlerClient.scrollTime;
