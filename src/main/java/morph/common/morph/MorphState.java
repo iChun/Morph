@@ -141,7 +141,7 @@ public class MorphState
                 }
                 catch(Exception e)
                 {
-                    Morph.console("A mob (as a morph) is throwing an error when being read from NBT!", true);
+                    Morph.console("A mob (as a morph) is throwing an error when being read from NBT! You should report this to the mod author of the mob!", true);
                     e.printStackTrace();
                     invalid = true;
                 }

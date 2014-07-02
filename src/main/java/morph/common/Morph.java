@@ -89,7 +89,7 @@ public class Morph
         config.createIntBoolProperty("bossMorphs", "morph.config.prop.bossMorphs.name", "morph.config.prop.bossMorphs.comment", true, false, false);
 
         config.createStringProperty("blacklistedMobs", "morph.config.prop.blacklistedMobs.name", "morph.config.prop.blacklistedMobs.comment", true, false, "");
-        config.createStringProperty("blackwhitelistedPlayers", "morph.config.prop.blackwhitelistedPlayers.name", "morph.config.prop.blackwhitelistedPlayers.comment", true, false, ""); //TODO blackwhitelist.
+        config.createStringProperty("blackwhitelistedPlayers", "morph.config.prop.blackwhitelistedPlayers.name", "morph.config.prop.blackwhitelistedPlayers.comment", true, false, "");
         config.createIntBoolProperty("listIsBlacklist", "morph.config.prop.listIsBlacklist.name", "morph.config.prop.listIsBlacklist.comment", true, false, false);
 
         config.createIntProperty("loseMorphsOnDeath", "morph.config.prop.loseMorphsOnDeath.name", "morph.config.prop.loseMorphsOnDeath.comment", true, false, 0, 0, 2);
