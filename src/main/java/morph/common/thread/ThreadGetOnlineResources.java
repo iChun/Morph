@@ -108,16 +108,23 @@ public class ThreadGetOnlineResources extends Thread
                                         try
                                         {
                                             Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
-                                            Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
-                                            try
+                                            if(abilityClass != null)
                                             {
-                                                ab.parse(argVars.toArray(new String[0]));
+                                                Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
+                                                try
+                                                {
+                                                    ab.parse(argVars.toArray(new String[0]));
+                                                }
+                                                catch(Exception e2)
+                                                {
+                                                    Morph.console("Mappings are erroring! These mappings are probably invalid or outdated: "  + abilityClass.getName() + ", "+ ability + ", args: " + args, true);
+                                                }
+                                                abilityObjs.add(ab);
                                             }
-                                            catch(Exception e2)
+                                            else
                                             {
-                                                Morph.console("Mappings are erroring! These mappings are probably invalid or outdated: "  + abilityClass.getName() + ", "+ ability + ", args: " + args, true);
+                                                Morph.console("Ability \"" + ability + "\" does not exist for: "  + e.getKey() + ", args: " + args, true);
                                             }
-                                            abilityObjs.add(ab);
                                         }
                                         catch(Exception e2)
                                         {
@@ -127,13 +134,20 @@ public class ThreadGetOnlineResources extends Thread
                                     if(!ability.isEmpty() && !hasArgs)
                                     {
                                         Class abilityClass = AbilityHandler.stringToClassMap.get(ability);
-                                        try
+                                        if(abilityClass != null)
                                         {
-                                            abilityObjs.add((Ability)abilityClass.getConstructor().newInstance());
+                                            try
+                                            {
+                                                abilityObjs.add((Ability)abilityClass.getConstructor().newInstance());
+                                            }
+                                            catch(Exception e2)
+                                            {
+                                                e2.printStackTrace();
+                                            }
                                         }
-                                        catch(Exception e2)
+                                        else
                                         {
-                                            e2.printStackTrace();
+                                            Morph.console("Ability \"" + ability + "\" does not exist for: "  + e.getKey(), true);
                                         }
                                     }
                                 }
