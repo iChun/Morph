@@ -77,6 +77,7 @@ public class ThreadGetOnlineResources extends Thread
 
                 if(json != null)
                 {
+                    int mcMappings = 0;
                     for(Map.Entry<String, String[]> e : json.entrySet())
                     {
                         try
@@ -161,21 +162,28 @@ public class ThreadGetOnlineResources extends Thread
                                     }
                                     else
                                     {
-                                        //TODO ignore net.minecraft.XXX
-                                        StringBuilder sb = new StringBuilder();
-                                        sb.append("Adding ability mappings ");
-                                        for (int i = 0; i < abilityObjs.size(); i++) {
-                                            Ability a = abilityObjs.get(i);
-                                            sb.append(a.getType());
-                                            if(i != abilityObjs.size() - 1)
-                                            {
-                                                sb.append(", ");
-                                            }
+                                        if(entityClass.getName().startsWith("net.minecraft"))
+                                        {
+                                            mcMappings++;
                                         }
-                                        sb.append(" to ");
-                                        sb.append(entityClass);
+                                        else
+                                        {
+                                            StringBuilder sb = new StringBuilder();
+                                            sb.append("Adding ability mappings ");
+                                            for(int i = 0; i < abilityObjs.size(); i++)
+                                            {
+                                                Ability a = abilityObjs.get(i);
+                                                sb.append(a.getType());
+                                                if(i != abilityObjs.size() - 1)
+                                                {
+                                                    sb.append(", ");
+                                                }
+                                            }
+                                            sb.append(" to ");
+                                            sb.append(entityClass);
 
-                                        Morph.console(sb.toString(), false);
+                                            Morph.console(sb.toString(), false);
+                                        }
                                         AbilityHandler.mapAbilities(entityClass, abilityObjs.toArray(new Ability[0]));
                                     }
                                 }
@@ -185,6 +193,7 @@ public class ThreadGetOnlineResources extends Thread
                         {
                         }
                     }
+                    Morph.console("Found and mapped ability mappings for " + mcMappings + " presumably Minecraft mobs.", true);
                 }
             }
 
