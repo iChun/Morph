@@ -6,7 +6,7 @@ import net.minecraft.world.WorldSavedData;
 public class MorphSaveData extends WorldSavedData
 {
     public boolean hasTravelledToNether;
-    public boolean hasKilledWither;
+    public boolean hasKilledWither; //Can be overriden to another mob instead.
 
     public MorphSaveData(String par1Str)
     {

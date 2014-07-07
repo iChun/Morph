@@ -43,6 +43,7 @@ morph.config.prop.hostileAbilityMode.name=Hostile Ability Mode
 morph.config.prop.hostileAbilityDistanceCheck.name=Hostile Ability Distance Check
 morph.config.prop.disableEarlyGameFlight.name=Disable Early Game Flight
 morph.config.prop.disableEarlyGameFlightMode.name=Disable Early Game Flight Mode
+morph.config.prop.customMobToKillForFlight.name=Custom Mob To Kill For Flight
 morph.config.prop.disabledAbilities.name=Disabled Abilities
 morph.config.prop.keySelectorUp.name=Selector Up
 morph.config.prop.keySelectorDown.name=Selector Down
@@ -76,6 +77,7 @@ morph.config.prop.hostileAbilityMode.comment=Hostile Ability Modes\n0 = Off, hos
 morph.config.prop.hostileAbilityDistanceCheck.comment=Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6
 morph.config.prop.disableEarlyGameFlight.comment=Disable the flight ability until a player...\n0 = Enable early game flight\n1 = ...has reached the nether\n2 = ...has killed the Wither
 morph.config.prop.disableEarlyGameFlightMode.comment=Disable Early Game Flight Mode\n0 = Serverwide toggle\n1 = Player specific toggle (Every player has to travel to the nether/kill a wither to get flight for themselves)
+morph.config.prop.customMobToKillForFlight.comment=Change the requirement of killing a wither to a custom mob instead\nUse the full class name of the mob to make Morph bind to the killing of that mob type.(Eg: am2.entities.EntityBattleChicken)\nLeave blank to disable.\nNeeds Disable Early Game Flight set to killing the wither to work.
 morph.config.prop.disabledAbilities.comment=What abilities to disable?\nYou need to use the Ability type (eg fly, witherResistance)\nSeparate each disabled ability with a comma\nEG: fly,swim,sink
 morph.config.prop.keySelectorUp.comment=Key Code to go up on the selector\nDefault: 26 ([)
 morph.config.prop.keySelectorDown.comment=Key Code to go down on the selector\nDefault: 27 (])

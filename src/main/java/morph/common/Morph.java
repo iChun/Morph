@@ -52,6 +52,7 @@ public class Morph
 	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
     public static ArrayList<String> playerList = new ArrayList<String>();
+    public static Class<? extends EntityLivingBase> classToKillForFlight = null;
 
     @Override
     public boolean onConfigChange(Config cfg, Property prop)
@@ -81,7 +82,7 @@ public class Morph
     //TODO what's the difference between getTotalWorldTime and getWorldTime?
     @EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
-	{
+    {
         config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "morph", "Morph", logger, instance);
 
         config.setCurrentCategory("gameplay", "morph.config.cat.gameplay.name", "morph.config.cat.gameplay.comment");
@@ -113,6 +114,7 @@ public class Morph
 
         config.createIntProperty("disableEarlyGameFlight", "morph.config.prop.disableEarlyGameFlight.name", "morph.config.prop.disableEarlyGameFlight.comment", true, false, 0, 0, 2);
         config.createIntBoolProperty("disableEarlyGameFlightMode", "morph.config.prop.disableEarlyGameFlightMode.name", "morph.config.prop.disableEarlyGameFlightMode.comment", true, false, false);
+        config.createStringProperty("customMobToKillForFlight", "morph.config.prop.customMobToKillForFlight.name", "morph.config.prop.customMobToKillForFlight.comment", false, false, "");
 
         config.createStringProperty("disabledAbilities", "morph.config.prop.disabledAbilities.name", "morph.config.prop.disabledAbilities.comment", false, true, "");
 
@@ -137,6 +139,28 @@ public class Morph
             config.createIntProperty("sortMorphs", "morph.config.prop.sortMorphs.name", "morph.config.prop.sortMorphs.comment", true, false, 0, 0, 3);
             config.createIntBoolProperty("renderCrosshairInRadialMenu", "morph.config.prop.renderCrosshairInRadialMenu.name", "morph.config.prop.renderCrosshairInRadialMenu.comment", true, false, false);
         }
+        if(!config.getString("customMobToKillForFlight").isEmpty())
+        {
+            try
+            {
+                Class clz = Class.forName(config.getString("customMobToKillForFlight"));
+                if(EntityLivingBase.class.isAssignableFrom(clz))
+                {
+                    classToKillForFlight = clz;
+                    Morph.console(clz.getName() + " was mapped for a custom mob to be killed for flight.", false);
+                }
+                else
+                {
+                    Morph.console(clz.getName() + " was mapped for a custom mob to be killed for flight but the class is not of an EntityLivingBase type!", true);
+                }
+            }
+            catch(ClassNotFoundException e)
+            {
+                Morph.console("A class was mapped for a custom mob to be killed for flight but the class was not found!", true);
+            }
+        }
+
+
         morph.common.core.EventHandler eventHandler = new morph.common.core.EventHandler();
 
 		MinecraftForge.EVENT_BUS.register(eventHandler);

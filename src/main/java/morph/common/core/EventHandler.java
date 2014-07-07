@@ -1483,14 +1483,14 @@ public class EventHandler
                     living.setDead();
                 }
             }
-            if(event.entityLiving instanceof EntityWither)
+            if(Morph.classToKillForFlight != null && Morph.classToKillForFlight.isInstance(event.entityLiving)|| Morph.classToKillForFlight == null &&  event.entityLiving instanceof EntityWither)
             {
                 if(event.source.getEntity() instanceof EntityPlayerMP)
                 {
                     EntityPlayerMP player = (EntityPlayerMP)event.source.getEntity();
 
-                    boolean firstKill = !Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getBoolean("hasTravelledToNether");
-                    Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setBoolean("hasTravelledToNether", true);
+                    boolean firstKill = !Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getBoolean("hasKilledWither");
+                    Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setBoolean("hasKilledWither", true);
                     if(Morph.config.getInt("disableEarlyGameFlight") == 2 && firstKill)
                     {
                         Morph.proxy.tickHandlerServer.updateSession(player);
