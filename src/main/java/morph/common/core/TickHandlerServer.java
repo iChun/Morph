@@ -170,6 +170,10 @@ public class TickHandlerServer
                             ite.remove();
                         }
                     }
+                    if(info.prevState != null && player != null)
+                    {
+                        ObfHelper.forceSetSize(player.getClass(), player, info.prevState.entInstance.width + (info.nextState.entInstance.width - info.prevState.entInstance.width) * ((float)info.morphProgress / 80F), info.prevState.entInstance.height + (info.nextState.entInstance.height - info.prevState.entInstance.height) * ((float)info.morphProgress / 80F));
+                    }
                 }
 
                 if(player != null)

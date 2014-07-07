@@ -600,6 +600,7 @@ public class ModelHelper
 				ModelRenderer cube = list.get(i);
 				try
 				{
+                    //TODO look into complications with this application and how it affects models.
 					if(!(Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
 					{
 						list.remove(i);

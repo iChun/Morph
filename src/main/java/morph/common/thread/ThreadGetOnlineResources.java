@@ -193,7 +193,7 @@ public class ThreadGetOnlineResources extends Thread
                         {
                         }
                     }
-                    Morph.console("Found and mapped ability mappings for " + mcMappings + " presumably Minecraft mobs.", true);
+                    Morph.console("Found and mapped ability mappings for " + mcMappings + " presumably Minecraft mobs.", false);
                 }
             }
 
@@ -228,7 +228,7 @@ public class ThreadGetOnlineResources extends Thread
                     }
                     else
                     {
-                        Morph.console("Failed to retrieve NBT stripper mappings from " + (sitePrefix.isEmpty() ? "GitHub!" : sitePrefix), true);
+                        Morph.console("Failed to retrieve NBT stripper mappings from " + (Morph.config.getString("customPatchLink").isEmpty() ? "GitHub!" : sitePrefix), true);
                     }
                     e.printStackTrace();
 

@@ -743,6 +743,11 @@ public class TickHandlerClient
                                 }
                             }
                         }
+
+                        if(info.prevState != null && info.player != null)
+                        {
+                            ObfHelper.forceSetSize(info.player.getClass(), info.player, info.prevState.entInstance.width + (info.nextState.entInstance.width - info.prevState.entInstance.width) * ((float)info.morphProgress / 80F), info.prevState.entInstance.height + (info.nextState.entInstance.height - info.prevState.entInstance.height) * ((float)info.morphProgress / 80F));
+                        }
                     }
                     //TODO make sure that the lack of sleep timer doesn't affect anything.
                     //if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive() || !world.playerEntities.contains(info.player) || !info.player.isPlayerSleeping() && info.player.sleepTimer > 0))
