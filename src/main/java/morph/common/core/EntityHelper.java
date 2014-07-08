@@ -8,6 +8,7 @@ import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketMorphAcquisition;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -95,11 +96,14 @@ public class EntityHelper extends EntityHelperBase
 		{
 			MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), prevState, nextState);
 			info2.setMorphing(true);
+            info2.healthOffset = player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue() - 20D;
+            info2.preMorphHealth = player.getHealth();
 
 			MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 			if(info3 != null)
 			{
 				info2.morphAbilities = info3.morphAbilities;
+                info2.healthOffset = info3.healthOffset;
 			}
 			
 			Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
@@ -132,11 +136,13 @@ public class EntityHelper extends EntityHelperBase
 			state1 = info.nextState;
 			MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), state1, state2);
 			info2.setMorphing(true);
+            info2.preMorphHealth = player.getHealth();
 			
 			MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 			if(info3 != null)
 			{
 				info2.morphAbilities = info3.morphAbilities;
+                info2.healthOffset = info3.healthOffset;
 			}
 			
 			Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);

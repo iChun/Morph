@@ -25,6 +25,9 @@ public class MorphInfo
 	
 	public boolean flying;
 	public boolean sleeping;
+
+    public double healthOffset;
+    public double preMorphHealth;
 	
 	public boolean firstUpdate;
 	
@@ -42,6 +45,9 @@ public class MorphInfo
 		flying = false;
 		sleeping = false;
 		firstUpdate = true;
+
+        healthOffset = 0.0D;
+        preMorphHealth = 20.0D;
 	}
 	
 	public void setMorphing(boolean flag)
@@ -68,6 +74,9 @@ public class MorphInfo
 		tag.setTag("nextState", nextState.getTag());
 		
 		tag.setBoolean("isFlying", flying);
+
+        tag.setDouble("healthOffset", healthOffset);
+        tag.setDouble("preMorphHealth", preMorphHealth);
 	}
 	
 	public void readNBT(NBTTagCompound tag)
@@ -102,6 +111,9 @@ public class MorphInfo
 		}
 		
 		flying = tag.getBoolean("isFlying");
+
+        healthOffset = tag.getDouble("healthOffset");
+        preMorphHealth = tag.getDouble("preMorphHealth");
 	}
 }
 

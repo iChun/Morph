@@ -11,6 +11,7 @@ import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -70,11 +71,14 @@ public class PacketGuiInput extends AbstractPacket
 
                         MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), old, state);
                         info2.setMorphing(true);
+                        info2.healthOffset = player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue() - 20D;
+                        info2.preMorphHealth = player.getHealth();
 
                         MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
                         if(info3 != null)
                         {
                             info2.morphAbilities = info3.morphAbilities;
+                            info2.healthOffset = info3.healthOffset;
 
                             ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
                             for(Ability ability : newAbilities)

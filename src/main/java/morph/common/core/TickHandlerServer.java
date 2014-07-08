@@ -14,8 +14,10 @@ import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import morph.common.packet.PacketCompleteDemorph;
 import morph.common.packet.PacketSession;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -108,6 +110,18 @@ public class TickHandlerServer
                             player.setPosition(player.posX, player.posY, player.posZ);
                             player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 
+                            double nextMaxHealth = MathHelper.clamp_double(info.nextState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 1D, 20D) + info.healthOffset;
+
+                            if(nextMaxHealth < 1D)
+                            {
+                                nextMaxHealth = 1D;
+                            }
+
+                            if(nextMaxHealth != player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue())
+                            {
+                                player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(nextMaxHealth);
+                            }
+
                             ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
                             ArrayList<Ability> oldAbilities = info.morphAbilities;
                             info.morphAbilities = new ArrayList<Ability>();
@@ -177,6 +191,39 @@ public class TickHandlerServer
                         float prevEyeHeight = info.prevState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.prevState.entInstance).getDefaultEyeHeight() : info.prevState.entInstance.getEyeHeight() - player.yOffset;
                         float nextEyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
                         player.eyeHeight = prevEyeHeight + (nextEyeHeight - prevEyeHeight) * ((float)info.morphProgress / 80F);
+
+                        double prevMaxHealth = MathHelper.clamp_double(info.prevState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 1D, 20D);
+                        double nextMaxHealth = MathHelper.clamp_double(info.nextState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 1D, 20D);
+                        if(prevMaxHealth != nextMaxHealth)
+                        {
+                            double healthScale = info.preMorphHealth / prevMaxHealth;
+                            double prevHealth = info.preMorphHealth;
+                            double nextHealth = nextMaxHealth * healthScale;
+                            if(healthScale <= 1.0D)
+                            {
+                                float targetHealth = (float)(prevHealth + (nextHealth - prevHealth) * ((float)info.morphProgress / 80F));
+                                if(targetHealth < 1.0F)
+                                {
+                                    targetHealth = 1.0F;
+                                }
+                                if(nextMaxHealth > prevMaxHealth && player.getHealth() + 0.5F < (float)Math.floor(targetHealth) || prevMaxHealth > nextMaxHealth)
+                                {
+                                    player.setHealth(targetHealth);
+                                }
+                            }
+
+                            double curMaxHealth = player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue();
+                            double morphMaxHealth = Math.round(prevMaxHealth + (nextMaxHealth - prevMaxHealth) * ((float)info.morphProgress / 80F)) + info.healthOffset;
+                            if(morphMaxHealth < 1D)
+                            {
+                                morphMaxHealth = 1D;
+                            }
+
+                            if(morphMaxHealth != curMaxHealth)
+                            {
+                                player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(morphMaxHealth);
+                            }
+                        }
                     }
                 }
 

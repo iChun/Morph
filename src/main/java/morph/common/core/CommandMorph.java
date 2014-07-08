@@ -40,7 +40,6 @@ public class CommandMorph extends CommandBase
         return "/" + this.getCommandName() + " help";
     }
 
-    //TODO localize this.
     @Override
     public void processCommand(ICommandSender icommandsender, String[] args)
     {
@@ -89,12 +88,13 @@ public class CommandMorph extends CommandBase
                         FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().readPlayerDataFromFile(player1);
                         if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))
                         {
-                            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphData");
-
                             MorphState state = Morph.proxy.tickHandlerServer.getSelfState(DimensionManager.getWorld(0), player1);
 
                             MorphInfo info = new MorphInfo(args[1], state, state);
                             info.morphProgress = 80;
+                            info.healthOffset = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).getDouble("healthOffset");
+
+                            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphData");
 
                             PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
 
@@ -150,6 +150,8 @@ public class CommandMorph extends CommandBase
                         state1 = info.nextState;
                         MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), state1, state2);
                         info2.setMorphing(true);
+                        info2.healthOffset = info.healthOffset;
+                        info2.preMorphHealth = player.getHealth();
 
                         Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
@@ -172,12 +174,13 @@ public class CommandMorph extends CommandBase
 
                         if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))
                         {
-                            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphData");
-
                             MorphState state = Morph.proxy.tickHandlerServer.getSelfState(DimensionManager.getWorld(0), player1);
 
                             MorphInfo info = new MorphInfo(args[1], state, state);
                             info.morphProgress = 80;
+                            info.healthOffset = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).getDouble("healthOffset");
+
+                            Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphData");
 
                             PacketHandler.sendToAll(Morph.channels, info.getMorphInfoAsPacket());
 

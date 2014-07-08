@@ -41,6 +41,7 @@ import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -1446,6 +1447,7 @@ public class EventHandler
                 {
                     MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), info.nextState, state);
                     info2.setMorphing(true);
+                    info2.healthOffset = info.healthOffset;
 
                     Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
@@ -1632,6 +1634,19 @@ public class EventHandler
             ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
+
+            double nextMaxHealth = MathHelper.clamp_double(info.nextState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 0D, 20D) + info.healthOffset;
+
+            if(nextMaxHealth < 1D)
+            {
+                nextMaxHealth = 1D;
+            }
+
+            if(nextMaxHealth != event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue())
+            {
+                event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(nextMaxHealth);
+                event.player.setHealth((float)nextMaxHealth);
+            }
         }
 
     }
@@ -1668,6 +1683,19 @@ public class EventHandler
             ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
+
+            double nextMaxHealth = MathHelper.clamp_double(info.nextState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 0D, 20D) + info.healthOffset;
+
+            if(nextMaxHealth < 1D)
+            {
+                nextMaxHealth = 1D;
+            }
+
+            if(nextMaxHealth != event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue())
+            {
+                event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(nextMaxHealth);
+                event.player.setHealth((float)nextMaxHealth);
+            }
         }
         if(event.player.dimension == -1 && Morph.proxy.tickHandlerServer.saveData != null)
         {
@@ -1701,6 +1729,19 @@ public class EventHandler
             ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
+
+            double nextMaxHealth = MathHelper.clamp_double(info.nextState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 0D, 20D) + info.healthOffset;
+
+            if(nextMaxHealth < 1D)
+            {
+                nextMaxHealth = 1D;
+            }
+
+            if(nextMaxHealth != event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue())
+            {
+                event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(nextMaxHealth);
+                event.player.setHealth((float)nextMaxHealth);
+            }
         }
     }
 }

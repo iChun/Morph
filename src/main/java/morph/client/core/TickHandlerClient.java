@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -768,6 +769,19 @@ public class TickHandlerClient
                                 ObfHelper.forceSetSize(info.player.getClass(), info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
                                 info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
                                 info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+
+                                double nextMaxHealth = MathHelper.clamp_double(info.nextState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 0D, 20D) + info.healthOffset;
+
+                                if(nextMaxHealth < 1D)
+                                {
+                                    nextMaxHealth = 1D;
+                                }
+
+                                if(nextMaxHealth != info.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue())
+                                {
+                                    info.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(nextMaxHealth);
+                                    info.player.setHealth((float)nextMaxHealth);
+                                }
                             }
 
                             for(Ability ability : info.morphAbilities)
