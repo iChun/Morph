@@ -19,6 +19,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.ModelSpider;
 import net.minecraft.client.model.ModelSquid;
 import net.minecraft.client.model.ModelWolf;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
@@ -44,7 +45,11 @@ public class ModelHelper
 				ModelRenderer cube = modelList.get(i);
 				try
 				{
-					ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                    if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+                    {
+                        GLAllocation.deleteDisplayLists((Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.displayList));
+                        ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                    }
 				}
 				catch(Exception e)
 				{
@@ -581,7 +586,11 @@ public class ModelHelper
 				ModelRenderer cube = modelList.get(i);
 				try
 				{
-					ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                    if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+                    {
+                        GLAllocation.deleteDisplayLists((Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.displayList));
+                        ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                    }
 				}
 				catch(Exception e)
 				{
@@ -600,7 +609,6 @@ public class ModelHelper
 				ModelRenderer cube = list.get(i);
 				try
 				{
-                    //TODO look into complications with this application and how it affects models.
 					if(!(Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
 					{
 						list.remove(i);

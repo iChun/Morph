@@ -331,7 +331,11 @@ public class ModelMorph extends ModelBase
 					
 					updateCubeMorph(cube.childModels, currentMorphCube == null ? null : currentMorphCube.childModels, nextMorphCube == null ? null : nextMorphCube.childModels, param7, mag, depth + 1);
 				}
-				ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+                {
+                    GLAllocation.deleteDisplayLists((Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.displayList));
+                    ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                }
 			}
 		}
 		catch(Exception e)
