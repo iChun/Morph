@@ -77,8 +77,8 @@ public class EntityHelper extends EntityHelperBase
 		
 		MorphState prevState = new MorphState(player.worldObj, player.getCommandSenderName(), username1, prevTag, false);
 		MorphState nextState = new MorphState(player.worldObj, player.getCommandSenderName(), username2, nextTag, false);
-		
-		if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
+
+        if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
 		{
 			return false;
 		}

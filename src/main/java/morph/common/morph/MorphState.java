@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 public class MorphState
         implements Comparable
 {
-    public final int NBT_PROTOCOL = 1;
+    public final int NBT_PROTOCOL = 2;
 
     public String playerName;
     public String playerMorph;
@@ -59,7 +59,7 @@ public class MorphState
             writeFakeTags(entInstance, fakeTag);
             if(playerMorph.equalsIgnoreCase(""))
             {
-                identifier = entInstance.getClass().toString() + entInstance.getCommandSenderName() + parseTag(fakeTag);
+                identifier = entInstance.getClass().toString() + parseTag(fakeTag);
             }
             else
             {
@@ -125,18 +125,13 @@ public class MorphState
                 {
                     entInstance = (EntityLivingBase)EntityList.createEntityFromNBT(tag1, world);
                     identifier = tag.getString("identifier");
-                    if(!tag1.hasKey("MorphNBTProtocolNumber") && entInstance != null || identifier.contains(":[") && identifier.endsWith("]"))
+                    if(entInstance != null)
                     {
-                        //Assume updating from pre 0.7.0 or updating from 1.6 to 1.7
-                        tag1.setInteger("MorphNBTProtocolNumber", NBT_PROTOCOL);//changed everytime the identifier may change or requires a change.
-                        identifier = entInstance.getClass().toString() + entInstance.getCommandSenderName() + parseTag(tag1);
-
-                        tag1.setString("identifier", identifier);
-                    }
-                    if(tag1.getInteger("MorphNBTProtocolNumber") < NBT_PROTOCOL)
-                    {
-                        identifier = "";
-                        invalid = true;
+                        if((identifier.contains(":[") && identifier.endsWith("]") || tag1.getInteger("MorphNBTProtocolNumber") < NBT_PROTOCOL) && !attemptRepairs(entInstance, tag1, tag1.getInteger("MorphNBTProtocolNumber")))
+                        {
+                            identifier = "";
+                            invalid = true;
+                        }
                     }
                 }
                 catch(Exception e)
@@ -155,7 +150,7 @@ public class MorphState
                 NBTTagCompound fakeTag = new NBTTagCompound();
                 entInstance.writeEntityToNBT(fakeTag);
                 writeFakeTags(entInstance, fakeTag);
-                identifier = entInstance.getClass().toString() + entInstance.getCommandSenderName() + parseTag(fakeTag);
+                identifier = entInstance.getClass().toString() + parseTag(fakeTag);
             }
         }
         if(invalid)
@@ -164,7 +159,7 @@ public class MorphState
             NBTTagCompound fakeTag = new NBTTagCompound();
             entInstance.writeEntityToNBT(fakeTag);
             writeFakeTags(entInstance, fakeTag);
-            identifier = entInstance.getClass().toString() + entInstance.getCommandSenderName() + parseTag(fakeTag);
+            identifier = entInstance.getClass().toString() + parseTag(fakeTag);
         }
     }
 
@@ -254,6 +249,29 @@ public class MorphState
         sb.append("}");
 
         return sb.toString();
+    }
+
+    public boolean attemptRepairs(EntityLivingBase living, NBTTagCompound tag, int nbtProtocol)
+    {
+        //if nbtProtocol is 0, that means player is updating from 0.6.0.
+        while(nbtProtocol < NBT_PROTOCOL)
+        {
+            if(nbtProtocol == 1)
+            {
+                tag.setInteger("MorphNBTProtocolNumber", NBT_PROTOCOL);//changed everytime the identifier may change or requires a change.
+
+                NBTTagCompound fakeTag = new NBTTagCompound();
+                living.writeEntityToNBT(fakeTag);
+                writeFakeTags(living, fakeTag);
+
+                identifier = living.getClass().toString() + parseTag(fakeTag);
+
+                tag.setString("identifier", identifier);
+            }
+            nbtProtocol++;
+        }
+        tag.setInteger("MorphNBTProtocolNumber", nbtProtocol);
+        return nbtProtocol >= NBT_PROTOCOL;
     }
 
     @Override
