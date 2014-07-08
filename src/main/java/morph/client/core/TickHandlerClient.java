@@ -761,11 +761,14 @@ public class TickHandlerClient
                     if(info.player == null)
                     {
                         info.player = world.getPlayerEntityByName(e.getKey());
-                        if(info.player != null && !info.getMorphing())
+                        if(info.player != null)
                         {
-                            ObfHelper.forceSetSize(info.player.getClass(), info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
-                            info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
-                            info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+                            if(!info.getMorphing())
+                            {
+                                ObfHelper.forceSetSize(info.player.getClass(), info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                                info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
+                                info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+                            }
 
                             for(Ability ability : info.morphAbilities)
                             {
