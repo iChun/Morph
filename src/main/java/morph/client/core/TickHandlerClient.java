@@ -85,12 +85,12 @@ public class TickHandlerClient
 
                     float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
                     float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
-                    ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog);
+                    ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog) + mc.thePlayer.getDefaultEyeHeight();
                     eyeHeight = mc.thePlayer.eyeHeight;
                     mc.thePlayer.lastTickPosY -= ySize;
                     mc.thePlayer.prevPosY -= ySize;
                     mc.thePlayer.posY -= ySize;
-                    mc.thePlayer.eyeHeight = mc.thePlayer.height / playerHeight < 1.0F ? mc.thePlayer.height / playerHeight * mc.thePlayer.getDefaultEyeHeight() : mc.thePlayer.getDefaultEyeHeight();
+                    mc.thePlayer.eyeHeight = mc.thePlayer.getDefaultEyeHeight();
 
                     shiftedPosY = true;
                 }
