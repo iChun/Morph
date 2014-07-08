@@ -143,44 +143,34 @@ public class AbilityHandler
         return new ArrayList<Ability>();
     }
 
-    public static Ability getNewAbilityClimb()
+    public static Ability createNewAbilityByType(String type, String[] arguments)
     {
-        return new AbilityClimb();
+        try
+        {
+            Class abilityClass = AbilityHandler.stringToClassMap.get(type);
+            if(abilityClass != null)
+            {
+                Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
+                try
+                {
+                    ab.parse(arguments);
+                }
+                catch(Exception e2)
+                {
+                    Morph.console("Arguments are erroring when trying to create ability by type: "  + abilityClass.getName() + ", "+ type + ", args: " + arguments == null ? "none" : "arg list of size " + arguments.length, true);
+                    e2.printStackTrace();
+                }
+            }
+            else
+            {
+                Morph.console("Ability type \"" + type + "\" does not exist!", true);
+            }
+        }
+        catch(Exception e)
+        {
+            Morph.console("Error creating ability by type: " + type, true);
+            e.printStackTrace();
+        }
+        return null;
     }
-
-    public static Ability getNewAbilityFireImmunity()
-    {
-        return new AbilityFireImmunity();
-    }
-
-    public static Ability getNewAbilityFloat(float terminalVelocity, boolean negateFallDamage)
-    {
-        return new AbilityFloat(terminalVelocity, negateFallDamage);
-    }
-
-    public static Ability getNewAbilityFly(boolean slowdownInWater)
-    {
-        return new AbilityFly(slowdownInWater);
-    }
-
-    public static Ability getNewAbilityHostile()
-    {
-        return new AbilityHostile();
-    }
-
-    public static Ability getNewAbilitySunburn()
-    {
-        return new AbilitySunburn();
-    }
-
-    public static Ability getNewAbilitySwim(boolean canBreatheOnLand)
-    {
-        return new AbilitySwim(canBreatheOnLand);
-    }
-
-    public static Ability getNewAbilityWaterAllergy()
-    {
-        return new AbilityWaterAllergy();
-    }
-
 }
