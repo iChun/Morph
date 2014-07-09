@@ -83,8 +83,8 @@ public class TickHandlerClient
 
                     prog = (float)Math.pow(prog, 2);
 
-                    float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
-                    float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset;
+                    float prev = info1.prevState != null && !(info1.prevState.entInstance instanceof EntityPlayer) ? info1.prevState.entInstance.getEyeHeight() : mc.thePlayer.yOffset + mc.thePlayer.getDefaultEyeHeight();
+                    float next = info1.nextState != null && !(info1.nextState.entInstance instanceof EntityPlayer) ? info1.nextState.entInstance.getEyeHeight() : mc.thePlayer.yOffset + mc.thePlayer.getDefaultEyeHeight();
                     ySize = mc.thePlayer.yOffset - (prev + (next - prev) * prog) + mc.thePlayer.getDefaultEyeHeight();
                     eyeHeight = mc.thePlayer.eyeHeight;
                     mc.thePlayer.lastTickPosY -= ySize;
