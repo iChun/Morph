@@ -3,7 +3,6 @@ package morph.common.thread;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import ichun.common.core.util.ResourceHelper;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
@@ -46,7 +45,7 @@ public class ThreadGetOnlineResources extends Thread
                 {
                     if(Morph.config.getInt("useLocalResources") == 1)
                     {
-                        InputStream con = new FileInputStream(new File(ResourceHelper.getConfigFolder(), "AbilitySupport.json"));
+                        InputStream con = new FileInputStream(new File(Morph.configFolder, "AbilitySupport.json"));
                         String data = new String(ByteStreams.toByteArray(con));
                         con.close();
                         json = gson.fromJson(data, mapType);
@@ -208,7 +207,7 @@ public class ThreadGetOnlineResources extends Thread
                 {
                     if(Morph.config.getInt("useLocalResources") == 1)
                     {
-                        InputStream con = new FileInputStream(new File(ResourceHelper.getConfigFolder(), "NBTStripper.json"));
+                        InputStream con = new FileInputStream(new File(Morph.configFolder, "NBTStripper.json"));
                         String data = new String(ByteStreams.toByteArray(con));
                         con.close();
                         json = gson.fromJson(data, mapType);

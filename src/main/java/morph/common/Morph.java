@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
@@ -49,6 +50,8 @@ public class Morph
     public static EnumMap<Side, FMLEmbeddedChannel> channels;
 
     public static Config config;
+
+    public static File configFolder;
 	
 	public static ArrayList<Class<? extends EntityLivingBase>> blacklistedClasses = new ArrayList<Class<? extends EntityLivingBase>>();
     public static ArrayList<String> playerList = new ArrayList<String>();
@@ -83,6 +86,8 @@ public class Morph
     @EventHandler
 	public void preLoad(FMLPreInitializationEvent event)
     {
+        configFolder = event.getModConfigurationDirectory();
+
         config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "morph", "Morph", logger, instance);
 
         config.setCurrentCategory("gameplay", "morph.config.cat.gameplay.name", "morph.config.cat.gameplay.comment");
