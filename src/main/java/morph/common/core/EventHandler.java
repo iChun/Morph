@@ -108,7 +108,7 @@ public class EventHandler
                         radialAngle = 270D + (90D + aSin);
                     }
 
-                    ScaledResolution reso = new ScaledResolution(Minecraft.getMinecraft().gameSettings, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+                    ScaledResolution reso = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
 
                     GL11.glTranslated(reso.getScaledWidth_double() / 2D, reso.getScaledHeight_double() / 2D, 0D);
                     GL11.glRotatef((float)radialAngle, 0.0F, 0.0F, 1.0F);
@@ -156,7 +156,7 @@ public class EventHandler
                         radialAngle = 270D + (90D + aSin);
                     }
 
-                    ScaledResolution reso = new ScaledResolution(Minecraft.getMinecraft().gameSettings, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+                    ScaledResolution reso = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
 
                     GL11.glTranslatef(0.0F, ((float)reso.getScaledHeight_double() / 2.85F * 0.675F * MathHelper.clamp_float((float)(mag / magAcceptance), 0.0F, 1.0F) + (MathHelper.clamp_float((float)((mag - magAcceptance) / (1.0D - magAcceptance)), 0.0F, 1.0F) * (float)reso.getScaledHeight_double() / 2.85F * (1F - 0.675F))), 0.0F);
                     GL11.glTranslated(reso.getScaledWidth_double() / 2D, reso.getScaledHeight_double() / 2D, 0D);
