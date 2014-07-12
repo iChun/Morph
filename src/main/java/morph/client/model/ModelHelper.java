@@ -96,13 +96,13 @@ public class ModelHelper
 	
 	public static ModelRenderer getPotentialArm(ModelBase parent)
 	{
-        if(armMappings.containsKey(parent.getClass()))
-        {
-            return armMappings.get(parent.getClass());
-        }
 		if(parent != null)
 		{
 			Class clz = parent.getClass();
+            if(armMappings.containsKey(clz))
+            {
+                return armMappings.get(clz);
+            }
 			if(clz == ModelHorse.class)
 			{
 				ModelHorse dummy = new ModelHorse();

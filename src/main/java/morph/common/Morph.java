@@ -37,7 +37,7 @@ import java.util.EnumMap;
 public class Morph
     implements IConfigUser
 {
-	public static final String version = "0.8.0";
+	public static final String version = "0.8.1";
 	
 	@Instance("Morph")
 	public static Morph instance;

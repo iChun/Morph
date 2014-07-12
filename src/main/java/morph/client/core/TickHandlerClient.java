@@ -60,7 +60,6 @@ public class TickHandlerClient
         renderHandInstance.setRenderManager(RenderManager.instance);
     }
 
-    //TODO find out issues with block attack/placement esp as a squid.
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event)
     {
