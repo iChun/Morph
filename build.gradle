@@ -23,7 +23,7 @@ group= "morph" // http://maven.apache.org/guides/mini/guide-naming-conventions.h
 archivesBaseName = "Morph-Beta"
 
 minecraft {
-    version = "1.7.2-10.12.2.1128"
+    version = "1.7.10-10.13.0.1180"
     assetDir = "eclipse/assets"
 }
 processResources
