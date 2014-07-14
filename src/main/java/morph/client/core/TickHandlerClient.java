@@ -148,7 +148,7 @@ public class TickHandlerClient
 
                     GL11.glTranslatef(-52F * progress, 0.0F, 0.0F);
 
-                    ScaledResolution reso = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+                    ScaledResolution reso = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
                     int gap = (reso.getScaledHeight() - (42 * 5)) / 2;
 
@@ -402,7 +402,7 @@ public class TickHandlerClient
                     double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
                     double magAcceptance = 0.8D;
 
-                    ScaledResolution reso = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+                    ScaledResolution reso = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
                     float prog = (3F - radialTime + renderTick) / 3F;
                     if(prog > 1.0F)

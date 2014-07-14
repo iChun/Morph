@@ -183,7 +183,7 @@ public class AbilitySwim extends Ability {
 	        {
 	        	mc.getTextureManager().bindTexture(Gui.icons);
 	        	
-	            ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+	            ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 	            int width = scaledresolution.getScaledWidth();
 	            int height = scaledresolution.getScaledHeight();
 	            

@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.common.core.EntityHelperBase;
 import ichun.common.core.util.ObfHelper;
 import morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 public class MorphState
         implements Comparable
@@ -45,7 +47,7 @@ public class MorphState
 
         if(!player.equalsIgnoreCase(""))
         {
-            entInstance = isRemote ? createPlayer(world, player) : new FakePlayer((WorldServer)world, new GameProfile("MorphFakePlayer", player));
+            entInstance = isRemote ? createPlayer(world, player) : new FakePlayer((WorldServer)world, new GameProfile(EntityHelperBase.uuidExample, player));
         }
         else if(tag != null)
         {
@@ -116,7 +118,7 @@ public class MorphState
         {
             if(!playerMorph.equalsIgnoreCase(""))
             {
-                entInstance = isRemote ? createPlayer(world, playerMorph) : new FakePlayer((WorldServer)world, new GameProfile("MorphFakePlayer", playerMorph));
+                entInstance = isRemote ? createPlayer(world, playerMorph) : new FakePlayer((WorldServer)world, new GameProfile(EntityHelperBase.uuidExample, playerMorph));
                 identifier = "playerMorphState::player_" + playerMorph;
             }
             else
@@ -166,7 +168,7 @@ public class MorphState
     @SideOnly(Side.CLIENT)
     private EntityPlayer createPlayer(World world, String player)
     {
-        return new EntityOtherPlayerMP(world, new GameProfile("MorphClientDummyPlayer", player));
+        return new EntityOtherPlayerMP(world, new GameProfile(EntityHelperBase.uuidExample, player));
     }
 
     public void writeFakeTags(EntityLivingBase living, NBTTagCompound tag)

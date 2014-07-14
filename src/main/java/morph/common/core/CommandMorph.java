@@ -2,6 +2,7 @@ package morph.common.core;
 
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.FMLCommonHandler;
+import ichun.common.core.EntityHelperBase;
 import ichun.common.core.network.PacketHandler;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
@@ -67,13 +68,13 @@ public class CommandMorph extends CommandBase
                 }
                 if (player == null)
                 {
-                    player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+                    player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args[1]);
                 }
                 if(player != null)
                 {
                     if(EntityHelper.demorphPlayer(player))
                     {
-                        notifyAdmins(icommandsender, "morph.command.forcingDemorph", player.getCommandSenderName());
+                        func_152373_a(icommandsender, this, "morph.command.forcingDemorph", player.getCommandSenderName());
                     }
                     else
                     {
@@ -84,7 +85,7 @@ public class CommandMorph extends CommandBase
                 {
                     try
                     {
-                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile("MorphFakePlayer", args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
+                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile(EntityHelperBase.uuidExample, args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
                         FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().readPlayerDataFromFile(player1);
                         if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))
                         {
@@ -100,7 +101,7 @@ public class CommandMorph extends CommandBase
 
                             Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player1, null);
 
-                            notifyAdmins(icommandsender, "morph.command.forcingDemorph", args[1]);
+                            func_152373_a(icommandsender, this, "morph.command.forcingDemorph", args[1]);
 
                             //Workaround to force save.
                             FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.add(player1);
@@ -135,7 +136,7 @@ public class CommandMorph extends CommandBase
                 }
                 if (player == null)
                 {
-                    player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+                    player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args[1]);
                 }
                 if(player != null)
                 {
@@ -163,13 +164,13 @@ public class CommandMorph extends CommandBase
 
                     MorphHandler.updatePlayerOfMorphStates((EntityPlayerMP)player, null, true);
 
-                    notifyAdmins(icommandsender, "morph.command.clearingMorphs", args[1]);
+                    func_152373_a(icommandsender, this, "morph.command.clearingMorphs", args[1]);
                 }
                 else
                 {
                     try
                     {
-                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile("MorphFakePlayer", args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
+                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile(EntityHelperBase.uuidExample, args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
                         FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().readPlayerDataFromFile(player1);
 
                         if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))
@@ -191,7 +192,7 @@ public class CommandMorph extends CommandBase
                         {
                             Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).removeTag("morphStatesCount");
                         }
-                        notifyAdmins(icommandsender, "morph.command.clearingMorphs", args[1]);
+                        func_152373_a(icommandsender, this, "morph.command.clearingMorphs", args[1]);
 
                         FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.add(player1);
                         FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().saveAllPlayerData();
@@ -216,7 +217,7 @@ public class CommandMorph extends CommandBase
                 }
                 if (player == null)
                 {
-                    player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(args[1]);
+                    player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(args[1]);
                 }
                 if(player != null)
                 {
@@ -249,7 +250,7 @@ public class CommandMorph extends CommandBase
                         }
                         else
                         {
-                            notifyAdmins(icommandsender, "morph.command.forcingMorphTarget", player.getCommandSenderName());
+                            func_152373_a(icommandsender, this, "morph.command.forcingMorphTarget", player.getCommandSenderName());
                         }
                     }
                     else
@@ -281,7 +282,7 @@ public class CommandMorph extends CommandBase
                     }
                     if(!Morph.playerList.contains(sb.toString().trim()))
                     {
-                        notifyAdmins(icommandsender, "morph.command.addingToBlackWhite", sb.toString().trim());
+                        func_152373_a(icommandsender, this, "morph.command.addingToBlackWhite", sb.toString().trim());
                         Morph.playerList.add(sb.toString().trim());
 
                         StringBuilder sb1 = new StringBuilder();
@@ -321,7 +322,7 @@ public class CommandMorph extends CommandBase
                     }
                     if(Morph.playerList.contains(sb.toString().trim()))
                     {
-                        notifyAdmins(icommandsender, "morph.command.removingFromBlackWhite", sb.toString().trim());
+                        func_152373_a(icommandsender, this, "morph.command.removingFromBlackWhite", sb.toString().trim());
                         Morph.playerList.remove(sb.toString().trim());
 
                         StringBuilder sb1 = new StringBuilder();

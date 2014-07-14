@@ -94,7 +94,7 @@ public class TickHandlerServer
                 Entry<String, MorphInfo> e = ite.next();
                 MorphInfo info = e.getValue();
 
-                EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(info.playerName);
+                EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(info.playerName);
 
                 if(info.getMorphing())
                 {
