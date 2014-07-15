@@ -65,8 +65,8 @@ public class ModelMorph extends ModelBase
 					ModelRenderer parentCube = nextModelList.get(i);
 					try
 					{
-						int txOffsetX = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetX);
-						int txOffsetY = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, parentCube, ObfHelper.textureOffsetY);
+						int txOffsetX = parentCube.textureOffsetX;
+						int txOffsetY = parentCube.textureOffsetY;
 						ModelRenderer cubeCopy = new ModelRenderer(this, txOffsetX, txOffsetY);
 						cubeCopy.mirror = parentCube.mirror;
 						cubeCopy.textureHeight = parentCube.textureHeight;
@@ -331,10 +331,10 @@ public class ModelMorph extends ModelBase
 					
 					updateCubeMorph(cube.childModels, currentMorphCube == null ? null : currentMorphCube.childModels, nextMorphCube == null ? null : nextMorphCube.childModels, param7, mag, depth + 1);
 				}
-                if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+                if(cube.compiled)
                 {
-                    GLAllocation.deleteDisplayLists((Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.displayList));
-                    ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                    GLAllocation.deleteDisplayLists(cube.displayList);
+                    cube.compiled = false;
                 }
 			}
 		}

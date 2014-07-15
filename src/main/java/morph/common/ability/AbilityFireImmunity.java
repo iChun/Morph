@@ -55,15 +55,7 @@ public class AbilityFireImmunity extends Ability {
 		{
 			if(!getParent().isImmuneToFire())
 			{
-				try
-				{
-					ObfuscationReflectionHelper.setPrivateValue(Entity.class, getParent(), true, ObfHelper.isImmuneToFire);
-				}
-				catch(Exception e)
-				{
-					ObfHelper.obfWarning();
-					e.printStackTrace();
-				}
+                getParent().isImmuneToFire = true;
 			}
 			getParent().extinguish();
 		}
@@ -72,15 +64,7 @@ public class AbilityFireImmunity extends Ability {
 	@Override
 	public void kill() 
 	{
-		try
-		{
-			ObfuscationReflectionHelper.setPrivateValue(Entity.class, getParent(), false, ObfHelper.isImmuneToFire);
-		}
-		catch(Exception e)
-		{
-			ObfHelper.obfWarning();
-			e.printStackTrace();
-		}
+        getParent().isImmuneToFire = false;
 	}
 
 	@Override

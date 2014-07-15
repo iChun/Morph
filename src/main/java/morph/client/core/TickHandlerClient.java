@@ -702,7 +702,7 @@ public class TickHandlerClient
                             info.setMorphing(false);
                             if(info.player != null)
                             {
-                                ObfHelper.forceSetSize(info.player.getClass(), info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                                info.player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
                                 info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
                                 info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 
@@ -745,7 +745,7 @@ public class TickHandlerClient
                         }
                         else if(info.prevState != null && info.player != null)
                         {
-                            ObfHelper.forceSetSize(info.player.getClass(), info.player, info.prevState.entInstance.width + (info.nextState.entInstance.width - info.prevState.entInstance.width) * ((float)info.morphProgress / 80F), info.prevState.entInstance.height + (info.nextState.entInstance.height - info.prevState.entInstance.height) * ((float)info.morphProgress / 80F));
+                            info.player.setSize(info.prevState.entInstance.width + (info.nextState.entInstance.width - info.prevState.entInstance.width) * ((float)info.morphProgress / 80F), info.prevState.entInstance.height + (info.nextState.entInstance.height - info.prevState.entInstance.height) * ((float)info.morphProgress / 80F));
                             info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
                             float prevEyeHeight = info.prevState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.prevState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.prevState.entInstance).getDefaultEyeHeight() : info.prevState.entInstance.getEyeHeight() - info.player.yOffset;
                             float nextEyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
@@ -765,7 +765,7 @@ public class TickHandlerClient
                         {
                             if(!info.getMorphing())
                             {
-                                ObfHelper.forceSetSize(info.player.getClass(), info.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                                info.player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
                                 info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
                                 info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
 
@@ -1303,6 +1303,7 @@ public class TickHandlerClient
         if(mag > magAcceptance)
         {
             //is on radial menu
+            //TODO atan2?
             double aSin = Math.toDegrees(Math.asin(Morph.proxy.tickHandlerClient.radialDeltaX));
 
             if(Morph.proxy.tickHandlerClient.radialDeltaY >= 0 && Morph.proxy.tickHandlerClient.radialDeltaX >= 0)
@@ -1358,15 +1359,6 @@ public class TickHandlerClient
             }
         }
 
-    }
-
-    public static boolean isPressed(int key)
-    {
-        if(key < 0)
-        {
-            return Mouse.isButtonDown(key + 100);
-        }
-        return Keyboard.isKeyDown(key);
     }
 
     public long clock;

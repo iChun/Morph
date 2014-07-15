@@ -31,13 +31,13 @@ import java.util.EnumMap;
 
 @Mod(modid = "Morph", name = "Morph",
 			version = Morph.version,
-			dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".3.0,)",
-            acceptableRemoteVersions = "[0.8.0,0.9.0)"
+			dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".0.0,)",
+            acceptableRemoteVersions = "[0.9.0,0.10.0)"
 				)
 public class Morph
     implements IConfigUser
 {
-	public static final String version = "0.8.1";
+	public static final String version = "0.9.0";
 	
 	@Instance("Morph")
 	public static Morph instance;
@@ -171,7 +171,7 @@ public class Morph
 		MinecraftForge.EVENT_BUS.register(eventHandler);
 		FMLCommonHandler.instance().bus().register(eventHandler);
 
-        ModVersionChecker.register_iChunMod(new ModVersionInfo("Morph", "1.7", version, false));
+        ModVersionChecker.register_iChunMod(new ModVersionInfo("Morph", iChunUtil.versionOfMC, version, false));
     }
 	
 	@EventHandler

@@ -55,7 +55,7 @@ public class PacketCompleteDemorph extends AbstractPacket
             MorphInfo info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(playerName);
             if(info != null)
             {
-                ObfHelper.forceSetSize(player1.getClass(), player1, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                player1.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
                 player1.setPosition(player1.posX, player1.posY, player1.posZ);
                 player1.eyeHeight = player1.getDefaultEyeHeight();
                 player1.ignoreFrustumCheck = false;

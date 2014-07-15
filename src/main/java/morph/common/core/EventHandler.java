@@ -199,20 +199,20 @@ public class EventHandler
                         Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.prevModelInfo.assumedArm;
                         RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
 
-                        EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                        mc.entityRenderer.renderHand(Morph.proxy.tickHandlerClient.renderTick, 0);
 
                         if(info.getMorphing())
                         {
                             float progress = ((float)info.morphProgress + Morph.proxy.tickHandlerClient.renderTick) / 10F;
                             Morph.proxy.tickHandlerClient.renderHandInstance.progress = progress;
 
-                            String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
-                            String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+                            String resourceDomain = resourceLoc.resourceDomain;
+                            String resourcePath = resourceLoc.resourcePath;
 
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 
-                            EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                            mc.entityRenderer.renderHand(Morph.proxy.tickHandlerClient.renderTick, 0);
 
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -235,7 +235,7 @@ public class EventHandler
                         Morph.proxy.tickHandlerClient.renderHandInstance.replacement = info.nextModelInfo.assumedArm;
                         RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
 
-                        EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                        mc.entityRenderer.renderHand(Morph.proxy.tickHandlerClient.renderTick, 0);
 
                         if(info.getMorphing())
                         {
@@ -247,13 +247,13 @@ public class EventHandler
                             }
                             Morph.proxy.tickHandlerClient.renderHandInstance.progress = 1.0F - progress;
 
-                            String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
-                            String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+                            String resourceDomain = resourceLoc.resourceDomain;
+                            String resourcePath = resourceLoc.resourcePath;
 
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 
-                            EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                            mc.entityRenderer.renderHand(Morph.proxy.tickHandlerClient.renderTick, 0);
 
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
                             ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -274,7 +274,7 @@ public class EventHandler
 
                     RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), Morph.proxy.tickHandlerClient.renderHandInstance);
 
-                    EntityHelper.invokeRenderHand(mc.entityRenderer, Morph.proxy.tickHandlerClient.renderTick);
+                    mc.entityRenderer.renderHand(Morph.proxy.tickHandlerClient.renderTick, 0);
 
                     RenderManager.instance.entityRenderMap.put(mc.thePlayer.getClass(), rend);
                 }
@@ -293,7 +293,7 @@ public class EventHandler
         {
             if(Morph.proxy.tickHandlerClient.playerRenderShadowSize < 0.0F)
             {
-                Morph.proxy.tickHandlerClient.playerRenderShadowSize = (Float)ObfuscationReflectionHelper.getPrivateValue(Render.class, event.renderer, ObfHelper.shadowSize);
+                Morph.proxy.tickHandlerClient.playerRenderShadowSize = event.renderer.shadowSize;
             }
         }
         catch(Exception e)
@@ -305,12 +305,12 @@ public class EventHandler
         if(Morph.proxy.tickHandlerClient.allowRender)
         {
             Morph.proxy.tickHandlerClient.allowRender = false;
-            ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
+            event.renderer.shadowSize = Morph.proxy.tickHandlerClient.playerRenderShadowSize;
             return;
         }
         if(Morph.proxy.tickHandlerClient.forceRender)
         {
-            ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
+            event.renderer.shadowSize = Morph.proxy.tickHandlerClient.playerRenderShadowSize;
             return;
         }
         if(Morph.proxy.tickHandlerClient.renderingMorph && Morph.proxy.tickHandlerClient.renderingPlayer > 1)
@@ -349,7 +349,7 @@ public class EventHandler
                     Render render = RenderManager.instance.getEntityRenderObject(info.prevState.entInstance);
                     if(render != null)
                     {
-                        prevShadowSize = ObfuscationReflectionHelper.getPrivateValue(Render.class, render, ObfHelper.shadowSize);
+                        prevShadowSize = render.shadowSize;
                     }
                 }
 
@@ -360,7 +360,7 @@ public class EventHandler
                 }
                 else if(render != null)
                 {
-                    shadowSize = ObfuscationReflectionHelper.getPrivateValue(Render.class, render, ObfHelper.shadowSize);
+                    shadowSize = render.shadowSize;
                 }
 
                 float shadowProg = prog;
@@ -369,7 +369,7 @@ public class EventHandler
                 {
                     shadowSize = prevShadowSize + (shadowSize - prevShadowSize) * prog;
                 }
-                ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, shadowSize, ObfHelper.shadowSize);
+                render.shadowSize = shadowSize;
             }
             catch(Exception e)
             {
@@ -607,7 +607,7 @@ public class EventHandler
         }
         else
         {
-            ObfuscationReflectionHelper.setPrivateValue(Render.class, event.renderer, Morph.proxy.tickHandlerClient.playerRenderShadowSize, ObfHelper.shadowSize);
+            event.renderer.shadowSize = Morph.proxy.tickHandlerClient.playerRenderShadowSize;
         }
         Morph.proxy.tickHandlerClient.renderingPlayer--;
     }
@@ -649,7 +649,7 @@ public class EventHandler
                             if(d3 < (double)(f2 * f2))
                             {
                                 String s = player.func_145748_c_().getFormattedText();
-                                ObfHelper.invokeRenderLivingLabel(rend, player, event.x, event.y, event.z, s, f1, d3);
+                                rend.func_96449_a(player, event.x, event.y, event.z, s, f1, d3);
                             }
                         }
                     }
@@ -1631,7 +1631,7 @@ public class EventHandler
 
         if(info != null)
         {
-            ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+            event.player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
 
@@ -1680,7 +1680,7 @@ public class EventHandler
 
         if(info != null)
         {
-            ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+            event.player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
 
@@ -1726,7 +1726,7 @@ public class EventHandler
 
         if(info != null)
         {
-            ObfHelper.forceSetSize(event.player.getClass(), event.player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+            event.player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
             event.player.setPosition(event.player.posX, event.player.posY, event.player.posZ);
             event.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(event.player.getCommandSenderName()) ? event.player.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - event.player.yOffset;
 

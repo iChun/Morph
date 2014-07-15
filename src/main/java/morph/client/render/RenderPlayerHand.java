@@ -78,15 +78,7 @@ public class RenderPlayerHand extends RenderPlayer
 	{
 		if(parent != render)
 		{
-			try
-			{
-				biped = (ModelBiped)ObfuscationReflectionHelper.getPrivateValue(RenderPlayer.class, render, ObfHelper.modelBipedMain);
-			}
-			catch(Exception e)
-			{
-				ObfHelper.obfWarning();
-				e.printStackTrace();
-			}
+            biped = render.modelBipedMain;
 		}
 		parent = render;
 	}

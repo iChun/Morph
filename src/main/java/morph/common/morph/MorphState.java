@@ -29,6 +29,7 @@ public class MorphState
 {
     public final int NBT_PROTOCOL = 2;
 
+    //TODO change this so that it uses UUIDs instead.
     public String playerName;
     public String playerMorph;
     public boolean isFavourite;
@@ -216,17 +217,7 @@ public class MorphState
         StringBuilder sb = new StringBuilder();
         ArrayList<String> tags = new ArrayList<String>();
 
-        HashMap tagMap;
-        try
-        {
-            tagMap = ObfuscationReflectionHelper.getPrivateValue(NBTTagCompound.class, tag, ObfHelper.tagMap);
-        }
-        catch(Exception e)
-        {
-            ObfHelper.obfWarning();
-            e.printStackTrace();
-            tagMap = new HashMap();
-        }
+        HashMap tagMap = (HashMap)tag.tagMap;
 
         for(Object obj : tagMap.entrySet())
         {

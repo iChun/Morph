@@ -106,7 +106,7 @@ public class TickHandlerServer
 
                         if(player != null)
                         {
-                            ObfHelper.forceSetSize(player.getClass(), player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                            player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
                             player.setPosition(player.posX, player.posY, player.posZ);
                             player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
 
@@ -186,7 +186,7 @@ public class TickHandlerServer
                     }
                     else if(info.prevState != null && player != null)
                     {
-                        ObfHelper.forceSetSize(player.getClass(), player, info.prevState.entInstance.width + (info.nextState.entInstance.width - info.prevState.entInstance.width) * ((float)info.morphProgress / 80F), info.prevState.entInstance.height + (info.nextState.entInstance.height - info.prevState.entInstance.height) * ((float)info.morphProgress / 80F));
+                        player.setSize(info.prevState.entInstance.width + (info.nextState.entInstance.width - info.prevState.entInstance.width) * ((float)info.morphProgress / 80F), info.prevState.entInstance.height + (info.nextState.entInstance.height - info.prevState.entInstance.height) * ((float)info.morphProgress / 80F));
                         player.setPosition(player.posX, player.posY, player.posZ);
                         float prevEyeHeight = info.prevState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.prevState.entInstance).getDefaultEyeHeight() : info.prevState.entInstance.getEyeHeight() - player.yOffset;
                         float nextEyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
@@ -238,7 +238,7 @@ public class TickHandlerServer
                     else if(info.sleeping)
                     {
                         info.sleeping = false;
-                        ObfHelper.forceSetSize(player.getClass(), player, info.nextState.entInstance.width, info.nextState.entInstance.height);
+                        player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
                         player.setPosition(player.posX, player.posY, player.posZ);
                         player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
                     }

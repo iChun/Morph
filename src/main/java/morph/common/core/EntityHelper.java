@@ -39,6 +39,8 @@ public class EntityHelper extends EntityHelperBase
 		{
 			return false;
 		}
+
+        //TODO throw a morph acquired event
 		
 		MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
 		
@@ -94,6 +96,7 @@ public class EntityHelper extends EntityHelperBase
 		
 		if(Morph.config.getInt("instaMorph") == 1 || forced)
 		{
+            //TODO make a general function to morph the player
 			MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), prevState, nextState);
 			info2.setMorphing(true);
             info2.healthOffset = player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue() - 20D;

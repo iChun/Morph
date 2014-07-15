@@ -108,16 +108,7 @@ public class AbilitySwim extends Ability {
 			}
 			if(canMaintainDepth)
 			{
-				boolean isJumping = false;
-				try
-				{
-					isJumping = (Boolean)ObfuscationReflectionHelper.getPrivateValue(EntityLivingBase.class, getParent(), ObfHelper.isJumping);
-				}
-				catch(Exception e)
-				{
-					ObfHelper.obfWarning();
-					e.printStackTrace();
-				}
+				boolean isJumping = getParent().isJumping;
 				if(!getParent().isSneaking() && !isJumping && getParent().isInsideOfMaterial(Material.water))
 				{
 					getParent().motionY = 0f;
