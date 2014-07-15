@@ -20,9 +20,9 @@ morph.config.cat.gameplay.name=Gameplay
 morph.config.cat.abilities.name=能力
 morph.config.cat.clientOnly.name=僅客戶端
 
-morph.config.cat.gameplay.comment=These options affect the gameplay while using the mod.這些設定影響此模組遊戲性
+morph.config.cat.gameplay.comment=這些設定影響此模組遊戲性
 morph.config.cat.abilities.comment=這些設定有關於變形模組(Morph)的特殊能力
-morph.config.cat.clientOnly.comment=These settings are client-only.這些設定僅限定於客戶端
+morph.config.cat.clientOnly.comment=這些設定僅限定於客戶端
 
 morph.config.prop.childMorphs.name=嬰兒變形
 morph.config.prop.playerMorphs.name=玩家變形
