@@ -99,7 +99,7 @@ morph.command.addtolist=/morph whitelist [플레이어] - 변신 가능한 플�
 morph.command.removefromlist=/morph unwhitelist [플레이어] - 변신 가능한 플레이어 리스트에서 특정 플레이어를 제거함
 
 morph.command.forcingDemorph=강제적으로 %s의 변신이 해제되는 중
-morph.command.notInMorph=%s은(는) 변신 중이 아닙니다.!
+morph.command.notInMorph=%s은(는) 변신 중이 아닙니다!
 morph.command.noMorphData=%s은(는) 변신 옵션을 가지고 있지 않습니다!
 morph.command.cannotReadMorphData=%s에게서 변신 옵션 정보를 가져오는 데 실패하였습니다.
 morph.command.notOnline=%s은(는) 접속해 있지 않습니다!
