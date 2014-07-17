@@ -324,7 +324,7 @@ public class EventHandler
         if(Morph.proxy.tickHandlerClient.playerMorphInfo.containsKey(event.entityPlayer.getCommandSenderName()))
         {
             MorphInfoClient info = Morph.proxy.tickHandlerClient.playerMorphInfo.get(event.entityPlayer.getCommandSenderName());
-            if(!event.entityPlayer.isPlayerSleeping())
+            if(!event.entityPlayer.isPlayerSleeping() && event.entityPlayer.worldObj.playerEntities.contains(event.entityPlayer))
             {
                 info.player = event.entityPlayer;
             }
