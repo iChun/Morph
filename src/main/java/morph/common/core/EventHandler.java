@@ -1175,6 +1175,13 @@ public class EventHandler
                                         return;
                                     }
                                 }
+                                else if(Morph.config.getInt("hostileAbilityMode") == 5)
+                                {
+                                    if(event.target.getLastAttacker() == event.entityLiving)
+                                    {
+                                        return;
+                                    }
+                                }
                                 event.entityLiving.setRevengeTarget(null);
                                 if(event.entityLiving instanceof EntityLiving)
                                 {
