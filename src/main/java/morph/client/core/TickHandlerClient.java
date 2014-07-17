@@ -783,7 +783,10 @@ public class TickHandlerClient
                                 if(nextMaxHealth != info.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue())
                                 {
                                     info.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(nextMaxHealth);
-                                    info.player.setHealth((float)nextMaxHealth);
+                                    if(info.player.getHealth() < nextMaxHealth)
+                                    {
+                                        info.player.setHealth((float)nextMaxHealth);
+                                    }
                                 }
                             }
 

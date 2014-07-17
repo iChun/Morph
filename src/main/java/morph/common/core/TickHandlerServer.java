@@ -206,7 +206,7 @@ public class TickHandlerServer
                                 {
                                     targetHealth = 1.0F;
                                 }
-                                if(nextMaxHealth > prevMaxHealth && player.getHealth() + 0.5F < (float)Math.floor(targetHealth) || prevMaxHealth > nextMaxHealth)
+                                if((nextMaxHealth > prevMaxHealth && player.getHealth() + 0.5F < (float)Math.floor(targetHealth) || prevMaxHealth > nextMaxHealth) && player.isEntityAlive())
                                 {
                                     player.setHealth(targetHealth);
                                 }
