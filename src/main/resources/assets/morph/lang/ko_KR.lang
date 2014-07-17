@@ -39,7 +39,7 @@ morph.config.prop.allowMorphSelection.name=변신 옵션 선택 가능하게 함
 morph.config.prop.showPlayerLabel.name=플레이어 이름표 표시
 morph.config.prop.abilities.name=능력들
 morph.config.prop.customPatchLink.name=사용자 능력 패치 링크
-morph.config.prop.hostileAbilityMode.name=Hostile Ability Mode
+morph.config.prop.hostileAbilityMode.name=적대적 몹 능력에 대한 모드
 morph.config.prop.hostileAbilityDistanceCheck.name=Hostile Ability Distance Check
 morph.config.prop.disableEarlyGameFlight.name=게임 초기 날기 능력 비활성화
 morph.config.prop.disableEarlyGameFlightMode.name=날기 능력 활성화 모드
@@ -73,7 +73,7 @@ morph.config.prop.allowMorphSelection.comment=Requested by SoundLogic\nCan you o
 morph.config.prop.showPlayerLabel.comment=변신한 플레이어의 이름표를 보여줄까요?
 morph.config.prop.abilities.comment=변신 능력들을 사용하실 건가요?
 morph.config.prop.customPatchLink.comment=Redirect the mod to a different JSON patch location rather then the default patch hosted on GitHub.\nIf you would like to use the default, leave this blank.\nThis also affects NBTStripper.json.\nIf the link to your file is "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/AbilitySupport.json", put "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/", you cannot change the file name (eg: AbilitySupport.json) part of the link.
-morph.config.prop.hostileAbilityMode.comment=Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\nIf you'd like to turn on Hostile Ability, I'd recommend Mode 2 (personal preference)
+morph.config.prop.hostileAbilityMode.comment=적대적 몹 능력에 대한 모드\n0 = 적대적 몹으로 변신했을 때도 적대적 몹들이 플레이어를 공격함\n1 = 적대적 몹으로 변신했을 경우 적대적 몹들이 플레이어를 공격하지 않음\n2 = 적대적 몹으로 변신했을 때, 만약 상대 몹이 다른 종류라면 상대 몹이 플레이어를 공격하지 않음. 하지만 같은 종류일 경우에는 공격함\n3 = 적대적 몹으로 변신했을 때, 만약 상대 몹이 같은 종류라면 상대 몹이 플레이어를 공격하지 않음. 하지만 다른 종류일 경우에는 공격함\n4 = 적대적 몹으로 변신했을 때, 적대적 몹들의 플레이어 인식 거리가 짧아짐\n만약 적대적 몹 능력을 켜 놓을 것이라면, 나는 2번 모드를 권장합니다.
 morph.config.prop.hostileAbilityDistanceCheck.comment=Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6
 morph.config.prop.disableEarlyGameFlight.comment=다음과 같을 때 날기 능력을 활성화합니다.\n0 = 처음부터\n1 = 지옥에 갔을 때부터\n2 = 위더를 죽였을 때부터
 morph.config.prop.disableEarlyGameFlightMode.comment=날기 능력 활성화 모드\n0 = 서버 기본값\n1 = 플레이어 상황에 따라 다르게 (모든 플레어어가 지옥에 갔을 경우/모든 플레이어가 각자 위더를 한 마리 이상 죽였을 경우)
@@ -92,14 +92,14 @@ morph.config.prop.showAbilitiesInGui.comment=변신 옵션에 대한 능력들�
 morph.config.prop.sortMorphs.comment=GUI에서 변신 옵션들을 정리하시겠습니까?\n0 = 서버 기본값 사용\n1 = 알파벳순으로\n2 = 알파벳순으로, 그룹화된 옵션들을 정리하려 시도\n3 = 월드 내에서 옵션을 얻은 순으로
 morph.config.prop.renderCrosshairInRadialMenu.comment=As per request, render the crosshair position when in the radial menu.
 
-morph.command.demorph=/morph demorph [플레이어] [오프라인일 시 강제 변신 해제시킬지 여부(true(예)/false(아니요))] - 특정 플레이어의 변신을 해제시킴
+morph.command.demorph=/morph demorph [플레이어] [오프라인일 시 강제 변신 해제시킬지 여부(true(예))/false(아니요))] - 특정 플레이어의 변신을 해제시킴
 morph.command.clear=/morph clear [플레이어] - 특정 플레이어의 변신 옵션을 초기화시킴
 morph.command.morphtarget=/morph morphtarget [player] - Tries to make the player morph the mob they're looking at
 morph.command.addtolist=/morph whitelist [플레이어] - 변신 가능한 플레이어 리스트에 특정 플레이어를 추가함
 morph.command.removefromlist=/morph unwhitelist [플레이어] - 변신 가능한 플레이어 리스트에서 특정 플레이어를 제거함
 
 morph.command.forcingDemorph=강제적으로 %s의 변신이 해제되는 중
-morph.command.notInMorph=%s은(는) 변신 중이 아닙니다.!
+morph.command.notInMorph=%s은(는) 변신 중이 아닙니다!
 morph.command.noMorphData=%s은(는) 변신 옵션을 가지고 있지 않습니다!
 morph.command.cannotReadMorphData=%s에게서 변신 옵션 정보를 가져오는 데 실패하였습니다.
 morph.command.notOnline=%s은(는) 접속해 있지 않습니다!
