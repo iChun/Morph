@@ -8,12 +8,14 @@ import io.netty.buffer.ByteBuf;
 import morph.api.Ability;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
+import morph.common.morph.MorphEvent;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 
@@ -66,43 +68,46 @@ public class PacketGuiInput extends AbstractPacket
                 {
                     case 0:
                     {
-                        //select
-                        MorphState old = info != null ? info.nextState : Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player);
-
-                        MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), old, state);
-                        info2.setMorphing(true);
-                        info2.healthOffset = player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue() - 20D;
-                        info2.preMorphHealth = player.getHealth();
-
-                        MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
-                        if(info3 != null)
+                        if (!MinecraftForge.EVENT_BUS.post(new MorphEvent(player, state)))
                         {
-                            info2.morphAbilities = info3.morphAbilities;
-                            info2.healthOffset = info3.healthOffset;
+                            // select
+                            MorphState old = info != null ? info.nextState : Morph.proxy.tickHandlerServer.getSelfState(player.worldObj, player);
 
-                            ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
-                            for(Ability ability : newAbilities)
+                            MorphInfo info2 = new MorphInfo(player.getCommandSenderName(), old, state);
+                            info2.setMorphing(true);
+                            info2.healthOffset = player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue() - 20D;
+                            info2.preMorphHealth = player.getHealth();
+
+                            MorphInfo info3 = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player);
+                            if (info3 != null)
                             {
-                                if(ability.requiresInactiveClone())
+                                info2.morphAbilities = info3.morphAbilities;
+                                info2.healthOffset = info3.healthOffset;
+
+                                ArrayList<Ability> newAbilities = AbilityHandler.getEntityAbilities(info.nextState.entInstance.getClass());
+                                for (Ability ability : newAbilities)
                                 {
-                                    try
+                                    if (ability.requiresInactiveClone())
                                     {
-                                        Ability clone = ability.clone();
-                                        clone.inactive = true;
-                                        info.morphAbilities.add(clone);
-                                    }
-                                    catch(Exception e1)
-                                    {
+                                        try
+                                        {
+                                            Ability clone = ability.clone();
+                                            clone.inactive = true;
+                                            info.morphAbilities.add(clone);
+                                        }
+                                        catch (Exception e1)
+                                        {
+                                        }
                                     }
                                 }
                             }
+
+                            Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
+
+                            PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
+
+                            player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
                         }
-
-                        Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
-
-                        PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
-
-                        player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
                         break;
                     }
                     case 1:
