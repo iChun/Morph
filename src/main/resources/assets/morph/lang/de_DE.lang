@@ -14,7 +14,7 @@ morph.gui.keybinds.choose=Auswählen
 morph.gui.keybinds.cancel=Abbrechen
 morph.gui.keybinds.remove=Entfernen
 morph.gui.keybinds.favorite=Favorit
-morph.denySleep=Du kannst jetzt nicht schlafen, du bist verwandelt
+morph.denySleep=Du kannst nicht schlafen, du bist verwandelt!
 
 morph.config.cat.gameplay.name=Gameplay
 morph.config.cat.abilities.name=Abilities
@@ -107,7 +107,7 @@ morph.command.clearingMorphs=Lösche die Verwandlungen von %s
 morph.command.failToClear=Löschen der Verwandlungen von %s fehlgeschlagen
 morph.command.notLookingAtMorphable=%s schaut nicht auf ein Lebewesen, in das er/sie sich verwandeln könnte.
 morph.command.forcingMorphTarget=Zwinge %s, sich in sein Ziel zu verwandeln.
-morph.command.cannotFindPlayer=Spieler nicht gefunden: %s
+morph.command.cannotFindPlayer=Ein Spieler wurde nicht gefunden: %s
 morph.command.addingToBlackWhite=Füge %s Zu der Black-/Whitelist für Morph-Fähigkeiten hinzu.
 morph.command.alreadyInList=Spieler ist bereits in Black-/Whitelist
 morph.command.removingFromBlackWhite=Entferne %s von der Black-/Whitelist für Morph-Fähigkeiten.
