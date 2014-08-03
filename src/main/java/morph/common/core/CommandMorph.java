@@ -85,7 +85,7 @@ public class CommandMorph extends CommandBase
                 {
                     try
                     {
-                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile(EntityHelperBase.uuidExample, args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
+                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), EntityHelperBase.getSimpleGameProfileFromName(args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
                         FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().readPlayerDataFromFile(player1);
                         if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))
                         {
@@ -170,7 +170,7 @@ public class CommandMorph extends CommandBase
                 {
                     try
                     {
-                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), new GameProfile(EntityHelperBase.uuidExample, args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
+                        EntityPlayerMP player1 = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), EntityHelperBase.getSimpleGameProfileFromName(args[1]), new ItemInWorldManager(DimensionManager.getWorld(0)));
                         FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().readPlayerDataFromFile(player1);
 
                         if(Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player1).hasKey("morphData"))

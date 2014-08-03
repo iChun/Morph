@@ -12,3 +12,4 @@
 /.gradle
 /build
 /libs
+/src/api

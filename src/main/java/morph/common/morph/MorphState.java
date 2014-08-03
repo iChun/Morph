@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.EntityHelperBase;
 import ichun.common.core.util.ObfHelper;
 import morph.common.Morph;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -48,7 +49,7 @@ public class MorphState
 
         if(!player.equalsIgnoreCase(""))
         {
-            entInstance = isRemote ? createPlayer(world, player) : new FakePlayer((WorldServer)world, new GameProfile(EntityHelperBase.uuidExample, player));
+            entInstance = isRemote ? createPlayer(world, player) : new FakePlayer((WorldServer)world, EntityHelperBase.getSimpleGameProfileFromName(player));
         }
         else if(tag != null)
         {
@@ -119,7 +120,7 @@ public class MorphState
         {
             if(!playerMorph.equalsIgnoreCase(""))
             {
-                entInstance = isRemote ? createPlayer(world, playerMorph) : new FakePlayer((WorldServer)world, new GameProfile(EntityHelperBase.uuidExample, playerMorph));
+                entInstance = isRemote ? createPlayer(world, playerMorph) : new FakePlayer((WorldServer)world, EntityHelperBase.getSimpleGameProfileFromName(playerMorph));
                 identifier = "playerMorphState::player_" + playerMorph;
             }
             else
@@ -169,7 +170,7 @@ public class MorphState
     @SideOnly(Side.CLIENT)
     private EntityPlayer createPlayer(World world, String player)
     {
-        return new EntityOtherPlayerMP(world, new GameProfile(EntityHelperBase.uuidExample, player));
+        return new EntityOtherPlayerMP(world, EntityHelperBase.getFullGameProfileFromName(player));
     }
 
     public void writeFakeTags(EntityLivingBase living, NBTTagCompound tag)
