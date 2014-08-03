@@ -1,5 +1,5 @@
 morph.keybinds=[Morph] Нажмите для настроек клавиш
-morph.gui.keybinds.title=Горячие клавиши мода "Morph"
+morph.gui.keybinds.title=Горячие клавиши мода Morph
 morph.gui.keybinds.hold=Зажимая
 morph.gui.keybinds.none=ничего
 morph.gui.keybinds.shift=Shift
@@ -14,8 +14,7 @@ morph.gui.keybinds.choose=Выбрать
 morph.gui.keybinds.cancel=Отменить
 morph.gui.keybinds.remove=Удалить
 morph.gui.keybinds.favorite=Избранное
-morph.denySleep=Вы не можете спать сейчас, Вы трансформированы
-
+morph.denySleep=Вы не можете спать, так-как вы не вы, а морф...
 morph.config.cat.gameplay.name=Геймплей
 morph.config.cat.abilities.name=Способности
 morph.config.cat.clientOnly.name=Только клиент
@@ -24,7 +23,7 @@ morph.config.cat.gameplay.comment=Эти опции влияют на гейпл
 morph.config.cat.abilities.comment=Эти опции влияют на способности.
 morph.config.cat.clientOnly.comment=Эти опции только клиентские.
 
-morph.config.prop.childMorphs.name=Формы детенышей
+morph.config.prop.childMorphs.name=Формы детёнышей
 morph.config.prop.playerMorphs.name=Формы игроков
 morph.config.prop.bossMorphs.name=Формы боссов
 morph.config.prop.blacklistedMobs.name=Черный список
@@ -34,8 +33,8 @@ morph.config.prop.loseMorphsOnDeath.name=Терять формы при смер
 morph.config.prop.instaMorph.name=Сразу в форму
 morph.config.prop.NBTStripper.name=NBT чистка
 morph.config.prop.useLocalResources.name=Локальные ресурсы
-morph.config.prop.canSleepMorphed.name=Спать в форме?
-morph.config.prop.allowMorphSelection.name=Выбор формы?
+morph.config.prop.canSleepMorphed.name=Спать в форме другого существа?
+morph.config.prop.allowMorphSelection.name=Разрешить/Запретить выбор вашей формы?
 morph.config.prop.showPlayerLabel.name=Показывать ник игрока
 morph.config.prop.abilities.name=Способности
 morph.config.prop.customPatchLink.name=Способности мобов из других модов
@@ -58,7 +57,7 @@ morph.config.prop.showAbilitiesInGui.name=Показать способност�
 morph.config.prop.sortMorphs.name=Сортировать формы
 morph.config.prop.renderCrosshairInRadialMenu.name=Рендер перекрестья в меню
 
-morph.config.prop.childMorphs.comment=Приобретать форму детёныша?\nИзначально выключено из-за неправильного перехода.
+morph.config.prop.childMorphs.comment=Приобретать форму детёныша?\Изначально выключено из-за неправильного перехода.
 morph.config.prop.playerMorphs.comment=Приобретать форму игроков?
 morph.config.prop.bossMorphs.comment=Приобретать форму боссов? Изначально выключено из-за проблем с трансформацией в Эндер Дракона, Гидру/Нагу из Сумеречного леса, и пр.
 morph.config.prop.blacklistedMobs.comment=Запретить приобретать эти формы.\nОставьте пустым, если хотите получать формы всех существ.\nФорматировать так: <class>, <class>, <class>\nПример: am2.entities.EntityBattleChicken, biomesoplenty.entities.EntityJungleSpider, thaumcraft.common.entities.monster.EntityWisp
