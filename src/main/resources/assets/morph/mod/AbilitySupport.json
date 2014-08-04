@@ -1,23 +1,14 @@
 {
-  "net.lomeli.ec.entity.EntityEnderCreeper" : [
-    "waterAllergy",
-    "hostile"
-  ],
-  "net.lomeli.ec.entity.EntityWindCreeper" : [
-    "float|-0.114,true",
-    "hostile"
-  ],
-  "net.lomeli.ec.entity.EntitySpiderCreeper" : [
-    "poisonResistance",
-    "climb",
-    "hostile"
-  ],
   "net.lomeli.ec.entity.EntityDarkCreeper" : [
     "sunburn",
     "hostile"
   ],
-  "net.lomeli.ec.entity.EntityWaterCreeper" : [
-    "swim|true",
+  "net.lomeli.ec.entity.EntityEnderCreeper" : [
+    "waterAllergy",
+    "hostile"
+  ],
+  "net.lomeli.ec.entity.EntityFireCreeper" : [
+    "fireImmunity",
     "hostile"
   ],
   "net.lomeli.ec.entity.EntityMagmaCreeper" : [
@@ -25,8 +16,17 @@
     "fireImmunity",
     "hostile"
   ],
-  "net.lomeli.ec.entity.EntityFireCreeper" : [
-    "fireImmunity",
+  "net.lomeli.ec.entity.EntitySpiderCreeper" : [
+    "poisonResistance",
+    "climb",
+    "hostile"
+  ],
+  "net.lomeli.ec.entity.EntityWaterCreeper" : [
+    "swim|true",
+    "hostile"
+  ],
+  "net.lomeli.ec.entity.EntityWindCreeper" : [
+    "float|-0.114,true",
     "hostile"
   ],
   "am2.bosses.EntityAirGuardian": [
