@@ -1285,7 +1285,7 @@
     "hostile"
   ],
   "net.lomeli.ec.entity.EntityWaterCreeper" : [
-    "swim|true",
+    "swim|false,1.2F,0.4F,true",
     "hostile"
   ],
   "net.lomeli.ec.entity.EntityWindCreeper" : [
