@@ -69,7 +69,7 @@ public class ThreadGetOnlineResources extends Thread
                     }
                     e.printStackTrace();
 
-                    Reader fileIn = new InputStreamReader(Morph.class.getResourceAsStream("/assets/morph/mod/AbilityModMobSupport.json"));
+                    Reader fileIn = new InputStreamReader(Morph.class.getResourceAsStream("/assets/morph/mod/AbilitySupport.json"));
                     json = gson.fromJson(fileIn, mapType);
                     fileIn.close();
                 }
