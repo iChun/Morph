@@ -834,7 +834,7 @@ public class EventHandler
                     }
                 }
             }
-            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorSelect")) || event.keyBind.keyIndex == mc.gameSettings.keyBindAttack.getKeyCode())
+            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorSelect")) || (event.keyBind.keyIndex == mc.gameSettings.keyBindAttack.getKeyCode() && event.keyBind.isMinecraftBind()))
             {
                 if(Morph.proxy.tickHandlerClient.selectorShow)
                 {
@@ -883,7 +883,7 @@ public class EventHandler
                     Morph.proxy.tickHandlerClient.radialShow = false;
                 }
             }
-            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorCancel")) || event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode())
+            else if(event.keyBind.equals(Morph.config.getKeyBind("keySelectorCancel")) || (event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode() && event.keyBind.isMinecraftBind()))
             {
                 if(Morph.proxy.tickHandlerClient.selectorShow)
                 {
