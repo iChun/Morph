@@ -2,6 +2,8 @@ package morph.common.core;
 
 import ichun.common.core.EntityHelperBase;
 import ichun.common.core.network.PacketHandler;
+import morph.api.MorphAcquiredEvent;
+import morph.api.MorphEvent;
 import morph.common.Morph;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
@@ -13,6 +15,7 @@ import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 
 public class EntityHelper extends EntityHelperBase
@@ -81,7 +84,7 @@ public class EntityHelper extends EntityHelperBase
 		MorphState prevState = new MorphState(player.worldObj, player.getCommandSenderName(), username1, prevTag, false);
 		MorphState nextState = new MorphState(player.worldObj, player.getCommandSenderName(), username2, nextTag, false);
 
-        if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
+        if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState) || !forced && MinecraftForge.EVENT_BUS.post(new MorphAcquiredEvent(player, nextState.entInstance)))
 		{
 			return false;
 		}
@@ -108,12 +111,15 @@ public class EntityHelper extends EntityHelperBase
 				info2.morphAbilities = info3.morphAbilities;
                 info2.healthOffset = info3.healthOffset;
 			}
-			
-			Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
-            PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
+            if(!MinecraftForge.EVENT_BUS.post(new MorphEvent(player, info2.prevState.entInstance, info2.nextState.entInstance)))
+            {
+                Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
-			player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+                PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
+
+                player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+            }
 		}
 		
 		if(kill)

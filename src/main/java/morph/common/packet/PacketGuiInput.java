@@ -6,6 +6,7 @@ import ichun.common.core.network.AbstractPacket;
 import ichun.common.core.network.PacketHandler;
 import io.netty.buffer.ByteBuf;
 import morph.api.Ability;
+import morph.api.MorphEvent;
 import morph.common.Morph;
 import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
@@ -14,6 +15,7 @@ import morph.common.morph.MorphState;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 
@@ -98,11 +100,15 @@ public class PacketGuiInput extends AbstractPacket
                             }
                         }
 
-                        Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
+                        if(!MinecraftForge.EVENT_BUS.post(new MorphEvent(player, info2.prevState.entInstance, info2.nextState.entInstance)))
+                        {
+                            Morph.proxy.tickHandlerServer.setPlayerMorphInfo(player, info2);
 
-                        PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
+                            PacketHandler.sendToAll(Morph.channels, info2.getMorphInfoAsPacket());
 
-                        player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+                            player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+                        }
+
                         break;
                     }
                     case 1:
