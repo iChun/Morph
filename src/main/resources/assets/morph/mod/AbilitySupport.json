@@ -630,14 +630,14 @@
   ],
 +  "f1repl4ce.unlogic.entities.FireSoul": [
 +    "hostile",
-+    "fly|true",
++    "fly|false",
 +    "fireImmunity",
 +    "float",
 +    "witherResistance",
 +	"fear|6,1.05D,f1repl4ce.unlogic.entities.DJACOB"
 +  ],
 +  "f1repl4ce.unlogic.entities.DJACOB": [
-+    "swim|false"
+	
 +  ],
 +  "f1repl4ce.unlogic.entities.SnackAttackMan": [
 +    "witherResistance"
