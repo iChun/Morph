@@ -1589,5 +1589,10 @@
     "hostile",
 	"fear|9,0.6D,net.minecraft.entity.passive.EntityVillager",
     "sunburn"
+  ],
+  "com.countrygamer.weepingangels.entity.EntityWeepingAngel": [
+    "hostile",
+    "step|3F",
+    "fireImmunity"
   ]
 }
