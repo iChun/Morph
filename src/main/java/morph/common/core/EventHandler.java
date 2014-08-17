@@ -1678,6 +1678,8 @@ public class EventHandler
                 Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player).setTag("morphState" + i, states.get(i).getTag());
             }
         }
+        Morph.proxy.tickHandlerServer.playerMorphs.remove(event.player.getCommandSenderName())
+        Morph.proxy.tickHandlerServer.playerMorphInfo.remove(event.player.getCommandSenderName());
     }
 
     @SubscribeEvent
