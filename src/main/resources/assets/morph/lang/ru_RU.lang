@@ -20,9 +20,9 @@ morph.config.cat.gameplay.name=Игровой процесс
 morph.config.cat.abilities.name=Способности
 morph.config.cat.clientOnly.name=Только клиент
 
-morph.config.cat.gameplay.comment=Эти настройка влияют на игровой процесс.
+morph.config.cat.gameplay.comment=Эти настройки влияют на игровой процесс.
 morph.config.cat.abilities.comment=Эти настройки связаны с Morph способностями.
-morph.config.cat.clientOnly.comment=Эти настройка только клиентские.
+morph.config.cat.clientOnly.comment=Эти настройки только клиентские.
 
 morph.config.prop.childMorphs.name=Формы детёнышей
 morph.config.prop.playerMorphs.name=Формы игроков
