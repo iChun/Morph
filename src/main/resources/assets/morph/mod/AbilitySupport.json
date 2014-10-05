@@ -1408,6 +1408,168 @@
     "hostile",
     "fallNegate"
   ],
+  "tragicneko.tragicmc.entity.boss.EntityApis": [
+    "hostile",
+    "step|2.0F",
+    "fireImmunity"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityClaymation": [
+    "hostile",
+    "step|1.5F",
+    "fireImmunity",
+    "fallNegate"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityDeathReaper": [
+    "hostile",
+    "step|2.0F",
+    "fireImmunity",
+    "witherResistance",
+    "fallNegate"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityEnyvil": [
+    "hostile",
+    "step|2.5F",
+    "fireImmunity",
+    "fallNegate",
+    "witherResistance",
+    "poisonResistance"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityGreaterStin": [
+    "hostile",
+    "step|1.5F"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityJarra": [
+    "hostile",
+    "poisonResistance",
+    "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityKitsune": [
+    "hostile",
+    "fireImmunity"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityKragul": [
+    "hostile",
+    "fallNegate",
+    "step|1.0F",
+    "fireImmunity"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityMagmox": [
+    "hostile",
+    "fireImmunity",
+    "poisonResistance"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityMegaCryse": [
+    "hostile",
+    "fallNegate",
+    "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityPolaris": [
+    "hostile",
+    "step|2.0F",
+    "fallNegate"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityStinKing": [
+    "hostile",
+    "step|1.5F"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityStinQueen": [
+    "hostile",
+    "step|1.5F"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityTimeController": [
+    "hostile",
+    "step|2.0F",
+    "fireImmunity",
+    "poisonResistance",
+    "witherResistance",
+    "fallNegate"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityVoxStellarum": [
+    "hostile",
+    "step|2.0F",
+    "fallNegate"
+  ],
+  "tragicneko.tragicmc.entity.boss.EntityYeti": [
+    "hostile",
+    "step|2.0F",
+    "fallNegate",
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityAbomination": [
+    "hostile",
+    "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityCryse": [
+    "hostile",
+    "fallNegate",
+    "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityErkel": [
+    ""
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityGragul": [
+    "hostile",
+    "fallNegate",
+    "step|1.0F",
+    "fireImmunity"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityInkling": [
+    "hostile",
+    "sunburn"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityJabba": [
+    "hostile",
+    "fireImmunity",
+    "step|1.0F",
+    "poisonResistance"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityMinotaur": [
+    "hostile",
+    "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityNorVox": [
+    "hostile",
+    "fallNegate",
+    "step|1.0F",
+    "witherResistance"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityPirah": [
+    "hostile",
+    "swim|false, 229479, 1.0F, 0.2F, true"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityPlague": [
+    "hostile",
+    "fly|false",
+    "swim|true, 892742, 1.0F, 1.0F, true"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityPumpkinhead": [
+    "hostile"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityRagr": [
+    "hostile",
+    "fallNegate",
+    "step|1.5F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntitySirv": [
+    "hostile",
+    "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityStin": [
+    "hostile",
+    "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityTox": [
+    "hostile",
+    "poisonResistance",
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityTragicNeko": [
+    "hostile"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityWisp": [
+    "step|1.0F",
+    "fireImmunity",
+    "fallNegate",
+    "fear|6.0F, 1.6D, net.minecraft.entity.monster.EntityGolem"
+  ],
   "tropicraft.entities.EntityEagleRay": [
     "swim|false,1.8F,0.6F,true"
   ],
