@@ -1664,6 +1664,22 @@ public class EventHandler
         MorphInfo info = Morph.proxy.tickHandlerServer.playerMorphInfo.get(event.player.getCommandSenderName());
         if(info != null)
         {
+            if(info.morphProgress < 80)
+            {
+                info.morphProgress = 80;
+                double nextMaxHealth = MathHelper.clamp_double(info.nextState.entInstance.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 1D, 20D) + info.healthOffset;
+
+                if(nextMaxHealth < 1D)
+                {
+                    nextMaxHealth = 1D;
+                }
+
+                if(nextMaxHealth != event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue())
+                {
+                    event.player.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(nextMaxHealth);
+                }
+            }
+
             NBTTagCompound tag1 = new NBTTagCompound();
             info.writeNBT(tag1);
             Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(event.player).setTag("morphData", tag1);

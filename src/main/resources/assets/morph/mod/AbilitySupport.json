@@ -628,20 +628,20 @@
     "hostile",
     "fly|true"
   ],
-+  "f1repl4ce.unlogic.entities.FireSoul": [
-+    "hostile",
-+    "fly|false",
-+    "fireImmunity",
-+    "float",
-+    "witherResistance",
-+	"fear|6,1.05D,f1repl4ce.unlogic.entities.DJACOB"
-+  ],
-+  "f1repl4ce.unlogic.entities.DJACOB": [
-	
-+  ],
-+  "f1repl4ce.unlogic.entities.SnackAttackMan": [
-+    "witherResistance"
-+  ],
+  "f1repl4ce.unlogic.entities.FireSoul": [
+    "hostile",
+    "fly|false",
+    "fireImmunity",
+    "float",
+    "witherResistance",
+    "fear|6,1.05D,f1repl4ce.unlogic.entities.DJACOB"
+  ],
+  "f1repl4ce.unlogic.entities.DJACOB": [
+
+  ],
+  "f1repl4ce.unlogic.entities.SnackAttackMan": [
+    "witherResistance"
+  ],
   "gaia.entity.EntityGaiaAnubis": [
     "hostile"
   ],
@@ -1492,7 +1492,7 @@
   "tragicneko.tragicmc.entity.boss.EntityYeti": [
     "hostile",
     "step|2.0F",
-    "fallNegate",
+    "fallNegate"
   ],
   "tragicneko.tragicmc.entity.mob.EntityAbomination": [
     "hostile",
@@ -1534,12 +1534,12 @@
   ],
   "tragicneko.tragicmc.entity.mob.EntityPirah": [
     "hostile",
-    "swim|false, 229479, 1.0F, 0.2F, true"
+    "swim|false,1.0F,0.2F,true"
   ],
   "tragicneko.tragicmc.entity.mob.EntityPlague": [
     "hostile",
     "fly|false",
-    "swim|true, 892742, 1.0F, 1.0F, true"
+    "swim|true,1.0F,1.0F,true"
   ],
   "tragicneko.tragicmc.entity.mob.EntityPumpkinhead": [
     "hostile"
@@ -1559,7 +1559,7 @@
   ],
   "tragicneko.tragicmc.entity.mob.EntityTox": [
     "hostile",
-    "poisonResistance",
+    "poisonResistance"
   ],
   "tragicneko.tragicmc.entity.mob.EntityTragicNeko": [
     "hostile"
