@@ -1,7 +1,7 @@
 morph.keybinds=[Morph] Нажмите для настроек клавиш
 morph.gui.keybinds.title=Горячие клавиши мода "Morph"
 morph.gui.keybinds.hold=Зажимая
-morph.gui.keybinds.none=ничего
+morph.gui.keybinds.none=Нет
 morph.gui.keybinds.shift=Shift
 morph.gui.keybinds.ctrl=Ctrl
 morph.gui.keybinds.alt=Alt
@@ -11,24 +11,24 @@ morph.gui.keybinds.down=Вниз
 morph.gui.keybinds.left=Влево
 morph.gui.keybinds.right=Вправо
 morph.gui.keybinds.choose=Выбрать
-morph.gui.keybinds.cancel=Отменить
+morph.gui.keybinds.cancel=Отмена
 morph.gui.keybinds.remove=Удалить
 morph.gui.keybinds.favorite=Избранное
 morph.denySleep=Вы не можете спать сейчас, Вы трансформированы
 
-morph.config.cat.gameplay.name=Геймплей
+morph.config.cat.gameplay.name=Игровой процесс
 morph.config.cat.abilities.name=Способности
 morph.config.cat.clientOnly.name=Только клиент
 
-morph.config.cat.gameplay.comment=Эти опции влияют на гейплей.
-morph.config.cat.abilities.comment=Эти опции влияют на способности.
-morph.config.cat.clientOnly.comment=Эти опции только клиентские.
+morph.config.cat.gameplay.comment=Эти настройки влияют на игровой процесс.
+morph.config.cat.abilities.comment=Эти настройки связаны с Morph способностями.
+morph.config.cat.clientOnly.comment=Эти настройки только клиентские.
 
-morph.config.prop.childMorphs.name=Формы детенышей
+morph.config.prop.childMorphs.name=Формы детёнышей
 morph.config.prop.playerMorphs.name=Формы игроков
 morph.config.prop.bossMorphs.name=Формы боссов
-morph.config.prop.blacklistedMobs.name=Черный список
-morph.config.prop.blackwhitelistedPlayers.name=Запрещённые/Разрешённые игроки
+morph.config.prop.blacklistedMobs.name=Запрещённые мобы
+morph.config.prop.blackwhitelistedPlayers.name=Запрещённые/разрешённые игроки
 morph.config.prop.listIsBlacklist.name=Список игроков
 morph.config.prop.loseMorphsOnDeath.name=Терять формы при смерти
 morph.config.prop.instaMorph.name=Сразу в форму
@@ -44,7 +44,7 @@ morph.config.prop.hostileAbilityDistanceCheck.name=Проверка вражде
 morph.config.prop.disableEarlyGameFlight.name=Отключить ранний полёт
 morph.config.prop.disableEarlyGameFlightMode.name=Режим отключения полёта
 morph.config.prop.customMobToKillForFlight.name=Спецмоб для получения полёта
-morph.config.prop.disabledAbilities.name=Отключить способности
+morph.config.prop.disabledAbilities.name=Отключённые способности
 morph.config.prop.keySelectorUp.name=Выбор вверх
 morph.config.prop.keySelectorDown.name=Выбор вниз
 morph.config.prop.keySelectorLeft.name=Выбор влево
@@ -52,29 +52,29 @@ morph.config.prop.keySelectorRight.name=Выбор вправо
 morph.config.prop.keySelectorSelect.name=Подтверждение
 morph.config.prop.keySelectorCancel.name=Отмена
 morph.config.prop.keySelectorRemoveMorph.name=Выбор отключения формы
-morph.config.prop.keyFavourite.name=Выбор любимых форм/Круговое меню
-morph.config.prop.handRenderOverride.name=Рендер руки
-morph.config.prop.showAbilitiesInGui.name=Показать способности в ГПИ
+morph.config.prop.keyFavourite.name=Выбор любимых форм/круговое меню
+morph.config.prop.handRenderOverride.name=Отображение руки
+morph.config.prop.showAbilitiesInGui.name=Показать способности в интерфейсе
 morph.config.prop.sortMorphs.name=Сортировать формы
-morph.config.prop.renderCrosshairInRadialMenu.name=Рендер перекрестья в меню
+morph.config.prop.renderCrosshairInRadialMenu.name=Отображение перекрестья в меню
 
-morph.config.prop.childMorphs.comment=Приобретать форму детёныша?\nИзначально выключено из-за неправильного перехода.
-morph.config.prop.playerMorphs.comment=Приобретать форму игроков?
-morph.config.prop.bossMorphs.comment=Приобретать форму боссов? Изначально выключено из-за проблем с трансформацией в Эндер Дракона, Гидру/Нагу из Сумеречного леса, и пр.
-morph.config.prop.blacklistedMobs.comment=Запретить приобретать эти формы.\nОставьте пустым, если хотите получать формы всех существ.\nФорматировать так: <class>, <class>, <class>\nПример: am2.entities.EntityBattleChicken, biomesoplenty.entities.EntityJungleSpider, thaumcraft.common.entities.monster.EntityWisp
-morph.config.prop.listIsBlacklist.comment=Список игроков черный или белый?\n0 = Черный - Указанные игроки не могут трансформироваться\n1 = Белый - Указанные игроки - единственные, кто может трансформироваться.
+morph.config.prop.childMorphs.comment=Можно ли приобретать формы детёнышей?\nИзначально выключено из-за неправильного перехода.
+morph.config.prop.playerMorphs.comment=Можно ли приобретать формы игроков?
+morph.config.prop.bossMorphs.comment=Можно ли приобретать формы боссов? Изначально выключено из-за проблем с трансформацией в дракона Края, Гидру/Нагу из Twilight Forest и пр.
+morph.config.prop.blacklistedMobs.comment=Запретить приобретение игроками этих форм мобов.\nОставьте пустым, чтобы позволить приобретение всех совместимых форм мобов.\nФорматировать так: <class>, <class>, <class>\nПримеры: am2.entities.EntityBattleChicken, biomesoplenty.entities.EntityJungleSpider, thaumcraft.common.entities.monster.EntityWisp
+morph.config.prop.listIsBlacklist.comment=Список игроков - чёрный или белый?\n0 = Чёрный - Указанные игроки не могут трансформироваться\n1 = Белый - Указанные игроки - единственные, кто может трансформироваться.
 morph.config.prop.blackwhitelistedPlayers.comment=Список игроков, для которых запрещён/разрешён навык трансформирования.\nФорматировать так: <имя>, <имя>, <имя>\nПример: Cojomax99, pahimar, ohaiiChun, Mexahoid
-morph.config.prop.loseMorphsOnDeath.comment=Терять формы при смерти?\n0 = Нет\n1 = Да, все\n2 = Да, но только тот, в которой Вы были в момент смерти.
-morph.config.prop.instaMorph.comment=Сразу превращаться при получении новой формы?
-morph.config.prop.NBTStripper.comment=Разрешить NBT чистку?\nПоддерживается сообществом, но не модов\nЧистка была добавлена для отмены дублирования форм одного моба с разными NBT.
+morph.config.prop.loseMorphsOnDeath.comment=Будете ли Вы терять формы при смерти?\n0 = Нет\n1 = Да, все\n2 = Да, но только ту, в которой Вы были в момент смерти.
+morph.config.prop.instaMorph.comment=Будете ли Вы сразу превращаться при получении новой формы?
+morph.config.prop.NBTStripper.comment=Разрешить NBT чистку?\nЭта поддержка в основном обеспечивается сообществом и официально не поддерживается модом\nЧистка была добавлена для отмены дублирования форм одного моба с разными NBT.
 morph.config.prop.useLocalResources.comment=Использовать дополнительные ресурсы из папки конфигурации?\nОпция для откладки/NBT чистки.
-morph.config.prop.canSleepMorphed.comment=Можно ли спать в форме?
+morph.config.prop.canSleepMorphed.comment=Можите ли Вы спать в форме?
 morph.config.prop.allowMorphSelection.comment=Запрос от SoundLogic\nМожете ли Вы открывать меню форм?
-morph.config.prop.showPlayerLabel.comment=Показывать ник игрока, в чей форме Вы или Ваш ник?
-morph.config.prop.abilities.comment=Разрешить способности форм?
+morph.config.prop.showPlayerLabel.comment=Показывать ник игрока, в чей форме Вы?
+morph.config.prop.abilities.comment=Включить способности форм?
 morph.config.prop.customPatchLink.comment=Перенаправить мод на другой JSON с патчем вместо патча на GitHub.\nЕсли хотите оставить всё как было - ничего тут не пишите.\nТак же влияет на NBTStripper.json.\nЕсли ссылка на файл "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/AbilitySupport.json", поставьте "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/". Вы не можете изменять имя файла (пример: AbilitySupport.json).
-morph.config.prop.hostileAbilityMode.comment=Враждебность\n0 = Выключено, мобы атакуют Вас всегда.\n1 = Враждебные мобы не атакуют Вас, если Вы в форме враждебного моба.\n2 = Враждебные мобы других типов не нападут на вас, если вы в форме враждебного моба, но мобы того же рода будут нападать.\n3 = Враждебные мобы вашего рода не нападут на вас, если вы в форме враждебного моба, но другие мобы будут нападать.\n4 = Враждебные мобы хуже на Вас реагируют.
-morph.config.prop.hostileAbilityDistanceCheck.comment=Радиус, на котором враждебные мобы начинают Вас замечать\nВы должны подойти на стольо блоков, чтобы Вас заметили.\nИзначально: 6
+morph.config.prop.hostileAbilityMode.comment=Враждебность\n0 = Выключено, мобы атакуют Вас всегда.\n1 = Враждебные мобы не атакуют Вас, если Вы в форме враждебного моба.\n2 = Враждебные мобы других типов не нападут на вас, если вы в форме враждебного моба, но мобы того же рода будут нападать.\n3 = Враждебные мобы Вашего рода не нападут на Вас, если Вы в форме враждебного моба, но другие мобы будут нападать.\n4 = Враждебные мобы хуже на Вас реагируют.
+morph.config.prop.hostileAbilityDistanceCheck.comment=Радиус, на котором враждебные мобы начинают Вас замечать\nВы должны подойти на столько блоков, чтобы Вас заметили.\nИзначально: 6
 morph.config.prop.disableEarlyGameFlight.comment=Отключить функцию полёта, пока игрок...\n0 = Включать всегда\n1 = ...не попадёт в Нижний мир\n2 = ...не убьёт Иссушителя
 morph.config.prop.disableEarlyGameFlightMode.comment=Режим отключения полёта\n0 = На всех игроков\n1 = Определённые игроки.
 morph.config.prop.customMobToKillForFlight.comment=Смена Иссушителя на другого моба для получения полёта\nИспользуйте полное имя моба.(Пример: am2.entities.EntityBattleChicken)\nОставьте пустым для отключения.\nНужно отключить ранний полёт для условия с Иссушителем.
@@ -85,18 +85,18 @@ morph.config.prop.keySelectorLeft.comment=Клавиша перехода вле
 morph.config.prop.keySelectorRight.comment=Клавиша перехода вправо\nИзначально: 27 (])
 morph.config.prop.keySelectorSelect.comment=Клавиша выбора формы\nИзначально: 28 (Enter/Return)
 morph.config.prop.keySelectorCancel.comment=Клавиша закрытия меню\nИзначально: 1 (Esc)
-morph.config.prop.keySelectorRemoveMorph.comment=Клавиша убирания моба из меню.\nУдаление включено изначально\nИзначально: 14 (Backspace)
+morph.config.prop.keySelectorRemoveMorph.comment=Клавиша удаления моба из меню.\nУдаление включено изначально\nИзначально: 14 (Backspace)
 morph.config.prop.keyFavourite.comment=Клавиша добавления в список любимых/ненужных из меню и помещение из в круговое меню.\nИзначально: 41 (` [или ~])
 morph.config.prop.handRenderOverride.comment=Разрешить моду перерисовывать руку?
 morph.config.prop.showAbilitiesInGui.comment=Показать способности моба в меню?
 morph.config.prop.sortMorphs.comment=Сортировать формы в меню?\n0 = Порядок получения (Изначально)\n1 = Алфавитно (зависит от ОС)\n2 = Алфавитно в группы\n3 = Самые используемые
 morph.config.prop.renderCrosshairInRadialMenu.comment=По запросу. Отрисовывать перекрестье в меню.
 
-morph.command.demorph=/morph demorph [player] [возвращает даже если игрок не в игре (true/false)] - Возвращает игрока в его первоначальную форму
-morph.command.clear=/morph clear [player] - Удаляет формы мобов у игрока
-morph.command.morphtarget=/morph morphtarget [player] - Попытка получить форму моба на которого смотрит игрок
-morph.command.addtolist=/morph whitelist <player> - Добавляет игрока в список и включает его
-morph.command.removefromlist=/morph unwhitelist <player> - Удаляет игрока из списка
+morph.command.demorph=/morph demorph [игрок] [возвращает даже если игрок не в игре (true/false)] - Возвращает игрока в его первоначальную форму
+morph.command.clear=/morph clear [игрок] - Удаляет формы мобов у игрока
+morph.command.morphtarget=/morph morphtarget [игрок] - Попытка получить форму моба, на которого смотрит игрок
+morph.command.addtolist=/morph whitelist <игрок> - Добавляет игрока в белый список и включает его
+morph.command.removefromlist=/morph unwhitelist <игрок> - Удаляет игрока из белого списка
 
 morph.command.forcingDemorph=Попытка вернуть форму %s
 morph.command.notInMorph=%s не в форме моба!
@@ -104,11 +104,11 @@ morph.command.noMorphData=%s не имеет информации!
 morph.command.cannotReadMorphData=Не получается считать информацию с %s
 morph.command.notOnline=%s не в игре!
 morph.command.clearingMorphs=Удаление форм у %s
-morph.command.failToClear=Провалено: удаление форм у %s
+morph.command.failToClear=Не удалось удалить формы у %s
 morph.command.notLookingAtMorphable=%s не является мобом, чью форму можно обрести.
 morph.command.forcingMorphTarget=Попытка трансформировать %s в моба.
 morph.command.cannotFindPlayer=Не получается найти игрока: %s
-morph.command.addingToBlackWhite=Добавление %s в список.
-morph.command.alreadyInList=Игрок уже в списке
-morph.command.removingFromBlackWhite=Удаление %s из списка.
-morph.command.notInList=Игрок не в списке
+morph.command.addingToBlackWhite=Добавление %s в чёрный/белый список.
+morph.command.alreadyInList=Игрок уже в чёрном/белом списке
+morph.command.removingFromBlackWhite=Удаление %s из чёрного/белого списка.
+morph.command.notInList=Игрок не в чёрном/белом списке
