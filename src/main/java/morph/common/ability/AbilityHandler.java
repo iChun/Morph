@@ -160,6 +160,7 @@ public class AbilityHandler
                     Morph.console("Arguments are erroring when trying to create ability by type: "  + abilityClass.getName() + ", "+ type + ", args: " + arguments == null ? "none" : "arg list of size " + arguments.length, true);
                     e2.printStackTrace();
                 }
+                return ab;
             }
             else
             {
