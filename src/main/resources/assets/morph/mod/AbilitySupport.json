@@ -121,6 +121,100 @@
   "com.emoniph.witchery.entity.EntityParasyticLouse": [
     "hostile"
   ],
+  "com.lom.lotsomobsentity.EntityAnt": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityAmmonite": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityBear": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityBee": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityBird": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityButterfly": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityCroco": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityFireFly": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityFishy": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityFly": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityPolarBear": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityGekko": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityLizard": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityKakkerlak": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityLion": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityNarwal": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityPterosaurus": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityRaptor": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntitySaberTooth": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntitySnake": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntitySquirrel": [
+    "climb",
+    "fallNegate"
+  ],
+  "com.lom.lotsomobsentity.EntityTRex": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityTropicalFishy": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityTurtle": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityVulture": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityWhale": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntitySanta": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityGorilla": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityHammerShark": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityIchtyosaurus": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityShark": [
+    "swim|false,1F,1F,true"
+  ],
   "danger.orespawn.Basilisk": [
     "hostile",
     "step|2F"
@@ -908,91 +1002,6 @@
     "fireImmunity",
     "hostile",
     "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityAnt": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityBear": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityBird": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityBirdy": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityButterfly": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityCroco": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityFireFly": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityFishy": [
-    "swim|false,1.2F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityFly": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityBee": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityIceBear": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityGekko": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityLizard": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityKakkerlak": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityLion": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityNarwal": [
-    "swim|false,1F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityPterosaurus": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityRaptor": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntitySaberTooth": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntitySnake": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntitySquirrel": [
-    "climb",
-    "fallNegate"
-  ],
-  "lom.LotsOMobsEntity.EntityTRex": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityTropicalFishy": [
-    "swim|false,1.2F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityTurtle": [
-    "swim|false,1F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityVulture": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityWhale": [
-    "swim|false,1F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntitySanta": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityGorilla": [
-    "hostile"
   ],
   "lycanite.lycanitesmobs.demonmobs.entity.EntityAsmodi": [
     "fireImmunity",
