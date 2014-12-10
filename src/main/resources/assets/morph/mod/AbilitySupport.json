@@ -628,6 +628,24 @@
     "hostile",
     "fly|true"
   ],
+  "evilcraft.entity.monster.Netherfish": [
+    "hostile",
+    "waterAllergy",
+    "fireImmunity"
+  ],
+  "evilcraft.entity.monster.PoisonousLibelle": [
+    "hostile",
+    "fallNegate",
+    "fly|true"
+  ],
+  "evilcraft.entity.monster.VengeanceSpirit": [
+    "hostile",
+    "step|2F",
+    "float"
+  ],
+  "evilcraft.entity.monster.Werewolf": [
+    "hostile"
+  ],
   "f1repl4ce.unlogic.entities.FireSoul": [
     "hostile",
     "fly|false",
