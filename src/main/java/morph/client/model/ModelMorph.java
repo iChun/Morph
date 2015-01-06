@@ -70,7 +70,7 @@ public class ModelMorph extends ModelBase
 						ModelRenderer cubeCopy = new ModelRenderer(this, txOffsetX, txOffsetY);
 						cubeCopy.mirror = parentCube.mirror;
 						cubeCopy.textureHeight = parentCube.textureHeight;
-						cubeCopy.textureWidth = cubeCopy.textureWidth;
+						cubeCopy.textureWidth = parentCube.textureWidth;
 						
 						for(int j = 0; j < parentCube.cubeList.size(); j++)
 						{
