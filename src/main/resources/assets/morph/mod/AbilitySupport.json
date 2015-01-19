@@ -1302,6 +1302,10 @@
     "swim|false,1.2F,0.4F,true",
     "hostile"
   ],
+  "net.tynkyn.entity.EntityGraze": [
+    "fly|true",
+    "hostile"
+  ],
   "net.lomeli.ec.entity.EntityWindCreeper" : [
     "float|-0.114,true",
     "hostile"
