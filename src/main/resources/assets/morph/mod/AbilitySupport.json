@@ -1579,7 +1579,7 @@
     "hostile",
     "fallNegate",
     "fly|true",
-	"waterAllergy
+	"waterAllergy"
   ],
   "tragicneko.tragicmc.entity.mob.EntityInkling": [
     "hostile",
