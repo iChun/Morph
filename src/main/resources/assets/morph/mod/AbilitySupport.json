@@ -1,6 +1,7 @@
 {
   "am2.bosses.EntityAirGuardian": [
     "hostile"
+    "fly|false"
   ],
   "am2.bosses.EntityArcaneGuardian": [
     "hostile"
@@ -756,6 +757,9 @@
   ],
   "gaia.entity.EntityGaiaAnubis": [
     "hostile"
+    	"potionEffect|2,600,0,false",
+    	"potionEffect|15,300,0,false"
+    
   ],
   "gaia.entity.EntityGaiaBanshee": [
     "hostile",
@@ -765,11 +769,15 @@
   "gaia.entity.EntityGaiaBaphomet": [
     "hostile",
     "fireImmunity",
-    "witherResistance"
+    "witherResistance",
+       	"potionEffect|2,600,0,false",
+    	"potionEffect|15,600,0,false"
   ],
   "gaia.entity.EntityGaiaBoneKnight": [
     "hostile",
-    "sunburn"
+    "sunburn",
+       	"potionEffect|2,600,0,false",
+       	"potionEffect|4,600,2,false",
   ],
   "gaia.entity.EntityGaiaCentaur": [
     "step|1F"
@@ -784,7 +792,8 @@
   ],
   "gaia.entity.EntityGaiaCockatrice": [
     "hostile",
-    "float|-0.114,true"
+    "fallNegate",
+    "potionEffect|19,100,0,false"
   ],
   "gaia.entity.EntityGaiaCreep": [
     "hostile"
@@ -792,13 +801,19 @@
   "gaia.entity.EntityGaiaCyclops": [
     "hostile",
     "step|2F",
-    "fallNegate"
+    "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaDryad": [
-    "poisonResistance"
+    "poisonResistance",
+        "potionEffect|19,200,0,false"
   ],
   "gaia.entity.EntityGaiaDullahan": [
-    "hostile"
+    "hostile",
+        "potionEffect|2,300,0,false"
+  ],
+  "gaia.entity.EntityGaiaDhampir": [
+    "hostile",
+        "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaEnderDragonGirl": [
     "hostile",
@@ -816,7 +831,8 @@
     "poisonResistance"
   ],
   "gaia.entity.EntityGaiaFutakuchiOnna": [
-    "hostile"
+    "hostile",
+        "potionEffect|17,100,0,false"
   ],
   "gaia.entity.EntityGaiaGigaKnight": [
     "hostile",
@@ -827,31 +843,45 @@
   ],
   "gaia.entity.EntityGaiaHarpy": [
     "hostile",
-    "fly|true"
+    "fly|true",
+        "potionEffect|2,200,0,false"
   ],
   "gaia.entity.EntityGaiaJorogumo": [
     "hostile",
     "climb",
-    "poisonResistance"
+    "poisonResistance",
+        "potionEffect|2,600,0,false",
+            "potionEffect|18,200,0,false"
   ],
   "gaia.entity.EntityGaiaMandragora": [
-    "poisonResistance"
+    "poisonResistance",
+        "potionEffect|2,400,3,false",
+            "potionEffect|16,600,0,false",
+                "potionEffect|9,600,0,false"
   ],
   "gaia.entity.EntityGaiaMermaid": [
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+        "potionEffect|2,600,0,false",
+            "potionEffect|4,600,2,false"
   ],
   "gaia.entity.EntityGaiaMimic": [
-    "hostile"
+    "hostile",
+        "potionEffect|17,600,0,false",
+            "potionEffect|19,300,0,false"
   ],
   "gaia.entity.EntityGaiaMinotaur": [
     "hostile",
     "fireImmunity",
     "fallNegate",
-    "step|1F"
+    "step|6F",
+            "potionEffect|2,600,0,false",
+            "potionEffect|4,300,0,false"
   ],
   "gaia.entity.EntityGaiaMinotaurus": [
     "hostile",
-    "step|1F"
+    "step|1F",
+            "potionEffect|2,600,0,false",
+            "potionEffect|4,300,0,false"
   ],
   "gaia.entity.EntityGaiaMummy": [
     "hostile",
@@ -859,7 +889,11 @@
   ],
   "gaia.entity.EntityGaiaNaga": [
     "hostile",
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+                "potionEffect|2,600,0,false",
+            "potionEffect|4,600,2,false",
+            "poisonResistance",
+            "fireImmunity"
   ],
   "gaia.entity.EntityGaiaNineTails": [
     "hostile",
@@ -874,16 +908,26 @@
     "step|1F",
     "fireImmunity"
   ],
+  "gaia.entity.EntityGaiaSatyr": [
+ "potionEffect|2,300,0,false",
+  ],
   "gaia.entity.EntityGaiaSelkie": [
     "hostile",
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+                    "potionEffect|2,600,0,false",
+            "potionEffect|4,300,0,false"
   ],
   "gaia.entity.EntityGaiaShaman": [
-    "hostile"
+    "hostile",
+    "poisonResistance",
+                    "potionEffect|17,200,0,false",
+            "potionEffect|18,600,0,false"
   ],
   "gaia.entity.EntityGaiaSharko": [
     "hostile",
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+                    "potionEffect|2,600,0,false",
+            "potionEffect|4,600,2,false"
   ],
   "gaia.entity.EntityGaiaSiren": [
     "hostile",
@@ -891,12 +935,19 @@
   ],
   "gaia.entity.EntityGaiaSludgeGirl": [
     "hostile",
-    "fallNegate"
+"poisonResistance",
+"fireImmunity",
+                "potionEffect|17,100,0,false",
+            "potionEffect|4,300,0,false",
+                        "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaSphinx": [
     "hostile",
     "fireImmunity",
-    "fly|true"
+    "fly|true",
+    "step|6F",
+                "potionEffect|4,600,0,false",
+                            "potionEffect|2,600,0,false"
   ],
   "gaia.entity.EntityGaiaSpriggan": [
     "hostile"
@@ -904,24 +955,40 @@
   "gaia.entity.EntityGaiaSuccubus": [
     "hostile",
     "fly|false",
-    "fireImmunity"
+    "fireImmunity",
+            "potionEffect|9,400,0,false"
+    
+  ],
+  "gaia.entity.EntityGaiaSwamper": [
+    "hostile",
+    "fireImmunity",
+    "poisonResistance",
+            "potionEffect|2,600,0,false",
+            "potionEffect|19,600,0,false"
+            
+    
   ],
   "gaia.entity.EntityGaiaValkyrie": [
     "hostile",
     "fireImmunity",
     "fly|false",
-    "step|1F"
+    "step|6F",
+                "potionEffect|2,600,0,false",
+                            "potionEffect|18,300,0,false"
   ],
   "gaia.entity.EntityGaiaVampire": [
     "hostile",
     "sunburn",
-    "fly|false"
+    "fly|false",
+    "step|6F",
+    "potionEffect|9,600,0,false",
   ],
   "gaia.entity.EntityGaiaWerecat": [
     "hostile",
     "step|1F",
     "fallNegate",
-    "climb"
+    "climb",
+                    "potionEffect|2,200,0,false",
   ],
   "gaia.entity.EntityGaiaWitch": [
     "hostile",
@@ -930,15 +997,18 @@
   ],
   "gaia.entity.EntityGaiaWitherCow": [
     "hostile",
-    "witherResistance"
+    "witherResistance",
+                        "potionEffect|20,600,0,false",
   ],
   "gaia.entity.EntityGaiaYeti": [
     "hostile",
-    "step|1F"
+    "step|1F",
+                        "potionEffect|2,300,0,false",
   ],
   "gaia.entity.EntityGaiaYukiOnna": [
     "hostile",
-    "float|-0.114,true"
+    "float|-0.114,true",
+                        "potionEffect|2,100,3,false",
   ],
   "gravestone.entity.monster.EntitySkeletonCat": [
     "hostile",
