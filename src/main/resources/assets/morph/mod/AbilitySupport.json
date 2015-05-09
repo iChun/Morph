@@ -1,6 +1,6 @@
 {
   "am2.bosses.EntityAirGuardian": [
-    "hostile"
+    "hostile",
     "fly|false"
   ],
   "am2.bosses.EntityArcaneGuardian": [
@@ -756,7 +756,7 @@
     "witherResistance"
   ],
   "gaia.entity.EntityGaiaAnubis": [
-    "hostile"
+    "hostile",
     	"potionEffect|2,600,0,false",
     	"potionEffect|15,300,0,false"
     
@@ -777,7 +777,7 @@
     "hostile",
     "sunburn",
        	"potionEffect|2,600,0,false",
-       	"potionEffect|4,600,2,false",
+       	"potionEffect|4,600,2,false"
   ],
   "gaia.entity.EntityGaiaCentaur": [
     "step|1F"
@@ -981,14 +981,14 @@
     "sunburn",
     "fly|false",
     "step|6F",
-    "potionEffect|9,600,0,false",
+    "potionEffect|9,600,0,false"
   ],
   "gaia.entity.EntityGaiaWerecat": [
     "hostile",
     "step|1F",
     "fallNegate",
     "climb",
-                    "potionEffect|2,200,0,false",
+                    "potionEffect|2,200,0,false"
   ],
   "gaia.entity.EntityGaiaWitch": [
     "hostile",
@@ -998,17 +998,17 @@
   "gaia.entity.EntityGaiaWitherCow": [
     "hostile",
     "witherResistance",
-                        "potionEffect|20,600,0,false",
+                        "potionEffect|20,600,0,false"
   ],
   "gaia.entity.EntityGaiaYeti": [
     "hostile",
     "step|1F",
-                        "potionEffect|2,300,0,false",
+                        "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaYukiOnna": [
     "hostile",
     "float|-0.114,true",
-                        "potionEffect|2,100,3,false",
+                        "potionEffect|2,100,3,false"
   ],
   "gravestone.entity.monster.EntitySkeletonCat": [
     "hostile",
