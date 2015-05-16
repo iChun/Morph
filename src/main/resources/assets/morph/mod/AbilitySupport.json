@@ -909,7 +909,7 @@
     "fireImmunity"
   ],
   "gaia.entity.EntityGaiaSatyr": [
-    "potionEffect|2,300,0,false",
+    "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaSelkie": [
     "hostile",
