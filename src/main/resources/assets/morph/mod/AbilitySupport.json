@@ -796,7 +796,7 @@
     "potionEffect|19,100,0,false"
   ],
   "gaia.entity.EntityGaiaCreep": [
-  	"hostile"
+    "hostile"
   ],
   "gaia.entity.EntityGaiaCyclops": [
     "hostile",
