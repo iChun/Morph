@@ -759,7 +759,6 @@
     "hostile",
     "potionEffect|2,600,0,false",
     "potionEffect|15,300,0,false"
-    
   ],
   "gaia.entity.EntityGaiaBanshee": [
     "hostile",
@@ -839,7 +838,8 @@
     "swim|true,1F,1F,false"
   ],
   "gaia.entity.EntityGaiaGryphon": [
-    "fly|true"
+    "fly|true",
+    "hostile"
   ],
   "gaia.entity.EntityGaiaHarpy": [
     "hostile",
