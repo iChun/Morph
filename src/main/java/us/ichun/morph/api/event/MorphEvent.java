@@ -1,6 +1,6 @@
-package morph.api;
+package us.ichun.morph.api.event;
 
-import cpw.mods.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
