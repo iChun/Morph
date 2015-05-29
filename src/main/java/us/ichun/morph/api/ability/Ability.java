@@ -1,4 +1,4 @@
-package us.ichun.morph.api;
+package us.ichun.morph.api.ability;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,8 +10,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * Abstract ability class.
  * Think of it like the Entity class, extend it to make your own types.
- * Some abilities may seem more like traits, but let's just call it an ability for simplicity's sake.
- * Please take note that entities inherit their superclass' abilities.
+ * Some abilities may seem more like traits/characteristic, but let's just call it an ability for simplicity's sake.
+ * Please take note that entities that don't have an ability mapping will inherit their superclass' abilities.
  * @author iChun
  *
  */
@@ -42,7 +42,7 @@ public abstract class Ability
 
     /**
      * Since parent is private it needs a setter.
-     * @param newParent
+     * @param ent new parent that this ability clone attaches to
      */
     public void setParent(EntityLivingBase ent)
     {
@@ -86,21 +86,11 @@ public abstract class Ability
     public abstract Ability clone();
 
     /**
-     * Return true for this if you need an inactive copy of this morph in-between morph states (abilities of the next morph are only swapped over when morph is complete)
-     * Currently used for AbilitySwim to adjust the fog render.
-     * @return requiresInactiveClone
-     */
-    public boolean requiresInactiveClone()
-    {
-        return false;
-    }
-
-    /**
      * Saving of ability to NBTTagCompound.
      * Mainly used for synching Abilities between the client-server for mod mobs which do not use the API to add abilities.
      * The ability type (getType()) is appended to nbt before function is called.
      * Not actually used.
-     * @param NBTTagCompound saveData
+     * @param tag saveData
      */
     public abstract void save(NBTTagCompound tag);
 
@@ -108,7 +98,7 @@ public abstract class Ability
      * Loading of ability from NBTTagCompound.
      * Mainly used to load custom fields from NBT.
      * Not actually used.
-     * @param NBTTagCompound saveData
+     * @param tag saveData
      */
     public abstract void load(NBTTagCompound tag);
 
@@ -121,7 +111,7 @@ public abstract class Ability
 
     /**
      * Icon location for ability. Can be null.
-     * Mod's default icons are 32x32. Can be any resolution though.
+     * Morph's default icons are 32x32. Can be any resolution though.
      * @return resourcelocation for icon
      */
     @SideOnly(Side.CLIENT)
@@ -133,18 +123,17 @@ public abstract class Ability
         return true;
     }
 
+    private static IAbilityHandler abilityHandlerImpl = new AbilityHandlerDummy();
+
     /**
      * Registers the ability so the mod can look up the class when attempting to load Ability save data.
      * Call this no later than PostInit.
-     * @param ability type
-     * @param AbilityClass
+     * @param name Ability type/name
+     * @param clz AbilityClass
      */
     public static void registerAbility(String name, Class<? extends Ability> clz)
     {
-        try {
-            Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("registerAbility", String.class, Class.class).invoke(null, name, clz);
-        } catch (Exception e) {
-        }
+        abilityHandlerImpl.registerAbility(name, clz);
     }
 
     /**
@@ -158,38 +147,28 @@ public abstract class Ability
      */
     public static void mapAbilities(Class<? extends EntityLivingBase> entClass, Ability...abilities)
     {
-        try {
-            Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("mapAbilities", Class.class, Ability[].class).invoke(null, entClass, abilities);
-        } catch (Exception e) {
-        }
+        abilityHandlerImpl.mapAbilities(entClass, abilities);
     }
 
     /**
      * Superman's kryptonite.
-     * @param Entity class to remove ability from
-     * @param Ability type
+     * @param entClass Entity class to remove ability from
+     * @param type Ability type
      */
     public static void removeAbility(Class<? extends EntityLivingBase> entClass, String type)
     {
-        try {
-            Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("removeAbility", Class.class, String.class).invoke(null, entClass, type);
-        } catch (Exception e) {
-        }
+        abilityHandlerImpl.removeAbility(entClass, type);
     }
 
     /**
      * Checks to see if the entity class has a mapped ability type.
      * @param entClass
-     * @param Ability type
+     * @param type Ability type
      * @return Entity class has ability type
      */
     public static boolean hasAbility(Class<? extends EntityLivingBase> entClass, String type)
     {
-        try {
-            return (Boolean)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("hasAbility", Class.class, String.class).invoke(null, entClass, type);
-        } catch (Exception e) {
-            return false;
-        }
+        return abilityHandlerImpl.hasAbility(entClass, type);
     }
 
     /**
@@ -197,12 +176,8 @@ public abstract class Ability
      * Check out AbilityHandler to see each Ability type and the parse function in their respective classes for the arguments.
      * @return
      */
-    public static Ability createNewAbilityByType(String type, String[] arguments)
+    public static Ability createNewAbilityByType(String type, String...arguments)
     {
-        try {
-            return (Ability)Class.forName("morph.common.ability.AbilityHandler").getDeclaredMethod("createNewAbilityByType", String.class, String[].class).invoke(null, type, arguments);
-        } catch (Exception e) {
-            return null;
-        }
+        return abilityHandlerImpl.createNewAbilityByType(type, arguments);
     }
 }
