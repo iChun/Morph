@@ -1396,6 +1396,18 @@
     "swim|false,1.2F,0.4F,true",
     "hostile"
   ],
+  "net.njay.unicornmod.entity.EntityAlicorn": [
+  	"fly|true",
+  	"fallNegate"
+  ],
+  "net.njay.unicornmod.entity.EntityPegasus": [
+  	"fly|true",
+  	"fallNegate"
+  ],
+  "net.njay.unicornmod.entity.EntityUnicorn": [
+  	"fly|true",
+  	"fallNegate"
+  ],
   "net.tynkyn.entity.EntityGraze": [
     "fly|true",
     "hostile"
