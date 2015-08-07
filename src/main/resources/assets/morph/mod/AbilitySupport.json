@@ -191,6 +191,26 @@
   "com.github.revival.common.entity.mob.EntitySarcosuchus": [
     "hostile"
   ],
+  "com.github.revival.common.entity.mob.EntitySentryPigman": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntitySmilodon": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntitySpinosaurus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityTerrorBird": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityTyrannosaurus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityVelociraptor": [
+    "climb",
+    "hostile",
+    "fallNegate"
+  ],
   "com.lom.lotsomobsentity.EntityAnt": [
     "climb"
   ],
