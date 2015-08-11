@@ -37,7 +37,7 @@ import java.util.EnumMap;
 public class Morph
     implements IConfigUser
 {
-	public static final String version = "0.9.1";
+	public static final String version = "0.9.2";
 	
 	@Instance("Morph")
 	public static Morph instance;
@@ -109,6 +109,8 @@ public class Morph
         config.createIntBoolProperty("allowMorphSelection", "morph.config.prop.allowMorphSelection.name", "morph.config.prop.allowMorphSelection.comment", true, true, true);
 
         config.createIntBoolProperty("showPlayerLabel", "morph.config.prop.showPlayerLabel.name", "morph.config.prop.showPlayerLabel.comment", true, true, false);
+
+        config.createIntBoolProperty("forceSizeWhenMorphed", "morph.config.prop.forceSizeWhenMorphed.name", "morph.config.prop.forceSizeWhenMorphed.comment", true, true, true);
 
         config.setCurrentCategory("abilities", "morph.config.cat.abilities.name", "morph.config.cat.abilities.comment");
         config.createIntBoolProperty("abilities", "morph.config.prop.abilities.name", "morph.config.prop.abilities.comment", false, true, true);

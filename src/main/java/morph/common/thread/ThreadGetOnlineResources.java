@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ThreadGetOnlineResources extends Thread
 {
-    public String sitePrefix = "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/";
+    public String sitePrefix = "https://raw.github.com/iChun/Morph/legacy1710/src/main/resources/assets/morph/mod/";
 
     public ThreadGetOnlineResources(String prefix)
     {

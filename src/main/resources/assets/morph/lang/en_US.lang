@@ -37,6 +37,7 @@ morph.config.prop.useLocalResources.name=Use Local Resources
 morph.config.prop.canSleepMorphed.name=Can Sleep Morphed?
 morph.config.prop.allowMorphSelection.name=Allow Morph Selection?
 morph.config.prop.showPlayerLabel.name=Show Player Label
+morph.config.prop.forceSizeWhenMorphed.name=Force Size when Morphed
 morph.config.prop.abilities.name=Abilities
 morph.config.prop.customPatchLink.name=Custom Mod Ability Patch Link
 morph.config.prop.hostileAbilityMode.name=Hostile Ability Mode
@@ -71,6 +72,7 @@ morph.config.prop.useLocalResources.comment=Force the mod to use the local copy 
 morph.config.prop.canSleepMorphed.comment=Can you sleep while morphed?
 morph.config.prop.allowMorphSelection.comment=Requested by SoundLogic\nCan you open the morph GUI?
 morph.config.prop.showPlayerLabel.comment=Show the player label of a morphed player?
+morph.config.prop.forceSizeWhenMorphed.comment=Force the player size when morphed? This will fix issues with the player boundary being 2 blocks high.
 morph.config.prop.abilities.comment=Enable abilities?
 morph.config.prop.customPatchLink.comment=Redirect the mod to a different JSON patch location rather then the default patch hosted on GitHub.\nIf you would like to use the default, leave this blank.\nThis also affects NBTStripper.json.\nIf the link to your file is "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/AbilitySupport.json", put "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/", you cannot change the file name (eg: AbilitySupport.json) part of the link.
 morph.config.prop.hostileAbilityMode.comment=Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\n5 = Like 1, but a hostile mob will target you if you attacked them.

@@ -1,6 +1,5 @@
 package morph.common.core;
 
-import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.FMLCommonHandler;
 import ichun.common.core.EntityHelperBase;
 import ichun.common.core.network.PacketHandler;

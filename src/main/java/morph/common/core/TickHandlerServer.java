@@ -226,6 +226,12 @@ public class TickHandlerServer
                         }
                     }
                 }
+                else if(player != null && Morph.config.getSessionInt("forceSizeWhenMorphed") == 1)
+                {
+                    player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
+                    player.setPosition(player.posX, player.posY, player.posZ);
+                    player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - player.yOffset;
+                }
 
                 if(player != null)
                 {

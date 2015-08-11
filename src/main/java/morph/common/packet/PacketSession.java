@@ -28,6 +28,7 @@ public class PacketSession extends AbstractPacket
         buffer.writeInt(Morph.config.getSessionInt("canSleepMorphed"));
         buffer.writeInt(Morph.config.getSessionInt("allowMorphSelection"));
         buffer.writeInt(Morph.config.getSessionInt("showPlayerLabel"));
+        buffer.writeInt(Morph.config.getSessionInt("forceSizeWhenMorphed"));
         ByteBufUtils.writeUTF8String(buffer, Morph.config.getSessionString("disabledAbilities"));
         buffer.writeInt(player != null && Morph.config.getSessionInt("disableEarlyGameFlightMode") == 1 && Morph.config.getSessionInt("disableEarlyGameFlight") > 0 ? Morph.config.getSessionInt("disableEarlyGameFlight") == 1 ? (Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getBoolean("hasTravelledToNether") ? 1 : 0) : (Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getBoolean("hasKilledWither") ? 1 : 0) : Morph.config.getSessionInt("allowFlight"));
     }
@@ -40,6 +41,7 @@ public class PacketSession extends AbstractPacket
         Morph.config.updateSession("canSleepMorphed", buffer.readInt());
         Morph.config.updateSession("allowMorphSelection", buffer.readInt());
         Morph.config.updateSession("showPlayerLabel", buffer.readInt());
+        Morph.config.updateSession("forceSizeWhenMorphed", buffer.readInt());
         Morph.config.updateSession("disabledAbilities", ByteBufUtils.readUTF8String(buffer));
         if(!isServerwideSession)
         {

@@ -752,6 +752,12 @@ public class TickHandlerClient
                             info.player.eyeHeight = prevEyeHeight + (nextEyeHeight - prevEyeHeight) * ((float)info.morphProgress / 80F);
                         }
                     }
+                    else if(info.player != null && Morph.config.getSessionInt("forceSizeWhenMorphed") == 1)
+                    {
+                        info.player.setSize(info.nextState.entInstance.width, info.nextState.entInstance.height);
+                        info.player.setPosition(info.player.posX, info.player.posY, info.player.posZ);
+                        info.player.eyeHeight = info.nextState.entInstance instanceof EntityPlayer ? ((EntityPlayer)info.nextState.entInstance).getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) || info.player == mc.thePlayer ? mc.thePlayer.getDefaultEyeHeight() : ((EntityPlayer)info.nextState.entInstance).getDefaultEyeHeight() : info.nextState.entInstance.getEyeHeight() - info.player.yOffset;
+                    }
                     //TODO make sure that the lack of sleep timer doesn't affect anything.
                     //if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive() || !world.playerEntities.contains(info.player) || !info.player.isPlayerSleeping() && info.player.sleepTimer > 0))
                     if(info.player != null && (info.player.dimension != mc.thePlayer.dimension || !info.player.isEntityAlive() || !world.playerEntities.contains(info.player) || (info.player.isPlayerSleeping() || info.player.getSleepTimer() > 0)))
