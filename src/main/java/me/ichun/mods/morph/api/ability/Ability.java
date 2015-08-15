@@ -22,6 +22,14 @@ public abstract class Ability
     private transient EntityLivingBase parent;
 
     /**
+     * This value gets set from 0.0F to 1.0F as the player morphs, 1.0F to 0.0F as the player demorphs.
+     * Both morph states may have the same ability but will have different ability objects, so the strength value is important?? Still WIP.
+     */
+    public transient float strength;
+
+    //TODO transition between two abilities? Change in strength as player demorphs/morphs?
+
+    /**
      * Basic constructor (but you didn't really need me to tell you that ;D )
      */
     public Ability()
@@ -94,11 +102,23 @@ public abstract class Ability
     @SideOnly(Side.CLIENT)
     public abstract ResourceLocation getIcon();
 
+    /**
+     * Does the entity have the ability?
+     * @param living living entity to test this on
+     * @return entity has the ability
+     */
     @SideOnly(Side.CLIENT)
     public boolean entityHasAbility(EntityLivingBase living)
     {
         return true;
     }
+
+    /**
+     * Is the ability a characteristic of the entity? Characteristics will immediately be with the morph and will not be learnt over time.
+     * @param living living entity to test this on.
+     * @return is the ability a characteristic
+     */
+    public boolean isAbilityCharacteristic(EntityLivingBase living) { return false; }
 
     private static IAbilityHandler abilityHandlerImpl = new AbilityHandlerDummy();
 

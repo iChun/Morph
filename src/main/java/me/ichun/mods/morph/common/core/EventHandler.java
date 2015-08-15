@@ -4,15 +4,15 @@ import me.ichun.mods.morph.client.model.ModelHandler;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
+import me.ichun.mods.morph.common.morph.MorphInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderPig;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,19 +22,19 @@ import java.util.Map;
 
 public class EventHandler
 {
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     @SideOnly(Side.CLIENT)
     public void onRendererSafeCompatibility(RendererSafeCompatibilityEvent event)
     {
         for(Object obj : Minecraft.getMinecraft().getRenderManager().entityRenderMap.entrySet())
         {
-            Map.Entry e = (Map.Entry)obj;
-            Class clz = (Class)e.getKey();
-            Render rend = (Render)e.getValue();
+            Map.Entry<Class, Render> e = (Map.Entry<Class, Render>)obj;
+            Class clz = e.getKey();
             if(EntityLivingBase.class.isAssignableFrom(clz))
             {
-                ModelHandler.dissectForModels(clz, rend);
+                ModelHandler.dissectForModels(clz, e.getValue());
             }
+            ModelHandler.mapPlayerModels();
         }
     }
 
@@ -68,21 +68,18 @@ public class EventHandler
                     {
                         EntityPlayerMP player1 = (EntityPlayerMP)event.entityLiving;
 
-                        //TODO get the morph that the player was using.
-/*
-                        MorphInfo info = Morph.proxy.tickHandlerServer.getPlayerMorphInfo(player1);
+                        MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(player1.getCommandSenderName());
                         if(info != null)
                         {
-                            if(info.getMorphing())
+                            if(info.isMorphing() && info.prevState != null)
                             {
-                                living = info.prevState.entInstance;
+                                living = info.prevState.getEntInstance(player1.worldObj);
                             }
                             else
                             {
-                                living = info.nextState.entInstance;
+                                living = info.nextState.getEntInstance(player1.worldObj);
                             }
                         }
-*/
                     }
 
                     PlayerMorphHandler.getInstance().acquireMorph(player, living, Morph.config.instaMorph == 1, true);

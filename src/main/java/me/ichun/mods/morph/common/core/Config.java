@@ -27,7 +27,7 @@ public class Config extends ConfigBase
     public int classicMode = 0;
 
     @ConfigProp(category = "gameplay", useSession = true)
-    @IntMinMax(min = 1)
+    @IntMinMax(min = 30)
     public int morphTime = 80; //TODO this
 
     @ConfigProp(category = "gameplay", useSession = true)
@@ -55,7 +55,7 @@ public class Config extends ConfigBase
     public int abilities = 1; //TODO this
 
     @ConfigProp(category = "abilities", useSession = true)
-    public String disabledAbilities = ""; //TODO this
+    public String[] disabledAbilities = new String[0]; //TODO this
 
     public Config(File file)
     {

@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph;
 
+import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class MorphInfo
@@ -14,6 +15,11 @@ public class MorphInfo
     public void tick()
     {
 
+    }
+
+    public boolean isMorphing()
+    {
+        return morphTime < Morph.config.morphTime;
     }
 
     /**

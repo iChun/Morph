@@ -2,13 +2,18 @@ package me.ichun.mods.morph.common.handler;
 
 import me.ichun.mods.morph.api.IApi;
 import me.ichun.mods.morph.api.MorphApi;
+import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
 import me.ichun.mods.morph.client.render.RenderMorph;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
+import me.ichun.mods.morph.common.morph.MorphVariant;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class PlayerMorphHandler implements IApi
@@ -119,9 +124,31 @@ public class PlayerMorphHandler implements IApi
     public boolean acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire, boolean forceMorph, boolean killEntityClientside)
     {
         //TODO this
-        if(killEntityClientside)
+        if(Morph.config.childMorphs == 0 && entityToAcquire.isChild() || Morph.config.playerMorphs == 0 && entityToAcquire instanceof EntityPlayer || Morph.config.bossMorphs == 0 && entityToAcquire instanceof IBossDisplayData || player.getClass() == FakePlayer.class || player.playerNetServerHandler == null)
+        {
+            return false;
+        }
+        //TODO configs for blacklisting mobs etc.
+
+        if(MinecraftForge.EVENT_BUS.post(new MorphAcquiredEvent(player, entityToAcquire)))
+        {
+            //Event was cancelled.
+            return false;
+        }
+
+        MorphVariant variant = MorphVariant.createVariant(entityToAcquire);
+        if(variant == null) //Variant could not be created.
+        {
+            return false;
+        }
+
+        if(forceMorph)
         {
 
+        }
+        if(killEntityClientside)
+        {
+            //TODO spawn the client acquired entity
         }
         return false;
     }
@@ -137,4 +164,6 @@ public class PlayerMorphHandler implements IApi
     {
         return true;
     }
+
+    //TODO load and save player data as well.
 }
