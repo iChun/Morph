@@ -1,6 +1,7 @@
 {
   "am2.bosses.EntityAirGuardian": [
-    "hostile"
+    "hostile",
+    "fly|false"
   ],
   "am2.bosses.EntityArcaneGuardian": [
     "hostile"
@@ -120,6 +121,189 @@
   ],
   "com.emoniph.witchery.entity.EntityParasyticLouse": [
     "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityAllosaurus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityAnu": [
+    "fly|true",
+    "hostile",
+    "fallNegate",
+    "fireImmunity"
+  ],
+  "com.github.revival.common.entity.mob.EntityAnubite": [
+    "hostile",
+    "fallNegate",
+    "fireImmunity"
+  ],
+  "com.github.revival.common.entity.mob.EntityBones": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityCeratosaurus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityCoelacanth": [
+     "swim|false,1.2F,1F,true"
+  ],
+  "com.github.revival.common.entity.mob.EntityCompsognathus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityConfuciusornis": [
+    "fly|true",
+    "fallNegate"
+  ],
+  "com.github.revival.common.entity.mob.EntityDeinonychus": [
+    "climb",
+    "hostile",
+    "fallNegate"
+  ],
+  "com.github.revival.common.entity.mob.EntityDilophosaurus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityDodo": [
+    "float|-0.114,true"
+  ],
+  "com.github.revival.common.entity.mob.EntityFailuresaurus": [
+    "climb",
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityLiopleurodon": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityMosasaurus": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityNautilus": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "com.github.revival.common.entity.mob.EntityPlesiosaur": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityPterosaur": [
+    "fly|true"
+  ],
+  "com.github.revival.common.entity.mob.EntityQuagga": [
+    "step|1F"
+  ],
+  "com.github.revival.common.entity.mob.EntitySarcosuchus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntitySentryPigman": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntitySmilodon": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntitySpinosaurus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityTerrorBird": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityTyrannosaurus": [
+    "hostile"
+  ],
+  "com.github.revival.common.entity.mob.EntityVelociraptor": [
+    "climb",
+    "hostile",
+    "fallNegate"
+  ],
+  "com.lom.lotsomobsentity.EntityAnt": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityAmmonite": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityBear": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityBee": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityBird": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityButterfly": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityCroco": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityFireFly": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityFishy": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityFly": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityPolarBear": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityGekko": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityLizard": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityKakkerlak": [
+    "climb"
+  ],
+  "com.lom.lotsomobsentity.EntityLion": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityNarwal": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityPterosaurus": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityRaptor": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntitySaberTooth": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntitySnake": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntitySquirrel": [
+    "climb",
+    "fallNegate"
+  ],
+  "com.lom.lotsomobsentity.EntityTRex": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityTropicalFishy": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityTurtle": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityVulture": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityWhale": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntitySanta": [
+    "fly|true"
+  ],
+  "com.lom.lotsomobsentity.EntityGorilla": [
+    "hostile"
+  ],
+  "com.lom.lotsomobsentity.EntityHammerShark": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityIchtyosaurus": [
+    "swim|false,1F,1F,true"
+  ],
+  "com.lom.lotsomobsentity.EntityShark": [
+    "swim|false,1F,1F,true"
   ],
   "danger.orespawn.Basilisk": [
     "hostile",
@@ -628,6 +812,24 @@
     "hostile",
     "fly|true"
   ],
+  "evilcraft.entity.monster.Netherfish": [
+    "hostile",
+    "waterAllergy",
+    "fireImmunity"
+  ],
+  "evilcraft.entity.monster.PoisonousLibelle": [
+    "hostile",
+    "fallNegate",
+    "fly|true"
+  ],
+  "evilcraft.entity.monster.VengeanceSpirit": [
+    "hostile",
+    "step|2F",
+    "float"
+  ],
+  "evilcraft.entity.monster.Werewolf": [
+    "hostile"
+  ],
   "f1repl4ce.unlogic.entities.FireSoul": [
     "hostile",
     "fly|false",
@@ -643,7 +845,9 @@
     "witherResistance"
   ],
   "gaia.entity.EntityGaiaAnubis": [
-    "hostile"
+    "hostile",
+    "potionEffect|2,600,0,false",
+    "potionEffect|15,300,0,false"
   ],
   "gaia.entity.EntityGaiaBanshee": [
     "hostile",
@@ -653,11 +857,15 @@
   "gaia.entity.EntityGaiaBaphomet": [
     "hostile",
     "fireImmunity",
-    "witherResistance"
+    "witherResistance",
+    "potionEffect|2,600,0,false",
+    "potionEffect|15,600,0,false"
   ],
   "gaia.entity.EntityGaiaBoneKnight": [
     "hostile",
-    "sunburn"
+    "sunburn",  
+    "potionEffect|2,600,0,false", 
+    "potionEffect|4,600,2,false"
   ],
   "gaia.entity.EntityGaiaCentaur": [
     "step|1F"
@@ -672,7 +880,8 @@
   ],
   "gaia.entity.EntityGaiaCockatrice": [
     "hostile",
-    "float|-0.114,true"
+    "fallNegate",
+    "potionEffect|19,100,0,false"
   ],
   "gaia.entity.EntityGaiaCreep": [
     "hostile"
@@ -680,13 +889,19 @@
   "gaia.entity.EntityGaiaCyclops": [
     "hostile",
     "step|2F",
-    "fallNegate"
+    "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaDryad": [
-    "poisonResistance"
+    "poisonResistance",
+    "potionEffect|19,200,0,false"
   ],
   "gaia.entity.EntityGaiaDullahan": [
-    "hostile"
+    "hostile",
+    "potionEffect|2,300,0,false"
+  ],
+  "gaia.entity.EntityGaiaDhampir": [
+    "hostile",
+    "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaEnderDragonGirl": [
     "hostile",
@@ -704,42 +919,58 @@
     "poisonResistance"
   ],
   "gaia.entity.EntityGaiaFutakuchiOnna": [
-    "hostile"
+    "hostile",
+    "potionEffect|17,100,0,false"
   ],
   "gaia.entity.EntityGaiaGigaKnight": [
     "hostile",
     "swim|true,1F,1F,false"
   ],
   "gaia.entity.EntityGaiaGryphon": [
-    "fly|true"
+    "fly|true",
+    "hostile"
   ],
   "gaia.entity.EntityGaiaHarpy": [
     "hostile",
-    "fly|true"
+    "fly|true",
+    "potionEffect|2,200,0,false"
   ],
   "gaia.entity.EntityGaiaJorogumo": [
     "hostile",
     "climb",
-    "poisonResistance"
+    "poisonResistance",
+    "potionEffect|2,600,0,false",
+    "potionEffect|18,200,0,false"
   ],
   "gaia.entity.EntityGaiaMandragora": [
-    "poisonResistance"
+    "poisonResistance",
+    "potionEffect|2,400,3,false",
+    "potionEffect|16,600,0,false",
+    "potionEffect|9,600,0,false"
   ],
   "gaia.entity.EntityGaiaMermaid": [
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+    "potionEffect|2,600,0,false",
+    "potionEffect|4,600,2,false"
   ],
   "gaia.entity.EntityGaiaMimic": [
-    "hostile"
+    "hostile",
+    "potionEffect|17,600,0,false",
+    "potionEffect|19,300,0,false"
   ],
   "gaia.entity.EntityGaiaMinotaur": [
     "hostile",
     "fireImmunity",
     "fallNegate",
-    "step|1F"
+    "step|6F",
+    "potionEffect|2,600,0,false",
+    "potionEffect|4,300,0,false"
   ],
   "gaia.entity.EntityGaiaMinotaurus": [
     "hostile",
-    "step|1F"
+    "step|1F",
+    "potionEffect|2,600,0,false",
+    "potionEffect|4,300,0,false"
   ],
   "gaia.entity.EntityGaiaMummy": [
     "hostile",
@@ -747,7 +978,11 @@
   ],
   "gaia.entity.EntityGaiaNaga": [
     "hostile",
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+    "potionEffect|2,600,0,false",
+    "potionEffect|4,600,2,false",
+    "poisonResistance",
+    "fireImmunity"
   ],
   "gaia.entity.EntityGaiaNineTails": [
     "hostile",
@@ -762,16 +997,26 @@
     "step|1F",
     "fireImmunity"
   ],
+  "gaia.entity.EntityGaiaSatyr": [
+    "potionEffect|2,300,0,false"
+  ],
   "gaia.entity.EntityGaiaSelkie": [
     "hostile",
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+    "potionEffect|2,600,0,false",
+    "potionEffect|4,300,0,false"
   ],
   "gaia.entity.EntityGaiaShaman": [
-    "hostile"
+    "hostile",
+    "poisonResistance",
+    "potionEffect|17,200,0,false",
+    "potionEffect|18,600,0,false"
   ],
   "gaia.entity.EntityGaiaSharko": [
     "hostile",
-    "swim|true,1.2F,1F,true"
+    "swim|true,1.2F,1F,true",
+    "potionEffect|2,600,0,false",
+    "potionEffect|4,600,2,false"
   ],
   "gaia.entity.EntityGaiaSiren": [
     "hostile",
@@ -779,12 +1024,19 @@
   ],
   "gaia.entity.EntityGaiaSludgeGirl": [
     "hostile",
-    "fallNegate"
+    "poisonResistance",
+    "fireImmunity",
+    "potionEffect|17,100,0,false",
+    "potionEffect|4,300,0,false",
+    "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaSphinx": [
     "hostile",
     "fireImmunity",
-    "fly|true"
+    "fly|true",
+    "step|6F",
+    "potionEffect|4,600,0,false",
+    "potionEffect|2,600,0,false"
   ],
   "gaia.entity.EntityGaiaSpriggan": [
     "hostile"
@@ -792,24 +1044,37 @@
   "gaia.entity.EntityGaiaSuccubus": [
     "hostile",
     "fly|false",
-    "fireImmunity"
+    "fireImmunity",
+    "potionEffect|9,400,0,false"
+  ],
+  "gaia.entity.EntityGaiaSwamper": [
+    "hostile",
+    "fireImmunity",
+    "poisonResistance",
+    "potionEffect|2,600,0,false",
+    "potionEffect|19,600,0,false"
   ],
   "gaia.entity.EntityGaiaValkyrie": [
     "hostile",
     "fireImmunity",
     "fly|false",
-    "step|1F"
+    "step|6F",
+    "potionEffect|2,600,0,false",
+    "potionEffect|18,300,0,false"
   ],
   "gaia.entity.EntityGaiaVampire": [
     "hostile",
     "sunburn",
-    "fly|false"
+    "fly|false",
+    "step|6F",
+    "potionEffect|9,600,0,false"
   ],
   "gaia.entity.EntityGaiaWerecat": [
     "hostile",
     "step|1F",
     "fallNegate",
-    "climb"
+    "climb",
+    "potionEffect|2,200,0,false"
   ],
   "gaia.entity.EntityGaiaWitch": [
     "hostile",
@@ -818,15 +1083,18 @@
   ],
   "gaia.entity.EntityGaiaWitherCow": [
     "hostile",
-    "witherResistance"
+    "witherResistance",
+    "potionEffect|20,600,0,false"
   ],
   "gaia.entity.EntityGaiaYeti": [
     "hostile",
-    "step|1F"
+    "step|1F",
+    "potionEffect|2,300,0,false"
   ],
   "gaia.entity.EntityGaiaYukiOnna": [
     "hostile",
-    "float|-0.114,true"
+    "float|-0.114,true",
+    "potionEffect|2,100,3,false"
   ],
   "gravestone.entity.monster.EntitySkeletonCat": [
     "hostile",
@@ -908,91 +1176,6 @@
     "fireImmunity",
     "hostile",
     "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityAnt": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityBear": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityBird": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityBirdy": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityButterfly": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityCroco": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityFireFly": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityFishy": [
-    "swim|false,1.2F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityFly": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityBee": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityIceBear": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityGekko": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityLizard": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityKakkerlak": [
-    "climb"
-  ],
-  "lom.LotsOMobsEntity.EntityLion": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityNarwal": [
-    "swim|false,1F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityPterosaurus": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityRaptor": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntitySaberTooth": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntitySnake": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntitySquirrel": [
-    "climb",
-    "fallNegate"
-  ],
-  "lom.LotsOMobsEntity.EntityTRex": [
-    "hostile"
-  ],
-  "lom.LotsOMobsEntity.EntityTropicalFishy": [
-    "swim|false,1.2F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityTurtle": [
-    "swim|false,1F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntityVulture": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityWhale": [
-    "swim|false,1F,1F,true"
-  ],
-  "lom.LotsOMobsEntity.EntitySanta": [
-    "fly|true"
-  ],
-  "lom.LotsOMobsEntity.EntityGorilla": [
-    "hostile"
   ],
   "lycanite.lycanitesmobs.demonmobs.entity.EntityAsmodi": [
     "fireImmunity",
@@ -1160,6 +1343,95 @@
     "fireImmunity",
     "hostile"
   ],
+  "mods.fossil.entity.mob.EntityAllosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityAnu": [
+    "fly|true",
+    "hostile",
+    "fallNegate",
+    "fireImmunity"
+  ],
+  "mods.fossil.entity.mob.EntityAnubite": [
+    "hostile",
+    "fallNegate",
+    "fireImmunity"
+  ],
+  "mods.fossil.entity.mob.EntityBones": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityCeratosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityCoelacanth": [
+     "swim|false,1.2F,1F,true"
+  ],
+  "mods.fossil.entity.mob.EntityCompsognathus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityConfuciusornis": [
+    "fly|true",
+    "fallNegate"
+  ],
+  "mods.fossil.entity.mob.EntityDeinonychus": [
+    "climb",
+    "hostile",
+    "fallNegate"
+  ],
+  "mods.fossil.entity.mob.EntityDilophosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityDodo": [
+    "float|-0.114,true"
+  ],
+  "mods.fossil.entity.mob.EntityFailuresaurus": [
+    "climb",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityLiopleurodon": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityMosasaurus": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityNautilus": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "mods.fossil.entity.mob.EntityPlesiosaur": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityPterosaur": [
+    "fly|true"
+  ],
+  "mods.fossil.entity.mob.EntityQuagga": [
+    "step|1F"
+  ],
+  "mods.fossil.entity.mob.EntitySarcosuchus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntitySentryPigman": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntitySmilodon": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntitySpinosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityTerrorBird": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityTyrannosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityVelociraptor": [
+    "climb",
+    "hostile",
+    "fallNegate"
+  ],
   "mods.natura.entity.BabyHeatscarSpider": [
     "climb",
     "fireImmunity",
@@ -1302,6 +1574,22 @@
     "swim|false,1.2F,0.4F,true",
     "hostile"
   ],
+  "net.njay.unicornmod.entity.EntityAlicorn": [
+  	"fly|true",
+  	"fallNegate"
+  ],
+  "net.njay.unicornmod.entity.EntityPegasus": [
+  	"fly|true",
+  	"fallNegate"
+  ],
+  "net.njay.unicornmod.entity.EntityUnicorn": [
+  	"fly|true",
+  	"fallNegate"
+  ],
+  "net.tynkyn.entity.EntityGraze": [
+    "fly|true",
+    "hostile"
+  ],
   "net.lomeli.ec.entity.EntityWindCreeper" : [
     "float|-0.114,true",
     "hostile"
@@ -1408,6 +1696,34 @@
     "hostile",
     "fallNegate"
   ],
+  "tragicneko.tragicmc.entity.alpha.EntityOverlordCocoon": [
+    "hostile",
+	"fireImmunity",
+	"poisonResistance",
+	"witherResistance"
+  ],
+  "tragicneko.tragicmc.entity.alpha.EntityOverlordCombat": [
+    "hostile",
+    "fallNegate",
+    "step|1.5F",
+	"fireImmunity",
+	"poisonResistance",
+	"witherResistance"
+  ],
+  "tragicneko.tragicmc.entity.alpha.EntityOverlordCore": [
+    "hostile",
+    "fallNegate",
+    "fly|false",
+	"fireImmunity",
+	"poisonResistance",
+	"witherResistance"
+  ],
+  "tragicneko.tragicmc.entity.miniboss.EntityAegar": [
+    "hostile",
+    "fallNegate",
+    "step|1.5F",
+	"float"
+  ],
   "tragicneko.tragicmc.entity.boss.EntityApis": [
     "hostile",
     "step|2.0F",
@@ -1417,6 +1733,8 @@
     "hostile",
     "step|1.5F",
     "fireImmunity",
+	"poisonResistance",
+	"witherResistance",
     "fallNegate"
   ],
   "tragicneko.tragicmc.entity.boss.EntityDeathReaper": [
@@ -1438,7 +1756,7 @@
     "hostile",
     "step|1.5F"
   ],
-  "tragicneko.tragicmc.entity.boss.EntityJarra": [
+  "tragicneko.tragicmc.entity.miniboss.EntityJarra": [
     "hostile",
     "poisonResistance",
     "step|1.0F"
@@ -1447,18 +1765,18 @@
     "hostile",
     "fireImmunity"
   ],
-  "tragicneko.tragicmc.entity.boss.EntityKragul": [
+  "tragicneko.tragicmc.entity.miniboss.EntityKragul": [
     "hostile",
     "fallNegate",
     "step|1.0F",
     "fireImmunity"
   ],
-  "tragicneko.tragicmc.entity.boss.EntityMagmox": [
+  "tragicneko.tragicmc.entity.miniboss.EntityMagmox": [
     "hostile",
     "fireImmunity",
     "poisonResistance"
   ],
-  "tragicneko.tragicmc.entity.boss.EntityMegaCryse": [
+  "tragicneko.tragicmc.entity.miniboss.EntityMegaCryse": [
     "hostile",
     "fallNegate",
     "step|1.0F"
@@ -1468,11 +1786,11 @@
     "step|2.0F",
     "fallNegate"
   ],
-  "tragicneko.tragicmc.entity.boss.EntityStinKing": [
+  "tragicneko.tragicmc.entity.miniboss.EntityStinKing": [
     "hostile",
     "step|1.5F"
   ],
-  "tragicneko.tragicmc.entity.boss.EntityStinQueen": [
+  "tragicneko.tragicmc.entity.miniboss.EntityStinQueen": [
     "hostile",
     "step|1.5F"
   ],
@@ -1484,7 +1802,12 @@
     "witherResistance",
     "fallNegate"
   ],
-  "tragicneko.tragicmc.entity.boss.EntityVoxStellarum": [
+  "tragicneko.tragicmc.entity.miniboss.EntityVolatileFusea": [
+    "hostile",
+    "fallNegate",
+    "fly|true"
+  ],
+  "tragicneko.tragicmc.entity.miniboss.EntityVoxStellarum": [
     "hostile",
     "step|2.0F",
     "fallNegate"
@@ -1498,13 +1821,23 @@
     "hostile",
     "step|1.0F"
   ],
+  "tragicneko.tragicmc.entity.mob.EntityArchangel": [
+    "hostile",
+    "fallNegate",
+    "fly|true"
+  ],
   "tragicneko.tragicmc.entity.mob.EntityCryse": [
     "hostile",
     "fallNegate",
     "step|1.0F"
   ],
   "tragicneko.tragicmc.entity.mob.EntityErkel": [
-    ""
+    "poisonResistance"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityFusea": [
+    "hostile",
+    "fallNegate",
+    "fly|true"
   ],
   "tragicneko.tragicmc.entity.mob.EntityGragul": [
     "hostile",
@@ -1512,9 +1845,24 @@
     "step|1.0F",
     "fireImmunity"
   ],
+  "tragicneko.tragicmc.entity.mob.EntityHarvester": [
+    "hostile",
+    "fallNegate",
+    "fly|false"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityHunter": [
+    "hostile",
+    "fallNegate",
+    "fly|true",
+	"waterAllergy"
+  ],
   "tragicneko.tragicmc.entity.mob.EntityInkling": [
     "hostile",
     "sunburn"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityIre": [
+    "hostile",
+	"float"
   ],
   "tragicneko.tragicmc.entity.mob.EntityJabba": [
     "hostile",
@@ -1522,15 +1870,29 @@
     "step|1.0F",
     "poisonResistance"
   ],
+  "tragicneko.tragicmc.entity.mob.EntityLockbot": [
+    "hostile"
+  ],
   "tragicneko.tragicmc.entity.mob.EntityMinotaur": [
     "hostile",
     "step|1.0F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityNanoSwarm": [
+    "hostile",
+    "fallNegate",
+    "float"
   ],
   "tragicneko.tragicmc.entity.mob.EntityNorVox": [
     "hostile",
     "fallNegate",
     "step|1.0F",
-    "witherResistance"
+    "witherResistance",
+	"float"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityParasmite": [
+    "hostile",
+    "fallNegate",
+    "fly|true"
   ],
   "tragicneko.tragicmc.entity.mob.EntityPirah": [
     "hostile",
@@ -1541,6 +1903,12 @@
     "fly|false",
     "swim|true,1.0F,1.0F,true"
   ],
+  "tragicneko.tragicmc.entity.mob.EntityPsygote": [
+    "hostile",
+    "fallNegate",
+    "step|1.5F",
+	"float"
+  ],
   "tragicneko.tragicmc.entity.mob.EntityPumpkinhead": [
     "hostile"
   ],
@@ -1548,6 +1916,16 @@
     "hostile",
     "fallNegate",
     "step|1.5F"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntityRanmas": [
+    "hostile",
+    "fallNegate",
+	"fly|false"
+  ],
+  "tragicneko.tragicmc.entity.mob.EntitySeeker": [
+    "hostile",
+    "fallNegate",
+    "fly|false"
   ],
   "tragicneko.tragicmc.entity.mob.EntitySirv": [
     "hostile",

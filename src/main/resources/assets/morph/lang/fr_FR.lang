@@ -1,5 +1,5 @@
 morph.keybinds=[Morph] Cliquez pour configurer les touches.
-morph.gui.keybinds.title=Morph Keybinds
+morph.gui.keybinds.title=Touches de base Morph
 morph.gui.keybinds.hold=Maintenir
 morph.gui.keybinds.none=Aucun
 morph.gui.keybinds.shift=Maj
