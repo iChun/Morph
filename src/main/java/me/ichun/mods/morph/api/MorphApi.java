@@ -1,4 +1,4 @@
-package us.ichun.morph.api;
+package me.ichun.mods.morph.api;
 
 public class MorphApi
 {

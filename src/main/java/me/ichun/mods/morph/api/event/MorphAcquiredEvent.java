@@ -1,4 +1,4 @@
-package us.ichun.morph.api.event;
+package me.ichun.mods.morph.api.event;
 
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.EntityLivingBase;

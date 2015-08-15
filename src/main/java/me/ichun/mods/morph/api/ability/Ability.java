@@ -1,4 +1,4 @@
-package us.ichun.morph.api.ability;
+package me.ichun.mods.morph.api.ability;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,11 +21,6 @@ public abstract class Ability
      * Ability parent field. Will be null for instances used in registration. Ability is then cloned and parent assigned later on.
      */
     private EntityLivingBase parent;
-
-    /**
-     * Flag for Ability activity. If true, tick/postRender/kill will notbe called.
-     */
-    public boolean inactive;
 
     /**
      * Basic constructor (but you didn't really need me to tell you that ;D )
@@ -84,23 +79,6 @@ public abstract class Ability
      * As previously stated before the ability instance used during registration is a base so it needs to be cloned for use with parents.
      */
     public abstract Ability clone();
-
-    /**
-     * Saving of ability to NBTTagCompound.
-     * Mainly used for synching Abilities between the client-server for mod mobs which do not use the API to add abilities.
-     * The ability type (getType()) is appended to nbt before function is called.
-     * Not actually used.
-     * @param tag saveData
-     */
-    public abstract void save(NBTTagCompound tag);
-
-    /**
-     * Loading of ability from NBTTagCompound.
-     * Mainly used to load custom fields from NBT.
-     * Not actually used.
-     * @param tag saveData
-     */
-    public abstract void load(NBTTagCompound tag);
 
     /**
      * Rendering to be done post-render.
@@ -180,4 +158,24 @@ public abstract class Ability
     {
         return abilityHandlerImpl.createNewAbilityByType(type, arguments);
     }
+
+    /**
+     * Get the IAbilityHandler implementation for Morph.
+     * @return returns the IAbilityHandler implementation from morph. May be the AbilityHandlerDummy if Morph has not loaded.
+     */
+    public static IAbilityHandler getAbilityHandlerImpl()
+    {
+        return abilityHandlerImpl;
+    }
+
+    /**
+     * Sets the IAbilityHandler implementation for Morph.
+     * For use of Morph, so please don't actually use this.
+     * @param abilityHandlerImpl API implementation to set.
+     */
+    public static void setAbilityHandlerImpl(IAbilityHandler abilityHandlerImpl)
+    {
+        Ability.abilityHandlerImpl = abilityHandlerImpl;
+    }
+
 }

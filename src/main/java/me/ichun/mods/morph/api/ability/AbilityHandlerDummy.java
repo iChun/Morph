@@ -1,4 +1,4 @@
-package us.ichun.morph.api.ability;
+package me.ichun.mods.morph.api.ability;
 
 import net.minecraft.entity.EntityLivingBase;
 
