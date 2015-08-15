@@ -1343,6 +1343,95 @@
     "fireImmunity",
     "hostile"
   ],
+  "mods.fossil.entity.mob.EntityAllosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityAnu": [
+    "fly|true",
+    "hostile",
+    "fallNegate",
+    "fireImmunity"
+  ],
+  "mods.fossil.entity.mob.EntityAnubite": [
+    "hostile",
+    "fallNegate",
+    "fireImmunity"
+  ],
+  "mods.fossil.entity.mob.EntityBones": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityCeratosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityCoelacanth": [
+     "swim|false,1.2F,1F,true"
+  ],
+  "mods.fossil.entity.mob.EntityCompsognathus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityConfuciusornis": [
+    "fly|true",
+    "fallNegate"
+  ],
+  "mods.fossil.entity.mob.EntityDeinonychus": [
+    "climb",
+    "hostile",
+    "fallNegate"
+  ],
+  "mods.fossil.entity.mob.EntityDilophosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityDodo": [
+    "float|-0.114,true"
+  ],
+  "mods.fossil.entity.mob.EntityFailuresaurus": [
+    "climb",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityLiopleurodon": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityMosasaurus": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityNautilus": [
+    "swim|false,1.2F,1F,true"
+  ],
+  "mods.fossil.entity.mob.EntityPlesiosaur": [
+    "swim|false,1.2F,1F,true",
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityPterosaur": [
+    "fly|true"
+  ],
+  "mods.fossil.entity.mob.EntityQuagga": [
+    "step|1F"
+  ],
+  "mods.fossil.entity.mob.EntitySarcosuchus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntitySentryPigman": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntitySmilodon": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntitySpinosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityTerrorBird": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityTyrannosaurus": [
+    "hostile"
+  ],
+  "mods.fossil.entity.mob.EntityVelociraptor": [
+    "climb",
+    "hostile",
+    "fallNegate"
+  ],
   "mods.natura.entity.BabyHeatscarSpider": [
     "climb",
     "fireImmunity",
