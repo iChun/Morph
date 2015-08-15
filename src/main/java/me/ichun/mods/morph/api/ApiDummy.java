@@ -1,11 +1,19 @@
 package me.ichun.mods.morph.api;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ApiDummy implements IApi
 {
+    @Override
+    public boolean canPlayerMorph(EntityPlayer player)
+    {
+        return false;
+    }
+
     @Override
     public boolean hasMorph(String playerName, Side side)
     {
@@ -37,13 +45,28 @@ public class ApiDummy implements IApi
     }
 
     @Override
-    public void forceDemorph(EntityPlayerMP player){}
+    public boolean forceDemorph(EntityPlayerMP player)
+    {
+        return false;
+    }
 
     @Override
-    public void forceMorph(EntityPlayerMP player, EntityLivingBase entityToMorph){}
+    public boolean forceMorph(EntityPlayerMP player, EntityLivingBase entityToMorph)
+    {
+        return false;
+    }
 
     @Override
-    public void acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire){}
+    public boolean acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire, boolean forceMorph, boolean killEntityClientside)
+    {
+        return false;
+    }
+
+    @Override
+    public ResourceLocation getMorphSkinTexture()
+    {
+        return new ResourceLocation("morph", "textures/skin/morphskin.png");
+    }
 
     @Override
     public boolean isMorphApi()

@@ -10,32 +10,52 @@ import java.io.File;
 
 public class Config extends ConfigBase
 {
+    @ConfigProp(category = "gameplay")
+    @IntBool
+    public int childMorphs = 0; //TODO this
+
+    @ConfigProp(category = "gameplay")
+    @IntBool
+    public int playerMorphs = 1; //TODO this
+
+    @ConfigProp(category = "gameplay")
+    @IntBool
+    public int bossMorphs = 0; //TODO this
+
+    @ConfigProp(category = "gameplay")
+    @IntBool
+    public int classicMode = 0;
+
     @ConfigProp(category = "gameplay", useSession = true)
     @IntMinMax(min = 1)
-    public int morphTime = 80;
+    public int morphTime = 80; //TODO this
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
-    public int canSleepMorphed = 1;
+    public int canSleepMorphed = 1; //TODO this
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
-    public int showPlayerLabel = 0;
+    public int showPlayerLabel = 0; //TODO this
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
-    public int useLocalResources = 0;
+    public int useLocalResources = 0; //TODO this
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
-    public int instaMorph = 0; //Also known as Morph On Kill
+    public int loseMorphsOnDeath = 0; //TODO this
+
+    @ConfigProp(category = "gameplay", useSession = true)
+    @IntBool
+    public int instaMorph = 0; //Also known as Morph On Kill  //TODO this
 
     @ConfigProp(category = "abilities", useSession = true)
     @IntBool
-    public int abilities = 1;
+    public int abilities = 1; //TODO this
 
     @ConfigProp(category = "abilities", useSession = true)
-    public String disabledAbilities = "";
+    public String disabledAbilities = ""; //TODO this
 
     public Config(File file)
     {

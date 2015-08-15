@@ -1,7 +1,6 @@
 package me.ichun.mods.morph.api.ability;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,7 +19,7 @@ public abstract class Ability
     /**
      * Ability parent field. Will be null for instances used in registration. Ability is then cloned and parent assigned later on.
      */
-    private EntityLivingBase parent;
+    private transient EntityLivingBase parent;
 
     /**
      * Basic constructor (but you didn't really need me to tell you that ;D )

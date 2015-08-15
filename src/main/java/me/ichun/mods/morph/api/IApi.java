@@ -1,11 +1,20 @@
 package me.ichun.mods.morph.api;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 
 public interface IApi
 {
+    /**
+     * Returns if a player can morph.
+     * @param player player instance
+     * @return if said player can morph.
+     */
+    public boolean canPlayerMorph(EntityPlayer player);
+
     /**
      * Returns if a player is has a morph. If morph progress < 1.0F, player is mid-morphing.
      * Players demorphing are considered as a player with a morph until the demorph is complete.
@@ -46,27 +55,33 @@ public interface IApi
     public EntityLivingBase getMorphEntity(String playerName, Side side);
 
     /**
-     * Forces a player to demorph.
+     * Forces a player to demorph. May return false if called while player is mid-morphing
      * Called Serverside only.
      * @param player Player to force to demorph
      */
-    public void forceDemorph(EntityPlayerMP player);
+    public boolean forceDemorph(EntityPlayerMP player);
 
     /**
-     * Forces a player to morph into the provided entity.
+     * Forces a player to morph into the provided entity without acquiring the morph. May return false if called while player is mid-morphing
      * Called Serverside only.
      * @param player Player to force to morph
      * @param entityToMorph Entity to force the player to morph into
+     * @return if forcing the morph was successful
      */
-    public void forceMorph(EntityPlayerMP player, EntityLivingBase entityToMorph);
+    public boolean forceMorph(EntityPlayerMP player, EntityLivingBase entityToMorph);
 
     /**
-     * Forces a player to acquire the provided entity.
+     * Forces a player to acquire the provided entity. May return false if called while player is mid-morphing
      * Called Serverside only.
      * @param player Player to force to morph
      * @param entityToAcquire Entity to force the player to acquire
+     * @param forceMorph Force the player to morph into this entity?
+     * @param killEntityClientside Kill the entity on the client and spawn the "morph acquired" effect?
+     * @return if acquiring the morph (and morphing into it, if true) was successful
      */
-    public void acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire);
+    public boolean acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire, boolean forceMorph, boolean killEntityClientside);
+
+    public ResourceLocation getMorphSkinTexture();
 
     /**
      * Returns true if the Api Implementation is actually Morph's.
