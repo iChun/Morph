@@ -23,6 +23,18 @@ public class TickHandlerServer
         }
     }
 
+    public ArrayList<MorphVariant> getPlayerMorphs(String name)
+    {
+        ArrayList<MorphVariant> morphs = playerMorphs.get(name);
+        if(morphs == null)
+        {
+            morphs = new ArrayList<MorphVariant>();
+            morphs.add(new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayerName(name)); //Add the player self's morph variant when getting this list.
+            playerMorphs.put(name, morphs);
+        }
+        return morphs;
+    }
+
     public HashMap<String, MorphInfo> morphsActive = new HashMap<String, MorphInfo>(); //These are the active morphs. Entity instance are retreived from here
     public HashMap<String, ArrayList<MorphVariant>> playerMorphs = new HashMap<String, ArrayList<MorphVariant>>();//These are the available morphs for each player. No entity instance is required or created here.
 }

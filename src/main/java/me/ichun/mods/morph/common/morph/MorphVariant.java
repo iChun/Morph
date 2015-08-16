@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph;
 
+import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class MorphVariant
+    implements Comparable<MorphVariant>
 {
     public static final int VARIANT_PROTOCOL = 1;
     public static final int IDENTIFIER_LENGTH = 20;
@@ -93,6 +95,30 @@ public class MorphVariant
         return new EntityOtherPlayerMP(world, EntityHelperBase.getFullGameProfileFromName(player));
     }
 
+    public ArrayList<MorphVariant> split()
+    {
+        ArrayList<MorphVariant> vars = new ArrayList<MorphVariant>();
+        NBTTagCompound tag = new NBTTagCompound();
+        write(tag);
+        MorphVariant current = new MorphVariant(entId);
+        current.read(tag);
+        current.variants.clear();
+
+        vars.add(current);
+
+        for(Variant var : variants)
+        {
+            MorphVariant variant = new MorphVariant(entId);
+            variant.read(tag);
+            variant.variants.clear();
+            variant.entTag.tagMap.putAll(var.variantData.tagMap);
+            variant.thisVariant = var;
+            vars.add(variant);
+        }
+
+        return vars;
+    }
+
     public void read(NBTTagCompound tag)
     {
         int varProtocol = tag.getInteger("varProtocol");
@@ -117,7 +143,7 @@ public class MorphVariant
         repair(varProtocol);
     }
 
-    public void write(NBTTagCompound tag)
+    public NBTTagCompound write(NBTTagCompound tag)
     {
         tag.setInteger("varProtocol", VARIANT_PROTOCOL);
 
@@ -138,6 +164,8 @@ public class MorphVariant
             variant.write(varTag);
             tag.setTag("variant_" + i, varTag);
         }
+
+        return tag;
     }
 
     public void repair(int varProtocol)
@@ -220,6 +248,17 @@ public class MorphVariant
         tag.removeTag("bukkit");
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o instanceof MorphVariant)
+        {
+            MorphVariant var = (MorphVariant)o;
+            return entId.equals(var.entId) && playerName.equals(var.playerName) && entTag.equals(var.entTag) && thisVariant.identifier.equals(var.thisVariant.identifier); //Do not compare the variant arraylist? >_>
+        }
+        return false;
+    }
+
     /**
      * Returns false if variants were not combined successfully or if the variant already exists
      * You cannot combine player variants even though they might be categorised together!
@@ -271,30 +310,47 @@ public class MorphVariant
         return true;
     }
 
+    @Override
+    public int compareTo(MorphVariant var)
+    {
+        if(entId.equals(PLAYER_MORPH_ID) && var.entId.equals(PLAYER_MORPH_ID))
+        {
+            return playerName.compareTo(var.playerName);
+        }
+        else
+        {
+            return entId.compareTo(var.entId);
+        }
+    }
+
     public static class Variant
     {
         public String identifier;
         public NBTTagCompound variantData;
+        public NBTTagCompound morphData;
         public boolean invalid;
 
         public Variant()
         {
             identifier = RandomStringUtils.randomAscii(IDENTIFIER_LENGTH);
             variantData = new NBTTagCompound();
+            morphData = new NBTTagCompound();
             invalid = false;
         }
 
         public void read(NBTTagCompound tag)
         {
             identifier = tag.getString("ident");
-            variantData = tag.getCompoundTag("data");
+            variantData = tag.getCompoundTag("entData");
+            morphData = tag.getCompoundTag("morphData");
             invalid = tag.getBoolean("invalid");
         }
 
         public void write(NBTTagCompound tag)
         {
             tag.setString("ident", identifier);
-            tag.setTag("data", variantData);
+            tag.setTag("entData", variantData);
+            tag.setTag("morphData", morphData);
             tag.setBoolean("invalid", invalid);
         }
     }

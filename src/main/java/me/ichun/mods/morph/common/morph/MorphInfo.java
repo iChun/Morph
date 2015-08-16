@@ -2,6 +2,7 @@ package me.ichun.mods.morph.common.morph;
 
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class MorphInfo
 {
@@ -12,9 +13,22 @@ public class MorphInfo
 
     public int morphTime;
 
+    public boolean firstUpdate = true;
+
+    public MorphInfo(EntityPlayer player, MorphState prevState, MorphState nextState)
+    {
+        this.player = player;
+        this.prevState = prevState;
+        this.nextState = nextState;
+    }
+
     public void tick()
     {
-
+        if(firstUpdate)
+        {
+            firstUpdate = false;
+            //DO STUFF HERE.
+        }
     }
 
     public boolean isMorphing()
@@ -29,5 +43,32 @@ public class MorphInfo
     {
         prevState = null; //If we have to clean, prevState isn't even needed anymore.
         nextState.entInstance = null; //nextState should never be null so should never NPE.
+    }
+
+    public void read(NBTTagCompound tag)
+    {
+        if(tag.hasKey("prevStateVar"))
+        {
+            MorphVariant variant = new MorphVariant("");
+            variant.read(tag.getCompoundTag("prevStateVar"));
+            prevState = new MorphState(variant);
+        }
+        MorphVariant variant = new MorphVariant("");
+        variant.read(tag.getCompoundTag("nextStateVar"));
+        nextState = new MorphState(variant);
+
+        morphTime = tag.getInteger("morphTime");
+    }
+
+    public NBTTagCompound write(NBTTagCompound tag)
+    {
+        if(prevState != null)
+        {
+            tag.setTag("prevStateVar", prevState.currentVariant.write(new NBTTagCompound()));
+        }
+        tag.setTag("nextStateVar", nextState.currentVariant.write(new NBTTagCompound()));
+        tag.setInteger("morphTime", morphTime);
+
+        return tag;
     }
 }

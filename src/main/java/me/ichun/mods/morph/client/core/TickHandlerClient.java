@@ -7,6 +7,7 @@ import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,12 +21,6 @@ public class TickHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase == TickEvent.Phase.START)
         {
-            if(mc.theWorld == null && (!morphsActive.isEmpty() || !playerMorphs.isEmpty()))
-            {
-                //world is null, not connected to any worlds, get rid of objects for GC.
-                morphsActive.clear();
-                playerMorphs.clear();
-            }
         }
         else
         {
@@ -46,6 +41,14 @@ public class TickHandlerClient
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
+    {
+        //world is null, not connected to any worlds, get rid of objects for GC.
+        morphsActive.clear();
+        playerMorphs.clear();
     }
 
     public RenderMorph renderMorphInstance;

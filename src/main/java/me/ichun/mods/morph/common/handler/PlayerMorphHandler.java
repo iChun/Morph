@@ -6,15 +6,26 @@ import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
 import me.ichun.mods.morph.client.render.RenderMorph;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
+import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
+import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
+import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class PlayerMorphHandler implements IApi
 {
@@ -28,6 +39,7 @@ public class PlayerMorphHandler implements IApi
     public static void init()
     {
         MorphApi.setApiImpl(INSTANCE);
+        FMLCommonHandler.instance().bus().register(INSTANCE); //For capturing player logins/logouts
     }
 
     @Override
@@ -142,10 +154,47 @@ public class PlayerMorphHandler implements IApi
             return false;
         }
 
+        ArrayList<MorphVariant> morphs = Morph.proxy.tickHandlerServer.playerMorphs.get(player.getCommandSenderName());
+        boolean updatePlayer = false;
+        for(MorphVariant var : morphs)
+        {
+            if(variant.entId.equals(MorphVariant.PLAYER_MORPH_ID)) //Special case players first
+            {
+                if(var.entId.equals(MorphVariant.PLAYER_MORPH_ID) && variant.playerName.equals(var.playerName))
+                {
+                    return false;
+                }
+            }
+            else if(variant.entId.equals(var.entId)) //non-player variants
+            {
+                updatePlayer = MorphVariant.combineVariants(var, variant);
+                if(!updatePlayer) //failed to merge for reasons. Return false acquisition.
+                {
+                    return false;
+                }
+                else
+                {
+                    Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, var), player);
+                }
+                break;
+            }
+        }
+
+        if(!updatePlayer) //No preexisting variant exists.
+        {
+            morphs.add(variant);
+
+            Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, variant), player);
+        }
+        Collections.sort(morphs);
+
         if(forceMorph)
         {
 
         }
+
+        //TODO save the player morph list and morph state.
+
         if(killEntityClientside)
         {
             //TODO spawn the client acquired entity
@@ -165,5 +214,85 @@ public class PlayerMorphHandler implements IApi
         return true;
     }
 
-    //TODO load and save player data as well.
+
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        if(loadPlayerData(event.player)) //if true, player has a morph
+        {
+            Morph.channel.sendToAllExcept(new PacketUpdateActiveMorphs(event.player.getCommandSenderName()), event.player);
+        }
+        ArrayList<MorphVariant> morphs = Morph.proxy.tickHandlerServer.getPlayerMorphs(event.player.getCommandSenderName());
+        Morph.channel.sendToPlayer(new PacketUpdateActiveMorphs(null), event.player); //Send the player a list of everyone's morphs
+        Morph.channel.sendToPlayer(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), event.player); //Send the player's morph list to them
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        savePlayerData(event.player);
+        Morph.proxy.tickHandlerServer.morphsActive.remove(event.player.getCommandSenderName());
+        Morph.proxy.tickHandlerServer.playerMorphs.remove(event.player.getCommandSenderName());
+    }
+
+    public static final String MORPH_DATA_NAME = "MorphSave";
+
+    public void savePlayerData(EntityPlayer player)
+    {
+        NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
+
+        //Save the current morphed state/variant
+        MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
+        if(info != null && !info.nextState.currentVariant.playerName.equals(player.getCommandSenderName())) //check that the info isn't null and the player isn't demorphing already anyways
+        {
+            tag.setTag("currentMorph", info.nextState.currentVariant.write(new NBTTagCompound()));
+        }
+        else
+        {
+            tag.removeTag("currentMorph");
+        }
+
+        //Save the morph variants
+        ArrayList<MorphVariant> variants = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.getCommandSenderName());
+        tag.setInteger("variantCount", variants.size());
+        for(int i = 0; i < variants.size(); i++)
+        {
+            MorphVariant variant = variants.get(i);
+            tag.setTag("variant_" + i, variant.write(new NBTTagCompound()));
+        }
+
+        //TODO maybe a command to purge the current morphs?
+    }
+
+    public boolean loadPlayerData(EntityPlayer player) //Returns true if the player has a morph and requires synching to the clients.
+    {
+        NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
+
+        //Check if the player has a current morph.
+        boolean update = false;
+        if(tag.hasKey("currentMorph"))
+        {
+            MorphVariant variant = new MorphVariant("");
+            variant.read(tag.getCompoundTag("currentMorph"));
+            MorphState state = new MorphState(variant);
+            Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), new MorphInfo(player, null, state));
+            update = true;
+        }
+
+        //Load up the player's morph list.
+        int morphCount = tag.getInteger("variantCount");
+        ArrayList<MorphVariant> variants = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.getCommandSenderName());
+        for(int i = 0; i < morphCount; i++)
+        {
+            MorphVariant variant = new MorphVariant("");
+            variant.read(tag.getCompoundTag("variant_" + i));
+
+            if(!variants.contains(variant))
+            {
+                variants.add(variant);
+            }
+        }
+
+        return update;
+    }
 }
