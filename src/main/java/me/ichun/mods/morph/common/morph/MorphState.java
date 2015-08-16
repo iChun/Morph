@@ -39,7 +39,7 @@ public class MorphState
     @Override
     public int compareTo(MorphState state)
     {
-        return getName().compareTo(state.getName());
+        return getName().toLowerCase().compareTo(state.getName().toLowerCase());
     }
 
     @Override

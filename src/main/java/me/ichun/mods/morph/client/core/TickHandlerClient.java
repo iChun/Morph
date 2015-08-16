@@ -8,9 +8,9 @@ import me.ichun.mods.morph.common.ability.AbilityPotionEffect;
 import me.ichun.mods.morph.common.handler.AbilityHandler;
 import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.potion.Potion;
@@ -22,7 +22,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
@@ -63,8 +62,24 @@ public class TickHandlerClient
                     }
                 }
 
+                if(mc.currentScreen != null)
+                {
+                    if(selectorShow)
+                    {
+                        if(mc.currentScreen instanceof GuiIngameMenu)
+                        {
+                            mc.displayGuiScreen(null);
+                        }
+                        selectorShow = false;
+                        selectorShowTimer = SELECTOR_SHOW_TIME - selectorShowTimer;
+                        selectorScrollHoriTimer = SELECTOR_SCROLL_TIME;
+                    }
+                }
                 abilityScroll++;
-                selectorShowTimer--;
+                if(selectorShowTimer > 0)
+                {
+                    selectorShowTimer--;
+                }
                 selectorScrollVertTimer--;
                 selectorScrollHoriTimer--;
             }
@@ -78,26 +93,35 @@ public class TickHandlerClient
         morphsActive.clear();
         playerMorphs.clear();
     }
-    
+
     public void drawSelector(Minecraft mc, float renderTick)
     {
         if((selectorShowTimer > 0 || selectorShow) && !mc.gameSettings.hideGUI)
         {
+            if(selectorSelectedVert < 0)
+            {
+                selectorSelectedVert = playerMorphs.size() - 1;
+            }
+            if(selectorSelectedVert > playerMorphs.size() - 1)
+            {
+                selectorSelectedVert = 0;
+            }
+
             GlStateManager.pushMatrix();
 
-            float progress = MathHelper.clamp_float((11F - ((float)selectorShowTimer + (1F - renderTick))) / 11F, 0F, 1F);
+            float progress = MathHelper.clamp_float((SELECTOR_SHOW_TIME - (selectorShowTimer - renderTick)) / (float)SELECTOR_SHOW_TIME, 0F, 1F);
 
             if(selectorShow)
             {
                 progress = 1.0F - progress;
             }
 
-            if(selectorShow && selectorShowTimer == 0)
+            if(selectorShow && selectorShowTimer < 0)
             {
                 progress = 0.0F;
             }
 
-            progress = (float)Math.pow(progress, 0.5D);
+            progress = (float)Math.pow(progress, 2D);
 
             GlStateManager.translate(-52F * progress, 0.0F, 0.0F);
 
@@ -119,7 +143,7 @@ public class TickHandlerClient
 
             float progressV = (SELECTOR_SCROLL_TIME - (selectorScrollVertTimer - renderTick)) / (float)SELECTOR_SCROLL_TIME;
 
-            progressV = (float)Math.pow(progressV, 0.5D);
+            progressV = (float)Math.pow(progressV, 2D);
 
             if(progressV > 1.0F)
             {
@@ -129,7 +153,7 @@ public class TickHandlerClient
 
             float progressH = (SELECTOR_SCROLL_TIME - (selectorScrollHoriTimer - renderTick)) / (float)SELECTOR_SCROLL_TIME;
 
-            progressH = (float)Math.pow(progressH, 0.5D);
+            progressH = (float)Math.pow(progressH, 2D);
 
             if(progressH > 1.0F)
             {
@@ -287,7 +311,7 @@ public class TickHandlerClient
                     {
                         MorphState state = states.get(j);
                         GlStateManager.pushMatrix();
-                        
+
                         double dist = size * (j - selectorSelectedHori);
                         GlStateManager.translate((newSlide && j == 0 ? 0.0D : ((selectorSelectedHori - selectorSelectedPrevHori) * 42F) * (1.0F - progressH)) + dist, 0.0D, 0.0D);
 
@@ -342,7 +366,7 @@ public class TickHandlerClient
     public void handleSelectorNavigation(KeyBind bind)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        //ABILITY SCROLL?
+        abilityScroll = 0;
         if(!selectorShow && mc.currentScreen == null) //show the selector.
         {
             selectorShow = true;
@@ -355,7 +379,7 @@ public class TickHandlerClient
             selectorSelectedHori = 0;
             selectorSelectedPrevVert = selectorSelectedVert;
             selectorScrollHoriTimer = selectorScrollVertTimer = SELECTOR_SCROLL_TIME;
-            
+
             if(bind.equals(Morph.config.keySelectorUp))
             {
                 selectorSelectedVert--;
@@ -386,6 +410,28 @@ public class TickHandlerClient
             {
                 selectorSelectedHori++;
             }
+
+            int i = 0;
+            Iterator<Map.Entry<String, ArrayList<MorphState>>> ite = playerMorphs.entrySet().iterator();
+            while(ite.hasNext())
+            {
+                Map.Entry<String, ArrayList<MorphState>> e = ite.next();
+
+                if(i == selectorSelectedVert)
+                {
+                    ArrayList<MorphState> states = e.getValue();
+                    if(selectorSelectedHori < 0)
+                    {
+                        selectorSelectedHori = states.size() - 1;
+                    }
+                    if(selectorSelectedHori >= states.size())
+                    {
+                        selectorSelectedHori = 0;
+                    }
+                    break;
+                }
+                i++;
+            }
         }
     }
 
@@ -412,9 +458,9 @@ public class TickHandlerClient
             float f4 = ent.rotationPitch;
             float f5 = ent.rotationYawHead;
 
-            GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
             RenderHelper.enableStandardItemLighting();
-            GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-45.0F, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(-((float)Math.atan((double)(par5 / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(15.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(25.0F, 0.0F, 1.0F, 0.0F);
@@ -454,10 +500,9 @@ public class TickHandlerClient
 
             GlStateManager.popMatrix();
 
-            RenderHelper.disableStandardItemLighting();
+            GlStateManager.disableLighting();
 
             GlStateManager.pushMatrix();
-
             GlStateManager.translate((float)posX, (float)posY, 50.0F);
 
             GlStateManager.enableBlend();
@@ -469,16 +514,16 @@ public class TickHandlerClient
             if(text)
             {
                 //TODO radial changes
-//                if(radialShow)
-//                {
-//                    GlStateManager.pushMatrix();
-//                    float scaleee = 0.75F;
-//                    GlStateManager.scale(scaleee, scaleee, scaleee);
-//                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName();
-//                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) / 2) * scaleee), 5, 16777215);
-//                    GlStateManager.popMatrix();
-//                }
-//                else
+                //                if(radialShow)
+                //                {
+                //                    GlStateManager.pushMatrix();
+                //                    float scaleee = 0.75F;
+                //                    GlStateManager.scale(scaleee, scaleee, scaleee);
+                //                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName();
+                //                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) / 2) * scaleee), 5, 16777215);
+                //                    GlStateManager.popMatrix();
+                //                }
+                //                else
                 {
                     Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.getEntInstance(mc.theWorld).getCommandSenderName().equalsIgnoreCase(state.getEntInstance(mc.theWorld).getCommandSenderName()) || info == null && ent.getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName(), 26, -32, 16777215);
                 }
@@ -719,12 +764,6 @@ public class TickHandlerClient
             GlStateManager.popMatrix();
 
             GlStateManager.enableAlpha();
-
-            GlStateManager.enableRescaleNormal();
-            OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GlStateManager.disableTexture2D();
-            OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.enableTexture2D();
 
             Minecraft.getMinecraft().gameSettings.hideGUI = hideGui;
         }

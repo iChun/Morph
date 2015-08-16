@@ -8,16 +8,19 @@ import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.keybind.KeyEvent;
 import us.ichun.mods.ichunutil.common.core.event.RendererSafeCompatibilityEvent;
 
@@ -81,6 +84,56 @@ public class EventHandler
         {
             //RADIAL MENU
         }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onMouseEvent(MouseEvent event)
+    {
+        if(Morph.proxy.tickHandlerClient.selectorShow)
+        {
+            int k = event.dwheel;
+            if(k != 0)
+            {
+                KeyBind bind;
+                if(GuiScreen.isShiftKeyDown())
+                {
+                    if(k > 0)
+                    {
+                        bind = Morph.config.keySelectorLeft;
+                    }
+                    else
+                    {
+                        bind = Morph.config.keySelectorRight;
+                    }
+                }
+                else
+                {
+                    if(k > 0)
+                    {
+                        bind = Morph.config.keySelectorUp;
+                    }
+                    else
+                    {
+                        bind = Morph.config.keySelectorDown;
+                    }
+                }
+                Morph.proxy.tickHandlerClient.handleSelectorNavigation(bind);
+                event.setCanceled(true);
+            }
+        }
+//        else if(Morph.proxy.tickHandlerClient.radialShow)
+//        {
+//            Morph.proxy.tickHandlerClient.radialDeltaX += event.dx / 100D;
+//            Morph.proxy.tickHandlerClient.radialDeltaY += event.dy / 100D;
+//
+//            double mag = Math.sqrt(Morph.proxy.tickHandlerClient.radialDeltaX * Morph.proxy.tickHandlerClient.radialDeltaX + Morph.proxy.tickHandlerClient.radialDeltaY * Morph.proxy.tickHandlerClient.radialDeltaY);
+//            if(mag > 1.0D)
+//            {
+//                Morph.proxy.tickHandlerClient.radialDeltaX /= mag;
+//                Morph.proxy.tickHandlerClient.radialDeltaY /= mag;
+//            }
+//        }
     }
 
     @SubscribeEvent
