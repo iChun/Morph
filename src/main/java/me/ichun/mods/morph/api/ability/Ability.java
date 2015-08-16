@@ -5,6 +5,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+
 /**
  *
  * Abstract ability class.
@@ -38,9 +40,18 @@ public abstract class Ability
     }
 
     /**
-     * Function for mod mob support, with args.
+     * Each ability has to return a String type.
+     * This is used for comparison, saving, as well as construction/loading of Ability.
+     * Think of it like the way Minecraft registers entities.
+     * @return Ability type
      */
-    public Ability parse(String[] args) { return this; }
+    public abstract String getType();
+
+    /**
+     * Creates a copy of this ability for use with parents.
+     * As previously stated before the ability instance used during registration is a base so it needs to be cloned for use with parents.
+     */
+    public abstract Ability clone();
 
     /**
      * Since parent is private it needs a setter.
@@ -61,38 +72,17 @@ public abstract class Ability
     }
 
     /**
-     * Each ability has to return a String type.
-     * This is used for comparison, saving, as well as construction/loading of Ability.
-     * Think of it like the way Minecraft registers entities.
-     * @return Ability type
-     */
-    public abstract String getType();
-
-    /**
      * Ticks every world tick, basically an ability onUpdate, similar to Entity's onUpdate.
      * Will only tick if getParent() is not null.
      * Please remember that getParent is not necessarily a player.
      */
-    public abstract void tick();
+    public void tick(){}
 
     /**
      * Called when the ability is finally removed when the parent demorphs or morphs into a state that does not have this ability type.
      * This will NOT be called if the parent morphs into another morph that has this type of ability.
      */
-    public abstract void kill();
-
-    /**
-     * Creates a copy of this ability for use with parents.
-     * As previously stated before the ability instance used during registration is a base so it needs to be cloned for use with parents.
-     */
-    public abstract Ability clone();
-
-    /**
-     * Rendering to be done post-render.
-     * EG: Used by AbilitySwim to render air bubbles whilst on land.
-     */
-    @SideOnly(Side.CLIENT)
-    public abstract void postRender();
+    public void kill(){}
 
     /**
      * Icon location for ability. Can be null.
@@ -101,6 +91,13 @@ public abstract class Ability
      */
     @SideOnly(Side.CLIENT)
     public abstract ResourceLocation getIcon();
+
+    /**
+     * Rendering to be done post-render.
+     * EG: Used by AbilitySwim to render air bubbles whilst on land.
+     */
+    @SideOnly(Side.CLIENT)
+    public void postRender(){}
 
     /**
      * Does the entity have the ability?
@@ -176,6 +173,16 @@ public abstract class Ability
     public static Ability createNewAbilityByType(String type, String...arguments)
     {
         return abilityHandlerImpl.createNewAbilityByType(type, arguments);
+    }
+
+    /**
+     * Gets the abilities that a class has.
+     * @param entClass Class which abilities you'd like to retrieve.
+     * @return ArrayList of abilities available to class.
+     */
+    public ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
+    {
+        return new ArrayList<Ability>();
     }
 
     /**

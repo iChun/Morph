@@ -2,6 +2,8 @@ package me.ichun.mods.morph.api.ability;
 
 import net.minecraft.entity.EntityLivingBase;
 
+import java.util.ArrayList;
+
 public class AbilityHandlerDummy implements IAbilityHandler
 {
     @Override
@@ -29,5 +31,11 @@ public class AbilityHandlerDummy implements IAbilityHandler
     public Ability createNewAbilityByType(String type, String...arguments)
     {
         return null;
+    }
+
+    @Override
+    public ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
+    {
+        return new ArrayList<Ability>();
     }
 }

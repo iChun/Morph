@@ -4,6 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ApiDummy implements IApi
@@ -33,13 +34,13 @@ public class ApiDummy implements IApi
     }
 
     @Override
-    public EntityLivingBase getPrevMorphEntity(String playerName, Side side)
+    public EntityLivingBase getPrevMorphEntity(World worldInstance, String playerName, Side side)
     {
         return null;
     }
 
     @Override
-    public EntityLivingBase getMorphEntity(String playerName, Side side)
+    public EntityLivingBase getMorphEntity(World worldInstance, String playerName, Side side)
     {
         return null;
     }

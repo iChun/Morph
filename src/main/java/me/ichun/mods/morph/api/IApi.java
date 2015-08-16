@@ -4,6 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
 public interface IApi
@@ -41,18 +42,20 @@ public interface IApi
     /**
      * Returns previous entity instance used to render the morph.
      * If player does not have a previous morph state or a morph, null will be returned.
+     * @param worldInstance World instance to create the entity for. Ensure it's for the correct side.
      * @param playerName Username
      * @param side Client or Server side?
      */
-    public EntityLivingBase getPrevMorphEntity(String playerName, Side side);
+    public EntityLivingBase getPrevMorphEntity(World worldInstance, String playerName, Side side);
 
     /**
      * Returns entity instance used to render the morph.
      * If player does not have a morph, null will be returned.
+     * @param worldInstance World instance to create the entity for. Ensure it's for the correct side.
      * @param playerName Username
      * @param side Client or Server side?
      */
-    public EntityLivingBase getMorphEntity(String playerName, Side side);
+    public EntityLivingBase getMorphEntity(World worldInstance, String playerName, Side side);
 
     /**
      * Forces a player to demorph. May return false if called while player is mid-morphing

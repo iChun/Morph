@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -75,14 +76,14 @@ public class PlayerMorphHandler implements IApi
     }
 
     @Override
-    public EntityLivingBase getPrevMorphEntity(String playerName, Side side)
+    public EntityLivingBase getPrevMorphEntity(World worldInstance, String playerName, Side side)
     {
         if(side.isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(playerName))
         {
             MorphInfo info = Morph.proxy.tickHandlerClient.morphsActive.get(playerName);
             if(info != null && info.prevState != null)
             {
-                return info.prevState.entInstance;
+                return info.prevState.getEntInstance(worldInstance);
             }
         }
         else if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(playerName))
@@ -90,21 +91,21 @@ public class PlayerMorphHandler implements IApi
             MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(playerName);
             if(info != null && info.prevState != null)
             {
-                return info.prevState.entInstance;
+                return info.prevState.getEntInstance(worldInstance);
             }
         }
         return null;
     }
 
     @Override
-    public EntityLivingBase getMorphEntity(String playerName, Side side)
+    public EntityLivingBase getMorphEntity(World worldInstance, String playerName, Side side)
     {
         if(side.isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(playerName))
         {
             MorphInfo info = Morph.proxy.tickHandlerClient.morphsActive.get(playerName);
             if(info != null)
             {
-                return info.nextState.entInstance;
+                return info.nextState.getEntInstance(worldInstance);
             }
         }
         else if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(playerName))
@@ -112,7 +113,7 @@ public class PlayerMorphHandler implements IApi
             MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(playerName);
             if(info != null)
             {
-                return info.nextState.entInstance;
+                return info.nextState.getEntInstance(worldInstance);
             }
         }
         return null;
@@ -239,7 +240,7 @@ public class PlayerMorphHandler implements IApi
 
     public void savePlayerData(EntityPlayer player)
     {
-        if(player != null)
+        if(player != null)//TODO remove this... this is for debugging purposes.
         {
             return;
         }

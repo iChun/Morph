@@ -1,7 +1,11 @@
 package me.ichun.mods.morph.client.core;
 
 import me.ichun.mods.morph.common.core.CommonProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.lwjgl.input.Keyboard;
+import us.ichun.mods.ichunutil.client.keybind.KeyBind;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 public class ClientProxy extends CommonProxy
 {
@@ -9,6 +13,10 @@ public class ClientProxy extends CommonProxy
     public void preInit()
     {
         super.preInit();
+
+        iChunUtil.proxy.registerMinecraftKeyBind(Minecraft.getMinecraft().gameSettings.keyBindAttack);
+        iChunUtil.proxy.registerMinecraftKeyBind(Minecraft.getMinecraft().gameSettings.keyBindUseItem);
+        iChunUtil.proxy.registerKeyBind(new KeyBind(Keyboard.KEY_DELETE), null);
     }
 
     @Override

@@ -352,6 +352,7 @@ public class MorphVariant
         public String identifier;
         public NBTTagCompound variantData;
         public NBTTagCompound morphData;
+        public boolean isFavourite;
         public boolean invalid;
 
         public Variant()
@@ -359,6 +360,7 @@ public class MorphVariant
             identifier = RandomStringUtils.randomAscii(IDENTIFIER_LENGTH);
             variantData = new NBTTagCompound();
             morphData = new NBTTagCompound();
+            isFavourite = false;
             invalid = false;
         }
 
@@ -367,6 +369,7 @@ public class MorphVariant
             identifier = tag.getString("ident");
             variantData = tag.getCompoundTag("entData");
             morphData = tag.getCompoundTag("morphData");
+            isFavourite = tag.getBoolean("isFavourite");
             invalid = tag.getBoolean("invalid");
         }
 
@@ -375,6 +378,7 @@ public class MorphVariant
             tag.setString("ident", identifier);
             tag.setTag("entData", variantData);
             tag.setTag("morphData", morphData);
+            tag.setBoolean("isFavourite", isFavourite);
             tag.setBoolean("invalid", invalid);
         }
     }

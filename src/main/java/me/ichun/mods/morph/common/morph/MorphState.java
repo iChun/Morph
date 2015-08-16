@@ -7,7 +7,7 @@ public class MorphState
     implements Comparable<MorphState>
 {
     public final MorphVariant currentVariant;  //The current morph variant we are using to create the entity instance
-    public EntityLivingBase entInstance; //Entity Instance to be used for rendering
+    protected EntityLivingBase entInstance; //Entity Instance to be used for rendering
 
     public MorphState(MorphVariant variant)
     {

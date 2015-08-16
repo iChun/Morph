@@ -1,6 +1,9 @@
 package me.ichun.mods.morph.common.core;
 
 import me.ichun.mods.morph.common.Morph;
+import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.input.Keyboard;
+import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
 import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
@@ -56,6 +59,35 @@ public class Config extends ConfigBase
 
     @ConfigProp(category = "abilities", useSession = true)
     public String[] disabledAbilities = new String[0]; //TODO this
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    @IntBool
+    public int showAbilitiesInGui = 1;
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keySelectorUp = new KeyBind(Keyboard.KEY_LBRACKET);
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keySelectorDown = new KeyBind(Keyboard.KEY_RBRACKET);
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keySelectorLeft = new KeyBind(Keyboard.KEY_LBRACKET, true, false, false, false);
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keySelectorRight = new KeyBind(Keyboard.KEY_LBRACKET, true, false, false, false);
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keySelectorSelect = new KeyBind(Keyboard.KEY_RETURN);
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keySelectorCancel = new KeyBind(Keyboard.KEY_ESCAPE);
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keySelectorRemoveMorph = new KeyBind(Keyboard.KEY_BACK);
+
+    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+    public KeyBind keyFavourite = new KeyBind(Keyboard.KEY_GRAVE);
+
 
     public Config(File file)
     {
