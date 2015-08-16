@@ -6,6 +6,8 @@ import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.morph.MorphInfo;
+import me.ichun.mods.morph.common.morph.MorphState;
+import me.ichun.mods.morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -64,6 +66,14 @@ public class EventHandler
                     Morph.proxy.tickHandlerClient.selectorShow = false;
                     Morph.proxy.tickHandlerClient.selectorShowTimer = TickHandlerClient.SELECTOR_SHOW_TIME - Morph.proxy.tickHandlerClient.selectorShowTimer;
                     Morph.proxy.tickHandlerClient.selectorScrollHoriTimer = TickHandlerClient.SELECTOR_SCROLL_TIME;
+
+                    MorphState selectedState = Morph.proxy.tickHandlerClient.getCurrentlySelectedMorphState();
+                    MorphInfoClient info = Morph.proxy.tickHandlerClient.morphsActive.get(mc.thePlayer.getCommandSenderName());
+
+                    if(selectedState != null && (info != null && !info.nextState.currentVariant.equals(selectedState.currentVariant) || info == null && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())))
+                    {
+                        Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 0, false));
+                    }
                 }
             }
             else if(event.keyBind.equals(Morph.config.keySelectorCancel) || (event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode() && event.keyBind.isMinecraftBind()))

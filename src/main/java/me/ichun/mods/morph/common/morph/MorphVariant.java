@@ -31,6 +31,7 @@ public class MorphVariant
     public String playerName;
     public NBTTagCompound entTag;
     public NBTTagCompound instanceTag;
+    public NBTTagCompound morphData;
     public Variant thisVariant;
     public ArrayList<Variant> variants;
 
@@ -40,6 +41,7 @@ public class MorphVariant
         this.playerName = "";
         this.entTag = new NBTTagCompound();
         this.instanceTag = new NBTTagCompound();
+        this.morphData = new NBTTagCompound();
         this.thisVariant = new Variant();
         this.variants = new ArrayList<Variant>();
     }
@@ -70,6 +72,10 @@ public class MorphVariant
             NBTTagCompound instanceCreator = (NBTTagCompound)instanceTag.copy();
             instanceCreator.tagMap.putAll(entTag.tagMap);
             instanceCreator.tagMap.putAll(thisVariant.variantData.tagMap);
+            for(String tagToRemove : thisVariant.tagsToRemove)
+            {
+                instanceCreator.tagMap.remove(tagToRemove);
+            }
             Entity ent = EntityList.createEntityFromNBT(instanceCreator, world);
             if(ent instanceof EntityLivingBase)
             {
@@ -114,6 +120,10 @@ public class MorphVariant
             variant.read(tag);
             variant.variants.clear();
             variant.entTag.tagMap.putAll(var.variantData.tagMap);
+            for(String tagToRemove : var.tagsToRemove)
+            {
+                variant.entTag.tagMap.remove(tagToRemove);
+            }
             variant.thisVariant = var;
             vars.add(variant);
         }
@@ -129,6 +139,7 @@ public class MorphVariant
         playerName = tag.getString("playerName");
         entTag = tag.getCompoundTag("entTag");
         instanceTag = tag.getCompoundTag("instanceTag");
+        morphData = tag.getCompoundTag("morphData");
         thisVariant.read(tag.getCompoundTag("thisVariant"));
 
         int variantSize = tag.getInteger("variantCount");
@@ -154,6 +165,7 @@ public class MorphVariant
         tag.setString("playerName", playerName);
         tag.setTag("entTag", entTag);
         tag.setTag("instanceTag", instanceTag);
+        tag.setTag("morphData", morphData);
 
         NBTTagCompound thisVarTag = new NBTTagCompound();
         thisVariant.write(thisVarTag);
@@ -191,6 +203,35 @@ public class MorphVariant
             }
         }
         return null;
+    }
+
+    public boolean deleteVariant(Variant var) //returns true if all variants have been deleted and this variant needs to be removed from the list
+    {
+        if(var.identifier.equals(thisVariant.identifier))
+        {
+            if(variants.isEmpty())
+            {
+                return true;
+            }
+            else
+            {
+                thisVariant = variants.get(0);
+                variants.remove(0);
+                return false;
+            }
+        }
+
+        //Not the current variant so we need to find the variant in the variants list and remove it. Return false cause current variant is still valid
+        for(int i = variants.size() - 1; i >= 0; i--)
+        {
+            Variant var1 = variants.get(i);
+            if(var.identifier.equals(var1.identifier))
+            {
+                variants.remove(i);
+                break;
+            }
+        }
+        return false;
     }
 
     public static MorphVariant createVariant(EntityLivingBase living)
@@ -250,6 +291,9 @@ public class MorphVariant
         tag.removeTag("ForcedAge");
         tag.removeTag("InLove");
 
+        //EntityTameable tags
+        tag.removeTag("OwnerUUID");
+
         //EntityLiving tags
         if(living instanceof EntityLiving)
         {
@@ -295,10 +339,16 @@ public class MorphVariant
             return false;
         }
 
+        //TODO reorganise the tags so that the most unique variant is not the main variant?
+
         for(Variant variant : source.variants)
         {
             NBTTagCompound tagCopyCopy = (NBTTagCompound)tagCopy.copy();
             tagCopyCopy.tagMap.putAll(variant.variantData.tagMap);
+            for(String tagToRemove : variant.tagsToRemove)
+            {
+                tagCopyCopy.tagMap.remove(tagToRemove);
+            }
 
             if(tagCopyCopy.equals(variantToMerge.entTag))
             {
@@ -310,6 +360,16 @@ public class MorphVariant
 
         //Create the variant
         Variant variant = new Variant();
+        //Get tags to be removed
+        for(Object obj : source.entTag.tagMap.entrySet())
+        {
+            Map.Entry<String, NBTBase> e = (Map.Entry<String, NBTBase>)obj;
+            String key = e.getKey();
+            if(!variantToMerge.entTag.tagMap.containsKey(key))
+            {
+                variant.tagsToRemove.add(key);
+            }
+        }
         for(Object obj : variantToMerge.entTag.tagMap.entrySet())
         {
             Map.Entry<String, NBTBase> e = (Map.Entry<String, NBTBase>)obj;
@@ -351,7 +411,7 @@ public class MorphVariant
     {
         public String identifier;
         public NBTTagCompound variantData;
-        public NBTTagCompound morphData;
+        public ArrayList<String> tagsToRemove;
         public boolean isFavourite;
         public boolean invalid;
 
@@ -359,7 +419,7 @@ public class MorphVariant
         {
             identifier = RandomStringUtils.randomAscii(IDENTIFIER_LENGTH);
             variantData = new NBTTagCompound();
-            morphData = new NBTTagCompound();
+            tagsToRemove = new ArrayList<String>();
             isFavourite = false;
             invalid = false;
         }
@@ -368,7 +428,12 @@ public class MorphVariant
         {
             identifier = tag.getString("ident");
             variantData = tag.getCompoundTag("entData");
-            morphData = tag.getCompoundTag("morphData");
+
+            int tagsToRemoveSize = tag.getInteger("tagsToRemove");
+            for(int i = 0; i < tagsToRemoveSize; i++)
+            {
+                tagsToRemove.add(tag.getString("tagToRemove_") + i);
+            }
             isFavourite = tag.getBoolean("isFavourite");
             invalid = tag.getBoolean("invalid");
         }
@@ -377,7 +442,12 @@ public class MorphVariant
         {
             tag.setString("ident", identifier);
             tag.setTag("entData", variantData);
-            tag.setTag("morphData", morphData);
+
+            tag.setInteger("tagsToRemove", tagsToRemove.size());
+            for(int i = 0; i < tagsToRemove.size(); i++)
+            {
+                tag.setString("tagToRemove_" + i, tagsToRemove.get(i));
+            }
             tag.setBoolean("isFavourite", isFavourite);
             tag.setBoolean("invalid", invalid);
         }

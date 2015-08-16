@@ -435,7 +435,7 @@ public class TickHandlerClient
         }
     }
 
-    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, float scale, float par4, float par5, float renderTick, boolean selected, boolean text)
+    public void drawEntityOnScreen(MorphState state, EntityLivingBase ent, int posX, int posY, float scale, float par4, float par5, float renderTick, boolean selected, boolean drawText)
     {
         forcePlayerRender = true;
         if(ent != null)
@@ -511,7 +511,7 @@ public class TickHandlerClient
             MorphInfoClient info = morphsActive.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
 
             GlStateManager.translate(0.0F, 0.0F, 100F);
-            if(text)
+            if(drawText)
             {
                 //TODO radial changes
                 //                if(radialShow)
@@ -525,7 +525,7 @@ public class TickHandlerClient
                 //                }
                 //                else
                 {
-                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.getEntInstance(mc.theWorld).getCommandSenderName().equalsIgnoreCase(state.getEntInstance(mc.theWorld).getCommandSenderName()) || info == null && ent.getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName(), 26, -32, 16777215);
+                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName(), 26, -32, 16777215);
                 }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -768,6 +768,31 @@ public class TickHandlerClient
             Minecraft.getMinecraft().gameSettings.hideGUI = hideGui;
         }
         forcePlayerRender = false;
+    }
+
+    public MorphState getCurrentlySelectedMorphState()
+    {
+        int i = 0;
+        Iterator<Map.Entry<String, ArrayList<MorphState>>> ite = playerMorphs.entrySet().iterator();
+        while(ite.hasNext())
+        {
+            Map.Entry<String, ArrayList<MorphState>> e = ite.next();
+
+            if(i == selectorSelectedVert)
+            {
+                ArrayList<MorphState> states = e.getValue();
+                if(selectorSelectedHori > states.size())
+                {
+                    return null;
+                }
+                else
+                {
+                    return states.get(selectorSelectedHori);
+                }
+            }
+            i++;
+        }
+        return null;
     }
 
     public boolean selectorShow = false;

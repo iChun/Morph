@@ -29,7 +29,9 @@ public class TickHandlerServer
         if(morphs == null)
         {
             morphs = new ArrayList<MorphVariant>();
-            morphs.add(new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayerName(name)); //Add the player self's morph variant when getting this list.
+            MorphVariant variant = new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayerName(name);
+            variant.thisVariant.isFavourite = true;
+            morphs.add(variant); //Add the player self's morph variant when getting this list.
             playerMorphs.put(name, morphs);
         }
         return morphs;

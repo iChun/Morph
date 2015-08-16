@@ -2,6 +2,7 @@ package me.ichun.mods.morph.common;
 
 import me.ichun.mods.morph.common.core.CommonProxy;
 import me.ichun.mods.morph.common.core.Config;
+import me.ichun.mods.morph.common.packet.PacketGuiInput;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraftforge.fml.common.Mod;
@@ -48,7 +49,7 @@ public class Morph
 
         proxy.preInit();
 
-        channel = ChannelHandler.getChannelHandlers(MOD_NAME, PacketUpdateMorphList.class, PacketUpdateActiveMorphs.class);
+        channel = ChannelHandler.getChannelHandlers(MOD_NAME, PacketUpdateMorphList.class, PacketUpdateActiveMorphs.class, PacketGuiInput.class);
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo(MOD_NAME, iChunUtil.versionOfMC, VERSION, false));
     }
