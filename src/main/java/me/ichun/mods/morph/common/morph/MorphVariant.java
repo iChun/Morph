@@ -2,14 +2,12 @@ package me.ichun.mods.morph.common.morph;
 
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -32,6 +30,7 @@ public class MorphVariant
     public String entId;
     public String playerName;
     public NBTTagCompound entTag;
+    public NBTTagCompound instanceTag;
     public Variant thisVariant;
     public ArrayList<Variant> variants;
 
@@ -40,6 +39,7 @@ public class MorphVariant
         this.entId = entId;
         this.playerName = "";
         this.entTag = new NBTTagCompound();
+        this.instanceTag = new NBTTagCompound();
         this.thisVariant = new Variant();
         this.variants = new ArrayList<Variant>();
     }
@@ -67,7 +67,10 @@ public class MorphVariant
         else
         {
             //TODO should I try...catch here to prevent crashes?
-            Entity ent = EntityList.createEntityFromNBT(entTag, world);
+            NBTTagCompound instanceCreator = (NBTTagCompound)instanceTag.copy();
+            instanceCreator.tagMap.putAll(entTag.tagMap);
+            instanceCreator.tagMap.putAll(thisVariant.variantData.tagMap);
+            Entity ent = EntityList.createEntityFromNBT(instanceCreator, world);
             if(ent instanceof EntityLivingBase)
             {
                 return (EntityLivingBase)ent;
@@ -98,8 +101,7 @@ public class MorphVariant
     public ArrayList<MorphVariant> split()
     {
         ArrayList<MorphVariant> vars = new ArrayList<MorphVariant>();
-        NBTTagCompound tag = new NBTTagCompound();
-        write(tag);
+        NBTTagCompound tag = write(new NBTTagCompound());
         MorphVariant current = new MorphVariant(entId);
         current.read(tag);
         current.variants.clear();
@@ -126,6 +128,7 @@ public class MorphVariant
         entId = tag.getString("entId");
         playerName = tag.getString("playerName");
         entTag = tag.getCompoundTag("entTag");
+        instanceTag = tag.getCompoundTag("instanceTag");
         thisVariant.read(tag.getCompoundTag("thisVariant"));
 
         int variantSize = tag.getInteger("variantCount");
@@ -150,6 +153,7 @@ public class MorphVariant
         tag.setString("entId", entId);
         tag.setString("playerName", playerName);
         tag.setTag("entTag", entTag);
+        tag.setTag("instanceTag", instanceTag);
 
         NBTTagCompound thisVarTag = new NBTTagCompound();
         thisVariant.write(thisVarTag);
@@ -204,14 +208,28 @@ public class MorphVariant
         }
 
         MorphVariant variant = new MorphVariant(saveData.getString("id"));
+        variant.instanceTag = saveData;
+        clean(living, variant.instanceTag);
+
         living.writeEntityToNBT(variant.entTag);
         clean(living, variant.entTag);
+
+        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp_double(living.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 0D, 20D)); //For health balancing reasons for now.
+
+        if(variant.instanceTag.tagMap.containsKey("ForgeData")) // send the ForgeData to the variant tag.
+        {
+            variant.entTag.tagMap.put("ForgeData", variant.instanceTag.tagMap.get("ForgeData"));
+        }
 
         return variant;
     }
 
     public static void clean(EntityLivingBase living, NBTTagCompound tag)
     {
+        //Entity tags
+        tag.removeTag("Fire");
+        tag.removeTag("Riding");
+
         //EntityLivingBase tags
         tag.setFloat("HealF", Short.MAX_VALUE);
         tag.setShort("Health", (short)Short.MAX_VALUE);
@@ -308,6 +326,12 @@ public class MorphVariant
         source.variants.add(variant);
 
         return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        return entId + "_" + playerName + "_" + thisVariant.identifier + "_" + entTag.toString();
     }
 
     @Override

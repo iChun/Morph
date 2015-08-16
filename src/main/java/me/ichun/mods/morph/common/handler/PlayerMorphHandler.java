@@ -193,7 +193,7 @@ public class PlayerMorphHandler implements IApi
 
         }
 
-        //TODO save the player morph list and morph state.
+        savePlayerData(player);
 
         if(killEntityClientside)
         {
@@ -239,13 +239,17 @@ public class PlayerMorphHandler implements IApi
 
     public void savePlayerData(EntityPlayer player)
     {
+        if(player != null)
+        {
+            return;
+        }
         NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
 
         //Save the current morphed state/variant
         MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
         if(info != null && !info.nextState.currentVariant.playerName.equals(player.getCommandSenderName())) //check that the info isn't null and the player isn't demorphing already anyways
         {
-            tag.setTag("currentMorph", info.nextState.currentVariant.write(new NBTTagCompound()));
+            tag.setTag("currentMorph", info.write(new NBTTagCompound()));
         }
         else
         {
@@ -272,10 +276,13 @@ public class PlayerMorphHandler implements IApi
         boolean update = false;
         if(tag.hasKey("currentMorph"))
         {
-            MorphVariant variant = new MorphVariant("");
-            variant.read(tag.getCompoundTag("currentMorph"));
-            MorphState state = new MorphState(variant);
-            Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), new MorphInfo(player, null, state));
+            MorphInfo info = new MorphInfo(player, null, null);
+            info.read(tag.getCompoundTag("currentMorph"));
+            if(info.morphTime < Morph.config.morphTime)
+            {
+                info.morphTime = Morph.config.morphTime;
+            }
+            Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), info);
             update = true;
         }
 

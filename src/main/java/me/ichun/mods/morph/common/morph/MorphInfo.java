@@ -15,11 +15,18 @@ public class MorphInfo
 
     public boolean firstUpdate = true;
 
+    //TODO health offset save here.
+
     public MorphInfo(EntityPlayer player, MorphState prevState, MorphState nextState)
     {
         this.player = player;
         this.prevState = prevState;
         this.nextState = nextState;
+
+        if(prevState == null)
+        {
+            morphTime = Morph.config.morphTime;
+        }
     }
 
     public void tick()
@@ -27,7 +34,7 @@ public class MorphInfo
         if(firstUpdate)
         {
             firstUpdate = false;
-            //DO STUFF HERE.
+            //DO STUFF HERE. LIKE SETTING THE PLAYER SIZE AND WHATNOT.
         }
     }
 

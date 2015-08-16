@@ -80,9 +80,11 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
     {
         for(Map.Entry<String, MorphInfo> e : infosToSend.entrySet())
         {
-            if(e.getValue().nextState != null)
+            if(e.getValue().nextState != null) //nextState was recreated successfully.
             {
-                Morph.proxy.tickHandlerClient.morphsActive.put(e.getKey(), new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState));
+                MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
+                info.read(e.getValue().write(new NBTTagCompound()));
+                Morph.proxy.tickHandlerClient.morphsActive.put(e.getKey(), info);
             }
         }
     }
