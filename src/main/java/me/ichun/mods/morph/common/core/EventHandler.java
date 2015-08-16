@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.keybind.KeyEvent;
 import us.ichun.mods.ichunutil.common.core.event.RendererSafeCompatibilityEvent;
@@ -87,6 +88,19 @@ public class EventHandler
                     Morph.proxy.tickHandlerClient.selectorShow = false;
                     Morph.proxy.tickHandlerClient.selectorShowTimer = TickHandlerClient.SELECTOR_SHOW_TIME - Morph.proxy.tickHandlerClient.selectorShowTimer;
                     Morph.proxy.tickHandlerClient.selectorScrollHoriTimer = TickHandlerClient.SELECTOR_SCROLL_TIME;
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.keySelectorRemoveMorph) || event.keyBind.keyIndex == Keyboard.KEY_DELETE)
+            {
+                if(Morph.proxy.tickHandlerClient.selectorShow)
+                {
+                    MorphState selectedState = Morph.proxy.tickHandlerClient.getCurrentlySelectedMorphState();
+                    MorphInfoClient info = Morph.proxy.tickHandlerClient.morphsActive.get(mc.thePlayer.getCommandSenderName());
+
+                    if(selectedState != null && !selectedState.currentVariant.thisVariant.isFavourite && ((info == null || !info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(selectedState.currentVariant.thisVariant.identifier)) && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())))
+                    {
+                        Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 2, false));
+                    }
                 }
             }
         }
