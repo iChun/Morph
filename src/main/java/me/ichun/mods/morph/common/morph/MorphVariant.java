@@ -1,6 +1,5 @@
 package me.ichun.mods.morph.common.morph;
 
-import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityPig;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class MorphVariant
-    implements Comparable<MorphVariant>
+        implements Comparable<MorphVariant>
 {
     public static final int VARIANT_PROTOCOL = 1;
     public static final int IDENTIFIER_LENGTH = 20;
@@ -119,11 +118,6 @@ public class MorphVariant
             MorphVariant variant = new MorphVariant(entId);
             variant.read(tag);
             variant.variants.clear();
-            variant.entTag.tagMap.putAll(var.variantData.tagMap);
-            for(String tagToRemove : var.tagsToRemove)
-            {
-                variant.entTag.tagMap.remove(tagToRemove);
-            }
             variant.thisVariant = var;
             vars.add(variant);
         }

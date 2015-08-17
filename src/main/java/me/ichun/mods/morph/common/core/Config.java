@@ -74,7 +74,7 @@ public class Config extends ConfigBase
     public KeyBind keySelectorLeft = new KeyBind(Keyboard.KEY_LBRACKET, true, false, false, false);
 
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)
-    public KeyBind keySelectorRight = new KeyBind(Keyboard.KEY_LBRACKET, true, false, false, false);
+    public KeyBind keySelectorRight = new KeyBind(Keyboard.KEY_RBRACKET, true, false, false, false);
 
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)
     public KeyBind keySelectorSelect = new KeyBind(Keyboard.KEY_RETURN);
