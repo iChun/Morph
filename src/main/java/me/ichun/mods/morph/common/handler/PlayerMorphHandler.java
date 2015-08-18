@@ -175,7 +175,9 @@ public class PlayerMorphHandler implements IApi
                 }
                 else
                 {
-                    Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, var), player);
+                    //The variant should be a new variant so it'll be the latest entry in the variants list.
+                    MorphVariant newVar = var.createWithVariant(var.variants.get(var.variants.size() - 1));
+                    Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, newVar), player);
                 }
                 break;
             }
@@ -189,6 +191,8 @@ public class PlayerMorphHandler implements IApi
         }
         Collections.sort(morphs);
 
+        //by this point the morph is acquired and sorted. Return true.
+
         if(forceMorph)
         {
 
@@ -200,7 +204,7 @@ public class PlayerMorphHandler implements IApi
         {
             //TODO spawn the client acquired entity
         }
-        return false;
+        return true;
     }
 
     @Override

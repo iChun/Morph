@@ -103,7 +103,7 @@ public class MorphVariant
         return new EntityOtherPlayerMP(world, EntityHelperBase.getFullGameProfileFromName(player));
     }
 
-    public ArrayList<MorphVariant> split()
+    public ArrayList<MorphVariant> split() //Returns a new copy of all the variants in the list.
     {
         ArrayList<MorphVariant> vars = new ArrayList<MorphVariant>();
         NBTTagCompound tag = write(new NBTTagCompound());
@@ -123,6 +123,16 @@ public class MorphVariant
         }
 
         return vars;
+    }
+
+    public MorphVariant createWithVariant(Variant var)
+    {
+        NBTTagCompound tag = write(new NBTTagCompound());
+        MorphVariant variant = new MorphVariant(entId);
+        variant.read(tag);
+        variant.variants.clear();
+        variant.thisVariant = var;
+        return variant;
     }
 
     public void read(NBTTagCompound tag)
@@ -275,7 +285,7 @@ public class MorphVariant
         tag.removeTag("Attributes");
         tag.removeTag("ActiveEffects");
 
-        //EntityPigZombie tags
+        //EntityPigZombie tags //TODO move this to the NBT stripper JSON.
         tag.removeTag("Anger");
         tag.removeTag("HurtBy");
         tag.removeTag("CanBreakDoors");
@@ -376,7 +386,7 @@ public class MorphVariant
             }
         }
 
-        //Add the variant to the variants list.
+        //Add the variant to the variants list. Ensure this entry is the last entry added, it is used to update the player of the new variant.
         source.variants.add(variant);
 
         return true;
