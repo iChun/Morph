@@ -27,7 +27,8 @@ public class Config extends ConfigBase
 
     @ConfigProp(category = "gameplay")
     @IntBool
-    public int classicMode = 0;
+    public int classicMode = 0; //TODO check if this needs to be in the sexsseion
+
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntMinMax(min = 30)
@@ -41,17 +42,20 @@ public class Config extends ConfigBase
     @IntBool
     public int showPlayerLabel = 0; //TODO this
 
-    @ConfigProp(category = "gameplay", useSession = true)
-    @IntBool
-    public int useLocalResources = 0; //TODO this
-
-    @ConfigProp(category = "gameplay", useSession = true)
+    @ConfigProp(category = "gameplay")
     @IntBool
     public int loseMorphsOnDeath = 0; //TODO this
 
-    @ConfigProp(category = "gameplay", useSession = true)
+    @ConfigProp(category = "gameplay")
     @IntBool
     public int instaMorph = 0; //Also known as Morph On Kill  //TODO this
+
+    @ConfigProp(category = "gameplay")
+    @IntBool
+    public int useLocalResources = 0;
+
+    @ConfigProp(category = "gameplay")
+    public String customPatchLink = "";
 
     @ConfigProp(category = "abilities", useSession = true)
     @IntBool

@@ -2,16 +2,16 @@
   "example.class.One": {  
     "removeThisTag": "null",
     "booleanStuff": "false",
-    "integerStuff": "100",
-    "byteStuff": "100B",
-    "longStuff": "100L",
-    "shortStuff": "100S",
+    "StringStuff": "WhateverStringWorks",
     "floatStuff": "100.0F",
     "doubleStuff": "100.0D",
-    "StringStuff": "WhateverStringWorks"
+    "integerStuff": "100",
+    "byteStuff": "100B",
+    "shortStuff": "100S",
+    "longStuff": "100L"
   },
   "example.class.Two": {  
-    "additionalNote": "The key is the NBT tag to modify. The value will be the Object type and what value to set it to.",
+    "additionalNote": "The key is the NBT tag to modify. The value will be the Object type and what value to set it to. If the value is of a numerical type, please append the type with a capital letter, no lowercase.",
     "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom."
   },
   

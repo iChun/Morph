@@ -1,8 +1,10 @@
 package me.ichun.mods.morph.common.core;
 
 import me.ichun.mods.morph.client.core.TickHandlerClient;
+import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.AbilityHandler;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
+import me.ichun.mods.morph.common.thread.ThreadGetResources;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -16,6 +18,8 @@ public class CommonProxy
 
         AbilityHandler.init();
         PlayerMorphHandler.init();
+
+        (new ThreadGetResources(Morph.config.customPatchLink)).start();
     }
 
     public void init()
