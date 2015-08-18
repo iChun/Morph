@@ -1,37 +1,28 @@
-{
-  "example.class.One": {
+{  
+  "example.class.One": {  
     "removeThisTag": "null",
     "booleanStuff": "false",
-	"integerStuff": "100",
+    "integerStuff": "100",
     "byteStuff": "100B",
-	"longStuff": "100L",
-	"shortStuff": "100S",
-	"floatStuff": "100.0F",
-	"doubleStuff": "100.0D",
-	"StringStuff": "WhateverStringWorks"
+    "longStuff": "100L",
+    "shortStuff": "100S",
+    "floatStuff": "100.0F",
+    "doubleStuff": "100.0D",
+    "StringStuff": "WhateverStringWorks"
   },
-  "example.class.Two": [
+  "example.class.Two": {  
     "additionalNote": "The key is the NBT tag to modify. The value will be the Object type and what value to set it to.",
     "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom."
-  ],
+  },
   
-  
-  "tropicraft.entities.hostile.land.SpiderAdult": [
+  "tropicraft.entities.hostile.land.SpiderAdult": {  
     "maxEggsToSpawn": "null"
-  ],
-  "tropicraft.entities.hostile.EntityLand": [
+  },
+  "tropicraft.entities.hostile.EntityLand": {  
     "ICoroAI_entID": "null",
-	"homeX": "null",
-	"homeY": "null",
-	"homeZ": "null",
-	"tamedByUser": "null"
-  ],
-  "net.minecraft.entity.passive.EntityHorse": [
-    "HasReproduced": "null",
-	"Bred": "null",
-	"Temper": "null",
-	"Tame": "null",
-	"OwnerName": "null",
-	"Items": "null"
-  ]
+    "homeX": "null",
+    "homeY": "null",
+    "homeZ": "null",
+    "tamedByUser": "null"
+  }
 }
