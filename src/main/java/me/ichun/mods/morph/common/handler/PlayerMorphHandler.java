@@ -6,7 +6,6 @@ import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
 import me.ichun.mods.morph.client.render.RenderMorph;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
-import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
@@ -32,6 +31,9 @@ public class PlayerMorphHandler implements IApi
 {
     private static final PlayerMorphHandler INSTANCE = new PlayerMorphHandler();
 
+    public static final ArrayList<Class<? extends EntityLivingBase>> blacklistedEntityClasses = new ArrayList<Class<? extends EntityLivingBase>>();
+    public static final ArrayList<Class<? extends EntityLivingBase>> blackwhiteEntityClasses = new ArrayList<Class<? extends EntityLivingBase>>();
+
     public static PlayerMorphHandler getInstance()
     {
         return INSTANCE;
@@ -46,6 +48,26 @@ public class PlayerMorphHandler implements IApi
     @Override
     public boolean canPlayerMorph(EntityPlayer player)
     {
+        if(Morph.config.listIsBlacklistPlayers == 0) //If the list is a whitelist... Check the whitelist.
+        {
+            for(String s : Morph.config.blackwhiteListedPlayers)
+            {
+                if(s.equalsIgnoreCase(player.getCommandSenderName()))
+                {
+                    return true;
+                }
+            }
+        }
+        else //The list is a blacklist. If the player name is in here, return false.
+        {
+            for(String s : Morph.config.blackwhiteListedPlayers)
+            {
+                if(s.equalsIgnoreCase(player.getCommandSenderName()))
+                {
+                    return false;
+                }
+            }
+        }
         return true; //TODO check the Morph classic config here in the future.
     }
 
@@ -119,6 +141,38 @@ public class PlayerMorphHandler implements IApi
         return null;
     }
 
+    public static boolean isEntityMorphableConfig(EntityLivingBase entity)
+    {
+        for(Class clz : blacklistedEntityClasses)
+        {
+            if(clz.isInstance(entity.getClass()))
+            {
+                return false;
+            }
+        }
+        if(Morph.config.listIsBlacklistMobs == 0) //If the list is a whitelist... Check the whitelist.
+        {
+            for(Class clz : blackwhiteEntityClasses)
+            {
+                if(clz.isInstance(entity.getClass()))
+                {
+                    return true;
+                }
+            }
+        }
+        else //The list is a blacklist. If the mob class is in here, return false.
+        {
+            for(Class clz : blackwhiteEntityClasses)
+            {
+                if(clz.isInstance(entity.getClass()))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean forceDemorph(EntityPlayerMP player)
     {
@@ -129,19 +183,33 @@ public class PlayerMorphHandler implements IApi
     @Override
     public boolean forceMorph(EntityPlayerMP player, EntityLivingBase entityToMorph)
     {
-        //TODO this, clearly
-        return false;
+        if(!isEntityMorphableConfig(entityToMorph))
+        {
+            return false;
+        }
+        MorphVariant variant = MorphVariant.createVariant(entityToMorph);
+        if(variant == null) //Variant could not be created.
+        {
+            return false;
+        }
+        return morphPlayer(player, variant);
     }
 
     @Override
     public boolean acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire, boolean forceMorph, boolean killEntityClientside)
     {
-        //TODO this
         if(Morph.config.childMorphs == 0 && entityToAcquire.isChild() || Morph.config.playerMorphs == 0 && entityToAcquire instanceof EntityPlayer || Morph.config.bossMorphs == 0 && entityToAcquire instanceof IBossDisplayData || player.getClass() == FakePlayer.class || player.playerNetServerHandler == null)
         {
             return false;
         }
-        //TODO configs for blacklisting mobs etc.
+        if(!isEntityMorphableConfig(entityToAcquire))
+        {
+            return false;
+        }
+        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing())
+        {
+            return false;
+        }
 
         if(MinecraftForge.EVENT_BUS.post(new MorphAcquiredEvent(player, entityToAcquire)))
         {
@@ -176,8 +244,8 @@ public class PlayerMorphHandler implements IApi
                 else
                 {
                     //The variant should be a new variant so it'll be the latest entry in the variants list.
-                    MorphVariant newVar = var.createWithVariant(var.variants.get(var.variants.size() - 1));
-                    Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, newVar), player);
+                    variant = var.createWithVariant(var.variants.get(var.variants.size() - 1));
+                    Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, variant), player);
                 }
                 break;
             }
@@ -205,6 +273,11 @@ public class PlayerMorphHandler implements IApi
             //TODO spawn the client acquired entity
         }
         return true;
+    }
+
+    public boolean morphPlayer(EntityPlayer player, MorphVariant variant)
+    {
+        return false;
     }
 
     @Override

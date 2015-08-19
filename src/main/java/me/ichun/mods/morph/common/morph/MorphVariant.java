@@ -266,6 +266,11 @@ public class MorphVariant
         {
             variant.entTag.tagMap.put("ForgeData", variant.instanceTag.tagMap.get("ForgeData"));
         }
+        if (living.getCustomNameTag() != null && living.getCustomNameTag().length() > 0)
+        {
+            variant.entTag.setString("CustomName", living.getCustomNameTag());
+            variant.entTag.setBoolean("CustomNameVisible", living.getAlwaysRenderNameTag());
+        }
 
         return variant;
     }

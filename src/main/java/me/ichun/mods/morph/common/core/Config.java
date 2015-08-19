@@ -1,6 +1,8 @@
 package me.ichun.mods.morph.common.core;
 
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
@@ -10,6 +12,7 @@ import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
 import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 public class Config extends ConfigBase
 {
@@ -57,6 +60,20 @@ public class Config extends ConfigBase
     @ConfigProp(category = "gameplay")
     public String customPatchLink = "";
 
+    @ConfigProp(category = "gameplay")
+    public String[] blackwhiteListedMobs = new String[0];
+
+    @ConfigProp(category = "gameplay")
+    @IntBool
+    public int listIsBlacklistMobs = 1;
+
+    @ConfigProp(category = "gameplay")
+    public String[] blackwhiteListedPlayers = new String[0];
+
+    @ConfigProp(category = "gameplay")
+    @IntBool
+    public int listIsBlacklistPlayers = 1;
+
     @ConfigProp(category = "abilities", useSession = true)
     @IntBool
     public int abilities = 1; //TODO this
@@ -92,7 +109,6 @@ public class Config extends ConfigBase
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)
     public KeyBind keyFavourite = new KeyBind(Keyboard.KEY_GRAVE);
 
-
     public Config(File file)
     {
         super(file);
@@ -108,5 +124,35 @@ public class Config extends ConfigBase
     public String getModName()
     {
         return Morph.MOD_NAME;
+    }
+
+    @Override
+    public void onConfigChange(Field field, Object original) //Nested int array and keybind original is the new var, no ori cause lazy
+    {
+        readBlackWhitelists();
+    }
+
+    @Override
+    public void setup()
+    {
+        super.setup();
+        readBlackWhitelists();
+    }
+
+    public void readBlackWhitelists()
+    {
+        PlayerMorphHandler.blackwhiteEntityClasses.clear();
+        for(String s : blackwhiteListedMobs)
+        {
+            try
+            {
+                Class clz = Class.forName(s);
+                if(EntityLivingBase.class.isAssignableFrom(clz) && !PlayerMorphHandler.blackwhiteEntityClasses.contains(clz))
+                {
+                    PlayerMorphHandler.blackwhiteEntityClasses.add(clz);
+                }
+            }
+            catch(ClassNotFoundException ignored){}
+        }
     }
 }

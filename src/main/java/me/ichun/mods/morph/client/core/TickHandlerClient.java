@@ -60,6 +60,13 @@ public class TickHandlerClient
                     {
                         info.tick();
                     }
+                    for(Map.Entry<String, ArrayList<MorphState>> e : Morph.proxy.tickHandlerClient.playerMorphs.entrySet())
+                    {
+                        for(MorphState state : e.getValue())
+                        {
+                            state.getEntInstance(mc.theWorld).ticksExisted++;
+                        }
+                    }
                 }
 
                 if(mc.currentScreen != null)

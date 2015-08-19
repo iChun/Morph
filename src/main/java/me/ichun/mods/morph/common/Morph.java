@@ -2,15 +2,14 @@ package me.ichun.mods.morph.common;
 
 import me.ichun.mods.morph.common.core.CommonProxy;
 import me.ichun.mods.morph.common.core.Config;
+import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.packet.PacketGuiInput;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import us.ichun.mods.ichunutil.common.core.Logger;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
@@ -71,5 +70,34 @@ public class Morph
     {
         proxy.tickHandlerServer.morphsActive.clear();
         proxy.tickHandlerServer.playerMorphs.clear();
+    }
+
+    @Mod.EventHandler
+    public void onIMCMessage(FMLInterModComms.IMCEvent event)
+    {
+        for(FMLInterModComms.IMCMessage message : event.getMessages())
+        {
+            if(message.key.equalsIgnoreCase("blacklist") && message.isStringMessage())
+            {
+                try
+                {
+                    Class clz = Class.forName(message.getStringValue());
+                    if(EntityLivingBase.class.isAssignableFrom(clz) && !PlayerMorphHandler.blacklistedEntityClasses.contains(clz))
+                    {
+                        PlayerMorphHandler.blacklistedEntityClasses.add(clz);
+                        logger.info("Registered " + message.getStringValue() + " to Morph Entity blacklist");
+                    }
+                    else
+                    {
+                        logger.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Entity may already be in blacklist or may not be an EntityLivingBase!");
+                    }
+                }
+                catch(ClassNotFoundException e)
+                {
+                    logger.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Class not found!");
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

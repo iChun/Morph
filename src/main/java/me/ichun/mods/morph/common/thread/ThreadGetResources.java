@@ -31,10 +31,11 @@ public class ThreadGetResources extends Thread
     @Override
     public void run()
     {
-        HashMap<String, HashMap<String, String>> json = getResource("NBTModifiers.json", new HashMap<String, HashMap<String, String>>());
+        HashMap<String, HashMap<String, String>> json = getResource("NBTModifiers.json", new TypeToken<HashMap<String, HashMap<String, String>>>() {}.getType());
 
         int mcNBTModifiers = 0;
 
+        NBTHandler.nbtModifiers.clear();
         for(Map.Entry<String, HashMap<String, String>> e : json.entrySet())
         {
             try
@@ -137,11 +138,10 @@ public class ThreadGetResources extends Thread
         }
     }
 
-    public <T> T getResource(String name, T objectType)
+    public <T> T getResource(String name, Type mapType)
     {
+        T objectType;
         Gson gson = new Gson();
-
-        Type mapType = new TypeToken<T>() {}.getType();
         try
         {
             if(Morph.config.useLocalResources == 1)
