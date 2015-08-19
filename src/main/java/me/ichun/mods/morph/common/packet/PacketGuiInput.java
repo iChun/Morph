@@ -58,7 +58,7 @@ public class PacketGuiInput extends AbstractPacket
                 {
                     case 0: //select to morph into
                     {
-                        //TODO this
+                        PlayerMorphHandler.getInstance().morphPlayer(player, variant.createWithVariant(var));
                         break;
                     }
                     case 1: //favouriting a morph

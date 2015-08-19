@@ -188,17 +188,12 @@ public class PlayerMorphHandler implements IApi
         {
             return false;
         }
-        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing()) //is the player morphing?
-        {
-            return false;
-        }
         MorphVariant variant = MorphVariant.createVariant(entityToMorph);
         if(variant == null) //Variant could not be created.
         {
             return false;
         }
-        morphPlayer(player, variant);
-        return true;
+        return morphPlayer(player, variant);
     }
 
     @Override
@@ -281,8 +276,12 @@ public class PlayerMorphHandler implements IApi
         return true;
     }
 
-    public void morphPlayer(EntityPlayer player, MorphVariant variant) //no checks are done here to get if the player can morph or not.
+    public boolean morphPlayer(EntityPlayer player, MorphVariant variant) //the only check is to see if the player is already morphing.
     {
+        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing()) //is the player morphing?
+        {
+            return false;
+        }
         MorphInfo currentInfo = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
         if(currentInfo == null)
         {
@@ -292,6 +291,7 @@ public class PlayerMorphHandler implements IApi
         newInfo.morphTime = 0;
         Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), newInfo);
         Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getCommandSenderName()));
+        return true;
     }
 
     @Override
@@ -333,7 +333,7 @@ public class PlayerMorphHandler implements IApi
     {
         if(player != null)//TODO remove this... this is for debugging purposes.
         {
-            return;
+//            return;
         }
         NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
 
@@ -362,6 +362,10 @@ public class PlayerMorphHandler implements IApi
 
     public boolean loadPlayerData(EntityPlayer player) //Returns true if the player has a morph and requires synching to the clients.
     {
+        if(player != null)//TODO remove this... this is for debugging purposes.
+        {
+//            return false;
+        }
         NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
 
         //Check if the player has a current morph.

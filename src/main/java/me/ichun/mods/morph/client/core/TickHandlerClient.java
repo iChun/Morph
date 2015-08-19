@@ -121,11 +121,11 @@ public class TickHandlerClient
         {
             if(selectorSelectedVert < 0)
             {
-                selectorSelectedVert = playerMorphs.size() - 1;
-            }
-            if(selectorSelectedVert > playerMorphs.size() - 1)
-            {
                 selectorSelectedVert = 0;
+            }
+            while(selectorSelectedVert > playerMorphs.size() - 1)
+            {
+                selectorSelectedVert--;
             }
 
             GlStateManager.pushMatrix();

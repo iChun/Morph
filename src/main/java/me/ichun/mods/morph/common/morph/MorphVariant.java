@@ -271,6 +271,9 @@ public class MorphVariant
             variant.entTag.setString("CustomName", living.getCustomNameTag());
             variant.entTag.setBoolean("CustomNameVisible", living.getAlwaysRenderNameTag());
         }
+        variant.instanceTag.removeTag("ForgeData");
+        variant.instanceTag.removeTag("CustomName");
+        variant.instanceTag.removeTag("CustomNameVisible");
 
         return variant;
     }
@@ -323,6 +326,10 @@ public class MorphVariant
         if(o instanceof MorphVariant)
         {
             MorphVariant var = (MorphVariant)o;
+            if(entId.equals(PLAYER_MORPH_ID))
+            {
+                return var.entId.equals(PLAYER_MORPH_ID) && playerName.equals(var.playerName);
+            }
             return entId.equals(var.entId) && playerName.equals(var.playerName) && entTag.equals(var.entTag) && thisVariant.identifier.equals(var.thisVariant.identifier); //Do not compare the variant arraylist? >_>
         }
         return false;
@@ -439,7 +446,7 @@ public class MorphVariant
             int tagsToRemoveSize = tag.getInteger("tagsToRemove");
             for(int i = 0; i < tagsToRemoveSize; i++)
             {
-                tagsToRemove.add(tag.getString("tagToRemove_") + i);
+                tagsToRemove.add(tag.getString("tagToRemove_" + i));
             }
             isFavourite = tag.getBoolean("isFavourite");
             invalid = tag.getBoolean("invalid");

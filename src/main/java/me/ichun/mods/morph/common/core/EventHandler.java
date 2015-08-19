@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -156,6 +157,17 @@ public class EventHandler
         //                Morph.proxy.tickHandlerClient.radialDeltaY /= mag;
         //            }
         //        }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onRenderPlayerPre(RenderPlayerEvent.Pre event)
+    {
+        MorphInfoClient info = Morph.proxy.tickHandlerClient.morphsActive.get(event.entityPlayer.getCommandSenderName());
+        if(info != null)
+        {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
