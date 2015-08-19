@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph;
 
+import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityPig;
@@ -277,7 +278,7 @@ public class MorphVariant
 
         //EntityLivingBase tags
         tag.setFloat("HealF", Short.MAX_VALUE);
-        tag.setShort("Health", (short)Short.MAX_VALUE);
+        tag.setShort("Health", Short.MAX_VALUE);
         tag.removeTag("HurtTime");
         tag.removeTag("HurtByTimestamp");
         tag.removeTag("DeathTime");
@@ -310,7 +311,8 @@ public class MorphVariant
         tag.removeTag("Leashed");
         tag.removeTag("Leash");
 
-        //TODO modify NBT tags here.
+        NBTHandler.modifyNBT(living.getClass(), tag);
+
         tag.removeTag("bukkit");
     }
 
