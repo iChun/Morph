@@ -6,6 +6,7 @@ import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
 import me.ichun.mods.morph.client.render.RenderMorph;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
+import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
@@ -183,7 +184,11 @@ public class PlayerMorphHandler implements IApi
     @Override
     public boolean forceMorph(EntityPlayerMP player, EntityLivingBase entityToMorph)
     {
-        if(!isEntityMorphableConfig(entityToMorph))
+        if(!isEntityMorphableConfig(entityToMorph)) //is the mob in a blackwhitelist?
+        {
+            return false;
+        }
+        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing()) //is the player morphing?
         {
             return false;
         }
@@ -192,7 +197,8 @@ public class PlayerMorphHandler implements IApi
         {
             return false;
         }
-        return morphPlayer(player, variant);
+        morphPlayer(player, variant);
+        return true;
     }
 
     @Override
@@ -202,11 +208,11 @@ public class PlayerMorphHandler implements IApi
         {
             return false;
         }
-        if(!isEntityMorphableConfig(entityToAcquire))
+        if(!isEntityMorphableConfig(entityToAcquire)) //is the mob in a blackwhitelist?
         {
             return false;
         }
-        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing())
+        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing()) //is the player morphing?
         {
             return false;
         }
@@ -275,9 +281,17 @@ public class PlayerMorphHandler implements IApi
         return true;
     }
 
-    public boolean morphPlayer(EntityPlayer player, MorphVariant variant)
+    public void morphPlayer(EntityPlayer player, MorphVariant variant) //no checks are done here to get if the player can morph or not.
     {
-        return false;
+        MorphInfo currentInfo = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
+        if(currentInfo == null)
+        {
+            currentInfo = new MorphInfo(player, null, new MorphState(MorphVariant.createVariant(player))); //if player isn't morphed, create a morph state where the player is the next state.
+        }
+        MorphInfo newInfo = new MorphInfo(player, currentInfo.nextState, new MorphState(variant));
+        newInfo.morphTime = 0;
+        Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), newInfo);
+        Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getCommandSenderName()));
     }
 
     @Override
