@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ThreadGetResources extends Thread
 {
-    public String sitePrefix = "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/";
+    public String sitePrefix = "https://raw.github.com/iChun/Morph/1.8/src/main/resources/assets/morph/mod/";
 
     public ThreadGetResources(String prefix)
     {
@@ -137,7 +137,7 @@ public class ThreadGetResources extends Thread
         }
     }
 
-    public <T> T getResource(String name, T objectToReturn)
+    public <T> T getResource(String name, T objectType)
     {
         Gson gson = new Gson();
 
@@ -149,12 +149,12 @@ public class ThreadGetResources extends Thread
                 InputStream con = new FileInputStream(new File(ResourceHelper.getConfigFolder(), name));
                 String data = new String(ByteStreams.toByteArray(con));
                 con.close();
-                objectToReturn = gson.fromJson(data, mapType);
+                objectType = gson.fromJson(data, mapType);
             }
             else
             {
                 Reader fileIn = new InputStreamReader(new URL(sitePrefix + name).openStream());
-                objectToReturn = gson.fromJson(fileIn, mapType);
+                objectType = gson.fromJson(fileIn, mapType);
                 fileIn.close();
             }
         }
@@ -171,7 +171,7 @@ public class ThreadGetResources extends Thread
             e.printStackTrace();
 
             Reader fileIn = new InputStreamReader(Morph.class.getResourceAsStream("/assets/morph/mod/" + name));
-            objectToReturn = gson.fromJson(fileIn, mapType);
+            objectType = gson.fromJson(fileIn, mapType);
             try
             {
                 fileIn.close();
@@ -179,6 +179,6 @@ public class ThreadGetResources extends Thread
             catch(IOException ignored){}
         }
 
-        return objectToReturn;
+        return objectType;
     }
 }

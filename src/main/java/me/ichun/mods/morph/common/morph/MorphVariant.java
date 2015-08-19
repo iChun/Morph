@@ -286,11 +286,6 @@ public class MorphVariant
         tag.removeTag("Attributes");
         tag.removeTag("ActiveEffects");
 
-        //EntityPigZombie tags //TODO move this to the NBT stripper JSON.
-        tag.removeTag("Anger");
-        tag.removeTag("HurtBy");
-        tag.removeTag("CanBreakDoors");
-
         //EntityAgeable tags
         tag.setInteger("Age", living.isChild() ? -24000 : 0);
         tag.removeTag("ForcedAge");
@@ -298,6 +293,7 @@ public class MorphVariant
 
         //EntityTameable tags
         tag.removeTag("OwnerUUID");
+        tag.removeTag("Sitting"); //we're making an ability for this maybe?
 
         //EntityLiving tags
         if(living instanceof EntityLiving)

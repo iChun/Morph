@@ -1,10 +1,19 @@
 package me.ichun.mods.morph.common.handler;
 
+import com.google.common.collect.Ordering;
+import com.google.gson.GsonBuilder;
+import me.ichun.mods.morph.common.morph.MorphVariant;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class NBTHandler
 {
@@ -67,5 +76,60 @@ public class NBTHandler
             entClz = (Class<? extends EntityLivingBase>)entClz.getSuperclass();
         }
         return modifiers;
+    }
+
+    public static void createMinecraftEntityTags(World world)
+    {
+        TreeMap<String, TreeMap<String, String>> list = new TreeMap<String, TreeMap<String, String>>(Ordering.natural());
+        for(Object obj : EntityList.classToStringMapping.entrySet())
+        {
+            Class clz = (Class)((Map.Entry)obj).getKey();
+            if(EntityLivingBase.class.isAssignableFrom(clz) && clz != EntityLivingBase.class && clz != EntityLiving.class && clz != EntityMob.class)
+            {
+                try
+                {
+                    EntityLivingBase living = (EntityLivingBase)clz.getConstructor(World.class).newInstance(world);
+                    NBTTagCompound tag = new NBTTagCompound();
+                    if(living.writeToNBTOptional(new NBTTagCompound()))
+                    {
+                        living.writeEntityToNBT(tag);
+                        TreeMap<String, String> tags = new TreeMap<String, String>(Ordering.natural());
+                        MorphVariant.clean(living, tag);
+                        tag.removeTag("HealF");
+                        tag.removeTag("Health");
+                        tag.removeTag("CanPickUpLoot");
+                        tag.removeTag("PersistenceRequired");
+                        tag.removeTag("NoAI");
+                        tag.removeTag("Age");
+
+                        for(Object obj1 : tag.tagMap.entrySet())
+                        {
+                            tags.put((String)((Map.Entry)obj1).getKey(), "null");
+                        }
+                        if(!tags.isEmpty())
+                        {
+                            list.put(clz.getName(), tags);
+                        }
+                    }
+                }
+                catch(InstantiationException e)
+                {
+                    e.printStackTrace();
+                }
+                catch(IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+                catch(InvocationTargetException e)
+                {
+                    e.printStackTrace();
+                }
+                catch(NoSuchMethodException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        System.out.println((new GsonBuilder().setPrettyPrinting().create()).toJson(list));
     }
 }

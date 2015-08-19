@@ -24,5 +24,69 @@
     "homeY": "null",
     "homeZ": "null",
     "tamedByUser": "null"
+  },
+  
+  "net.minecraft.entity.boss.EntityWither": {
+    "Invul": "null"
+  },
+  "net.minecraft.entity.item.EntityArmorStand": {
+    "Invisible": "false",
+    "NoGravity": "null"
+  },
+  "net.minecraft.entity.monster.EntityCreeper": {
+    "ExplosionRadius": "null",
+    "Fuse": "null",
+    "ignited": "null"
+  },
+  "net.minecraft.entity.monster.EntityEndermite": {
+    "Lifetime": "null",
+    "PlayerSpawned": "null"
+  },
+  "net.minecraft.entity.monster.EntityGhast": {
+    "ExplosionPower": "null"
+  },
+  "net.minecraft.entity.monster.EntityIronGolem": {
+    "PlayerCreated": "null"
+  },
+  "net.minecraft.entity.monster.EntityPigZombie": {
+    "Anger": "null",
+	"HurtBy": "null"
+  },
+  "net.minecraft.entity.monster.EntitySlime": {
+    "wasOnGround": "null"
+  },
+  "net.minecraft.entity.monster.EntityZombie": {
+    "CanBreakDoors": "true",
+	"ConversionTime": "null"
+  },
+  "net.minecraft.entity.passive.EntityBat": {
+    "BatFlags": "null"
+  },
+  "net.minecraft.entity.passive.EntityChicken": {
+    "EggLayTime": "null",
+    "IsChickenJockey": "null"
+  },
+  "net.minecraft.entity.passive.EntityHorse": {
+    "Bred": "null",
+    "EatingHaystack": "null",
+    "HasReproduced": "null",
+	"Items": "null",
+    "Tame": "null",
+    "Temper": "null"
+  },
+  "net.minecraft.entity.passive.EntityRabbit": {
+    "MoreCarrotTicks": "null"
+  },
+  "net.minecraft.entity.passive.EntityVillager": {
+    "Career": "null",
+    "CareerLevel": "null",
+    "Inventory": "null",
+	"Offers": "null",
+    "Riches": "null",
+    "Willing": "null"
+  },
+  "net.minecraft.entity.passive.EntityWolf": {
+    "Angry": "null",
+    "CollarColor": "null"
   }
 }
