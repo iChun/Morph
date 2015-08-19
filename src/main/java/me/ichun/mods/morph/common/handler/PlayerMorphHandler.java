@@ -269,7 +269,7 @@ public class PlayerMorphHandler implements IApi
 
         if(forceMorph)
         {
-
+            morphPlayer(player, variant);
         }
 
         savePlayerData(player);

@@ -3,11 +3,14 @@ package me.ichun.mods.morph.common.core;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphVariant;
+import me.ichun.mods.morph.common.packet.PacketDemorph;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class TickHandlerServer
 {
@@ -16,9 +19,32 @@ public class TickHandlerServer
     {
         if(event.phase == TickEvent.Phase.END)
         {
-            for(MorphInfo info : Morph.proxy.tickHandlerServer.morphsActive.values())
+            Iterator<Map.Entry<String, MorphInfo>> ite = Morph.proxy.tickHandlerServer.morphsActive.entrySet().iterator();
+            while(ite.hasNext())
             {
+                Map.Entry<String, MorphInfo> e = ite.next();
+                MorphInfo info = e.getValue();
+
                 info.tick();
+
+                if(!info.isMorphing() && info.nextState.getEntInstance(info.player.worldObj).getCommandSenderName().equals(info.player.getCommandSenderName())) //Player has fully demorphed
+                {
+                    ite.remove();
+                    Morph.channel.sendToAll(new PacketDemorph(info.player.getCommandSenderName()));
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.side.isServer() && event.phase == TickEvent.Phase.START)
+        {
+            MorphInfo info = morphsActive.get(event.player.getCommandSenderName());
+            if(info != null)
+            {
+                info.player = event.player;
             }
         }
     }

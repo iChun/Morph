@@ -6,6 +6,7 @@ import me.ichun.mods.morph.client.render.RenderMorph;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.ability.AbilityPotionEffect;
 import me.ichun.mods.morph.common.handler.AbilityHandler;
+import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -89,6 +90,19 @@ public class TickHandlerClient
                 }
                 selectorScrollVertTimer--;
                 selectorScrollHoriTimer--;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.side.isClient() && event.phase == TickEvent.Phase.START)
+        {
+            MorphInfo info = morphsActive.get(event.player.getCommandSenderName());
+            if(info != null)
+            {
+                info.player = event.player;
             }
         }
     }

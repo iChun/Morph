@@ -6,9 +6,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MorphInfo
 {
-    public EntityPlayer player;
+    public EntityPlayer player; //Should never be null.
 
-    public MorphState prevState;
+    public MorphState prevState; //Can be null.
     public MorphState nextState; //Should never be null.
 
     public int morphTime;
