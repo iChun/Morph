@@ -35,6 +35,10 @@ public class MorphInfo
         if(firstUpdate)
         {
             firstUpdate = false;
+            if(isMorphing() && prevState == null)
+            {
+                morphTime = Morph.config.morphTime;
+            }
             //DO STUFF HERE. LIKE SETTING THE PLAYER SIZE AND WHATNOT.
         }
         if(isMorphing())

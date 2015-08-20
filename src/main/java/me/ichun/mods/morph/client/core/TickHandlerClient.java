@@ -590,196 +590,196 @@ public class TickHandlerClient
                 tessellator.draw();
             }
 
-            if(Morph.config.showAbilitiesInGui == 1)
-            {
-                ArrayList<Ability> abilities = AbilityHandler.getInstance().getEntityAbilities(ent.getClass());
-
-                int abilitiesSize = abilities.size();
-                for(int i = abilities.size() - 1; i >= 0; i--)
-                {
-                    if(!abilities.get(i).entityHasAbility(ent) || (abilities.get(i).getIcon() == null && !(abilities.get(i) instanceof AbilityPotionEffect)) || abilities.get(i) instanceof AbilityPotionEffect && Potion.potionTypes[((AbilityPotionEffect)abilities.get(i)).potionId] != null && !Potion.potionTypes[((AbilityPotionEffect)abilities.get(i)).potionId].hasStatusIcon())
-                    {
-                        abilitiesSize--;
-                    }
-                }
-
-                boolean shouldScroll = false;
-
-                final int stencilBit = MinecraftForgeClient.reserveStencilBit();
-
-                if(stencilBit >= 0 && abilitiesSize > 3)
-                {
-                    MorphState selectedState = null;
-
-                    int i = 0;
-
-                    Iterator<Map.Entry<String, ArrayList<MorphState>>> ite = playerMorphs.entrySet().iterator();
-
-                    while(ite.hasNext())
-                    {
-                        Map.Entry<String, ArrayList<MorphState>> e = ite.next();
-                        if(i == selectorSelectedVert)
-                        {
-                            ArrayList<MorphState> states = e.getValue();
-
-                            for(int j = 0; j < states.size(); j++)
-                            {
-                                if(j == selectorSelectedHori)
-                                {
-                                    selectedState = states.get(j);
-                                    break;
-                                }
-                            }
-
-                            break;
-                        }
-                        i++;
-                    }
-
-                    if(state != null && selectedState == state)
-                    {
-                        shouldScroll = true;
-                    }
-
-                    if(shouldScroll)
-                    {
-                        final int stencilMask = 1 << stencilBit;
-
-                        GL11.glEnable(GL11.GL_STENCIL_TEST);
-                        GlStateManager.depthMask(false);
-                        GlStateManager.colorMask(false, false, false, false);
-
-                        GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
-                        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
-                        GL11.glStencilMask(stencilMask);
-                        GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
-
-                        RendererHelper.drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
-
-                        GL11.glStencilMask(0x00);
-                        GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
-
-                        GlStateManager.depthMask(true);
-                        GlStateManager.colorMask(true, true, true, true);
-                    }
-                }
-
-                int offsetX = 0;
-                int offsetY = 0;
-                int renders = 0;
-                for(int i = 0; i < (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
-                {
-                    Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
-
-                    if(!ability.entityHasAbility(ent) || (ability.getIcon() == null && !(ability instanceof AbilityPotionEffect)) || ability instanceof AbilityPotionEffect && Potion.potionTypes[((AbilityPotionEffect)ability).potionId] != null && !Potion.potionTypes[((AbilityPotionEffect)ability).potionId].hasStatusIcon() || (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3) && !shouldScroll && renders >= 3)
-                    {
-                        continue;
-                    }
-
-                    ResourceLocation loc = ability.getIcon();
-                    if(loc != null || ability instanceof AbilityPotionEffect)
-                    {
-                        double pX = -20.5D;
-                        double pY = -33.5D;
-                        double size = 12D;
-
-                        if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
-                        {
-                            int round = abilityScroll % (30 * abilities.size());
-
-                            pY -= (size + 1) * (double)(round + (double)renderTick) / 30D;
-                        }
-
-                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                        Tessellator tessellator = Tessellator.getInstance();
-                        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-                        worldRenderer.setColorRGBA(255, 255, 255, 255);
-
-                        double iconX = pX + (offsetX * (size + 1));
-                        double iconY = pY + (offsetY * (size + 1));
-
-                        if(loc != null)
-                        {
-                            Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
-
-                            worldRenderer.startDrawingQuads();
-                            worldRenderer.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
-                            worldRenderer.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
-                            tessellator.draw();
-                        }
-                        else
-                        {
-                            Minecraft.getMinecraft().getTextureManager().bindTexture(ResourceHelper.texGuiInventory);
-                            int l = Potion.potionTypes[((AbilityPotionEffect)ability).potionId].getStatusIconIndex();
-
-                            float f = 0.00390625F;
-                            float f1 = 0.00390625F;
-
-                            int xStart = l % 8 * 18;
-                            int yStart = 198 + l / 8 * 18;
-
-                            worldRenderer.startDrawingQuads();
-                            worldRenderer.addVertexWithUV(iconX, iconY + size, 0.0D, xStart * f, (yStart + 18) * f1);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, 0.0D, (xStart + 18) * f, (yStart + 18) * f1);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY, 0.0D, (xStart + 18) * f, yStart * f1);
-                            worldRenderer.addVertexWithUV(iconX, iconY, 0.0D, xStart * f, yStart * f1);
-                            tessellator.draw();
-
-                        }
-
-                        GlStateManager.color(0.0F, 0.0F, 0.0F, 0.6F);
-
-                        size = 12D;
-                        iconX = pX + 1D + (offsetX * (size + 1));
-                        iconY = pY + 1D + (offsetY * (size + 1));
-
-                        if(loc != null)
-                        {
-                            worldRenderer.startDrawingQuads();
-                            worldRenderer.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
-                            worldRenderer.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
-                            tessellator.draw();
-                        }
-                        else
-                        {
-                            Minecraft.getMinecraft().getTextureManager().bindTexture(ResourceHelper.texGuiInventory);
-                            int l = Potion.potionTypes[((AbilityPotionEffect)ability).potionId].getStatusIconIndex();
-
-                            float f = 0.00390625F;
-                            float f1 = 0.00390625F;
-
-                            int xStart = l % 8 * 18;
-                            int yStart = 198 + l / 8 * 18;
-
-                            worldRenderer.startDrawingQuads();
-                            worldRenderer.addVertexWithUV(iconX, iconY + size, -1.0D, xStart * f, (yStart + 18) * f1);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, -1.0D, (xStart + 18) * f, (yStart + 18) * f1);
-                            worldRenderer.addVertexWithUV(iconX + size, iconY, -1.0D, (xStart + 18) * f, yStart * f1);
-                            worldRenderer.addVertexWithUV(iconX, iconY, -1.0D, xStart * f, yStart * f1);
-                            tessellator.draw();
-                        }
-
-                        offsetY++;
-                        if(offsetY == 3 && stencilBit < 0)
-                        {
-                            offsetY = 0;
-                            offsetX++;
-                        }
-                    }
-                    renders++;
-                }
-
-                if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
-                {
-                    GL11.glDisable(GL11.GL_STENCIL_TEST);
-                }
-
-                MinecraftForgeClient.releaseStencilBit(stencilBit);
-            }
+//            if(Morph.config.showAbilitiesInGui == 1)
+//            {
+//                ArrayList<Ability> abilities = AbilityHandler.getInstance().getEntityAbilities(ent.getClass());
+//
+//                int abilitiesSize = abilities.size();
+//                for(int i = abilities.size() - 1; i >= 0; i--)
+//                {
+//                    if(!abilities.get(i).entityHasAbility(ent) || (abilities.get(i).getIcon() == null && !(abilities.get(i) instanceof AbilityPotionEffect)) || abilities.get(i) instanceof AbilityPotionEffect && Potion.potionTypes[((AbilityPotionEffect)abilities.get(i)).potionId] != null && !Potion.potionTypes[((AbilityPotionEffect)abilities.get(i)).potionId].hasStatusIcon())
+//                    {
+//                        abilitiesSize--;
+//                    }
+//                }
+//
+//                boolean shouldScroll = false;
+//
+//                final int stencilBit = MinecraftForgeClient.reserveStencilBit();
+//
+//                if(stencilBit >= 0 && abilitiesSize > 3)
+//                {
+//                    MorphState selectedState = null;
+//
+//                    int i = 0;
+//
+//                    Iterator<Map.Entry<String, ArrayList<MorphState>>> ite = playerMorphs.entrySet().iterator();
+//
+//                    while(ite.hasNext())
+//                    {
+//                        Map.Entry<String, ArrayList<MorphState>> e = ite.next();
+//                        if(i == selectorSelectedVert)
+//                        {
+//                            ArrayList<MorphState> states = e.getValue();
+//
+//                            for(int j = 0; j < states.size(); j++)
+//                            {
+//                                if(j == selectorSelectedHori)
+//                                {
+//                                    selectedState = states.get(j);
+//                                    break;
+//                                }
+//                            }
+//
+//                            break;
+//                        }
+//                        i++;
+//                    }
+//
+//                    if(state != null && selectedState == state)
+//                    {
+//                        shouldScroll = true;
+//                    }
+//
+//                    if(shouldScroll)
+//                    {
+//                        final int stencilMask = 1 << stencilBit;
+//
+//                        GL11.glEnable(GL11.GL_STENCIL_TEST);
+//                        GlStateManager.depthMask(false);
+//                        GlStateManager.colorMask(false, false, false, false);
+//
+//                        GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
+//                        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
+//                        GL11.glStencilMask(stencilMask);
+//                        GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
+//
+//                        RendererHelper.drawColourOnScreen(255, 255, 255, 255, -20.5D, -32.5D, 40D, 35D, -10D);
+//
+//                        GL11.glStencilMask(0x00);
+//                        GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
+//
+//                        GlStateManager.depthMask(true);
+//                        GlStateManager.colorMask(true, true, true, true);
+//                    }
+//                }
+//
+//                int offsetX = 0;
+//                int offsetY = 0;
+//                int renders = 0;
+//                for(int i = 0; i < (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3 ? abilities.size() * 2 : abilities.size()); i++)
+//                {
+//                    Ability ability = abilities.get(i >= abilities.size() ? i - abilities.size() : i);
+//
+//                    if(!ability.entityHasAbility(ent) || (ability.getIcon() == null && !(ability instanceof AbilityPotionEffect)) || ability instanceof AbilityPotionEffect && Potion.potionTypes[((AbilityPotionEffect)ability).potionId] != null && !Potion.potionTypes[((AbilityPotionEffect)ability).potionId].hasStatusIcon() || (abilitiesSize > 3 && stencilBit >= 0 && abilities.size() > 3) && !shouldScroll && renders >= 3)
+//                    {
+//                        continue;
+//                    }
+//
+//                    ResourceLocation loc = ability.getIcon();
+//                    if(loc != null || ability instanceof AbilityPotionEffect)
+//                    {
+//                        double pX = -20.5D;
+//                        double pY = -33.5D;
+//                        double size = 12D;
+//
+//                        if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
+//                        {
+//                            int round = abilityScroll % (30 * abilities.size());
+//
+//                            pY -= (size + 1) * (double)(round + (double)renderTick) / 30D;
+//                        }
+//
+//                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+//                        Tessellator tessellator = Tessellator.getInstance();
+//                        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+//                        worldRenderer.setColorRGBA(255, 255, 255, 255);
+//
+//                        double iconX = pX + (offsetX * (size + 1));
+//                        double iconY = pY + (offsetY * (size + 1));
+//
+//                        if(loc != null)
+//                        {
+//                            Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
+//
+//                            worldRenderer.startDrawingQuads();
+//                            worldRenderer.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
+//                            worldRenderer.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
+//                            tessellator.draw();
+//                        }
+//                        else
+//                        {
+//                            Minecraft.getMinecraft().getTextureManager().bindTexture(ResourceHelper.texGuiInventory);
+//                            int l = Potion.potionTypes[((AbilityPotionEffect)ability).potionId].getStatusIconIndex();
+//
+//                            float f = 0.00390625F;
+//                            float f1 = 0.00390625F;
+//
+//                            int xStart = l % 8 * 18;
+//                            int yStart = 198 + l / 8 * 18;
+//
+//                            worldRenderer.startDrawingQuads();
+//                            worldRenderer.addVertexWithUV(iconX, iconY + size, 0.0D, xStart * f, (yStart + 18) * f1);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, 0.0D, (xStart + 18) * f, (yStart + 18) * f1);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY, 0.0D, (xStart + 18) * f, yStart * f1);
+//                            worldRenderer.addVertexWithUV(iconX, iconY, 0.0D, xStart * f, yStart * f1);
+//                            tessellator.draw();
+//
+//                        }
+//
+//                        GlStateManager.color(0.0F, 0.0F, 0.0F, 0.6F);
+//
+//                        size = 12D;
+//                        iconX = pX + 1D + (offsetX * (size + 1));
+//                        iconY = pY + 1D + (offsetY * (size + 1));
+//
+//                        if(loc != null)
+//                        {
+//                            worldRenderer.startDrawingQuads();
+//                            worldRenderer.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
+//                            worldRenderer.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
+//                            tessellator.draw();
+//                        }
+//                        else
+//                        {
+//                            Minecraft.getMinecraft().getTextureManager().bindTexture(ResourceHelper.texGuiInventory);
+//                            int l = Potion.potionTypes[((AbilityPotionEffect)ability).potionId].getStatusIconIndex();
+//
+//                            float f = 0.00390625F;
+//                            float f1 = 0.00390625F;
+//
+//                            int xStart = l % 8 * 18;
+//                            int yStart = 198 + l / 8 * 18;
+//
+//                            worldRenderer.startDrawingQuads();
+//                            worldRenderer.addVertexWithUV(iconX, iconY + size, -1.0D, xStart * f, (yStart + 18) * f1);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY + size, -1.0D, (xStart + 18) * f, (yStart + 18) * f1);
+//                            worldRenderer.addVertexWithUV(iconX + size, iconY, -1.0D, (xStart + 18) * f, yStart * f1);
+//                            worldRenderer.addVertexWithUV(iconX, iconY, -1.0D, xStart * f, yStart * f1);
+//                            tessellator.draw();
+//                        }
+//
+//                        offsetY++;
+//                        if(offsetY == 3 && stencilBit < 0)
+//                        {
+//                            offsetY = 0;
+//                            offsetX++;
+//                        }
+//                    }
+//                    renders++;
+//                }
+//
+//                if(stencilBit >= 0 && abilities.size() > 3 && shouldScroll)
+//                {
+//                    GL11.glDisable(GL11.GL_STENCIL_TEST);
+//                }
+//
+//                MinecraftForgeClient.releaseStencilBit(stencilBit);
+//            }
             GlStateManager.translate(0.0F, 0.0F, -100F);
 
             GlStateManager.disableBlend();

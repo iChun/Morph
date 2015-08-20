@@ -291,6 +291,7 @@ public class PlayerMorphHandler implements IApi
         newInfo.morphTime = 0;
         Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), newInfo);
         Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getCommandSenderName()));
+        //TODO play the morph sound.
         return true;
     }
 

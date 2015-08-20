@@ -18,28 +18,27 @@ public class Config extends ConfigBase
 {
     @ConfigProp(category = "gameplay")
     @IntBool
-    public int childMorphs = 0; //TODO this
+    public int childMorphs = 0;
 
     @ConfigProp(category = "gameplay")
     @IntBool
-    public int playerMorphs = 1; //TODO this
+    public int playerMorphs = 1;
 
     @ConfigProp(category = "gameplay")
     @IntBool
-    public int bossMorphs = 0; //TODO this
+    public int bossMorphs = 0;
 
     @ConfigProp(category = "gameplay")
     @IntBool
     public int classicMode = 0; //TODO check if this needs to be in the sexsseion
 
-
     @ConfigProp(category = "gameplay", useSession = true)
     @IntMinMax(min = 30)
-    public int morphTime = 80; //TODO this
+    public int morphTime = 80;
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
-    public int canSleepMorphed = 1; //TODO this
+    public int canSleepMorphed = 0; //TODO this
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
@@ -51,7 +50,7 @@ public class Config extends ConfigBase
 
     @ConfigProp(category = "gameplay")
     @IntBool
-    public int instaMorph = 0; //Also known as Morph On Kill  //TODO this
+    public int instaMorph = 0; //Also known as Morph On Kill
 
     @ConfigProp(category = "gameplay")
     @IntBool
@@ -83,7 +82,7 @@ public class Config extends ConfigBase
 
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)
     @IntBool
-    public int showAbilitiesInGui = 1;
+    public String[] abilitiesToHideInGui = new String[0]; //TODO this
 
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)
     public KeyBind keySelectorUp = new KeyBind(Keyboard.KEY_LBRACKET);
