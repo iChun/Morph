@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.morph;
 
 import me.ichun.mods.morph.common.Morph;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -36,6 +37,27 @@ public class MorphInfo
             firstUpdate = false;
             //DO STUFF HERE. LIKE SETTING THE PLAYER SIZE AND WHATNOT.
         }
+        if(isMorphing())
+        {
+            morphTime++;
+        }
+        if(prevState != null && prevState.entInstance != null && isMorphing())
+        {
+            syncEntityWithPlayer(prevState.entInstance);
+        }
+        if(nextState.entInstance != null)
+        {
+            syncEntityWithPlayer(nextState.entInstance);
+        }
+    }
+
+    public void syncEntityWithPlayer(EntityLivingBase ent)
+    {
+    }
+
+    public EntityLivingBase getEntity(MorphState state)
+    {
+        return state.entInstance;
     }
 
     public boolean isMorphing()

@@ -2,6 +2,7 @@ package me.ichun.mods.morph.common.core;
 
 import me.ichun.mods.morph.client.core.TickHandlerClient;
 import me.ichun.mods.morph.client.model.ModelHandler;
+import me.ichun.mods.morph.client.model.ModelInfo;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.keybind.KeyEvent;
+import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.event.RendererSafeCompatibilityEvent;
 
 import java.util.Map;
@@ -163,10 +165,24 @@ public class EventHandler
     @SideOnly(Side.CLIENT)
     public void onRenderPlayerPre(RenderPlayerEvent.Pre event)
     {
+        if(Morph.proxy.tickHandlerClient.renderMorphDepth > 0) //It's trying to render a player while rendering a morph, allow it.
+        {
+            return;
+        }
+
         MorphInfoClient info = Morph.proxy.tickHandlerClient.morphsActive.get(event.entityPlayer.getCommandSenderName());
         if(info != null)
         {
             event.setCanceled(true);
+
+            Morph.proxy.tickHandlerClient.renderMorphDepth++;
+
+            ModelInfo modelInfo = info.getNextStateModel(event.entityPlayer.worldObj);
+            float f1 = EntityHelperBase.interpolateRotation(event.entityPlayer.prevRotationYaw, event.entityPlayer.rotationYaw, event.partialRenderTick);
+
+            modelInfo.forceRender(info.nextState.getEntInstance(event.entityPlayer.worldObj), event.x, event.y, event.z, f1, event.partialRenderTick);
+
+            Morph.proxy.tickHandlerClient.renderMorphDepth--;
         }
     }
 

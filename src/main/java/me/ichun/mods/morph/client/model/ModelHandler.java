@@ -65,6 +65,6 @@ public class ModelHandler
             info = new ModelInfo(clz, rend, ModelHelper.getPossibleModel(rend));
             entityModelMap.put(clz, info);
         }
-        return info; //can be null
+        return info; //shouldn't be null
     }
 }

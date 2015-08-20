@@ -42,7 +42,9 @@ public class TickHandlerClient
             }
             else
             {
+                renderMorphDepth++; //hacky fix to make the entity render on the selector
                 drawSelector(mc, event.renderTickTime);
+                renderMorphDepth--;
             }
         }
     }
@@ -829,6 +831,8 @@ public class TickHandlerClient
 
     public RenderMorph renderMorphInstance;
     public boolean forcePlayerRender;
+
+    public int renderMorphDepth;
 
     public HashMap<String, MorphInfoClient> morphsActive = new HashMap<String, MorphInfoClient>(); //Current morphs per-player
     public LinkedHashMap<String, ArrayList<MorphState>> playerMorphs = new LinkedHashMap<String, ArrayList<MorphState>>(); //Minecraft Player's available morphs. LinkedHashMap maintains insertion order.
