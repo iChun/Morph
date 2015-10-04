@@ -2,9 +2,12 @@ package me.ichun.mods.morph.client.morph;
 
 import me.ichun.mods.morph.client.model.ModelHandler;
 import me.ichun.mods.morph.client.model.ModelInfo;
+import me.ichun.mods.morph.client.model.ModelMorph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySlime;
@@ -18,6 +21,8 @@ public class MorphInfoClient extends MorphInfo
 {
     private ModelInfo prevStateModel; //can be null
     private ModelInfo nextStateModel; //should never be null
+
+    private ModelMorph modelMorph; //can be null;
 
     public MorphInfoClient(EntityPlayer player, MorphState prevState, MorphState nextState)
     {
@@ -40,6 +45,32 @@ public class MorphInfoClient extends MorphInfo
             prevStateModel = ModelHandler.getEntityModelInfo(prevState.getEntInstance(world));
         }
         return prevStateModel;
+    }
+
+    public ModelMorph getModelMorph(World world)
+    {
+        if(modelMorph == null)
+        {
+            modelMorph = new ModelMorph(getPrevStateModel(world), getNextStateModel(world), prevState != null ? prevState.getEntInstance(world) : null, nextState.getEntInstance(world));
+        }
+        return modelMorph;
+    }
+
+    @Override
+    public void clean()
+    {
+        super.clean();
+        if(modelMorph != null)
+        {
+            for(ModelRenderer renderer : modelMorph.modelList)
+            {
+                if(renderer.compiled)
+                {
+                    GLAllocation.deleteDisplayLists(renderer.displayList);
+                    renderer.compiled = false;
+                }
+            }
+        }
     }
 
     @Override

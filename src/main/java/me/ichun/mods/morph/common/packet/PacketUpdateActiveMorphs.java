@@ -84,6 +84,10 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
             {
                 MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
                 info.read(e.getValue().write(new NBTTagCompound()));
+                if(Morph.proxy.tickHandlerClient.morphsActive.containsKey(e.getKey()))
+                {
+                    Morph.proxy.tickHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
+                }
                 Morph.proxy.tickHandlerClient.morphsActive.put(e.getKey(), info);
             }
         }

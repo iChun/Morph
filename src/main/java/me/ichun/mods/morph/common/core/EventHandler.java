@@ -1,8 +1,10 @@
 package me.ichun.mods.morph.common.core;
 
+import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.client.core.TickHandlerClient;
 import me.ichun.mods.morph.client.model.ModelHandler;
 import me.ichun.mods.morph.client.model.ModelInfo;
+import me.ichun.mods.morph.client.model.ModelMorph;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
@@ -13,9 +15,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -175,12 +179,29 @@ public class EventHandler
         {
             event.setCanceled(true);
 
+            Minecraft mc = Minecraft.getMinecraft();
+
             Morph.proxy.tickHandlerClient.renderMorphDepth++;
 
-            ModelInfo modelInfo = info.getNextStateModel(event.entityPlayer.worldObj);
-            float f1 = EntityHelperBase.interpolateRotation(event.entityPlayer.prevRotationYaw, event.entityPlayer.rotationYaw, event.partialRenderTick);
+            if(info.isMorphing())
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(event.x, event.y + 1.5F, event.z);
+                GlStateManager.rotate(180F, 0F, 1F, 0F);
+                GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+                mc.getTextureManager().bindTexture(PlayerMorphHandler.getInstance().getMorphSkinTexture());
+                ModelMorph model = info.getModelMorph(event.entityPlayer.worldObj);
+                float morphProgress = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((info.morphTime - 10 + event.partialRenderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
+                model.render(morphProgress, info.prevState.getEntInstance(event.entityPlayer.worldObj), info.nextState.getEntInstance(event.entityPlayer.worldObj));
+                GlStateManager.popMatrix();
+            }
+            else
+            {
+                ModelInfo modelInfo = info.getNextStateModel(event.entityPlayer.worldObj);
+                float f1 = EntityHelperBase.interpolateRotation(event.entityPlayer.prevRotationYaw, event.entityPlayer.rotationYaw, event.partialRenderTick);
 
-            modelInfo.forceRender(info.nextState.getEntInstance(event.entityPlayer.worldObj), event.x, event.y, event.z, f1, event.partialRenderTick);
+                modelInfo.forceRender(info.nextState.getEntInstance(event.entityPlayer.worldObj), event.x, event.y, event.z, f1, event.partialRenderTick);
+            }
 
             Morph.proxy.tickHandlerClient.renderMorphDepth--;
         }
