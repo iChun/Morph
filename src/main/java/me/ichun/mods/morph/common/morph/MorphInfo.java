@@ -47,10 +47,18 @@ public class MorphInfo
         }
         if(prevState != null && prevState.entInstance != null && isMorphing())
         {
+            if(morphTime / (float)Morph.config.morphTime < 0.5F)
+            {
+                prevState.entInstance.onUpdate();
+            }
             syncEntityWithPlayer(prevState.entInstance);
         }
         if(nextState.entInstance != null)
         {
+            if(morphTime / (float)Morph.config.morphTime >= 0.5F)
+            {
+                nextState.entInstance.onUpdate();
+            }
             syncEntityWithPlayer(nextState.entInstance);
         }
     }

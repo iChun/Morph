@@ -42,9 +42,7 @@ public class TickHandlerClient
             }
             else
             {
-                renderMorphDepth++; //hacky fix to make the entity render on the selector
                 drawSelector(mc, event.renderTickTime);
-                renderMorphDepth--;
             }
         }
     }
@@ -398,7 +396,37 @@ public class TickHandlerClient
             selectorShow = true;
             selectorShowTimer = SELECTOR_SHOW_TIME - selectorShowTimer;
             selectorScrollVertTimer = selectorScrollHoriTimer = SELECTOR_SCROLL_TIME;
-            selectorSelectedVert = selectorSelectedHori = 0; //Reset the selected selector position //TODO set to the lowest and outmost selector possible so that it scrolls to the selected?
+            selectorSelectedVert = selectorSelectedHori = 0; //Reset the selected selector position
+
+            MorphInfoClient info = morphsActive.get(mc.thePlayer.getCommandSenderName());
+            if(info != null)
+            {
+                String entName = info.nextState.getEntInstance(mc.theWorld).getCommandSenderName();
+
+                int i = 0;
+                Iterator<Map.Entry<String, ArrayList<MorphState>>> ite = playerMorphs.entrySet().iterator();
+                while(ite.hasNext())
+                {
+                    Map.Entry<String, ArrayList<MorphState>> e = ite.next();
+                    if(e.getKey().equalsIgnoreCase(entName))
+                    {
+                        selectorSelectedVert = i;
+                        ArrayList<MorphState> states = e.getValue();
+
+                        for(int j = 0; j < states.size(); j++)
+                        {
+                            if(states.get(j).currentVariant.equals(info.nextState.currentVariant))
+                            {
+                                selectorSelectedHori = j;
+                                break;
+                            }
+                        }
+
+                        break;
+                    }
+                    i++;
+                }
+            }
         }
         else if(bind.equals(Morph.config.keySelectorUp) || bind.equals(Morph.config.keySelectorDown)) //Vertical scrolling
         {
@@ -834,6 +862,7 @@ public class TickHandlerClient
 
     public RenderMorph renderMorphInstance;
     public boolean forcePlayerRender;
+    public float playerShadowSize = -1F;
 
     public int renderMorphDepth;
 

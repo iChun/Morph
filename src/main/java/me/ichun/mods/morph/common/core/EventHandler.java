@@ -14,9 +14,12 @@ import me.ichun.mods.morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MathHelper;
@@ -173,6 +176,15 @@ public class EventHandler
     @SideOnly(Side.CLIENT)
     public void onRenderPlayerPre(RenderPlayerEvent.Pre event)
     {
+        if(Morph.proxy.tickHandlerClient.playerShadowSize < 0F)
+        {
+            Morph.proxy.tickHandlerClient.playerShadowSize = event.renderer.shadowSize;
+        }
+        if(Morph.proxy.tickHandlerClient.forcePlayerRender)
+        {
+            event.renderer.shadowSize = Morph.proxy.tickHandlerClient.playerShadowSize;
+            return;
+        }
         if(Morph.proxy.tickHandlerClient.renderMorphDepth > 0) //It's trying to render a player while rendering a morph, allow it.
         {
             return;
@@ -192,20 +204,50 @@ public class EventHandler
 
             Morph.proxy.tickHandlerClient.renderMorphDepth++;
 
-            float f1 = EntityHelperBase.interpolateRotation(event.entityPlayer.prevRotationYaw, event.entityPlayer.rotationYaw, event.partialRenderTick);
-            if(info.isMorphing())
+            float renderTick = event.partialRenderTick;
+
+            float f1 = EntityHelperBase.interpolateRotation(event.entityPlayer.prevRotationYaw, event.entityPlayer.rotationYaw, renderTick);
+            if(info.isMorphing() && !(info.morphTime > Morph.config.morphTime - 10))
             {
                 if(info.morphTime < 10)
                 {
-                    float prog = (float)Math.pow((info.morphTime + event.partialRenderTick) / 10F, 2D);
-
                     EntityLivingBase entInstance = info.prevState.getEntInstance(event.entityPlayer.worldObj);
                     if(info.firstUpdate)
                     {
                         info.syncEntityWithPlayer(entInstance);
+                        entInstance.onUpdate();
+                        info.syncEntityWithPlayer(entInstance);
                     }
+
+                    float prevEntSize = entInstance.width > entInstance.height ? entInstance.width : entInstance.height;
+                    float prevScaleMag = prevEntSize > 2.5F ? (2.5F / prevEntSize) : 1.0F;
+
+                    float ff2 = entInstance.renderYawOffset;
+                    float ff3 = entInstance.rotationYaw;
+                    float ff4 = entInstance.rotationPitch;
+                    float ff5 = entInstance.prevRotationYawHead;
+                    float ff6 = entInstance.rotationYawHead;
+
+                    if((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiContainerCreative) && mc.getRenderManager().playerViewY == 180.0F)
+                    {
+                        GL11.glScalef(prevScaleMag, prevScaleMag, prevScaleMag);
+
+                        EntityLivingBase renderView = mc.thePlayer;
+
+                        entInstance.renderYawOffset = renderView.renderYawOffset;
+                        entInstance.rotationYaw = renderView.rotationYaw;
+                        entInstance.rotationPitch = renderView.rotationPitch;
+                        entInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+                        entInstance.rotationYawHead = renderView.rotationYawHead;
+                        renderTick = 1.0F;
+                    }
+
+                    float prog = (float)Math.pow((info.morphTime + renderTick) / 10F, 2D);
+
+                    event.renderer.shadowSize = info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize;
+
                     ModelInfo modelInfo = info.getPrevStateModel(event.entityPlayer.worldObj);
-                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
+                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, renderTick);
 
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -220,7 +262,7 @@ public class EventHandler
                     ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
                     ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 
-                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
+                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, renderTick);
 
                     ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
                     ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
@@ -228,56 +270,147 @@ public class EventHandler
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
                     GlStateManager.disableAlpha();
-                }
-                else if(info.morphTime > Morph.config.morphTime - 10)
-                {
-                    float prog = (float)Math.pow(1F - ((info.morphTime + event.partialRenderTick) - (Morph.config.morphTime - 10)) / 10F, 2D);
 
-                    EntityLivingBase entInstance = info.nextState.getEntInstance(event.entityPlayer.worldObj);
-                    ModelInfo modelInfo = info.getNextStateModel(event.entityPlayer.worldObj);
-                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
-
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                    GlStateManager.enableAlpha();
-                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
-
-                    ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
-                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
-                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
-
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
-
-                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
-
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
-
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-                    GlStateManager.disableAlpha();
+                    entInstance.renderYawOffset = ff2;
+                    entInstance.rotationYaw = ff3;
+                    entInstance.rotationPitch = ff4;
+                    entInstance.prevRotationYawHead = ff5;
+                    entInstance.rotationYawHead = ff6;
                 }
                 else
                 {
+                    EntityLivingBase prevEntInstance = info.prevState.getEntInstance(event.entityPlayer.worldObj);
+                    EntityLivingBase nextEntInstance = info.nextState.getEntInstance(event.entityPlayer.worldObj);
+
+                    float prevEntSize = prevEntInstance.width > prevEntInstance.height ? prevEntInstance.width : prevEntInstance.height;
+                    float prevScaleMag = prevEntSize > 2.5F ? (2.5F / prevEntSize) : 1.0F;
+
+                    float nextEntSize = nextEntInstance.width > nextEntInstance.height ? nextEntInstance.width : nextEntInstance.height;
+                    float nextScaleMag = nextEntSize > 2.5F ? (2.5F / nextEntSize) : 1.0F;
+
+                    float ff2 = prevEntInstance.renderYawOffset;
+                    float ff3 = prevEntInstance.rotationYaw;
+                    float ff4 = prevEntInstance.rotationPitch;
+                    float ff5 = prevEntInstance.prevRotationYawHead;
+                    float ff6 = prevEntInstance.rotationYawHead;
+
+                    float fff2 = nextEntInstance.renderYawOffset;
+                    float fff3 = nextEntInstance.rotationYaw;
+                    float fff4 = nextEntInstance.rotationPitch;
+                    float fff5 = nextEntInstance.prevRotationYawHead;
+                    float fff6 = nextEntInstance.rotationYawHead;
+
+                    float morphProgress = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((info.morphTime - 10 + renderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
+
+                    if((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiContainerCreative) && mc.getRenderManager().playerViewY == 180.0F)
+                    {
+                        float scale = EntityHelperBase.interpolateValues(prevScaleMag, nextScaleMag, morphProgress);
+                        GL11.glScalef(scale, scale, scale);
+
+                        EntityLivingBase renderView = mc.thePlayer;
+
+                        prevEntInstance.renderYawOffset = nextEntInstance.renderYawOffset = renderView.renderYawOffset;
+                        prevEntInstance.rotationYaw = nextEntInstance.rotationYaw = renderView.rotationYaw;
+                        prevEntInstance.rotationPitch = nextEntInstance.rotationPitch = renderView.rotationPitch;
+                        prevEntInstance.prevRotationYawHead = nextEntInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+                        prevEntInstance.rotationYawHead = nextEntInstance.rotationYawHead = renderView.rotationYawHead;
+                        renderTick = 1.0F;
+                    }
+
+                    event.renderer.shadowSize = EntityHelperBase.interpolateValues(info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize, info.getNextStateModel(mc.theWorld).entRenderer.shadowSize, morphProgress);
+
                     GlStateManager.pushMatrix();
-                    GlStateManager.translate(event.x, event.y + 1.5F, event.z);
-                    GlStateManager.rotate(180F - EntityHelperBase.interpolateRotation(event.entityPlayer.prevRenderYawOffset, event.entityPlayer.renderYawOffset, event.partialRenderTick), 0F, 1F, 0F);
+                    GlStateManager.translate(event.x, event.y, event.z);
+                    GlStateManager.rotate(180F - EntityHelperBase.interpolateRotation(event.entityPlayer.prevRenderYawOffset, event.entityPlayer.renderYawOffset, renderTick), 0F, 1F, 0F);
                     GlStateManager.scale(-1.0F, -1.0F, 1.0F);
                     ModelMorph model = info.getModelMorph(event.entityPlayer.worldObj);
-                    float morphProgress = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((info.morphTime - 10 + event.partialRenderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
-                    model.render(event.partialRenderTick, morphProgress, info.prevState.getEntInstance(event.entityPlayer.worldObj), info.nextState.getEntInstance(event.entityPlayer.worldObj));
+                    model.render(renderTick, morphProgress, info.prevState.getEntInstance(event.entityPlayer.worldObj), info.nextState.getEntInstance(event.entityPlayer.worldObj));
                     GlStateManager.popMatrix();
+
+                    prevEntInstance.renderYawOffset = fff2;
+                    prevEntInstance.rotationYaw = fff3;
+                    prevEntInstance.rotationPitch = fff4;
+                    prevEntInstance.prevRotationYawHead = fff5;
+                    prevEntInstance.rotationYawHead = fff6;
+
+                    nextEntInstance.renderYawOffset = ff2;
+                    nextEntInstance.rotationYaw = ff3;
+                    nextEntInstance.rotationPitch = ff4;
+                    nextEntInstance.prevRotationYawHead = ff5;
+                    nextEntInstance.rotationYawHead = ff6;
                 }
             }
             else
             {
+                EntityLivingBase entInstance = info.nextState.getEntInstance(event.entityPlayer.worldObj);
+
+                float nextEntSize = entInstance.width > entInstance.height ? entInstance.width : entInstance.height;
+                float nextScaleMag = nextEntSize > 2.5F ? (2.5F / nextEntSize) : 1.0F;
+
+                float ff2 = entInstance.renderYawOffset;
+                float ff3 = entInstance.rotationYaw;
+                float ff4 = entInstance.rotationPitch;
+                float ff5 = entInstance.prevRotationYawHead;
+                float ff6 = entInstance.rotationYawHead;
+
+                if((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiContainerCreative) && mc.getRenderManager().playerViewY == 180.0F)
+                {
+                    GL11.glScalef(nextScaleMag, nextScaleMag, nextScaleMag);
+
+                    EntityLivingBase renderView = mc.thePlayer;
+
+                    entInstance.renderYawOffset = renderView.renderYawOffset;
+                    entInstance.rotationYaw = renderView.rotationYaw;
+                    entInstance.rotationPitch = renderView.rotationPitch;
+                    entInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+                    entInstance.rotationYawHead = renderView.rotationYawHead;
+                    renderTick = 1.0F;
+                }
+
+                event.renderer.shadowSize = info.getNextStateModel(mc.theWorld).entRenderer.shadowSize;
+
                 ModelInfo modelInfo = info.getNextStateModel(event.entityPlayer.worldObj);
-                modelInfo.forceRender(info.nextState.getEntInstance(event.entityPlayer.worldObj), event.x, event.y, event.z, f1, event.partialRenderTick);
+                modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, renderTick);
+
+                if(info.isMorphing())
+                {
+                    float prog = (float)Math.pow(1F - ((info.morphTime + renderTick) - (Morph.config.morphTime - 10)) / 10F, 2D);
+
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.enableAlpha();
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
+
+                    ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
+                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, renderTick);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                    GlStateManager.disableAlpha();
+                }
+
+                entInstance.renderYawOffset = ff2;
+                entInstance.rotationYaw = ff3;
+                entInstance.rotationPitch = ff4;
+                entInstance.prevRotationYawHead = ff5;
+                entInstance.rotationYawHead = ff6;
             }
 
             Morph.proxy.tickHandlerClient.renderMorphDepth--;
+        }
+        else
+        {
+            event.renderer.shadowSize = Morph.proxy.tickHandlerClient.playerShadowSize;
         }
     }
 

@@ -27,7 +27,7 @@ public class TickHandlerServer
 
                 info.tick();
 
-                if(!info.isMorphing() && info.nextState.getEntInstance(info.player.worldObj).getCommandSenderName().equals(info.player.getCommandSenderName())) //Player has fully demorphed
+                if(!info.isMorphing() && info.nextState.currentVariant.playerName.equals(info.player.getCommandSenderName())) //Player has fully demorphed
                 {
                     ite.remove();
                     Morph.channel.sendToAll(new PacketDemorph(info.player.getCommandSenderName()));

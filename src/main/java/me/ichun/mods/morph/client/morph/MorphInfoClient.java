@@ -78,9 +78,6 @@ public class MorphInfoClient extends MorphInfo
     {
         Minecraft mc = Minecraft.getMinecraft();
 
-        //TODO see why sprint particles are appearing twice
-        ent.onUpdate();
-
         //prevs
         ent.prevRotationYawHead = player.prevRotationYawHead;
         ent.prevRotationYaw = player.prevRotationYaw;
