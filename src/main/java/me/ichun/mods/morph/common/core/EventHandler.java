@@ -263,7 +263,7 @@ public class EventHandler
                 {
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(event.x, event.y + 1.5F, event.z);
-                    GlStateManager.rotate(180F, 0F, 1F, 0F);
+                    GlStateManager.rotate(180F - EntityHelperBase.interpolateRotation(event.entityPlayer.prevRenderYawOffset, event.entityPlayer.renderYawOffset, event.partialRenderTick), 0F, 1F, 0F);
                     GlStateManager.scale(-1.0F, -1.0F, 1.0F);
                     ModelMorph model = info.getModelMorph(event.entityPlayer.worldObj);
                     float morphProgress = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((info.morphTime - 10 + event.partialRenderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));

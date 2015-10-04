@@ -145,11 +145,12 @@ public class ModelMorph extends ModelBase
             if(prevModelInfo != null)
             {
                 prevModelInfo.forceRender(prevRef, 0D, -500D, 0D, EntityHelperBase.interpolateRotation(prevRef.prevRotationYaw, prevRef.rotationYaw, renderTick), renderTick);
+                matchRotation(prevModelInfo.modelList, prevModels, 0);
             }
             if(nextModelInfo != null)
             {
                 nextModelInfo.forceRender(nextRef, 0D, -500D, 0D, EntityHelperBase.interpolateRotation(nextRef.prevRotationYaw, nextRef.rotationYaw, renderTick), renderTick);
-                System.out.println("UPDATING");
+                matchRotation(nextModelInfo.modelList, nextModels, 0);
             }
             Minecraft.getMinecraft().getTextureManager().bindTexture(PlayerMorphHandler.getInstance().getMorphSkinTexture());
         }
@@ -164,6 +165,54 @@ public class ModelMorph extends ModelBase
         }
 
         GlStateManager.popMatrix();
+    }
+
+    public void matchRotation(List reference, List models, int depth)
+    {
+        if(reference == null || depth > 20)
+        {
+            return;
+        }
+        for(int i = 0; i < models.size(); i++)
+        {
+            ModelRenderer model = (ModelRenderer)models.get(i);
+
+            if(model.cubeList.isEmpty())
+            {
+                continue;
+            }
+            for(int j = 0; j < reference.size(); j++)
+            {
+                ModelRenderer renderer = (ModelRenderer)reference.get(j);
+
+                if(renderer.cubeList.isEmpty())
+                {
+                    continue;
+                }
+
+                ModelBox mb1 = (ModelBox)model.cubeList.get(0);
+                ModelBox rb1 = (ModelBox)renderer.cubeList.get(0);
+
+                int x = (int)Math.abs(mb1.posX2 - mb1.posX1);
+                int y = (int)Math.abs(mb1.posY2 - mb1.posY1);
+                int z = (int)Math.abs(mb1.posZ2 - mb1.posZ1);
+
+                int px = (int)Math.abs(rb1.posX2 - rb1.posX1);
+                int py = (int)Math.abs(rb1.posY2 - rb1.posY1);
+                int pz = (int)Math.abs(rb1.posZ2 - rb1.posZ1);
+
+                if(renderer.rotationPointX == model.rotationPointX && renderer.rotationPointY == model.rotationPointY && renderer.rotationPointZ == model.rotationPointZ && x == px && y == py && z == pz && mb1.posX1 == rb1.posX1 && mb1.posY1 == rb1.posY1 && mb1.posZ1 == rb1.posZ1)
+                {
+                    model.rotateAngleX = renderer.rotateAngleX;
+                    model.rotateAngleY = renderer.rotateAngleY;
+                    model.rotateAngleZ = renderer.rotateAngleZ;
+
+                    matchRotation(renderer.childModels, model.childModels, depth + 1);
+
+                    break;
+                }
+            }
+        }
     }
 
     public void updateModelList(float progress, List modelList, List prevModelList, List nextModelList, int depth)
