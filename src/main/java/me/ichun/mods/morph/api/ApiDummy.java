@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ApiDummy implements IApi
 {
@@ -67,6 +68,12 @@ public class ApiDummy implements IApi
     public ResourceLocation getMorphSkinTexture()
     {
         return new ResourceLocation("morph", "textures/skin/morphskin.png");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void renderArm(EntityPlayer player, boolean isLeftArm)
+    {
     }
 
     @Override

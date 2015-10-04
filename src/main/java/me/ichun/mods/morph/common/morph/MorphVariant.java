@@ -300,7 +300,6 @@ public class MorphVariant
         tag.removeTag("InLove");
 
         //EntityTameable tags
-        tag.removeTag("OwnerUUID");
         tag.removeTag("Sitting"); //we're making an ability for this maybe?
 
         //EntityLiving tags

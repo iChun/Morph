@@ -48,7 +48,6 @@ public class MorphInfoClient extends MorphInfo
         Minecraft mc = Minecraft.getMinecraft();
 
         //TODO see why sprint particles are appearing twice
-        //TODO players are locked in reference model mode when rendering.
         ent.onUpdate();
 
         //prevs

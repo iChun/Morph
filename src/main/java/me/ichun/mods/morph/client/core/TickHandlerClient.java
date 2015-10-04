@@ -101,10 +101,13 @@ public class TickHandlerClient
     {
         if(event.side.isClient() && event.phase == TickEvent.Phase.START)
         {
-            MorphInfo info = morphsActive.get(event.player.getCommandSenderName());
-            if(info != null)
+            if(event.player.worldObj.playerEntities.contains(event.player))
             {
-                info.player = event.player;
+                MorphInfo info = morphsActive.get(event.player.getCommandSenderName());
+                if(info != null)
+                {
+                    info.player = event.player;
+                }
             }
         }
     }

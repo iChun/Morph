@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IApi
 {
@@ -85,6 +86,15 @@ public interface IApi
     public boolean acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire, boolean forceMorph, boolean killEntityClientside);
 
     public ResourceLocation getMorphSkinTexture();
+
+    /**
+     * Renders the arm of the player, or the arm of the morphed entity (if exists).
+     * Morph will try and render the arms in the position that it would have looked like in first person, so try to only call it in first person.
+     * @param player EntityPlayer's arm to render
+     * @param isLeftArm Is the arm supposed to be the left arm?
+     */
+    @SideOnly(Side.CLIENT)
+    public void renderArm(EntityPlayer player, boolean isLeftArm);
 
     /**
      * Returns true if the Api Implementation is actually Morph's.

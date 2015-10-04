@@ -12,7 +12,7 @@
   },
   "example.class.Two": {  
     "additionalNote": "The key is the NBT tag to modify. The value will be the Object type and what value to set it to. If the value is of a numerical type, please append the type with a capital letter, no lowercase.",
-    "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom."
+    "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom. Keep the examples at the top."
   },
   
   "tropicraft.entities.hostile.land.SpiderAdult": {  
@@ -87,6 +87,5 @@
   },
   "net.minecraft.entity.passive.EntityWolf": {
     "Angry": "null",
-    "CollarColor": "null"
   }
 }

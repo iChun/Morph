@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 
 import java.util.ArrayList;
@@ -302,6 +303,13 @@ public class PlayerMorphHandler implements IApi
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public void renderArm(EntityPlayer player, boolean isLeftArm)
+    {
+        //TODO this
+    }
+
+    @Override
     public boolean isMorphApi()
     {
         return true;
@@ -323,9 +331,12 @@ public class PlayerMorphHandler implements IApi
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        savePlayerData(event.player);
-        Morph.proxy.tickHandlerServer.morphsActive.remove(event.player.getCommandSenderName());
-        Morph.proxy.tickHandlerServer.playerMorphs.remove(event.player.getCommandSenderName());
+        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(event.player.getCommandSenderName()) || Morph.proxy.tickHandlerServer.playerMorphs.containsKey(event.player.getCommandSenderName())) //save the data only if there is data. Fixes an issue with the host logging out twice when server shuts down.
+        {
+            savePlayerData(event.player);
+            Morph.proxy.tickHandlerServer.morphsActive.remove(event.player.getCommandSenderName());
+            Morph.proxy.tickHandlerServer.playerMorphs.remove(event.player.getCommandSenderName());
+        }
     }
 
     public static final String MORPH_DATA_NAME = "MorphSave";
