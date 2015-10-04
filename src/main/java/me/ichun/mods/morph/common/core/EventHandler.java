@@ -20,19 +20,23 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.keybind.KeyEvent;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.event.RendererSafeCompatibilityEvent;
+import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 
 import java.util.Map;
 
@@ -179,27 +183,97 @@ public class EventHandler
         {
             event.setCanceled(true);
 
+            if(event.entityPlayer.worldObj.playerEntities.contains(event.entityPlayer))
+            {
+                info.player = event.entityPlayer;
+            }
+
             Minecraft mc = Minecraft.getMinecraft();
 
             Morph.proxy.tickHandlerClient.renderMorphDepth++;
 
+            float f1 = EntityHelperBase.interpolateRotation(event.entityPlayer.prevRotationYaw, event.entityPlayer.rotationYaw, event.partialRenderTick);
             if(info.isMorphing())
             {
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(event.x, event.y + 1.5F, event.z);
-                GlStateManager.rotate(180F, 0F, 1F, 0F);
-                GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-                mc.getTextureManager().bindTexture(PlayerMorphHandler.getInstance().getMorphSkinTexture());
-                ModelMorph model = info.getModelMorph(event.entityPlayer.worldObj);
-                float morphProgress = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((info.morphTime - 10 + event.partialRenderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
-                model.render(morphProgress, info.prevState.getEntInstance(event.entityPlayer.worldObj), info.nextState.getEntInstance(event.entityPlayer.worldObj));
-                GlStateManager.popMatrix();
+                if(info.morphTime < 10)
+                {
+                    float prog = (float)Math.pow((info.morphTime + event.partialRenderTick) / 10F, 2D);
+
+                    EntityLivingBase entInstance = info.prevState.getEntInstance(event.entityPlayer.worldObj);
+                    if(info.firstUpdate)
+                    {
+                        info.syncEntityWithPlayer(entInstance);
+                    }
+                    ModelInfo modelInfo = info.getPrevStateModel(event.entityPlayer.worldObj);
+                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
+
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.enableAlpha();
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
+
+                    ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
+                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                    GlStateManager.disableAlpha();
+                }
+                else if(info.morphTime > Morph.config.morphTime - 10)
+                {
+                    float prog = (float)Math.pow(1F - ((info.morphTime + event.partialRenderTick) - (Morph.config.morphTime - 10)) / 10F, 2D);
+
+                    EntityLivingBase entInstance = info.nextState.getEntInstance(event.entityPlayer.worldObj);
+                    ModelInfo modelInfo = info.getNextStateModel(event.entityPlayer.worldObj);
+                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
+
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.enableAlpha();
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
+
+                    ResourceLocation resourceLoc = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
+                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                    modelInfo.forceRender(entInstance, event.x, event.y, event.z, f1, event.partialRenderTick);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                    GlStateManager.disableAlpha();
+                }
+                else
+                {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(event.x, event.y + 1.5F, event.z);
+                    GlStateManager.rotate(180F, 0F, 1F, 0F);
+                    GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+                    ModelMorph model = info.getModelMorph(event.entityPlayer.worldObj);
+                    float morphProgress = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((info.morphTime - 10 + event.partialRenderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
+                    model.render(event.partialRenderTick, morphProgress, info.prevState.getEntInstance(event.entityPlayer.worldObj), info.nextState.getEntInstance(event.entityPlayer.worldObj));
+                    GlStateManager.popMatrix();
+                }
             }
             else
             {
                 ModelInfo modelInfo = info.getNextStateModel(event.entityPlayer.worldObj);
-                float f1 = EntityHelperBase.interpolateRotation(event.entityPlayer.prevRotationYaw, event.entityPlayer.rotationYaw, event.partialRenderTick);
-
                 modelInfo.forceRender(info.nextState.getEntInstance(event.entityPlayer.worldObj), event.x, event.y, event.z, f1, event.partialRenderTick);
             }
 

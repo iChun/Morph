@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.client.model;
 
+import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
@@ -8,6 +9,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.client.model.ModelHelper;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
@@ -25,6 +27,9 @@ public class ModelMorph extends ModelBase
 
     public static final Random RAND = new Random(RAND_SEED);
 
+    public final ModelInfo prevModelInfo;
+    public final ModelInfo nextModelInfo;
+
     public final ArrayList<ModelRenderer> modelList; //Model list to manipulate with progression.
 
     public final ArrayList<ModelRenderer> prevModels; //Copy of the arraylist of the prev models. Can modify this list but do not modify the objects in the list!
@@ -32,6 +37,9 @@ public class ModelMorph extends ModelBase
 
     public ModelMorph(ModelInfo prev, ModelInfo next, Entity oldRef, Entity newRef) //reference ent is for prev model selection.
     {
+        prevModelInfo = prev;
+        nextModelInfo = next;
+
         if(prev != null)
         {
             prevModels = ModelHelper.getModelCubesCopy(prev.modelList, this, oldRef);
@@ -95,11 +103,9 @@ public class ModelMorph extends ModelBase
         modelList = ModelHelper.getModelCubesCopy(prevModels, this, null);
     }
 
-    public void render(float progress, Entity prevRef, Entity nextRef)
+    public void render(float renderTick, float progress, Entity prevRef, Entity nextRef)
     {
         GlStateManager.pushMatrix();
-
-        updateModelList(progress, modelList, prevModels, nextModels, 0);
 
         FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
         FloatBuffer buffer1 = GLAllocation.createDirectFloatBuffer(16);
@@ -108,33 +114,7 @@ public class ModelMorph extends ModelBase
         float scaleY = 1.0F;
         float scaleZ = 1.0F;
 
-        if(progress == 0.0F && prevRef != null)
-        {
-            GlStateManager.pushMatrix();
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
-            Render rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(prevRef);
-            ObfHelper.invokePreRenderCallback(rend, rend.getClass(), prevRef, iChunUtil.proxy.tickHandlerClient.renderTick);
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
-            GlStateManager.popMatrix();
-
-            scaleX = buffer1.get(0) / buffer.get(0);
-            scaleY = buffer1.get(5) / buffer.get(5);
-            scaleZ = buffer1.get(8) / buffer.get(8);
-        }
-        else if(progress == 1.0F && nextRef != null)
-        {
-            GlStateManager.pushMatrix();
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
-            Render rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(nextRef);
-            ObfHelper.invokePreRenderCallback(rend, rend.getClass(), nextRef, iChunUtil.proxy.tickHandlerClient.renderTick);
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
-            GlStateManager.popMatrix();
-
-            scaleX = buffer1.get(0) / buffer.get(0);
-            scaleY = buffer1.get(5) / buffer.get(5);
-            scaleZ = buffer1.get(8) / buffer.get(8);
-        }
-        else if(progress > 0.0F && progress < 1.0F && prevRef != null && nextRef != null)
+        if(prevRef != null && nextRef != null)
         {
             GlStateManager.pushMatrix();
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
@@ -161,9 +141,22 @@ public class ModelMorph extends ModelBase
             scaleX = prevScaleX + (nextScaleX - prevScaleX) * progress;
             scaleY = prevScaleY + (nextScaleY - prevScaleY) * progress;
             scaleZ = prevScaleZ + (nextScaleZ - prevScaleZ) * progress;
+
+            if(prevModelInfo != null)
+            {
+                prevModelInfo.forceRender(prevRef, 0D, -500D, 0D, EntityHelperBase.interpolateRotation(prevRef.prevRotationYaw, prevRef.rotationYaw, renderTick), renderTick);
+            }
+            if(nextModelInfo != null)
+            {
+                nextModelInfo.forceRender(nextRef, 0D, -500D, 0D, EntityHelperBase.interpolateRotation(nextRef.prevRotationYaw, nextRef.rotationYaw, renderTick), renderTick);
+                System.out.println("UPDATING");
+            }
+            Minecraft.getMinecraft().getTextureManager().bindTexture(PlayerMorphHandler.getInstance().getMorphSkinTexture());
         }
 
         GlStateManager.scale(scaleX, scaleY, scaleZ);
+
+        updateModelList(progress, modelList, prevModels, nextModels, 0);
 
         for(ModelRenderer cube : modelList)
         {
