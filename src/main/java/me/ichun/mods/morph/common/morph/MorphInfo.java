@@ -11,7 +11,7 @@ import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 
 public class MorphInfo
 {
-    protected EntityPlayer player; //Should never be null.
+    protected EntityPlayer player; //Should ideally never be null, but can be.
 
     public MorphState prevState; //Can be null.
     public MorphState nextState; //Should never be null.
@@ -19,6 +19,8 @@ public class MorphInfo
     public int morphTime;
 
     public boolean firstUpdate = true;
+
+    public boolean wasSleeping;
 
     //TODO health offset save here.
 
@@ -67,6 +69,14 @@ public class MorphInfo
             }
             syncEntityWithPlayer(nextState.entInstance);
         }
+        if(player != null)
+        {
+            if(wasSleeping && !player.isPlayerSleeping())
+            {
+                setPlayerBoundingBox();
+            }
+            wasSleeping = player.isPlayerSleeping();
+        }
     }
 
     public void syncEntityWithPlayer(EntityLivingBase ent)
@@ -89,20 +99,31 @@ public class MorphInfo
     {
         float morphTransition = getMorphTransitionProgress(0F);
 
-        EntityLivingBase prevEnt = prevState.getEntInstance(player.worldObj);
-        EntityLivingBase nextEnt = nextState.getEntInstance(player.worldObj);
-
-        float newWidth = EntityHelperBase.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
-        float newHeight = EntityHelperBase.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
-
-        if(!(newWidth == player.width))
+        if(prevState != null)
         {
-            player.moveEntity(-(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
+            EntityLivingBase prevEnt = prevState.getEntInstance(player.worldObj);
+            EntityLivingBase nextEnt = nextState.getEntInstance(player.worldObj);
+
+            float newWidth = EntityHelperBase.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
+            float newHeight = EntityHelperBase.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
+
+            if(!(newWidth == player.width))
+            {
+                player.moveEntity(-(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
+            }
+
+            player.setSize(newWidth, newHeight);
+
+            player.eyeHeight = EntityHelperBase.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
         }
+        else
+        {
+            EntityLivingBase nextEnt = nextState.getEntInstance(player.worldObj);
 
-        player.setSize(newWidth, newHeight);
+            player.setSize(nextEnt.width, nextEnt.height);
 
-        player.eyeHeight = EntityHelperBase.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
+            player.eyeHeight = nextEnt.getEyeHeight();
+        }
     }
 
     public EntityLivingBase getEntity(MorphState state)

@@ -30,7 +30,7 @@ public class Config extends ConfigBase
 
     @ConfigProp(category = "gameplay")
     @IntBool
-    public int classicMode = 0; //TODO check if this needs to be in the sexsseion
+    public int classicMode = 0; //TODO check if this needs to be in the session.
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntMinMax(min = 30)
@@ -38,15 +38,15 @@ public class Config extends ConfigBase
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
-    public int canSleepMorphed = 0; //TODO this
+    public int canSleepMorphed = 0;
 
     @ConfigProp(category = "gameplay", useSession = true)
     @IntBool
-    public int showPlayerLabel = 0; //TODO this
+    public int showPlayerLabel = 0;
 
     @ConfigProp(category = "gameplay")
     @IntBool
-    public int loseMorphsOnDeath = 0; //TODO this
+    public int loseMorphsOnDeath = 0;
 
     @ConfigProp(category = "gameplay")
     @IntBool

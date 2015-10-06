@@ -9,7 +9,10 @@ import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
+import me.ichun.mods.morph.common.morph.MorphVariant;
 import me.ichun.mods.morph.common.packet.PacketGuiInput;
+import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
+import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -19,14 +22,21 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -40,6 +50,8 @@ import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.event.RendererSafeCompatibilityEvent;
 import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 public class EventHandler
@@ -340,6 +352,13 @@ public class EventHandler
                     nextEntInstance.rotationPitch = ff4;
                     nextEntInstance.prevRotationYawHead = ff5;
                     nextEntInstance.rotationYawHead = ff6;
+
+                    if(Morph.config.showPlayerLabel == 1)//Morph wants to show the player label.
+                    {
+                        Morph.proxy.tickHandlerClient.allowSpecialRender = true;
+                        event.renderer.passSpecialRender(event.entityPlayer, event.x, event.y, event.z);
+                        Morph.proxy.tickHandlerClient.allowSpecialRender = false;
+                    }
                 }
             }
             else
@@ -449,6 +468,48 @@ public class EventHandler
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onRenderSpecials(RenderLivingEvent.Specials.Pre event)
+    {
+        if(Morph.proxy.tickHandlerClient.allowSpecialRender)
+        {
+            return;
+        }
+        Iterator<Map.Entry<String, MorphInfoClient>> ite = Morph.proxy.tickHandlerClient.morphsActive.entrySet().iterator();
+        while(ite.hasNext())
+        {
+            Map.Entry<String, MorphInfoClient> e = ite.next();
+            if(e.getValue().nextState.getEntInstance(event.entity.worldObj) == event.entity || e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.entity.worldObj) == event.entity)
+            {
+                if(e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.entity.worldObj) instanceof EntityPlayer && e.getValue().prevState.getEntInstance(event.entity.worldObj).getCommandSenderName().equals(e.getKey()) || e.getValue().nextState.getEntInstance(event.entity.worldObj) instanceof EntityPlayer && e.getValue().nextState.getEntInstance(event.entity.worldObj).getCommandSenderName().equals(e.getKey()))
+                {
+                    //if the player is just morphing from/to itself don't render the label, we're doing that anyways.
+                    event.setCanceled(true); //render layer safe, layers aren't special renders.
+                }
+                EntityPlayer player = event.entity.worldObj.getPlayerEntityByName(e.getKey());
+                if(player == Minecraft.getMinecraft().thePlayer)
+                {
+                    //If the entity is the mc player morph, no need to render the label at all, since, well, it's the player.
+                    event.setCanceled(true);
+                    return;
+                }
+
+                if(player != null && Morph.config.showPlayerLabel == 1)//if the player is in the world and Morph wants to show the player label.
+                {
+                    event.setCanceled(true); //Don't render the entity label, render the actual player's label instead.
+
+                    RenderPlayer rend = (RenderPlayer)Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(player);
+
+                    Morph.proxy.tickHandlerClient.allowSpecialRender = true;
+                    rend.passSpecialRender(player, event.x, event.y, event.z);
+                    Morph.proxy.tickHandlerClient.allowSpecialRender = false;
+                }
+                return; //no need to continue the loop, we're done here.
+            }
+        }
+    }
+
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event)
     {
@@ -463,10 +524,85 @@ public class EventHandler
     }
 
     @SubscribeEvent
+    public void onPlayerSleep(PlayerSleepInBedEvent event)
+    {
+        EntityPlayer.EnumStatus stats = EntityPlayer.EnumStatus.OTHER_PROBLEM;
+        if(Morph.config.canSleepMorphed == 0)
+        {
+            if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.morphsActive.containsKey(event.entityPlayer.getCommandSenderName()))
+            {
+                event.result = stats;
+                event.entityPlayer.addChatMessage(new ChatComponentTranslation("morph.denySleep"));
+            }
+            else if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(event.entityPlayer.getCommandSenderName()))
+            {
+                event.result = stats;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlaySoundAtEntity(PlaySoundAtEntityEvent event)
+    {
+        if(event.entity instanceof EntityPlayer && (event.name.equalsIgnoreCase("game.player.hurt") || event.name.equalsIgnoreCase("game.player.die")))
+        {
+            EntityPlayer player = (EntityPlayer)event.entity;
+            if(FMLCommonHandler.instance().getEffectiveSide().isServer() && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()) != null)
+            {
+                MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
+                EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.worldObj) : info.nextState.getEntInstance(player.worldObj);
+                event.name = event.name.equalsIgnoreCase("game.player.hurt") ? EntityHelperBase.getHurtSound(entInstance.getClass(), entInstance) : EntityHelperBase.getDeathSound(entInstance.getClass(), entInstance);
+            }
+            else if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Morph.proxy.tickHandlerClient.morphsActive.get(player.getCommandSenderName()) != null)
+            {
+                MorphInfo info = Morph.proxy.tickHandlerClient.morphsActive.get(player.getCommandSenderName());
+                EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.worldObj) : info.nextState.getEntInstance(player.worldObj);
+                event.name = event.name.equalsIgnoreCase("game.player.hurt") ? EntityHelperBase.getHurtSound(entInstance.getClass(), entInstance) : EntityHelperBase.getDeathSound(entInstance.getClass(), entInstance);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
         if(!event.entityLiving.worldObj.isRemote)
         {
+            if(Morph.config.loseMorphsOnDeath >= 1 && event.entityLiving instanceof EntityPlayerMP)
+            {
+                EntityPlayerMP player = (EntityPlayerMP)event.entityLiving;
+
+                MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
+
+                if(info != null)
+                {
+                    //demorph the player.
+                    MorphInfo newInfo = new MorphInfo(player, info.nextState, new MorphState(MorphVariant.createVariant(player)));
+                    newInfo.morphTime = 0;
+                    Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), newInfo);
+                    Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getCommandSenderName()));
+                    player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+                }
+
+                ArrayList<MorphVariant> morphs = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.getCommandSenderName());
+
+                if(Morph.config.loseMorphsOnDeath == 1)
+                {
+                    //remove all the morphs
+                    morphs.clear();
+                    morphs = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.getCommandSenderName());
+                }
+                else
+                {
+                    //remove the morph the player is using.
+                    morphs.remove(info.nextState.currentVariant);
+                }
+
+                //Update the player with the new morphs list.
+                Morph.channel.sendToPlayer(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player); //Send the player's morph list to them
+
+                //save the player data
+                PlayerMorphHandler.getInstance().savePlayerData(player);
+            }
             if(event.source.getEntity() instanceof EntityPlayerMP && event.entityLiving != event.source.getEntity())
             {
                 EntityPlayerMP player = (EntityPlayerMP)event.source.getEntity();

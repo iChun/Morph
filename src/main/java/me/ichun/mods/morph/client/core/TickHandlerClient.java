@@ -865,6 +865,7 @@ public class TickHandlerClient
     public int abilityScroll;
 
     public RenderPlayerHand renderHandInstance;
+    public boolean allowSpecialRender;
     public boolean forcePlayerRender;
     public float playerShadowSize = -1F;
 
