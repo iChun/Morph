@@ -1,6 +1,5 @@
 package me.ichun.mods.morph.common.core;
 
-import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.client.core.TickHandlerClient;
 import me.ichun.mods.morph.client.model.ModelHandler;
 import me.ichun.mods.morph.client.model.ModelInfo;
@@ -19,12 +18,12 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -195,9 +194,9 @@ public class EventHandler
         {
             event.setCanceled(true);
 
-            if(event.entityPlayer.worldObj.playerEntities.contains(event.entityPlayer))
+            if(event.entityPlayer.worldObj.playerEntities.contains(event.entityPlayer) && info.getPlayer() != event.entityPlayer)
             {
-                info.player = event.entityPlayer;
+                info.setPlayer(event.entityPlayer);
             }
 
             Minecraft mc = Minecraft.getMinecraft();
@@ -242,7 +241,7 @@ public class EventHandler
                         renderTick = 1.0F;
                     }
 
-                    float prog = (float)Math.pow((info.morphTime + renderTick) / 10F, 2D);
+                    float prog = info.getMorphSkinAlpha(renderTick);
 
                     event.renderer.shadowSize = info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize;
 
@@ -300,12 +299,13 @@ public class EventHandler
                     float fff5 = nextEntInstance.prevRotationYawHead;
                     float fff6 = nextEntInstance.rotationYawHead;
 
-                    float morphProgress = (float)Math.sin(Math.toRadians(MathHelper.clamp_float((info.morphTime - 10 + renderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
+                    float morphProgress = info.getMorphTransitionProgress(renderTick);
 
                     if((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiContainerCreative) && mc.getRenderManager().playerViewY == 180.0F)
                     {
-                        float scale = EntityHelperBase.interpolateValues(prevScaleMag, nextScaleMag, morphProgress);
-                        GL11.glScalef(scale, scale, scale);
+                        renderTick = 1.0F;
+
+                        morphProgress = info.getMorphTransitionProgress(renderTick);
 
                         EntityLivingBase renderView = mc.thePlayer;
 
@@ -314,7 +314,9 @@ public class EventHandler
                         prevEntInstance.rotationPitch = nextEntInstance.rotationPitch = renderView.rotationPitch;
                         prevEntInstance.prevRotationYawHead = nextEntInstance.prevRotationYawHead = renderView.prevRotationYawHead;
                         prevEntInstance.rotationYawHead = nextEntInstance.rotationYawHead = renderView.rotationYawHead;
-                        renderTick = 1.0F;
+
+                        float scale = EntityHelperBase.interpolateValues(prevScaleMag, nextScaleMag, morphProgress);
+                        GL11.glScalef(scale, scale, scale);
                     }
 
                     event.renderer.shadowSize = EntityHelperBase.interpolateValues(info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize, info.getNextStateModel(mc.theWorld).entRenderer.shadowSize, morphProgress);
@@ -374,7 +376,7 @@ public class EventHandler
 
                 if(info.isMorphing())
                 {
-                    float prog = (float)Math.pow(1F - ((info.morphTime + renderTick) - (Morph.config.morphTime - 10)) / 10F, 2D);
+                    float prog = info.getMorphSkinAlpha(renderTick);
 
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -411,6 +413,39 @@ public class EventHandler
         else
         {
             event.renderer.shadowSize = Morph.proxy.tickHandlerClient.playerShadowSize;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onRenderHand(RenderHandEvent event)
+    {
+        if(Morph.config.handRenderOverride == 1)
+        {
+            Minecraft mc = Minecraft.getMinecraft();
+            MorphInfoClient info = Morph.proxy.tickHandlerClient.morphsActive.get(mc.thePlayer.getCommandSenderName());
+            if(info != null)
+            {
+                event.setCanceled(true);
+
+                GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+
+                String s = mc.thePlayer.getSkinType();
+                RenderPlayer rend = (RenderPlayer)mc.getRenderManager().skinMap.get(s);
+
+                Morph.proxy.tickHandlerClient.renderHandInstance.renderTick = event.partialTicks;
+                Morph.proxy.tickHandlerClient.renderHandInstance.parent = rend;
+                Morph.proxy.tickHandlerClient.renderHandInstance.clientInfo = info;
+
+                mc.getRenderManager().skinMap.put(s, Morph.proxy.tickHandlerClient.renderHandInstance);
+                mc.entityRenderer.renderHand(event.partialTicks, event.renderPass);
+                mc.getRenderManager().skinMap.put(s, rend);
+
+                Morph.proxy.tickHandlerClient.renderHandInstance.clientInfo = null;
+
+                //This is part of render hand now for some reason.
+                mc.entityRenderer.renderWorldDirections(event.partialTicks);
+            }
         }
     }
 

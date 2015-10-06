@@ -3,13 +3,16 @@ package me.ichun.mods.morph.common.handler;
 import me.ichun.mods.morph.api.IApi;
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
-import me.ichun.mods.morph.client.render.RenderMorph;
+import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +28,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +39,8 @@ public class PlayerMorphHandler implements IApi
 
     public static final ArrayList<Class<? extends EntityLivingBase>> blacklistedEntityClasses = new ArrayList<Class<? extends EntityLivingBase>>();
     public static final ArrayList<Class<? extends EntityLivingBase>> blackwhiteEntityClasses = new ArrayList<Class<? extends EntityLivingBase>>();
+
+    public static final ResourceLocation morphSkin = new ResourceLocation("morph", "textures/skin/morphskin.png");
 
     public static PlayerMorphHandler getInstance()
     {
@@ -84,11 +90,11 @@ public class PlayerMorphHandler implements IApi
     {
         if(side.isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(playerName))
         {
-            return Morph.proxy.tickHandlerClient.morphsActive.get(playerName).morphTime / (float)Morph.config.morphTime;
+            return Morph.proxy.tickHandlerClient.morphsActive.get(playerName).getMorphProgress(0F);
         }
         else if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(playerName))
         {
-            return Morph.proxy.tickHandlerServer.morphsActive.get(playerName).morphTime / (float)Morph.config.morphTime;
+            return Morph.proxy.tickHandlerServer.morphsActive.get(playerName).getMorphProgress(0F);
         }
         return 1.0F;
     }
@@ -299,14 +305,35 @@ public class PlayerMorphHandler implements IApi
     @Override
     public ResourceLocation getMorphSkinTexture()
     {
-        return RenderMorph.morphSkin;
+        return morphSkin;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void renderArm(EntityPlayer player, boolean isLeftArm)
     {
-        //TODO this
+        MorphInfoClient info = Morph.proxy.tickHandlerClient.morphsActive.get(player.getCommandSenderName());
+        if(info != null && player instanceof AbstractClientPlayer)
+        {
+            AbstractClientPlayer client = (AbstractClientPlayer)player;
+            String s = client.getSkinType();
+            RenderPlayer rend = (RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get(s);
+
+            Morph.proxy.tickHandlerClient.renderHandInstance.renderTick = iChunUtil.proxy.tickHandlerClient.renderTick;
+            Morph.proxy.tickHandlerClient.renderHandInstance.parent = rend;
+            Morph.proxy.tickHandlerClient.renderHandInstance.clientInfo = info;
+
+            if(isLeftArm)
+            {
+                Morph.proxy.tickHandlerClient.renderHandInstance.renderLeftArm((AbstractClientPlayer)player);
+            }
+            else
+            {
+                Morph.proxy.tickHandlerClient.renderHandInstance.renderRightArm((AbstractClientPlayer)player);
+            }
+
+            Morph.proxy.tickHandlerClient.renderHandInstance.clientInfo = null;
+        }
     }
 
     @Override
@@ -343,10 +370,6 @@ public class PlayerMorphHandler implements IApi
 
     public void savePlayerData(EntityPlayer player)
     {
-        if(player != null)//TODO remove this... this is for debugging purposes.
-        {
-//            return;
-        }
         NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
 
         //Save the current morphed state/variant
@@ -374,10 +397,6 @@ public class PlayerMorphHandler implements IApi
 
     public boolean loadPlayerData(EntityPlayer player) //Returns true if the player has a morph and requires synching to the clients.
     {
-        if(player != null)//TODO remove this... this is for debugging purposes.
-        {
-//            return false;
-        }
         NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
 
         //Check if the player has a current morph.

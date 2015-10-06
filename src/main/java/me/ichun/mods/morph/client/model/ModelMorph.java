@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.client.model.ModelHelper;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
@@ -35,6 +34,11 @@ public class ModelMorph extends ModelBase
 
     public final ArrayList<ModelRenderer> prevModels; //Copy of the arraylist of the prev models. Can modify this list but do not modify the objects in the list!
     public final ArrayList<ModelRenderer> nextModels; //Copy of the arraylist of the next models. Can modify this list but do not modify the objects in the list!
+
+    public ModelMorph()
+    {
+        this(null, null, null, null);
+    }
 
     public ModelMorph(ModelInfo prev, ModelInfo next, Entity oldRef, Entity newRef) //reference ent is for prev model selection.
     {
@@ -87,6 +91,14 @@ public class ModelMorph extends ModelBase
         }
 
         //Now that we have our reference models, fill up the reference list and create the modelList.
+        prepareReferences();
+        //By this point, both the prevModel and nextModels should be the same size and number of children and are therefore proper references.
+
+        modelList = ModelHelper.getModelCubesCopy(prevModels, this, null);
+    }
+
+    public void prepareReferences()
+    {
         int prevAdjust = -1;
         while(prevModels.size() < nextModels.size()) //if the prev reference has less models than the next reference, create empty ones.
         {
@@ -127,9 +139,6 @@ public class ModelMorph extends ModelBase
             }
         }
         fillWithChildren(prevModels, nextModels, 0);
-        //By this point, both the prevModel and nextModels should be the same size and number of children and are therefore proper references.
-
-        modelList = ModelHelper.getModelCubesCopy(prevModels, this, null);
     }
 
     public void render(float renderTick, float progress, Entity prevRef, Entity nextRef)
@@ -361,6 +370,18 @@ public class ModelMorph extends ModelBase
             ModelRenderer child = (ModelRenderer)children.get(i);
             child.setRotationPoint(0F, 0F, 0F);
             setRotationPointToZeroWithChildren(child.childModels, depth + 1);
+        }
+    }
+
+    public void clean()
+    {
+        for(ModelRenderer renderer : modelList)
+        {
+            if(renderer.compiled)
+            {
+                GLAllocation.deleteDisplayLists(renderer.displayList);
+                renderer.compiled = false;
+            }
         }
     }
 }

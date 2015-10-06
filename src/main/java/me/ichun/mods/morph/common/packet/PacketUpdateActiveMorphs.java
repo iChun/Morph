@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -89,6 +90,10 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
                     Morph.proxy.tickHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
                 }
                 Morph.proxy.tickHandlerClient.morphsActive.put(e.getKey(), info);
+                if(e.getKey().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName()))
+                {
+                    Morph.proxy.tickHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().theWorld, info);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.client.core;
 
+import me.ichun.mods.morph.client.render.RenderPlayerHand;
 import me.ichun.mods.morph.common.core.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -23,6 +24,8 @@ public class ClientProxy extends CommonProxy
     public void init()
     {
         super.init();
+
+        tickHandlerClient.renderHandInstance = new RenderPlayerHand();
 
         //        tickHandlerClient.renderMorphInstance = new RenderMorph(new ModelMorph(), 0.0F);
         //        RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, tickHandlerClient.renderMorphInstance);

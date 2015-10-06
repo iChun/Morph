@@ -27,10 +27,10 @@ public class TickHandlerServer
 
                 info.tick();
 
-                if(!info.isMorphing() && info.nextState.currentVariant.playerName.equals(info.player.getCommandSenderName())) //Player has fully demorphed
+                if(!info.isMorphing() && info.nextState.currentVariant.playerName.equals(info.getPlayer().getCommandSenderName())) //Player has fully demorphed
                 {
                     ite.remove();
-                    Morph.channel.sendToAll(new PacketDemorph(info.player.getCommandSenderName()));
+                    Morph.channel.sendToAll(new PacketDemorph(info.getPlayer().getCommandSenderName()));
                 }
             }
         }
@@ -44,9 +44,9 @@ public class TickHandlerServer
             if(event.player.worldObj.playerEntities.contains(event.player))
             {
                 MorphInfo info = morphsActive.get(event.player.getCommandSenderName());
-                if(info != null)
+                if(info != null && info.getPlayer() != event.player)
                 {
-                    info.player = event.player;
+                    info.setPlayer(event.player);
                 }
             }
         }

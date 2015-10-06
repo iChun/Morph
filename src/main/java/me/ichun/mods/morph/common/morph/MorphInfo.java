@@ -4,10 +4,14 @@ import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 
 public class MorphInfo
 {
-    public EntityPlayer player; //Should never be null.
+    protected EntityPlayer player; //Should never be null.
 
     public MorphState prevState; //Can be null.
     public MorphState nextState; //Should never be null.
@@ -41,9 +45,11 @@ public class MorphInfo
             }
             //DO STUFF HERE. LIKE SETTING THE PLAYER SIZE AND WHATNOT.
         }
-        if(isMorphing())
+        if(isMorphing()) //for this to be possible, the player has to be defined anyways.
         {
             morphTime++;
+
+            setPlayerBoundingBox();
         }
         if(prevState != null && prevState.entInstance != null && isMorphing())
         {
@@ -67,6 +73,38 @@ public class MorphInfo
     {
     }
 
+    public void setPlayer(EntityPlayer player)
+    {
+        this.player = player;
+
+        setPlayerBoundingBox();
+    }
+
+    public EntityPlayer getPlayer()
+    {
+        return player;
+    }
+
+    public void setPlayerBoundingBox()
+    {
+        float morphTransition = getMorphTransitionProgress(0F);
+
+        EntityLivingBase prevEnt = prevState.getEntInstance(player.worldObj);
+        EntityLivingBase nextEnt = nextState.getEntInstance(player.worldObj);
+
+        float newWidth = EntityHelperBase.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
+        float newHeight = EntityHelperBase.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
+
+        if(!(newWidth == player.width))
+        {
+            player.moveEntity(-(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
+        }
+
+        player.setSize(newWidth, newHeight);
+
+        player.eyeHeight = EntityHelperBase.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
+    }
+
     public EntityLivingBase getEntity(MorphState state)
     {
         return state.entInstance;
@@ -75,6 +113,22 @@ public class MorphInfo
     public boolean isMorphing()
     {
         return morphTime < Morph.config.morphTime;
+    }
+
+    public float getMorphProgress(float renderTick) //use 0 for serverside. This is for overall morph progression.
+    {
+        return MathHelper.clamp_float((morphTime + renderTick) /  Morph.config.morphTime, 0.0F, 1.0F);
+    }
+
+    public float getMorphTransitionProgress(float renderTick) //use 0 for serverside. This is for the transitioning between models, and therefore, size.
+    {
+        return (float)Math.sin(Math.toRadians(MathHelper.clamp_float((morphTime - 10 + renderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float getMorphSkinAlpha(float renderTick)
+    {
+        return getMorphProgress(renderTick) < 0.5D ? ((float)Math.pow((morphTime + renderTick) / 10F, 2D)) : ((float)Math.pow(1F - ((morphTime + renderTick) - (Morph.config.morphTime - 10)) / 10F, 2D));
     }
 
     /**

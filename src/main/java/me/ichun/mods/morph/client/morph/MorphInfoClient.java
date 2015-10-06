@@ -76,6 +76,11 @@ public class MorphInfoClient extends MorphInfo
     @Override
     public void syncEntityWithPlayer(EntityLivingBase ent)
     {
+        if(player == null)
+        {
+            return;
+        }
+
         Minecraft mc = Minecraft.getMinecraft();
 
         //prevs

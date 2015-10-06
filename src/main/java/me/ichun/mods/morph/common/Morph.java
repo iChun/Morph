@@ -22,7 +22,7 @@ import us.ichun.mods.ichunutil.common.iChunUtil;
 @Mod(modid = Morph.MOD_NAME, name = Morph.MOD_NAME,
         version = Morph.VERSION,
         guiFactory = "us.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
-        dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".5.0," + (iChunUtil.versionMC + 1) + ".0.0)",
+        dependencies = "required-after:iChunUtil@[" + iChunUtil.versionMC +".6.0," + (iChunUtil.versionMC + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.versionMC +".0.0," + iChunUtil.versionMC + ".1.0)"
 )
 public class Morph

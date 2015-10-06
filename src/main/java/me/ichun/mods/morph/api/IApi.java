@@ -88,8 +88,8 @@ public interface IApi
     public ResourceLocation getMorphSkinTexture();
 
     /**
-     * Renders the arm of the player, or the arm of the morphed entity (if exists).
-     * Morph will try and render the arms in the position that it would have looked like in first person, so try to only call it in first person.
+     * Renders the "arm" (if exists) of the player if the player is morphed..
+     * Morph will position the arm in a similar way as how it's done with RenderPlayer's renderLeft/RightArm.
      * @param player EntityPlayer's arm to render
      * @param isLeftArm Is the arm supposed to be the left arm?
      */
