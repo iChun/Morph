@@ -8,6 +8,7 @@ import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
+import me.ichun.mods.morph.common.packet.PacketAcquireEntity;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
@@ -278,7 +280,7 @@ public class PlayerMorphHandler implements IApi
 
         if(killEntityClientside)
         {
-            //TODO spawn the client acquired entity
+            Morph.channel.sendToAllAround(new PacketAcquireEntity(entityToAcquire.getEntityId(), player.getEntityId()), new NetworkRegistry.TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 128D));
         }
         return true;
     }

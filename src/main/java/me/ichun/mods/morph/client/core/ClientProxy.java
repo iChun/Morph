@@ -1,8 +1,11 @@
 package me.ichun.mods.morph.client.core;
 
+import me.ichun.mods.morph.client.entity.EntityMorphAcquisition;
+import me.ichun.mods.morph.client.render.RenderMorphAcquisition;
 import me.ichun.mods.morph.client.render.RenderPlayerHand;
 import me.ichun.mods.morph.common.core.CommonProxy;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
@@ -26,9 +29,7 @@ public class ClientProxy extends CommonProxy
         super.init();
 
         tickHandlerClient.renderHandInstance = new RenderPlayerHand();
-
-        //        tickHandlerClient.renderMorphInstance = new RenderMorph(new ModelMorph(), 0.0F);
-        //        RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, tickHandlerClient.renderMorphInstance);
+        RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, new RenderMorphAcquisition());
     }
 
     @Override

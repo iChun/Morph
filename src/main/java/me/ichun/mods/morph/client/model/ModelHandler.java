@@ -5,8 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RenderZombie;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import us.ichun.mods.ichunutil.client.model.ModelHelper;
 
@@ -16,12 +18,17 @@ public class ModelHandler
 {
     private static HashMap<Class<? extends EntityLivingBase>, ModelInfo> entityModelMap = new HashMap<Class<? extends EntityLivingBase>, ModelInfo>();
     private static HashMap<String, ModelInfo> playerModelMap = new HashMap<String, ModelInfo>();
+    private static ModelInfo zombieVillagerModel;
 
     public static void dissectForModels(Class<? extends EntityLivingBase> clz, Render rend)
     {
         if(rend instanceof RendererLivingEntity)
         {
             entityModelMap.put(clz, new ModelInfo(clz, rend, ((RendererLivingEntity)rend).mainModel));
+            if(rend.getClass() == RenderZombie.class)
+            {
+                zombieVillagerModel = new ModelInfo(clz, rend, ((RenderZombie)rend).zombieVillagerModel);
+            }
         }
         else
         {
@@ -42,6 +49,10 @@ public class ModelHandler
             String s = ((AbstractClientPlayer)entity).getSkinType();
             ModelInfo modelInfo = playerModelMap.get(s);
             return modelInfo != null ? modelInfo : playerModelMap.get("default");
+        }
+        else if(entity instanceof EntityZombie && ((EntityZombie)entity).isVillager())
+        {
+            return zombieVillagerModel;
         }
         return getEntityModelInfo(entity.getClass());
     }
