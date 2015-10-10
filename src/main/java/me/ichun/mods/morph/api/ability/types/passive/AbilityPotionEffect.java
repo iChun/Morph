@@ -1,11 +1,8 @@
-package me.ichun.mods.morph.common.ability;
+package me.ichun.mods.morph.api.ability.types.passive;
 
 import me.ichun.mods.morph.api.ability.Ability;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AbilityPotionEffect extends Ability
 {
@@ -13,8 +10,6 @@ public class AbilityPotionEffect extends Ability
     public int duration;
     public int amplifier;
     public boolean ambient;
-
-    //TODO redo this class properly. it's dragged in so rendering stuff would work.
 
     public AbilityPotionEffect()
     {
@@ -44,7 +39,6 @@ public class AbilityPotionEffect extends Ability
         return new AbilityPotionEffect(potionId, duration, amplifier, ambient);
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public boolean entityHasAbility(EntityLivingBase living)
     {
@@ -60,8 +54,8 @@ public class AbilityPotionEffect extends Ability
     }
 
     @Override
-    public ResourceLocation getIcon()
+    public boolean isCharacteristic(EntityLivingBase living)
     {
-        return null;
+        return true;
     }
 }

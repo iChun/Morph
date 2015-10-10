@@ -14,7 +14,7 @@ public interface IAbilityHandler
 
     public boolean hasAbility(Class<? extends EntityLivingBase> entClass, String type);
 
-    public Ability createNewAbilityByType(String type, String[] arguments);
+    public Ability createNewAbilityByType(String type, String json);
 
     public ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass);
 }

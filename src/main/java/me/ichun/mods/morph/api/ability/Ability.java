@@ -17,6 +17,7 @@ import java.util.ArrayList;
  *
  */
 public abstract class Ability
+        implements Comparable<Ability>
 {
     /**
      * Ability parent field. Will be null for instances used in registration. Ability is then cloned and parent assigned later on.
@@ -27,9 +28,19 @@ public abstract class Ability
      * This value gets set from 0.0F to 1.0F as the player morphs, 1.0F to 0.0F as the player demorphs.
      * Both morph states may have the same ability but will have different ability objects, so the strength value is important?? Still WIP.
      */
-    public transient float strength;
-
+    public transient float strength; //TODO will this ever be used?
     //TODO transition between two abilities? Change in strength as player demorphs/morphs?
+
+    /**
+     * For active abilities, is the ability currently active and should we use the activeCost?
+     * Set to false before abilities are ticked. Abilities will have to set it to true every tick. //TODO set isActive to false.
+     */
+    public transient boolean isActive;
+
+    /**
+     * ResourceLocation for this ability's icon. Can be null.
+     */
+    protected transient ResourceLocation iconResource;
 
     /**
      * Basic constructor (but you didn't really need me to tell you that ;D )
@@ -37,6 +48,7 @@ public abstract class Ability
     public Ability()
     {
         parent = null;
+        strength = 0.0F;
     }
 
     /**
@@ -79,10 +91,52 @@ public abstract class Ability
     public void tick(){}
 
     /**
+     * Return true if the ability is currently active, eg when the climb ability lets you climb up walls
+     * @return is ability active
+     */
+    public boolean isActive()
+    {
+        return isActive;
+    }
+
+    /**
+     * Cost of using an ability, per use/tick.
+     * @return ability cost
+     */
+    public float activeCost()
+    {
+        return 0.0F;
+    }
+
+    /**
      * Called when the ability is finally removed when the parent demorphs or morphs into a state that does not have this ability type.
      * This will NOT be called if the parent morphs into another morph that has this type of ability.
+     * The next abilities list is there to handle other abilities present that may be similar but not of the same kind, eg: AbilityFlightFlap and AbilityFlightHover
      */
-    public void kill(){}
+    public void kill(ArrayList<Ability> nextAbilities){}
+
+    /**
+     * Does the entity have the ability?
+     * @param living living entity to test this on
+     * @return entity has the ability
+     */
+    public boolean entityHasAbility(EntityLivingBase living)
+    {
+        return true;
+    }
+
+    /**
+     * If the ability is usable, set this to true.
+     * @return canTheAbilityBeUsed
+     */
+    public boolean isUsable() { return false; }
+
+    /**
+     * Is the ability a characteristic of the entity? Characteristics will immediately be with the morph and will not be learnt over time.
+     * @param living living entity to test this on.
+     * @return is the ability a characteristic
+     */
+    public boolean isCharacteristic(EntityLivingBase living) { return false; }
 
     /**
      * Icon location for ability. Can be null.
@@ -90,7 +144,10 @@ public abstract class Ability
      * @return resourcelocation for icon
      */
     @SideOnly(Side.CLIENT)
-    public abstract ResourceLocation getIcon();
+    public ResourceLocation getIcon()
+    {
+        return iconResource;
+    }
 
     /**
      * Rendering to be done post-render.
@@ -99,23 +156,15 @@ public abstract class Ability
     @SideOnly(Side.CLIENT)
     public void postRender(){}
 
-    /**
-     * Does the entity have the ability?
-     * @param living living entity to test this on
-     * @return entity has the ability
-     */
-    @SideOnly(Side.CLIENT)
-    public boolean entityHasAbility(EntityLivingBase living)
+    @Override
+    public int compareTo(Ability ability)
     {
-        return true;
+        if(isUsable() != ability.isUsable())
+        {
+            return isUsable() ? 1 : -1;
+        }
+        return getType().compareTo(ability.getType());
     }
-
-    /**
-     * Is the ability a characteristic of the entity? Characteristics will immediately be with the morph and will not be learnt over time.
-     * @param living living entity to test this on.
-     * @return is the ability a characteristic
-     */
-    public boolean isAbilityCharacteristic(EntityLivingBase living) { return false; }
 
     private static IAbilityHandler abilityHandlerImpl = new AbilityHandlerDummy();
 
@@ -166,13 +215,13 @@ public abstract class Ability
     }
 
     /**
-     * Creates an ability by type.
+     * Creates an ability by type. Can be null.
      * Check out AbilityHandler to see each Ability type and the parse function in their respective classes for the arguments.
      * @return
      */
-    public static Ability createNewAbilityByType(String type, String...arguments)
+    public static Ability createNewAbilityByType(String type, String json)
     {
-        return abilityHandlerImpl.createNewAbilityByType(type, arguments);
+        return abilityHandlerImpl.createNewAbilityByType(type, json);
     }
 
     /**
@@ -182,7 +231,7 @@ public abstract class Ability
      */
     public ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
     {
-        return new ArrayList<Ability>();
+        return abilityHandlerImpl.getEntityAbilities(entClass);
     }
 
     /**

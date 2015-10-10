@@ -28,7 +28,7 @@ public class AbilityHandlerDummy implements IAbilityHandler
     }
 
     @Override
-    public Ability createNewAbilityByType(String type, String...arguments)
+    public Ability createNewAbilityByType(String type, String json)
     {
         return null;
     }
