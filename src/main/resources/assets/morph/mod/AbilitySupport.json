@@ -844,6 +844,9 @@
   "f1repl4ce.unlogic.entities.SnackAttackMan": [
     "witherResistance"
   ],
+  "forestry.lepidopterology.entities.EntityButterfly": [
+    "fly|true"
+  ],
   "gaia.entity.EntityGaiaAnubis": [
     "hostile",
     "potionEffect|2,600,0,false",
