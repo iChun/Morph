@@ -8,6 +8,11 @@
   ],
   
   
+  "forestry.lepidopterology.entities.EntityButterfly": [
+	"PLN",
+	"STATE",
+	"EXH"
+  ],
   "tropicraft.entities.hostile.land.SpiderAdult": [
     "maxEggsToSpawn"
   ],
