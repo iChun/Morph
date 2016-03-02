@@ -830,6 +830,10 @@
   "evilcraft.entity.monster.Werewolf": [
     "hostile"
   ],
+  "fairies.entity.EntityFairy": [
+    "fly|true",
+    "float"
+  ],
   "f1repl4ce.unlogic.entities.FireSoul": [
     "hostile",
     "fly|false",
