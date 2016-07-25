@@ -305,6 +305,36 @@
   "com.lom.lotsomobsentity.EntityShark": [
     "swim|false,1F,1F,true"
   ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityRedFinch": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityGreenFinch": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityBlueFinch": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityYellowFinch": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityVulture": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityHornBill": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityEagle": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityCrow": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityPZBat": [
+    "fly|true"
+  ],
+  "com.stek101.projectzulu.common.mobs.entity.EntityPelican": [
+    "fly|true"
+  ],
   "danger.orespawn.Basilisk": [
     "hostile",
     "step|2F"
