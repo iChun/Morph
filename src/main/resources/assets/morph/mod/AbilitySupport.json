@@ -122,6 +122,9 @@
   "com.emoniph.witchery.entity.EntityParasyticLouse": [
     "hostile"
   ],
+  "com.emoniph.witchery.entity.EntityWingedMonkey": [
+    "fly|true"
+  ],
   "com.github.revival.common.entity.mob.EntityAllosaurus": [
     "hostile"
   ],
