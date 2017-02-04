@@ -30,5 +30,22 @@
 	"Tame",
 	"OwnerName",
 	"Items"
+  ],
+  "lycanite.lycanitesmobs.api.entity.EntityCreatureBase": [
+	"Size",
+	"Stealth",
+	"Items",
+	"FirstSpawn",
+	"Following",
+	"ForceNoDespawn",
+	"HasBeenFarmed",
+	"IsBoundPet",
+	"IsMinion",
+	"IsTemporary",
+	"Leashed",
+	"Passive",
+	"PVP",
+	"Sitting",
+	"TemporaryDuration"
   ]
 }
