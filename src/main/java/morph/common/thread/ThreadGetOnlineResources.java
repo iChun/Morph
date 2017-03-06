@@ -155,36 +155,29 @@ public class ThreadGetOnlineResources extends Thread
                             if(abilityObjs.size() > 0){
                                 Class<? extends EntityLivingBase> entityClass = (Class<? extends EntityLivingBase>) Class.forName(e.getKey());
                                 if(entityClass != null){
-                                    if(AbilityHandler.abilityMap.containsKey(entityClass))
+                                    if(entityClass.getName().startsWith("net.minecraft"))
                                     {
-                                        Morph.console("Ignoring ability mapping for " + e.getKey() + "! Already has abilities mapped!", true);
+                                        mcMappings++;
                                     }
                                     else
                                     {
-                                        if(entityClass.getName().startsWith("net.minecraft"))
+                                        StringBuilder sb = new StringBuilder();
+                                        sb.append("Adding ability mappings ");
+                                        for(int i = 0; i < abilityObjs.size(); i++)
                                         {
-                                            mcMappings++;
-                                        }
-                                        else
-                                        {
-                                            StringBuilder sb = new StringBuilder();
-                                            sb.append("Adding ability mappings ");
-                                            for(int i = 0; i < abilityObjs.size(); i++)
+                                            Ability a = abilityObjs.get(i);
+                                            sb.append(a.getType());
+                                            if(i != abilityObjs.size() - 1)
                                             {
-                                                Ability a = abilityObjs.get(i);
-                                                sb.append(a.getType());
-                                                if(i != abilityObjs.size() - 1)
-                                                {
-                                                    sb.append(", ");
-                                                }
+                                                sb.append(", ");
                                             }
-                                            sb.append(" to ");
-                                            sb.append(entityClass);
-
-                                            Morph.console(sb.toString(), false);
                                         }
-                                        AbilityHandler.mapAbilities(entityClass, abilityObjs.toArray(new Ability[0]));
+                                        sb.append(" to ");
+                                        sb.append(entityClass);
+
+                                        Morph.console(sb.toString(), false);
                                     }
+                                    AbilityHandler.mapAbilities(entityClass, abilityObjs.toArray(new Ability[abilityObjs.size()]));
                                 }
                             }
                         }
