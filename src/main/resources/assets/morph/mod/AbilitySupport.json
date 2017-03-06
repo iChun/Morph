@@ -2085,6 +2085,11 @@
   "twilightforest.entity.passive.EntityTFTinyBird": [
     "fly|true"
   ],
+  "com.countrygamer.weepingangels.common.entity.EntityWeepingAngel": [
+    "hostile",
+    "step|3F",
+    "fireImmunity"
+  ],
   
   
   "net.minecraft.entity.passive.EntityBat": [
