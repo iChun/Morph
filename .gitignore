@@ -8,8 +8,16 @@
 *.iml
 /.idea
 
+# Eclipse Files #
+.classpath
+.project
+.settings
+eclipse
+*.launch
+
 # Gradle #
 /.gradle
 /build
 /libs
 /src/api
+/bin/
