@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph;
 
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.*;
@@ -7,14 +8,13 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
-import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class MorphVariant
         {
             if(!playerName.isEmpty())
             {
-                return world.isRemote ? createPlayer(world, playerName) : new FakePlayer((WorldServer)world, EntityHelperBase.getSimpleGameProfileFromName(playerName));
+                return world.isRemote ? createPlayer(world, playerName) : new FakePlayer((WorldServer)world, EntityHelper.getGameProfile(playerName));
             }
             else
             {
@@ -101,7 +101,7 @@ public class MorphVariant
     @SideOnly(Side.CLIENT)
     private EntityPlayer createPlayer(World world, String player)
     {
-        return new EntityOtherPlayerMP(world, EntityHelperBase.getFullGameProfileFromName(player));
+        return new EntityOtherPlayerMP(world, EntityHelper.getGameProfile(player));
     }
 
     public ArrayList<MorphVariant> split() //Returns a new copy of all the variants in the list.
@@ -243,7 +243,7 @@ public class MorphVariant
     {
         if(living instanceof EntityPlayer)
         {
-            return new MorphVariant(PLAYER_MORPH_ID).setPlayerName(living.getCommandSenderName());
+            return new MorphVariant(PLAYER_MORPH_ID).setPlayerName(living.getName());
         }
 
         NBTTagCompound saveData = new NBTTagCompound();
@@ -260,7 +260,7 @@ public class MorphVariant
         living.writeEntityToNBT(variant.entTag);
         clean(living, variant.entTag);
 
-        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp_double(living.getEntityAttribute(SharedMonsterAttributes.maxHealth).getBaseValue(), 0D, 20D)); //For health balancing reasons for now.
+        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp_double(living.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue(), 0D, 20D)); //For health balancing reasons for now.
 
         if(variant.instanceTag.tagMap.containsKey("ForgeData")) // send the ForgeData to the variant tag.
         {

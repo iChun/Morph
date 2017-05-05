@@ -1,30 +1,29 @@
 package me.ichun.mods.morph.client.model;
 
+import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderZombie;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
-import us.ichun.mods.ichunutil.client.model.ModelHelper;
 
 import java.util.HashMap;
 
 public class ModelHandler
 {
-    private static HashMap<Class<? extends EntityLivingBase>, ModelInfo> entityModelMap = new HashMap<Class<? extends EntityLivingBase>, ModelInfo>();
-    private static HashMap<String, ModelInfo> playerModelMap = new HashMap<String, ModelInfo>();
+    private static HashMap<Class<? extends EntityLivingBase>, ModelInfo> entityModelMap = new HashMap<>();
+    private static HashMap<String, ModelInfo> playerModelMap = new HashMap<>();
     private static ModelInfo zombieVillagerModel;
 
     public static void dissectForModels(Class<? extends EntityLivingBase> clz, Render rend)
     {
-        if(rend instanceof RendererLivingEntity)
+        if(rend instanceof RenderLivingBase)
         {
-            entityModelMap.put(clz, new ModelInfo(clz, rend, ((RendererLivingEntity)rend).mainModel));
+            entityModelMap.put(clz, new ModelInfo(clz, rend, ((RenderLivingBase)rend).mainModel));
             if(rend.getClass() == RenderZombie.class)
             {
                 zombieVillagerModel = new ModelInfo(clz, rend, ((RenderZombie)rend).zombieVillagerModel);
@@ -38,8 +37,8 @@ public class ModelHandler
 
     public static void mapPlayerModels()
     {
-        playerModelMap.put("default", new ModelInfo(EntityPlayer.class, ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("default")), (((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("default"))).mainModel));
-        playerModelMap.put("slim", new ModelInfo(EntityPlayer.class, ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("slim")), (((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("slim"))).mainModel));
+        playerModelMap.put("default", new ModelInfo(EntityPlayer.class, (Minecraft.getMinecraft().getRenderManager().skinMap.get("default")), ((Minecraft.getMinecraft().getRenderManager().skinMap.get("default"))).mainModel));
+        playerModelMap.put("slim", new ModelInfo(EntityPlayer.class, (Minecraft.getMinecraft().getRenderManager().skinMap.get("slim")), ((Minecraft.getMinecraft().getRenderManager().skinMap.get("slim"))).mainModel));
     }
 
     public static ModelInfo getEntityModelInfo(EntityLivingBase entity)
@@ -71,7 +70,7 @@ public class ModelHandler
         }
         if(info == null)
         {
-            Morph.logger.warn("Cannot find ModelInfo for " + clz.getName() + ". Attempting to generate one.");
+            Morph.LOGGER.warn("Cannot find ModelInfo for " + clz.getName() + ". Attempting to generate one.");
             Render rend = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(clz);
             info = new ModelInfo(clz, rend, ModelHelper.getPossibleModel(rend));
             entityModelMap.put(clz, info);

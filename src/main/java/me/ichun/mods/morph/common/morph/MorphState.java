@@ -31,7 +31,7 @@ public class MorphState
     {
         if(entInstance != null)
         {
-            return entInstance.getCommandSenderName();
+            return entInstance.getName();
         }
         return currentVariant.entId;
     }

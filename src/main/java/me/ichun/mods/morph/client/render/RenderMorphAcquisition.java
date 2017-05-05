@@ -1,5 +1,7 @@
 package me.ichun.mods.morph.client.render;
 
+import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.client.entity.EntityMorphAcquisition;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import net.minecraft.client.Minecraft;
@@ -7,27 +9,28 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.lwjgl.opengl.GL11;
-import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.nio.FloatBuffer;
+import java.util.Random;
 
-public class RenderMorphAcquisition extends Render
+public class RenderMorphAcquisition extends Render<EntityMorphAcquisition>
 {
-    public RenderMorphAcquisition()
+    public Random rand;
+    public RenderMorphAcquisition(RenderManager manager)
     {
-        super(Minecraft.getMinecraft().getRenderManager());
+        super(manager);
+        rand = new Random();
     }
 
     @Override
-    public void doRender(Entity entity, double x, double y, double z, float entityYaw, float partialTicks)
+    public void doRender(EntityMorphAcquisition ent, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        EntityMorphAcquisition ent = (EntityMorphAcquisition)entity;
-
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.rotate(180F - ent.acquired.renderYawOffset, 0F, 1F, 0F);
@@ -39,7 +42,7 @@ public class RenderMorphAcquisition extends Render
         float skinProg = MathHelper.clamp_float((ent.progress + partialTicks) / 5F, 0F, 1F);
         float morphProg = MathHelper.clamp_float(((ent.progress - 5F) + partialTicks) / 35F, 0F, 1F);
 
-        if(ent.prevScaleX == -1) //seting up
+        if(ent.prevScaleX == -1) //setting up
         {
             FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
             FloatBuffer buffer1 = GLAllocation.createDirectFloatBuffer(16);
@@ -47,7 +50,7 @@ public class RenderMorphAcquisition extends Render
             GlStateManager.pushMatrix();
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
             Render rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(ent.acquired);
-            ObfHelper.invokePreRenderCallback(rend, rend.getClass(), ent.acquired, iChunUtil.proxy.tickHandlerClient.renderTick);
+            ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), ent.acquired, iChunUtil.eventHandlerClient.renderTick);
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
             GlStateManager.popMatrix();
 
@@ -66,12 +69,12 @@ public class RenderMorphAcquisition extends Render
 
         for(ModelRenderer renderer : ent.model.nextModels)
         {
-            ent.getRNG().setSeed(Math.abs(renderer.hashCode()));
+            rand.setSeed(Math.abs(renderer.hashCode()));
             float spinSpeed = MathHelper.clamp_float(morphProg, 0F, 0.45F);
             float spinValue = (float)Math.pow(3D, 4F * spinSpeed);
-            float offsetX = (ent.getRNG().nextFloat() - ent.getRNG().nextFloat()) * spinValue;
-            float offsetY = (ent.getRNG().nextFloat() - ent.getRNG().nextFloat()) * spinValue;
-            float offsetZ = (ent.getRNG().nextFloat() - ent.getRNG().nextFloat()) * spinValue;
+            float offsetX = (rand.nextFloat() - rand.nextFloat()) * spinValue;
+            float offsetY = (rand.nextFloat() - rand.nextFloat()) * spinValue;
+            float offsetZ = (rand.nextFloat() - rand.nextFloat()) * spinValue;
             renderer.rotateAngleX = offsetX;
             renderer.rotateAngleY = offsetY;
             renderer.rotateAngleZ = offsetZ;
@@ -101,8 +104,17 @@ public class RenderMorphAcquisition extends Render
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity)
+    public ResourceLocation getEntityTexture(EntityMorphAcquisition entity)
     {
         return PlayerMorphHandler.morphSkin;
+    }
+
+    public static class RenderFactory implements IRenderFactory<EntityMorphAcquisition>
+    {
+        @Override
+        public Render<EntityMorphAcquisition> createRenderFor(RenderManager manager)
+        {
+            return new RenderMorphAcquisition(manager);
+        }
     }
 }

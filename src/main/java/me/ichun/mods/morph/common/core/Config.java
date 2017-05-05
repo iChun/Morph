@@ -1,15 +1,15 @@
 package me.ichun.mods.morph.common.core;
 
+import me.ichun.mods.ichunutil.client.keybind.KeyBind;
+import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
+import me.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
+import me.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
-import us.ichun.mods.ichunutil.client.keybind.KeyBind;
-import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
-import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
-import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
-import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 
 import java.io.File;
 import java.lang.reflect.Field;

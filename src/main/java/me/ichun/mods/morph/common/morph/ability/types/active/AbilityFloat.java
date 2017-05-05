@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.api.ability.types.active;
+package me.ichun.mods.morph.common.morph.ability.types.active;
 
 import me.ichun.mods.morph.api.ability.Ability;
 import net.minecraft.entity.EntityLivingBase;

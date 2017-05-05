@@ -1,8 +1,9 @@
-package me.ichun.mods.morph.api.ability.types.passive;
+package me.ichun.mods.morph.common.morph.ability.types.passive;
 
 import me.ichun.mods.morph.api.ability.Ability;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.SkeletonType;
 
 public class AbilityPotionEffect extends Ability
 {
@@ -45,7 +46,7 @@ public class AbilityPotionEffect extends Ability
         if (living instanceof EntitySkeleton)
         {
             EntitySkeleton skele = (EntitySkeleton) living;
-            if (skele.getSkeletonType() != 1)
+            if (skele.getSkeletonType() != SkeletonType.WITHER)
             {
                 return false;
             }

@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.packet;
 
 import io.netty.buffer.ByteBuf;
+import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
@@ -11,7 +12,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,16 +27,16 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
     {
         if(player != null)
         {
-            infosToSend.put(player, Morph.proxy.tickHandlerServer.morphsActive.get(player));
+            infosToSend.put(player, Morph.eventHandlerServer.morphsActive.get(player));
         }
         else
         {
-            infosToSend.putAll(Morph.proxy.tickHandlerServer.morphsActive);
+            infosToSend.putAll(Morph.eventHandlerServer.morphsActive);
         }
     }
 
     @Override
-    public void writeTo(ByteBuf buffer, Side side)
+    public void writeTo(ByteBuf buffer)
     {
         PacketBuffer pb = new PacketBuffer(buffer);
         for(Map.Entry<String, MorphInfo> e : infosToSend.entrySet())
@@ -48,7 +48,7 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side)
+    public void readFrom(ByteBuf buffer)
     {
         PacketBuffer pb = new PacketBuffer(buffer);
 
@@ -71,9 +71,16 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public AbstractPacket execute(Side side, EntityPlayer player)
     {
         handleClient();
+        return null;
+    }
+
+    @Override
+    public Side receivingSide()
+    {
+        return Side.CLIENT;
     }
 
     @SideOnly(Side.CLIENT)
@@ -85,14 +92,14 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
             {
                 MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
                 info.read(e.getValue().write(new NBTTagCompound()));
-                if(Morph.proxy.tickHandlerClient.morphsActive.containsKey(e.getKey()))
+                if(Morph.eventHandlerClient.morphsActive.containsKey(e.getKey()))
                 {
-                    Morph.proxy.tickHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
+                    Morph.eventHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
                 }
-                Morph.proxy.tickHandlerClient.morphsActive.put(e.getKey(), info);
-                if(e.getKey().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName()))
+                Morph.eventHandlerClient.morphsActive.put(e.getKey(), info);
+                if(e.getKey().equals(Minecraft.getMinecraft().thePlayer.getName()))
                 {
-                    Morph.proxy.tickHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().theWorld, info);
+                    Morph.eventHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().theWorld, info);
                 }
             }
         }

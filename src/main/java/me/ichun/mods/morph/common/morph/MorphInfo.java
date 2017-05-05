@@ -1,13 +1,13 @@
 package me.ichun.mods.morph.common.morph;
 
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 
 public class MorphInfo
 {
@@ -104,8 +104,8 @@ public class MorphInfo
             EntityLivingBase prevEnt = prevState.getEntInstance(player.worldObj);
             EntityLivingBase nextEnt = nextState.getEntInstance(player.worldObj);
 
-            float newWidth = EntityHelperBase.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
-            float newHeight = EntityHelperBase.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
+            float newWidth = EntityHelper.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
+            float newHeight = EntityHelper.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
 
             if(!(newWidth == player.width))
             {
@@ -114,7 +114,7 @@ public class MorphInfo
 
             player.setSize(newWidth, newHeight);
 
-            player.eyeHeight = EntityHelperBase.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
+            player.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
         }
         else
         {

@@ -1,30 +1,546 @@
 package me.ichun.mods.morph.client.core;
 
+import me.ichun.mods.ichunutil.client.core.event.RendererSafeCompatibilityEvent;
+import me.ichun.mods.ichunutil.client.keybind.KeyBind;
+import me.ichun.mods.ichunutil.client.keybind.KeyEvent;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import me.ichun.mods.morph.client.model.ModelHandler;
+import me.ichun.mods.morph.client.model.ModelInfo;
+import me.ichun.mods.morph.client.model.ModelMorph;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.client.render.RenderPlayerHand;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
+import me.ichun.mods.morph.common.packet.PacketGuiInput;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-import us.ichun.mods.ichunutil.client.keybind.KeyBind;
-import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 
 import java.util.*;
 
-public class TickHandlerClient
+public class EventHandlerClient
 {
+    public static final ResourceLocation rlFavourite = new ResourceLocation("morph", "textures/gui/fav.png");
+    public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/gui_selected.png");
+    public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/gui_unselected.png");
+    public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/gui_unselected_side.png");
+
+    public static final int SELECTOR_SHOW_TIME = 10;
+    public static final int SELECTOR_SCROLL_TIME = 3;
+
+    public HashMap<String, MorphInfoClient> morphsActive = new HashMap<>(); //Current morphs per-player
+    public LinkedHashMap<String, ArrayList<MorphState>> playerMorphs = new LinkedHashMap<>(); //Minecraft Player's available morphs. LinkedHashMap maintains insertion order.
+
+    public int renderMorphDepth;
+
+    public RenderPlayerHand renderHandInstance;
+    public boolean allowSpecialRender;
+    public boolean forcePlayerRender;
+    public float playerShadowSize = -1F;
+
+    public int abilityScroll;
+
+    public boolean selectorShow = false;
+    public int selectorShowTimer = 0;
+    public int selectorSelectedPrevVert = 0; //which morph category was selected
+    public int selectorSelectedPrevHori = 0; //which morph in category was selected
+    public int selectorSelectedVert = 0; //which morph category is selected
+    public int selectorSelectedHori = 0; //which morph in category is selected
+    public int selectorScrollVertTimer = 0;
+    public int selectorScrollHoriTimer = 0;
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRendererSafeCompatibility(RendererSafeCompatibilityEvent event)
+    {
+        for(Map.Entry<Class<? extends Entity>, Render<? extends Entity >> e : Minecraft.getMinecraft().getRenderManager().entityRenderMap.entrySet())
+        {
+            Class clz = e.getKey();
+            if(EntityLivingBase.class.isAssignableFrom(clz))
+            {
+                ModelHandler.dissectForModels(clz, e.getValue());
+            }
+            ModelHandler.mapPlayerModels();
+        }
+    }
+
+    @SubscribeEvent
+    public void onKeyEvent(KeyEvent event)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        if(event.keyBind.isPressed())
+        {
+            if(event.keyBind.equals(Morph.config.keySelectorUp) || event.keyBind.equals(Morph.config.keySelectorDown) || event.keyBind.equals(Morph.config.keySelectorLeft) || event.keyBind.equals(Morph.config.keySelectorRight))
+            {
+                Morph.eventHandlerClient.handleSelectorNavigation(event.keyBind);
+            }
+            else if(event.keyBind.equals(Morph.config.keySelectorSelect) || (event.keyBind.keyIndex == mc.gameSettings.keyBindAttack.getKeyCode() && event.keyBind.isMinecraftBind()))
+            {
+                if(Morph.eventHandlerClient.selectorShow)
+                {
+                    Morph.eventHandlerClient.selectorShow = false;
+                    Morph.eventHandlerClient.selectorShowTimer = EventHandlerClient.SELECTOR_SHOW_TIME - Morph.eventHandlerClient.selectorShowTimer;
+                    Morph.eventHandlerClient.selectorScrollHoriTimer = EventHandlerClient.SELECTOR_SCROLL_TIME;
+
+                    MorphState selectedState = Morph.eventHandlerClient.getCurrentlySelectedMorphState();
+                    MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.thePlayer.getName());
+
+                    if(selectedState != null && (info != null && !info.nextState.currentVariant.equals(selectedState.currentVariant) || info == null && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName())))
+                    {
+                        Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 0, false));
+                    }
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.keySelectorCancel) || (event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode() && event.keyBind.isMinecraftBind()))
+            {
+                if(Morph.eventHandlerClient.selectorShow)
+                {
+                    if(mc.currentScreen instanceof GuiIngameMenu)
+                    {
+                        mc.displayGuiScreen(null);
+                    }
+                    Morph.eventHandlerClient.selectorShow = false;
+                    Morph.eventHandlerClient.selectorShowTimer = EventHandlerClient.SELECTOR_SHOW_TIME - Morph.eventHandlerClient.selectorShowTimer;
+                    Morph.eventHandlerClient.selectorScrollHoriTimer = EventHandlerClient.SELECTOR_SCROLL_TIME;
+                }
+            }
+            else if(event.keyBind.equals(Morph.config.keySelectorRemoveMorph) || event.keyBind.keyIndex == Keyboard.KEY_DELETE)
+            {
+                if(Morph.eventHandlerClient.selectorShow)
+                {
+                    MorphState selectedState = Morph.eventHandlerClient.getCurrentlySelectedMorphState();
+                    MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.thePlayer.getName());
+
+                    if(selectedState != null && !selectedState.currentVariant.thisVariant.isFavourite && ((info == null || !info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(selectedState.currentVariant.thisVariant.identifier)) && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName())))
+                    {
+                        Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 2, false));
+                    }
+                }
+            }
+        }
+        else
+        {
+            //RADIAL MENU
+        }
+    }
+
+    @SubscribeEvent
+    public void onMouseEvent(MouseEvent event)
+    {
+        if(Morph.eventHandlerClient.selectorShow)
+        {
+            int k = event.getDwheel();
+            if(k != 0)
+            {
+                KeyBind bind;
+                if(GuiScreen.isShiftKeyDown())
+                {
+                    if(k > 0)
+                    {
+                        bind = Morph.config.keySelectorLeft;
+                    }
+                    else
+                    {
+                        bind = Morph.config.keySelectorRight;
+                    }
+                }
+                else
+                {
+                    if(k > 0)
+                    {
+                        bind = Morph.config.keySelectorUp;
+                    }
+                    else
+                    {
+                        bind = Morph.config.keySelectorDown;
+                    }
+                }
+                Morph.eventHandlerClient.handleSelectorNavigation(bind);
+                event.setCanceled(true);
+            }
+        }
+        //        else if(Morph.eventHandlerClient.radialShow)
+        //        {
+        //            Morph.eventHandlerClient.radialDeltaX += event.dx / 100D;
+        //            Morph.eventHandlerClient.radialDeltaY += event.dy / 100D;
+        //
+        //            double mag = Math.sqrt(Morph.eventHandlerClient.radialDeltaX * Morph.eventHandlerClient.radialDeltaX + Morph.eventHandlerClient.radialDeltaY * Morph.eventHandlerClient.radialDeltaY);
+        //            if(mag > 1.0D)
+        //            {
+        //                Morph.eventHandlerClient.radialDeltaX /= mag;
+        //                Morph.eventHandlerClient.radialDeltaY /= mag;
+        //            }
+        //        }
+    }
+
+    @SubscribeEvent
+    public void onRenderPlayerPre(RenderPlayerEvent.Pre event)
+    {
+        if(Morph.eventHandlerClient.playerShadowSize < 0F)
+        {
+            Morph.eventHandlerClient.playerShadowSize = event.getRenderer().shadowSize;
+        }
+        if(Morph.eventHandlerClient.forcePlayerRender)
+        {
+            event.getRenderer().shadowSize = Morph.eventHandlerClient.playerShadowSize;
+            return;
+        }
+        if(Morph.eventHandlerClient.renderMorphDepth > 0) //It's trying to render a player while rendering a morph, allow it.
+        {
+            return;
+        }
+
+        MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(event.getEntityPlayer().getName());
+        if(info != null)
+        {
+            event.setCanceled(true);
+
+            if(event.getEntityPlayer().worldObj.playerEntities.contains(event.getEntityPlayer()) && info.getPlayer() != event.getEntityPlayer())
+            {
+                info.setPlayer(event.getEntityPlayer());
+            }
+
+            Minecraft mc = Minecraft.getMinecraft();
+
+            Morph.eventHandlerClient.renderMorphDepth++;
+
+            float renderTick = event.getPartialRenderTick();
+
+            float f1 = EntityHelper.interpolateRotation(event.getEntityPlayer().prevRotationYaw, event.getEntityPlayer().rotationYaw, renderTick);
+            if(info.isMorphing() && !(info.morphTime > Morph.config.morphTime - 10))
+            {
+                if(info.morphTime < 10)
+                {
+                    EntityLivingBase entInstance = info.prevState.getEntInstance(event.getEntityPlayer().worldObj);
+                    if(info.firstUpdate)
+                    {
+                        info.syncEntityWithPlayer(entInstance);
+                        entInstance.onUpdate();
+                        info.syncEntityWithPlayer(entInstance);
+                    }
+
+                    float prevEntSize = entInstance.width > entInstance.height ? entInstance.width : entInstance.height;
+                    float prevScaleMag = prevEntSize > 2.5F ? (2.5F / prevEntSize) : 1.0F;
+
+                    float ff2 = entInstance.renderYawOffset;
+                    float ff3 = entInstance.rotationYaw;
+                    float ff4 = entInstance.rotationPitch;
+                    float ff5 = entInstance.prevRotationYawHead;
+                    float ff6 = entInstance.rotationYawHead;
+
+                    if((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiContainerCreative) && mc.getRenderManager().playerViewY == 180.0F)
+                    {
+                        GL11.glScalef(prevScaleMag, prevScaleMag, prevScaleMag);
+
+                        EntityLivingBase renderView = mc.thePlayer;
+
+                        entInstance.renderYawOffset = renderView.renderYawOffset;
+                        entInstance.rotationYaw = renderView.rotationYaw;
+                        entInstance.rotationPitch = renderView.rotationPitch;
+                        entInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+                        entInstance.rotationYawHead = renderView.rotationYawHead;
+                        renderTick = 1.0F;
+                    }
+
+                    float prog = info.getMorphSkinAlpha(renderTick);
+
+                    event.getRenderer().shadowSize = info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize;
+
+                    ModelInfo modelInfo = info.getPrevStateModel(event.getEntityPlayer().worldObj);
+                    modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.enableAlpha();
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
+
+                    ResourceLocation resourceLoc = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
+                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                    modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                    GlStateManager.disableAlpha();
+
+                    entInstance.renderYawOffset = ff2;
+                    entInstance.rotationYaw = ff3;
+                    entInstance.rotationPitch = ff4;
+                    entInstance.prevRotationYawHead = ff5;
+                    entInstance.rotationYawHead = ff6;
+                }
+                else
+                {
+                    EntityLivingBase prevEntInstance = info.prevState.getEntInstance(event.getEntityPlayer().worldObj);
+                    EntityLivingBase nextEntInstance = info.nextState.getEntInstance(event.getEntityPlayer().worldObj);
+
+                    float prevEntSize = prevEntInstance.width > prevEntInstance.height ? prevEntInstance.width : prevEntInstance.height;
+                    float prevScaleMag = prevEntSize > 2.5F ? (2.5F / prevEntSize) : 1.0F;
+
+                    float nextEntSize = nextEntInstance.width > nextEntInstance.height ? nextEntInstance.width : nextEntInstance.height;
+                    float nextScaleMag = nextEntSize > 2.5F ? (2.5F / nextEntSize) : 1.0F;
+
+                    float ff2 = prevEntInstance.renderYawOffset;
+                    float ff3 = prevEntInstance.rotationYaw;
+                    float ff4 = prevEntInstance.rotationPitch;
+                    float ff5 = prevEntInstance.prevRotationYawHead;
+                    float ff6 = prevEntInstance.rotationYawHead;
+
+                    float fff2 = nextEntInstance.renderYawOffset;
+                    float fff3 = nextEntInstance.rotationYaw;
+                    float fff4 = nextEntInstance.rotationPitch;
+                    float fff5 = nextEntInstance.prevRotationYawHead;
+                    float fff6 = nextEntInstance.rotationYawHead;
+
+                    float morphProgress = info.getMorphTransitionProgress(renderTick);
+
+                    if((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiContainerCreative) && mc.getRenderManager().playerViewY == 180.0F)
+                    {
+                        renderTick = 1.0F;
+
+                        morphProgress = info.getMorphTransitionProgress(renderTick);
+
+                        EntityLivingBase renderView = mc.thePlayer;
+
+                        prevEntInstance.renderYawOffset = nextEntInstance.renderYawOffset = renderView.renderYawOffset;
+                        prevEntInstance.rotationYaw = nextEntInstance.rotationYaw = renderView.rotationYaw;
+                        prevEntInstance.rotationPitch = nextEntInstance.rotationPitch = renderView.rotationPitch;
+                        prevEntInstance.prevRotationYawHead = nextEntInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+                        prevEntInstance.rotationYawHead = nextEntInstance.rotationYawHead = renderView.rotationYawHead;
+
+                        float scale = EntityHelper.interpolateValues(prevScaleMag, nextScaleMag, morphProgress);
+                        GL11.glScalef(scale, scale, scale);
+                    }
+
+                    event.getRenderer().shadowSize = EntityHelper.interpolateValues(info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize, info.getNextStateModel(mc.theWorld).entRenderer.shadowSize, morphProgress);
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(event.getX(), event.getY(), event.getZ());
+                    GlStateManager.rotate(180F - EntityHelper.interpolateRotation(event.getEntityPlayer().prevRenderYawOffset, event.getEntityPlayer().renderYawOffset, renderTick), 0F, 1F, 0F);
+                    GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+                    ModelMorph model = info.getModelMorph(event.getEntityPlayer().worldObj);
+                    model.render(renderTick, morphProgress, info.prevState.getEntInstance(event.getEntityPlayer().worldObj), info.nextState.getEntInstance(event.getEntityPlayer().worldObj));
+                    GlStateManager.popMatrix();
+
+                    prevEntInstance.renderYawOffset = fff2;
+                    prevEntInstance.rotationYaw = fff3;
+                    prevEntInstance.rotationPitch = fff4;
+                    prevEntInstance.prevRotationYawHead = fff5;
+                    prevEntInstance.rotationYawHead = fff6;
+
+                    nextEntInstance.renderYawOffset = ff2;
+                    nextEntInstance.rotationYaw = ff3;
+                    nextEntInstance.rotationPitch = ff4;
+                    nextEntInstance.prevRotationYawHead = ff5;
+                    nextEntInstance.rotationYawHead = ff6;
+
+                    if(Morph.config.showPlayerLabel == 1)//Morph wants to show the player label.
+                    {
+                        Morph.eventHandlerClient.allowSpecialRender = true;
+                        event.getRenderer().renderName((AbstractClientPlayer)event.getEntityPlayer(), event.getX(), event.getY(), event.getZ());
+                        Morph.eventHandlerClient.allowSpecialRender = false;
+                    }
+                }
+            }
+            else
+            {
+                EntityLivingBase entInstance = info.nextState.getEntInstance(event.getEntityPlayer().worldObj);
+
+                float nextEntSize = entInstance.width > entInstance.height ? entInstance.width : entInstance.height;
+                float nextScaleMag = nextEntSize > 2.5F ? (2.5F / nextEntSize) : 1.0F;
+
+                float ff2 = entInstance.renderYawOffset;
+                float ff3 = entInstance.rotationYaw;
+                float ff4 = entInstance.rotationPitch;
+                float ff5 = entInstance.prevRotationYawHead;
+                float ff6 = entInstance.rotationYawHead;
+
+                if((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiContainerCreative) && mc.getRenderManager().playerViewY == 180.0F)
+                {
+                    GL11.glScalef(nextScaleMag, nextScaleMag, nextScaleMag);
+
+                    EntityLivingBase renderView = mc.thePlayer;
+
+                    entInstance.renderYawOffset = renderView.renderYawOffset;
+                    entInstance.rotationYaw = renderView.rotationYaw;
+                    entInstance.rotationPitch = renderView.rotationPitch;
+                    entInstance.prevRotationYawHead = renderView.prevRotationYawHead;
+                    entInstance.rotationYawHead = renderView.rotationYawHead;
+                    renderTick = 1.0F;
+                }
+
+                event.getRenderer().shadowSize = info.getNextStateModel(mc.theWorld).entRenderer.shadowSize;
+
+                ModelInfo modelInfo = info.getNextStateModel(event.getEntityPlayer().worldObj);
+                modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+
+                if(info.isMorphing())
+                {
+                    float prog = info.getMorphSkinAlpha(renderTick);
+
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.enableAlpha();
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
+
+                    ResourceLocation resourceLoc = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
+                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                    modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                    GlStateManager.disableAlpha();
+                }
+
+                entInstance.renderYawOffset = ff2;
+                entInstance.rotationYaw = ff3;
+                entInstance.rotationPitch = ff4;
+                entInstance.prevRotationYawHead = ff5;
+                entInstance.rotationYawHead = ff6;
+            }
+
+            Morph.eventHandlerClient.renderMorphDepth--;
+        }
+        else
+        {
+            event.getRenderer().shadowSize = Morph.eventHandlerClient.playerShadowSize;
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onRenderHand(RenderHandEvent event)
+    {
+        if(Morph.config.handRenderOverride == 1)
+        {
+            Minecraft mc = Minecraft.getMinecraft();
+            MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.thePlayer.getName());
+            if(info != null)
+            {
+                event.setCanceled(true);
+
+                String s = mc.thePlayer.getSkinType();
+                RenderPlayer rend = mc.getRenderManager().skinMap.get(s);
+
+                Morph.eventHandlerClient.renderHandInstance.renderTick = event.getPartialTicks();
+                Morph.eventHandlerClient.renderHandInstance.parent = rend;
+                Morph.eventHandlerClient.renderHandInstance.clientInfo = info;
+
+                mc.getRenderManager().skinMap.put(s, Morph.eventHandlerClient.renderHandInstance);
+
+                boolean flag = mc.getRenderViewEntity() instanceof EntityLivingBase && ((EntityLivingBase)mc.getRenderViewEntity()).isPlayerSleeping();
+                if (mc.gameSettings.thirdPersonView == 0 && !flag && !mc.gameSettings.hideGUI && !mc.playerController.isSpectator())
+                {
+                    mc.entityRenderer.enableLightmap();
+                    mc.getItemRenderer().renderItemInFirstPerson(event.getPartialTicks());
+                    mc.entityRenderer.disableLightmap();
+                }
+
+                mc.getRenderManager().skinMap.put(s, rend);
+
+                Morph.eventHandlerClient.renderHandInstance.clientInfo = null;
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onRenderSpecials(RenderLivingEvent.Specials.Pre event)
+    {
+        if(Morph.eventHandlerClient.allowSpecialRender)
+        {
+            return;
+        }
+        Iterator<Map.Entry<String, MorphInfoClient>> ite = Morph.eventHandlerClient.morphsActive.entrySet().iterator();
+        while(ite.hasNext())
+        {
+            Map.Entry<String, MorphInfoClient> e = ite.next();
+            if(e.getValue().nextState.getEntInstance(event.getEntity().worldObj) == event.getEntity() || e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.getEntity().worldObj) == event.getEntity())
+            {
+                if(e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.getEntity().worldObj) instanceof EntityPlayer && e.getValue().prevState.getEntInstance(event.getEntity().worldObj).getName().equals(e.getKey()) || e.getValue().nextState.getEntInstance(event.getEntity().worldObj) instanceof EntityPlayer && e.getValue().nextState.getEntInstance(event.getEntity().worldObj).getName().equals(e.getKey()))
+                {
+                    //if the player is just morphing from/to itself don't render the label, we're doing that anyways.
+                    event.setCanceled(true); //render layer safe, layers aren't special renders.
+                }
+                AbstractClientPlayer player = (AbstractClientPlayer)event.getEntity().worldObj.getPlayerEntityByName(e.getKey());
+                if(player == Minecraft.getMinecraft().thePlayer)
+                {
+                    //If the entity is the mc player morph, no need to render the label at all, since, well, it's the player.
+                    event.setCanceled(true);
+                    return;
+                }
+
+                if(player != null && Morph.config.showPlayerLabel == 1)//if the player is in the world and Morph wants to show the player label.
+                {
+                    event.setCanceled(true); //Don't render the entity label, render the actual player's label instead.
+
+                    RenderPlayer rend = (RenderPlayer)Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(player);
+                    Morph.eventHandlerClient.allowSpecialRender = true;
+                    rend.renderName(player, event.getX(), event.getY(), event.getZ());
+                    Morph.eventHandlerClient.allowSpecialRender = false;
+                }
+                return; //no need to continue the loop, we're done here.
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event)
+    {
+        if(event.getWorld().isRemote && event.getWorld() instanceof WorldClient)
+        {
+            //Clean up the Morph States and stuff like that to prevent mem leaks.
+            for(MorphInfoClient info : Morph.eventHandlerClient.morphsActive.values())
+            {
+                info.clean();
+            }
+        }
+    }
+
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
@@ -33,7 +549,7 @@ public class TickHandlerClient
         {
             if(event.phase == TickEvent.Phase.START)
             {
-                MorphInfo info = morphsActive.get(mc.thePlayer.getCommandSenderName());
+                MorphInfo info = morphsActive.get(mc.thePlayer.getName());
                 if(info != null && info.isMorphing())
                 {
                     float morphTransition = info.getMorphTransitionProgress(event.renderTickTime);
@@ -41,7 +557,7 @@ public class TickHandlerClient
                     EntityLivingBase prevEnt = info.prevState.getEntInstance(mc.theWorld);
                     EntityLivingBase nextEnt = info.nextState.getEntInstance(mc.theWorld);
 
-                    mc.thePlayer.eyeHeight = EntityHelperBase.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
+                    mc.thePlayer.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
                 }
             }
             else
@@ -61,11 +577,11 @@ public class TickHandlerClient
             {
                 if(!mc.isGamePaused())
                 {
-                    for(MorphInfoClient info : Morph.proxy.tickHandlerClient.morphsActive.values())
+                    for(MorphInfoClient info : Morph.eventHandlerClient.morphsActive.values())
                     {
                         info.tick();
                     }
-                    for(Map.Entry<String, ArrayList<MorphState>> e : Morph.proxy.tickHandlerClient.playerMorphs.entrySet())
+                    for(Map.Entry<String, ArrayList<MorphState>> e : Morph.eventHandlerClient.playerMorphs.entrySet())
                     {
                         for(MorphState state : e.getValue())
                         {
@@ -105,7 +621,7 @@ public class TickHandlerClient
         {
             if(event.player.worldObj.playerEntities.contains(event.player))
             {
-                MorphInfo info = morphsActive.get(event.player.getCommandSenderName());
+                MorphInfo info = morphsActive.get(event.player.getName());
                 if(info != null && info.getPlayer() != event.player)
                 {
                     info.setPlayer(event.player);
@@ -117,9 +633,7 @@ public class TickHandlerClient
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
-        //world is null, not connected to any worlds, get rid of objects for GC.
-        morphsActive.clear();
-        playerMorphs.clear();
+        Minecraft.getMinecraft().addScheduledTask(this::disconnectFromServer);
     }
 
     public void drawSelector(Minecraft mc, float renderTick)
@@ -153,7 +667,7 @@ public class TickHandlerClient
 
             GlStateManager.translate(-52F * progress, 0.0F, 0.0F);
 
-            ScaledResolution reso = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+            ScaledResolution reso = new ScaledResolution(mc);
 
             int gap = (reso.getScaledHeight() - (42 * 5)) / 2;
 
@@ -224,7 +738,7 @@ public class TickHandlerClient
                 }
 
                 Tessellator tessellator = Tessellator.getInstance();
-                WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+                VertexBuffer vertexbuffer = tessellator.getBuffer();
 
                 if(i == selectorSelectedVert)
                 {
@@ -266,12 +780,11 @@ public class TickHandlerClient
 
                         double dist = size * (j - selectorSelectedHori);
 
-                        worldRenderer.startDrawingQuads();
-                        worldRenderer.setColorOpaque_F(1F, 1F, 1F);
-                        worldRenderer.addVertexWithUV(width1 + dist, height1 + size, -90.0D + j, 0.0D, 1.0D);
-                        worldRenderer.addVertexWithUV(width1 + dist + size, height1 + size, -90.0D + j, 1.0D, 1.0D);
-                        worldRenderer.addVertexWithUV(width1 + dist + size, height1, -90.0D + j, 1.0D, 0.0D);
-                        worldRenderer.addVertexWithUV(width1 + dist, height1, -90.0D + j, 0.0D, 0.0D);
+                        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+                        vertexbuffer.pos(width1 + dist, height1 + size, -90.0D + j).tex(0.0D, 1.0D).endVertex();
+                        vertexbuffer.pos(width1 + dist + size, height1 + size, -90.0D + j).tex(1.0D, 1.0D).endVertex();
+                        vertexbuffer.pos(width1 + dist + size, height1, -90.0D + j).tex(1.0D, 0.0D).endVertex();
+                        vertexbuffer.pos(width1 + dist, height1, -90.0D + j).tex(0.0D, 0.0D).endVertex();
                         tessellator.draw();
 
                         GlStateManager.popMatrix();
@@ -280,12 +793,11 @@ public class TickHandlerClient
                 else
                 {
                     mc.getTextureManager().bindTexture(rlUnselected);
-                    worldRenderer.startDrawingQuads();
-                    worldRenderer.setColorOpaque_F(1F, 1F, 1F);
-                    worldRenderer.addVertexWithUV(width1, height1 + size, -90.0D, 0.0D, 1.0D);
-                    worldRenderer.addVertexWithUV(width1 + size, height1 + size, -90.0D, 1.0D, 1.0D);
-                    worldRenderer.addVertexWithUV(width1 + size, height1, -90.0D, 1.0D, 0.0D);
-                    worldRenderer.addVertexWithUV(width1, height1, -90.0D, 0.0D, 0.0D);
+                    vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+                    vertexbuffer.pos(width1, height1 + size, -90.0D).tex(0.0D, 1.0D).endVertex();
+                    vertexbuffer.pos(width1 + size, height1 + size, -90.0D).tex(1.0D, 1.0D).endVertex();
+                    vertexbuffer.pos(width1 + size, height1, -90.0D).tex(1.0D, 0.0D).endVertex();
+                    vertexbuffer.pos(width1, height1, -90.0D).tex(0.0D, 0.0D).endVertex();
                     tessellator.draw();
                 }
                 i++;
@@ -376,13 +888,13 @@ public class TickHandlerClient
 
                 mc.getTextureManager().bindTexture(rlSelected);
                 Tessellator tessellator = Tessellator.getInstance();
-                WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-                worldRenderer.startDrawingQuads();
-                worldRenderer.setColorOpaque_F(1F, 1F, 1F);
-                worldRenderer.addVertexWithUV(width1, height1 + size, -90.0D, 0.0D, 1.0D);
-                worldRenderer.addVertexWithUV(width1 + size, height1 + size, -90.0D, 1.0D, 1.0D);
-                worldRenderer.addVertexWithUV(width1 + size, height1, -90.0D, 1.0D, 0.0D);
-                worldRenderer.addVertexWithUV(width1, height1, -90.0D, 0.0D, 0.0D);
+                VertexBuffer vertexbuffer = tessellator.getBuffer();
+
+                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+                vertexbuffer.pos(width1, height1 + size, -90.0D).tex(0.0D, 1.0D).endVertex();
+                vertexbuffer.pos(width1 + size, height1 + size, -90.0D).tex(1.0D, 1.0D).endVertex();
+                vertexbuffer.pos(width1 + size, height1, -90.0D).tex(1.0D, 0.0D).endVertex();
+                vertexbuffer.pos(width1, height1, -90.0D).tex(0.0D, 0.0D).endVertex();
                 tessellator.draw();
 
                 GlStateManager.disableBlend();
@@ -402,10 +914,10 @@ public class TickHandlerClient
             selectorScrollVertTimer = selectorScrollHoriTimer = SELECTOR_SCROLL_TIME;
             selectorSelectedVert = selectorSelectedHori = 0; //Reset the selected selector position
 
-            MorphInfoClient info = morphsActive.get(mc.thePlayer.getCommandSenderName());
+            MorphInfoClient info = morphsActive.get(mc.thePlayer.getName());
             if(info != null)
             {
-                String entName = info.nextState.getEntInstance(mc.theWorld).getCommandSenderName();
+                String entName = info.nextState.getEntInstance(mc.theWorld).getName();
 
                 int i = 0;
                 Iterator<Map.Entry<String, ArrayList<MorphState>>> ite = playerMorphs.entrySet().iterator();
@@ -538,7 +1050,7 @@ public class TickHandlerClient
             float viewY = mc.getRenderManager().playerViewY;
             mc.getRenderManager().setPlayerViewY(180.0F);
             mc.getRenderManager().setRenderShadow(false);
-            mc.getRenderManager().renderEntityWithPosYaw(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+            mc.getRenderManager().doRenderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
             mc.getRenderManager().setRenderShadow(true);
 
             if(ent instanceof EntityDragon)
@@ -548,7 +1060,7 @@ public class TickHandlerClient
 
             GlStateManager.translate(0.0F, -0.22F, 0.0F);
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 255.0F * 0.8F, 255.0F * 0.8F);
-            Tessellator.getInstance().getWorldRenderer().setBrightness(240);
+            //            Tessellator.getInstance().getWorldRenderer().setBrightness(240); //What is this for...?
 
             mc.getRenderManager().setPlayerViewY(viewY);
             ent.renderYawOffset = f2;
@@ -566,7 +1078,7 @@ public class TickHandlerClient
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            MorphInfoClient info = morphsActive.get(Minecraft.getMinecraft().thePlayer.getCommandSenderName());
+            MorphInfoClient info = morphsActive.get(Minecraft.getMinecraft().thePlayer.getName());
 
             GlStateManager.translate(0.0F, 0.0F, 100F);
             if(drawText)
@@ -577,19 +1089,19 @@ public class TickHandlerClient
                 //                    GlStateManager.pushMatrix();
                 //                    float scaleee = 0.75F;
                 //                    GlStateManager.scale(scaleee, scaleee, scaleee);
-                //                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName();
+                //                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName())) ? EnumChatFormatting.GOLD : "") + ent.getName();
                 //                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) / 2) * scaleee), 5, 16777215);
                 //                    GlStateManager.popMatrix();
                 //                }
                 //                else
                 {
-                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow((selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getCommandSenderName().equalsIgnoreCase(mc.thePlayer.getCommandSenderName())) ? EnumChatFormatting.GOLD : "") + ent.getCommandSenderName(), 26, -32, 16777215);
+                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow((selected ? TextFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getName().equalsIgnoreCase(mc.thePlayer.getName())) ? TextFormatting.GOLD : "") + ent.getName(), 26, -32, 16777215);
                 }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
-            if(state != null && !state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getCommandSenderName()) && state.currentVariant.thisVariant.isFavourite)
+            if(state != null && !state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName()) && state.currentVariant.thisVariant.isFavourite)
             {
                 double pX = 9.5D;
                 double pY = -33.5D;
@@ -597,31 +1109,35 @@ public class TickHandlerClient
 
                 Minecraft.getMinecraft().getTextureManager().bindTexture(rlFavourite);
 
+                //TODO lightmap here...?
+                //int k2 = 240;
+                //int l2 = k2 >> 16 & 65535;
+                //int i3 = k2 & 65535;
+
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 Tessellator tessellator = Tessellator.getInstance();
-                WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-                worldRenderer.setColorRGBA(255, 255, 255, 255);
-
-                worldRenderer.startDrawingQuads();
+                VertexBuffer vertexbuffer = tessellator.getBuffer();
                 double iconX = pX;
                 double iconY = pY;
 
-                worldRenderer.addVertexWithUV(iconX, iconY + size, 0.0D, 0.0D, 1.0D);
-                worldRenderer.addVertexWithUV(iconX + size, iconY + size, 0.0D, 1.0D, 1.0D);
-                worldRenderer.addVertexWithUV(iconX + size, iconY, 0.0D, 1.0D, 0.0D);
-                worldRenderer.addVertexWithUV(iconX, iconY, 0.0D, 0.0D, 0.0D);
+                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+                vertexbuffer.pos(iconX, iconY + size, 0.0D).tex(0.0D, 1.0D).endVertex();
+                vertexbuffer.pos(iconX + size, iconY + size, 0.0D).tex(1.0D, 1.0D).endVertex();
+                vertexbuffer.pos(iconX + size, iconY, 0.0D).tex(1.0D, 0.0D).endVertex();
+                vertexbuffer.pos(iconX, iconY, 0.0D).tex(0.0D, 0.0D).endVertex();
                 tessellator.draw();
 
                 GlStateManager.color(0.0F, 0.0F, 0.0F, 0.6F);
 
-                worldRenderer.startDrawingQuads();
                 iconX = pX + 1D;
                 iconY = pY + 1D;
 
-                worldRenderer.addVertexWithUV(iconX, iconY + size, -1.0D, 0.0D, 1.0D);
-                worldRenderer.addVertexWithUV(iconX + size, iconY + size, -1.0D, 1.0D, 1.0D);
-                worldRenderer.addVertexWithUV(iconX + size, iconY, -1.0D, 1.0D, 0.0D);
-                worldRenderer.addVertexWithUV(iconX, iconY, -1.0D, 0.0D, 0.0D);
+
+                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+                vertexbuffer.pos(iconX, iconY + size, -1.0D).tex(0.0D, 1.0D).endVertex();
+                vertexbuffer.pos(iconX + size, iconY + size, -1.0D).tex(1.0D, 1.0D).endVertex();
+                vertexbuffer.pos(iconX + size, iconY, -1.0D).tex(1.0D, 0.0D).endVertex();
+                vertexbuffer.pos(iconX, iconY, -1.0D).tex(0.0D, 0.0D).endVertex();
                 tessellator.draw();
             }
 
@@ -853,32 +1369,10 @@ public class TickHandlerClient
         return null;
     }
 
-    public boolean selectorShow = false;
-    public int selectorShowTimer = 0;
-    public int selectorSelectedPrevVert = 0; //which morph category was selected
-    public int selectorSelectedPrevHori = 0; //which morph in category was selected
-    public int selectorSelectedVert = 0; //which morph category is selected
-    public int selectorSelectedHori = 0; //which morph in category is selected
-    public int selectorScrollVertTimer = 0;
-    public int selectorScrollHoriTimer = 0;
-
-    public int abilityScroll;
-
-    public RenderPlayerHand renderHandInstance;
-    public boolean allowSpecialRender;
-    public boolean forcePlayerRender;
-    public float playerShadowSize = -1F;
-
-    public int renderMorphDepth;
-
-    public HashMap<String, MorphInfoClient> morphsActive = new HashMap<String, MorphInfoClient>(); //Current morphs per-player
-    public LinkedHashMap<String, ArrayList<MorphState>> playerMorphs = new LinkedHashMap<String, ArrayList<MorphState>>(); //Minecraft Player's available morphs. LinkedHashMap maintains insertion order.
-
-    public static final int SELECTOR_SHOW_TIME = 10;
-    public static final int SELECTOR_SCROLL_TIME = 3;
-
-    public static final ResourceLocation rlFavourite = new ResourceLocation("morph", "textures/gui/fav.png");
-    public static final ResourceLocation rlSelected = new ResourceLocation("morph", "textures/gui/guiSelected.png");
-    public static final ResourceLocation rlUnselected = new ResourceLocation("morph", "textures/gui/guiUnselected.png");
-    public static final ResourceLocation rlUnselectedSide = new ResourceLocation("morph", "textures/gui/guiUnselectedSide.png");
+    public void disconnectFromServer()
+    {
+        //world is null, not connected to any worlds, get rid of objects for GC.
+        morphsActive.clear();
+        playerMorphs.clear();
+    }
 }

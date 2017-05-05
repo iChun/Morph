@@ -1,22 +1,22 @@
 package me.ichun.mods.morph.client.entity;
 
+import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.morph.client.model.ModelHandler;
 import me.ichun.mods.morph.client.model.ModelMorph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
-import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 
 @SideOnly(Side.CLIENT)
-public class EntityMorphAcquisition extends EntityLivingBase
+public class EntityMorphAcquisition extends Entity
 {
     public EntityLivingBase acquired;
     public EntityLivingBase acquirer;
@@ -36,7 +36,6 @@ public class EntityMorphAcquisition extends EntityLivingBase
         acquiredTexture = ResourceHelper.texPig;
         setSize(0.1F, 0.1F);
         noClip = true;
-        renderDistanceWeight = 10D;
         ignoreFrustumCheck = true;
     }
 
@@ -52,13 +51,27 @@ public class EntityMorphAcquisition extends EntityLivingBase
             renderer.rotateAngleX = renderer.rotateAngleY = renderer.rotateAngleZ = 0F;
         }
         Render rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(ac);
-        acquiredTexture = ObfHelper.invokeGetEntityTexture(rend, rend.getClass(), ac);
+        acquiredTexture = ObfHelper.getEntityTexture(rend, rend.getClass(), ac);
         progress = 0;
         setSize(0.1F, 0.1F);
         noClip = true;
-        renderDistanceWeight = 10D;
         ignoreFrustumCheck = true;
         setLocationAndAngles(acquired.posX, acquired.posY, acquired.posZ, acquired.rotationYaw, acquired.rotationPitch);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean isInRangeToRenderDist(double distance)
+    {
+        double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 20.0D; // * 20D is the new renderDistanceWeight
+
+        if(Double.isNaN(d0))
+        {
+            d0 = 1.0D;
+        }
+
+        d0 = d0 * 64.0D * getRenderDistanceWeight();
+        return distance < d0 * d0;
     }
 
     @Override
@@ -96,52 +109,17 @@ public class EntityMorphAcquisition extends EntityLivingBase
     }
 
     @Override
-    public void setHealth(float par1)
-    {
-    }
-
-    @Override
-    public boolean writeToNBTOptional(NBTTagCompound par1NBTTagCompound)
+    public boolean writeToNBTOptional(NBTTagCompound tag)
     {
         return false;
     }
 
     @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-    }
+    protected void entityInit(){}
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound) {}
+    public void readEntityFromNBT(NBTTagCompound tag) {}
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound) {}
-
-    @Override
-    public ItemStack getHeldItem() {
-        return null;
-    }
-
-    @Override
-    public ItemStack getEquipmentInSlot(int slotIn)
-    {
-        return null;
-    }
-
-    @Override
-    public ItemStack getCurrentArmor(int i)
-    {
-        return null;
-    }
-
-    @Override
-    public void setCurrentItemOrArmor(int i, ItemStack itemstack) {
-    }
-
-    @Override
-    public ItemStack[] getInventory() {
-        return new ItemStack[0];
-    }
-
+    public void writeEntityToNBT(NBTTagCompound tag) {}
 }

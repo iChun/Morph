@@ -1,5 +1,9 @@
 package me.ichun.mods.morph.client.model;
 
+import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -8,12 +12,10 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
-import us.ichun.mods.ichunutil.client.model.ModelHelper;
-import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
-import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.nio.FloatBuffer;
 import java.util.*;
@@ -141,7 +143,7 @@ public class ModelMorph extends ModelBase
         fillWithChildren(prevModels, nextModels, 0);
     }
 
-    public void render(float renderTick, float progress, Entity prevRef, Entity nextRef)
+    public void render(float renderTick, float progress, EntityLivingBase prevRef, EntityLivingBase nextRef)
     {
         GlStateManager.pushMatrix();
 
@@ -157,7 +159,7 @@ public class ModelMorph extends ModelBase
             GlStateManager.pushMatrix();
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
             Render rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(prevRef);
-            ObfHelper.invokePreRenderCallback(rend, rend.getClass(), prevRef, iChunUtil.proxy.tickHandlerClient.renderTick);
+            ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), prevRef, iChunUtil.eventHandlerClient.renderTick);
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
             GlStateManager.popMatrix();
 
@@ -168,7 +170,7 @@ public class ModelMorph extends ModelBase
             GlStateManager.pushMatrix();
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
             rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(nextRef);
-            ObfHelper.invokePreRenderCallback(rend, rend.getClass(), nextRef, iChunUtil.proxy.tickHandlerClient.renderTick);
+            ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), nextRef, iChunUtil.eventHandlerClient.renderTick);
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
             GlStateManager.popMatrix();
 
@@ -182,7 +184,7 @@ public class ModelMorph extends ModelBase
 
             if(prevModelInfo != null)
             {
-                prevModelInfo.forceRender(prevRef, 0D, -500D, 0D, EntityHelperBase.interpolateRotation(prevRef.prevRotationYaw, prevRef.rotationYaw, renderTick), renderTick);
+                prevModelInfo.forceRender(prevRef, 0D, -500D, 0D, EntityHelper.interpolateRotation(prevRef.prevRotationYaw, prevRef.rotationYaw, renderTick), renderTick);
                 for(Map.Entry<ModelRenderer, ModelRenderer> e : prevCloneToOriMap.entrySet())
                 {
                     matchRotation(e.getKey(), e.getValue(), 0);
@@ -190,7 +192,7 @@ public class ModelMorph extends ModelBase
             }
             if(nextModelInfo != null)
             {
-                nextModelInfo.forceRender(nextRef, 0D, -500D, 0D, EntityHelperBase.interpolateRotation(nextRef.prevRotationYaw, nextRef.rotationYaw, renderTick), renderTick);
+                nextModelInfo.forceRender(nextRef, 0D, -500D, 0D, EntityHelper.interpolateRotation(nextRef.prevRotationYaw, nextRef.rotationYaw, renderTick), renderTick);
                 for(Map.Entry<ModelRenderer, ModelRenderer> e : nextCloneToOriMap.entrySet())
                 {
                     matchRotation(e.getKey(), e.getValue(), 0);
@@ -270,9 +272,9 @@ public class ModelMorph extends ModelBase
                 int yy = Math.round(py + (ny - py) * progress);
                 int zz = Math.round(pz + (nz - pz) * progress);
 
-                float offsetX = EntityHelperBase.interpolateValues(prevBox.posX1, nextBox.posX1, progress);
-                float offsetY = EntityHelperBase.interpolateValues(prevBox.posY1, nextBox.posY1, progress);
-                float offsetZ = EntityHelperBase.interpolateValues(prevBox.posZ1, nextBox.posZ1, progress);
+                float offsetX = EntityHelper.interpolateValues(prevBox.posX1, nextBox.posX1, progress);
+                float offsetY = EntityHelper.interpolateValues(prevBox.posY1, nextBox.posY1, progress);
+                float offsetZ = EntityHelper.interpolateValues(prevBox.posZ1, nextBox.posZ1, progress);
 
                 if(!(x == xx && y == yy && z == zz && offsetX == box.posX1 && offsetY == box.posY1 && offsetZ == box.posZ1))
                 {
@@ -286,10 +288,10 @@ public class ModelMorph extends ModelBase
                 }
             }
 
-            renderer.setRotationPoint(EntityHelperBase.interpolateValues(prevRend.rotationPointX, nextRend.rotationPointX, progress), EntityHelperBase.interpolateValues(prevRend.rotationPointY, nextRend.rotationPointY, progress), EntityHelperBase.interpolateValues(prevRend.rotationPointZ, nextRend.rotationPointZ, progress));
-            renderer.rotateAngleX = EntityHelperBase.interpolateValues(prevRend.rotateAngleX, nextRend.rotateAngleX, progress);
-            renderer.rotateAngleY = EntityHelperBase.interpolateValues(prevRend.rotateAngleY, nextRend.rotateAngleY, progress);
-            renderer.rotateAngleZ = EntityHelperBase.interpolateValues(prevRend.rotateAngleZ, nextRend.rotateAngleZ, progress);
+            renderer.setRotationPoint(EntityHelper.interpolateValues(prevRend.rotationPointX, nextRend.rotationPointX, progress), EntityHelper.interpolateValues(prevRend.rotationPointY, nextRend.rotationPointY, progress), EntityHelper.interpolateValues(prevRend.rotationPointZ, nextRend.rotationPointZ, progress));
+            renderer.rotateAngleX = EntityHelper.interpolateValues(prevRend.rotateAngleX, nextRend.rotateAngleX, progress);
+            renderer.rotateAngleY = EntityHelper.interpolateValues(prevRend.rotateAngleY, nextRend.rotateAngleY, progress);
+            renderer.rotateAngleZ = EntityHelper.interpolateValues(prevRend.rotateAngleZ, nextRend.rotateAngleZ, progress);
 
             updateModelList(progress, renderer.childModels, prevRend.childModels, nextRend.childModels, depth + 1);
         }

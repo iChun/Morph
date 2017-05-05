@@ -1,13 +1,13 @@
 package me.ichun.mods.morph.client.model;
 
+import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
-import us.ichun.mods.ichunutil.client.model.ModelHelper;
-import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 
 import java.util.ArrayList;
 
@@ -30,9 +30,9 @@ public class ModelInfo
 
     public void forceRender(Entity ent, double d, double d1, double d2, float f, float f1)
     {
-        EntityHelperBase.storeBossStatus();
+        EntityHelper.storeBossStatus(); //TODO check if this is still required
 
-        if(Minecraft.getMinecraft().getRenderManager().renderEngine != null && Minecraft.getMinecraft().getRenderManager().livingPlayer != null)
+        if(Minecraft.getMinecraft().getRenderManager().renderEngine != null && Minecraft.getMinecraft().getRenderManager().renderViewEntity != null)
         {
             try
             {
@@ -40,11 +40,11 @@ public class ModelInfo
             }
             catch(Exception e)
             {
-                Morph.logger.warn("A morph/model is causing an exception when Morph tries to render it! You might want to report this to the author of the Morphed mob (Not to Morph!): " + entRenderer.getClass().getName());
+                Morph.LOGGER.warn("A morph/model is causing an exception when Morph tries to render it! You might want to report this to the author of the Morphed mob (Not to Morph!): " + entRenderer.getClass().getName());
                 e.printStackTrace();
             }
         }
 
-        EntityHelperBase.restoreBossStatus();
+        EntityHelper.restoreBossStatus();
     }
 }

@@ -1,13 +1,13 @@
 package me.ichun.mods.morph.common.packet;
 
 import io.netty.buffer.ByteBuf;
+import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.morph.MorphVariant;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 
 import java.util.ArrayList;
 
@@ -27,7 +27,7 @@ public class PacketGuiInput extends AbstractPacket
     }
 
     @Override
-    public void writeTo(ByteBuf buffer, Side side)
+    public void writeTo(ByteBuf buffer)
     {
         ByteBufUtils.writeUTF8String(buffer, identifier);
         buffer.writeInt(id);
@@ -35,7 +35,7 @@ public class PacketGuiInput extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side)
+    public void readFrom(ByteBuf buffer)
     {
         identifier = ByteBufUtils.readUTF8String(buffer);
         id = buffer.readInt();
@@ -43,9 +43,9 @@ public class PacketGuiInput extends AbstractPacket
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public AbstractPacket execute(Side side, EntityPlayer player)
     {
-        ArrayList<MorphVariant> morphs = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.getCommandSenderName());
+        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
         boolean found = false;
         for(int i = morphs.size() - 1; i >= 0; i--)
         {
@@ -83,7 +83,14 @@ public class PacketGuiInput extends AbstractPacket
 
         if(!found)
         {
-            Morph.channel.sendToPlayer(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
+            Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
         }
+        return null;
+    }
+
+    @Override
+    public Side receivingSide()
+    {
+        return Side.SERVER;
     }
 }

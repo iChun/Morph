@@ -1,10 +1,11 @@
-package me.ichun.mods.morph.api.ability.types.passive;
+package me.ichun.mods.morph.common.morph.ability.types.passive;
 
 import me.ichun.mods.morph.api.ability.Ability;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -14,7 +15,7 @@ public class AbilityFireImmunity extends Ability
 {
 	public AbilityFireImmunity()
 	{
-        iconResource = new ResourceLocation("morph", "textures/icon/fireImmunity.png");
+        iconResource = new ResourceLocation("morph", "textures/icon/fire_immunity.png");
 	}
 
 	@Override
@@ -32,11 +33,11 @@ public class AbilityFireImmunity extends Ability
 			EntityPlayer player = (EntityPlayer)getParent();
 			if(!player.worldObj.isRemote)
 			{
-				info = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
+				info = Morph.eventHandlerServer.morphsActive.get(player.getName());
 			}
 			else
 			{
-				info = Morph.proxy.tickHandlerClient.morphsActive.get(player.getCommandSenderName());
+				info = Morph.eventHandlerClient.morphsActive.get(player.getName());
 			}
 		}
 		
@@ -45,7 +46,7 @@ public class AbilityFireImmunity extends Ability
 		if(info != null && info.nextState.getEntInstance(getParent().worldObj) instanceof EntitySkeleton)
 		{
 			EntitySkeleton skele = (EntitySkeleton)info.nextState.getEntInstance(getParent().worldObj);
-			if(skele.getSkeletonType() != 1)
+			if(skele.getSkeletonType() != SkeletonType.WITHER)
 			{
 				fireproof = false;
 			}
@@ -79,7 +80,7 @@ public class AbilityFireImmunity extends Ability
 		if(living instanceof EntitySkeleton)
 		{
 			EntitySkeleton skele = (EntitySkeleton)living;
-			if(skele.getSkeletonType() != 1)
+			if(skele.getSkeletonType() != SkeletonType.WITHER)
 			{
 				return false;
 			}

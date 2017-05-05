@@ -1,5 +1,7 @@
 package me.ichun.mods.morph.common.handler;
 
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.api.IApi;
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
@@ -15,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,8 +30,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +61,7 @@ public class PlayerMorphHandler implements IApi
         {
             for(String s : Morph.config.blackwhiteListedPlayers)
             {
-                if(s.equalsIgnoreCase(player.getCommandSenderName()))
+                if(s.equalsIgnoreCase(player.getName()))
                 {
                     return true;
                 }
@@ -72,7 +71,7 @@ public class PlayerMorphHandler implements IApi
         {
             for(String s : Morph.config.blackwhiteListedPlayers)
             {
-                if(s.equalsIgnoreCase(player.getCommandSenderName()))
+                if(s.equalsIgnoreCase(player.getName()))
                 {
                     return false;
                 }
@@ -84,19 +83,19 @@ public class PlayerMorphHandler implements IApi
     @Override
     public boolean hasMorph(String playerName, Side side)
     {
-        return side.isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(playerName) || Morph.proxy.tickHandlerServer.morphsActive.containsKey(playerName);
+        return side.isClient() && Morph.eventHandlerClient.morphsActive.containsKey(playerName) || Morph.eventHandlerServer.morphsActive.containsKey(playerName);
     }
 
     @Override
     public float morphProgress(String playerName, Side side)
     {
-        if(side.isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(playerName))
+        if(side.isClient() && Morph.eventHandlerClient.morphsActive.containsKey(playerName))
         {
-            return Morph.proxy.tickHandlerClient.morphsActive.get(playerName).getMorphProgress(0F);
+            return Morph.eventHandlerClient.morphsActive.get(playerName).getMorphProgress(0F);
         }
-        else if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(playerName))
+        else if(Morph.eventHandlerServer.morphsActive.containsKey(playerName))
         {
-            return Morph.proxy.tickHandlerServer.morphsActive.get(playerName).getMorphProgress(0F);
+            return Morph.eventHandlerServer.morphsActive.get(playerName).getMorphProgress(0F);
         }
         return 1.0F;
     }
@@ -110,17 +109,17 @@ public class PlayerMorphHandler implements IApi
     @Override
     public EntityLivingBase getPrevMorphEntity(World worldInstance, String playerName, Side side)
     {
-        if(side.isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(playerName))
+        if(side.isClient() && Morph.eventHandlerClient.morphsActive.containsKey(playerName))
         {
-            MorphInfo info = Morph.proxy.tickHandlerClient.morphsActive.get(playerName);
+            MorphInfo info = Morph.eventHandlerClient.morphsActive.get(playerName);
             if(info != null && info.prevState != null)
             {
                 return info.prevState.getEntInstance(worldInstance);
             }
         }
-        else if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(playerName))
+        else if(Morph.eventHandlerServer.morphsActive.containsKey(playerName))
         {
-            MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(playerName);
+            MorphInfo info = Morph.eventHandlerServer.morphsActive.get(playerName);
             if(info != null && info.prevState != null)
             {
                 return info.prevState.getEntInstance(worldInstance);
@@ -132,17 +131,17 @@ public class PlayerMorphHandler implements IApi
     @Override
     public EntityLivingBase getMorphEntity(World worldInstance, String playerName, Side side)
     {
-        if(side.isClient() && Morph.proxy.tickHandlerClient.morphsActive.containsKey(playerName))
+        if(side.isClient() && Morph.eventHandlerClient.morphsActive.containsKey(playerName))
         {
-            MorphInfo info = Morph.proxy.tickHandlerClient.morphsActive.get(playerName);
+            MorphInfo info = Morph.eventHandlerClient.morphsActive.get(playerName);
             if(info != null)
             {
                 return info.nextState.getEntInstance(worldInstance);
             }
         }
-        else if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(playerName))
+        else if(Morph.eventHandlerServer.morphsActive.containsKey(playerName))
         {
-            MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(playerName);
+            MorphInfo info = Morph.eventHandlerServer.morphsActive.get(playerName);
             if(info != null)
             {
                 return info.nextState.getEntInstance(worldInstance);
@@ -208,7 +207,7 @@ public class PlayerMorphHandler implements IApi
     @Override
     public boolean acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire, boolean forceMorph, boolean killEntityClientside)
     {
-        if(Morph.config.childMorphs == 0 && entityToAcquire.isChild() || Morph.config.playerMorphs == 0 && entityToAcquire instanceof EntityPlayer || Morph.config.bossMorphs == 0 && entityToAcquire instanceof IBossDisplayData || player.getClass() == FakePlayer.class || player.playerNetServerHandler == null)
+        if(Morph.config.childMorphs == 0 && entityToAcquire.isChild() || Morph.config.playerMorphs == 0 && entityToAcquire instanceof EntityPlayer || Morph.config.bossMorphs == 0 && !entityToAcquire.isNonBoss() || player.getClass() == FakePlayer.class || player.connection == null)
         {
             return false;
         }
@@ -216,7 +215,7 @@ public class PlayerMorphHandler implements IApi
         {
             return false;
         }
-        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing()) //is the player morphing?
+        if(Morph.eventHandlerServer.morphsActive.containsKey(player.getName()) && Morph.eventHandlerServer.morphsActive.get(player.getName()).isMorphing()) //is the player morphing?
         {
             return false;
         }
@@ -233,7 +232,7 @@ public class PlayerMorphHandler implements IApi
             return false;
         }
 
-        ArrayList<MorphVariant> morphs = Morph.proxy.tickHandlerServer.playerMorphs.get(player.getCommandSenderName());
+        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
         boolean updatePlayer = false;
         for(MorphVariant var : morphs)
         {
@@ -255,7 +254,7 @@ public class PlayerMorphHandler implements IApi
                 {
                     //The variant should be a new variant so it'll be the latest entry in the variants list.
                     variant = var.createWithVariant(var.variants.get(var.variants.size() - 1));
-                    Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, variant), player);
+                    Morph.channel.sendTo(new PacketUpdateMorphList(false, variant), player);
                 }
                 break;
             }
@@ -265,7 +264,7 @@ public class PlayerMorphHandler implements IApi
         {
             morphs.add(variant);
 
-            Morph.channel.sendToPlayer(new PacketUpdateMorphList(false, variant), player);
+            Morph.channel.sendTo(new PacketUpdateMorphList(false, variant), player);
         }
         Collections.sort(morphs);
 
@@ -287,20 +286,20 @@ public class PlayerMorphHandler implements IApi
 
     public boolean morphPlayer(EntityPlayer player, MorphVariant variant) //the only check is to see if the player is already morphing.
     {
-        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(player.getCommandSenderName()) && Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName()).isMorphing()) //is the player morphing?
+        if(Morph.eventHandlerServer.morphsActive.containsKey(player.getName()) && Morph.eventHandlerServer.morphsActive.get(player.getName()).isMorphing()) //is the player morphing?
         {
             return false;
         }
-        MorphInfo currentInfo = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
+        MorphInfo currentInfo = Morph.eventHandlerServer.morphsActive.get(player.getName());
         if(currentInfo == null)
         {
             currentInfo = new MorphInfo(player, null, new MorphState(MorphVariant.createVariant(player))); //if player isn't morphed, create a morph state where the player is the next state.
         }
         MorphInfo newInfo = new MorphInfo(player, currentInfo.nextState, new MorphState(variant));
         newInfo.morphTime = 0;
-        Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), newInfo);
-        Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getCommandSenderName()));
-        player.worldObj.playSoundAtEntity(player, "morph:morph", 1.0F, 1.0F);
+        Morph.eventHandlerServer.morphsActive.put(player.getName(), newInfo);
+        Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getName()));
+        EntityHelper.playSoundAtEntity(player, Morph.soundMorph, player.getSoundCategory(), 1.0F, 1.0F);
         return true;
     }
 
@@ -314,27 +313,27 @@ public class PlayerMorphHandler implements IApi
     @SideOnly(Side.CLIENT)
     public void renderArm(EntityPlayer player, boolean isLeftArm)
     {
-        MorphInfoClient info = Morph.proxy.tickHandlerClient.morphsActive.get(player.getCommandSenderName());
+        MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(player.getName());
         if(info != null && player instanceof AbstractClientPlayer)
         {
             AbstractClientPlayer client = (AbstractClientPlayer)player;
             String s = client.getSkinType();
-            RenderPlayer rend = (RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get(s);
+            RenderPlayer rend = Minecraft.getMinecraft().getRenderManager().skinMap.get(s);
 
-            Morph.proxy.tickHandlerClient.renderHandInstance.renderTick = iChunUtil.proxy.tickHandlerClient.renderTick;
-            Morph.proxy.tickHandlerClient.renderHandInstance.parent = rend;
-            Morph.proxy.tickHandlerClient.renderHandInstance.clientInfo = info;
+            Morph.eventHandlerClient.renderHandInstance.renderTick = iChunUtil.eventHandlerClient.renderTick; //TODO this needed?
+            Morph.eventHandlerClient.renderHandInstance.parent = rend;
+            Morph.eventHandlerClient.renderHandInstance.clientInfo = info;
 
             if(isLeftArm)
             {
-                Morph.proxy.tickHandlerClient.renderHandInstance.renderLeftArm((AbstractClientPlayer)player);
+                Morph.eventHandlerClient.renderHandInstance.renderLeftArm((AbstractClientPlayer)player);
             }
             else
             {
-                Morph.proxy.tickHandlerClient.renderHandInstance.renderRightArm((AbstractClientPlayer)player);
+                Morph.eventHandlerClient.renderHandInstance.renderRightArm((AbstractClientPlayer)player);
             }
 
-            Morph.proxy.tickHandlerClient.renderHandInstance.clientInfo = null;
+            Morph.eventHandlerClient.renderHandInstance.clientInfo = null;
         }
     }
 
@@ -350,21 +349,21 @@ public class PlayerMorphHandler implements IApi
     {
         if(loadPlayerData(event.player)) //if true, player has a morph
         {
-            Morph.channel.sendToAllExcept(new PacketUpdateActiveMorphs(event.player.getCommandSenderName()), event.player);
+            Morph.channel.sendToAllExcept(new PacketUpdateActiveMorphs(event.player.getName()), event.player);
         }
-        ArrayList<MorphVariant> morphs = Morph.proxy.tickHandlerServer.getPlayerMorphs(event.player.getCommandSenderName());
-        Morph.channel.sendToPlayer(new PacketUpdateActiveMorphs(null), event.player); //Send the player a list of everyone's morphs
-        Morph.channel.sendToPlayer(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), event.player); //Send the player's morph list to them
+        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(event.player.getName());
+        Morph.channel.sendTo(new PacketUpdateActiveMorphs(null), event.player); //Send the player a list of everyone's morphs
+        Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), event.player); //Send the player's morph list to them
     }
 
     @SubscribeEvent
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if(Morph.proxy.tickHandlerServer.morphsActive.containsKey(event.player.getCommandSenderName()) || Morph.proxy.tickHandlerServer.playerMorphs.containsKey(event.player.getCommandSenderName())) //save the data only if there is data. Fixes an issue with the host logging out twice when server shuts down.
+        if(Morph.eventHandlerServer.morphsActive.containsKey(event.player.getName()) || Morph.eventHandlerServer.playerMorphs.containsKey(event.player.getName())) //save the data only if there is data. Fixes an issue with the host logging out twice when server shuts down.
         {
             savePlayerData(event.player);
-            Morph.proxy.tickHandlerServer.morphsActive.remove(event.player.getCommandSenderName());
-            Morph.proxy.tickHandlerServer.playerMorphs.remove(event.player.getCommandSenderName());
+            Morph.eventHandlerServer.morphsActive.remove(event.player.getName());
+            Morph.eventHandlerServer.playerMorphs.remove(event.player.getName());
         }
     }
 
@@ -372,11 +371,11 @@ public class PlayerMorphHandler implements IApi
 
     public void savePlayerData(EntityPlayer player)
     {
-        NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
+        NBTTagCompound tag = EntityHelper.getPlayerPersistentData(player, MORPH_DATA_NAME);
 
         //Save the current morphed state/variant
-        MorphInfo info = Morph.proxy.tickHandlerServer.morphsActive.get(player.getCommandSenderName());
-        if(info != null && !info.nextState.currentVariant.playerName.equals(player.getCommandSenderName())) //check that the info isn't null and the player isn't demorphing already anyways
+        MorphInfo info = Morph.eventHandlerServer.morphsActive.get(player.getName());
+        if(info != null && !info.nextState.currentVariant.playerName.equals(player.getName())) //check that the info isn't null and the player isn't demorphing already anyways
         {
             tag.setTag("currentMorph", info.write(new NBTTagCompound()));
         }
@@ -386,7 +385,7 @@ public class PlayerMorphHandler implements IApi
         }
 
         //Save the morph variants
-        ArrayList<MorphVariant> variants = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.getCommandSenderName());
+        ArrayList<MorphVariant> variants = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
         tag.setInteger("variantCount", variants.size());
         for(int i = 0; i < variants.size(); i++)
         {
@@ -399,7 +398,7 @@ public class PlayerMorphHandler implements IApi
 
     public boolean loadPlayerData(EntityPlayer player) //Returns true if the player has a morph and requires synching to the clients.
     {
-        NBTTagCompound tag = EntityHelperBase.getPlayerPersistentData(player, MORPH_DATA_NAME);
+        NBTTagCompound tag = EntityHelper.getPlayerPersistentData(player, MORPH_DATA_NAME);
 
         //Check if the player has a current morph.
         boolean update = false;
@@ -411,13 +410,13 @@ public class PlayerMorphHandler implements IApi
             {
                 info.morphTime = Morph.config.morphTime;
             }
-            Morph.proxy.tickHandlerServer.morphsActive.put(player.getCommandSenderName(), info);
+            Morph.eventHandlerServer.morphsActive.put(player.getName(), info);
             update = true;
         }
 
         //Load up the player's morph list.
         int morphCount = tag.getInteger("variantCount");
-        ArrayList<MorphVariant> variants = Morph.proxy.tickHandlerServer.getPlayerMorphs(player.getCommandSenderName());
+        ArrayList<MorphVariant> variants = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
         for(int i = 0; i < morphCount; i++)
         {
             MorphVariant variant = new MorphVariant("");

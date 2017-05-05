@@ -3,10 +3,10 @@ package me.ichun.mods.morph.common.thread;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.entity.EntityLivingBase;
-import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ThreadGetResources extends Thread
 {
-    public String sitePrefix = "https://raw.github.com/iChun/Morph/1.8/src/main/resources/assets/morph/mod/";
+    public String sitePrefix = "https://raw.github.com/iChun/Morph/1.10.2/src/main/resources/assets/morph/mod/";//TODO change this before release.
 
     public ThreadGetResources(String prefix)
     {
@@ -31,7 +31,7 @@ public class ThreadGetResources extends Thread
     @Override
     public void run()
     {
-        HashMap<String, HashMap<String, String>> json = getResource("NBTModifiers.json", new TypeToken<HashMap<String, HashMap<String, String>>>() {}.getType());
+        HashMap<String, HashMap<String, String>> json = getResource("nbt_modifiers.json", new TypeToken<HashMap<String, HashMap<String, String>>>() {}.getType());
 
         int mcNBTModifiers = 0;
 
@@ -121,7 +121,7 @@ public class ThreadGetResources extends Thread
                     }
                     else
                     {
-                        Morph.logger.info("Adding NBT modifiers for morphs for class: " + clz.getName());
+                        Morph.LOGGER.info("Adding NBT modifiers for morphs for class: " + clz.getName());
                     }
                 }
             }
@@ -130,11 +130,11 @@ public class ThreadGetResources extends Thread
 
         if(mcNBTModifiers > 0)
         {
-            Morph.logger.info("Loaded NBT modifiers for presumably " + mcNBTModifiers + " Minecraft mobs");
+            Morph.LOGGER.info("Loaded NBT modifiers for presumably " + mcNBTModifiers + " Minecraft mobs");
         }
         else
         {
-            Morph.logger.warn("No NBT modifiers for Minecraft mobs? This might be an issue!");
+            Morph.LOGGER.warn("No NBT modifiers for Minecraft mobs? This might be an issue!");
         }
     }
 
@@ -162,11 +162,11 @@ public class ThreadGetResources extends Thread
         {
             if(Morph.config.useLocalResources == 1)
             {
-                Morph.logger.warn("Failed to retrieve local resource: " + name);
+                Morph.LOGGER.warn("Failed to retrieve local resource: " + name);
             }
             else
             {
-                Morph.logger.warn("Failed to retrieve " + name + " from " + (Morph.config.customPatchLink.isEmpty() ? "GitHub!" : sitePrefix));
+                Morph.LOGGER.warn("Failed to retrieve " + name + " from " + (Morph.config.customPatchLink.isEmpty() ? "GitHub!" : sitePrefix));
             }
             e.printStackTrace();
 

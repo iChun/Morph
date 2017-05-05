@@ -2,17 +2,15 @@ package me.ichun.mods.morph.common.packet;
 
 import com.google.common.collect.Ordering;
 import io.netty.buffer.ByteBuf;
+import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.actors.threadpool.Arrays;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class PacketUpdateMorphList extends AbstractPacket
     }
 
     @Override
-    public void writeTo(ByteBuf buffer, Side side)
+    public void writeTo(ByteBuf buffer)
     {
         PacketBuffer pb = new PacketBuffer(buffer);
 
@@ -48,7 +46,7 @@ public class PacketUpdateMorphList extends AbstractPacket
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side)
+    public void readFrom(ByteBuf buffer)
     {
         PacketBuffer pb = new PacketBuffer(buffer);
 
@@ -67,9 +65,16 @@ public class PacketUpdateMorphList extends AbstractPacket
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public AbstractPacket execute(Side side, EntityPlayer player)
     {
         handleClient(player);
+        return null;
+    }
+
+    @Override
+    public Side receivingSide()
+    {
+        return Side.CLIENT;
     }
 
     @SideOnly(Side.CLIENT)
@@ -77,7 +82,7 @@ public class PacketUpdateMorphList extends AbstractPacket
     {
         if(fullList)
         {
-            Morph.proxy.tickHandlerClient.playerMorphs.clear();
+            Morph.eventHandlerClient.playerMorphs.clear();
         }
 
         //Split the variants into individual "variants" to be stored in states.
@@ -101,7 +106,7 @@ public class PacketUpdateMorphList extends AbstractPacket
         for(int i = 0; i < states.size(); i++)
         {
             MorphState state = states.get(i);
-            if(state.currentVariant.entId.equals(MorphVariant.PLAYER_MORPH_ID) && state.currentVariant.playerName.equals(player.getCommandSenderName()))
+            if(state.currentVariant.entId.equals(MorphVariant.PLAYER_MORPH_ID) && state.currentVariant.playerName.equals(player.getName()))
             {
                 states.remove(i);
                 states.add(0, state); //Self state should always be on top.
@@ -110,7 +115,7 @@ public class PacketUpdateMorphList extends AbstractPacket
         boolean needsReorder = false;
         for(MorphState state : states)
         {
-            ArrayList<MorphState> category = Morph.proxy.tickHandlerClient.playerMorphs.get(state.getName());
+            ArrayList<MorphState> category = Morph.eventHandlerClient.playerMorphs.get(state.getName());
             if(category == null)
             {
                 if(!fullList)
@@ -118,7 +123,7 @@ public class PacketUpdateMorphList extends AbstractPacket
                     needsReorder = true;
                 }
                 category = new ArrayList<MorphState>();
-                Morph.proxy.tickHandlerClient.playerMorphs.put(state.getName(), category);
+                Morph.eventHandlerClient.playerMorphs.put(state.getName(), category);
             }
             if(!category.contains(state))
             {
@@ -128,14 +133,14 @@ public class PacketUpdateMorphList extends AbstractPacket
         if(needsReorder)
         {
             TreeMap<String, ArrayList<MorphState>> buffer = new TreeMap<String, ArrayList<MorphState>>(Ordering.natural());
-            buffer.putAll(Morph.proxy.tickHandlerClient.playerMorphs);
-            ArrayList<MorphState> selfState = buffer.get(player.getCommandSenderName()); //This has to exist. If it doesn't exist something messed up.
-            buffer.remove(player.getCommandSenderName());
-            Morph.proxy.tickHandlerClient.playerMorphs.clear();
-            Morph.proxy.tickHandlerClient.playerMorphs.put(player.getCommandSenderName(), selfState);
+            buffer.putAll(Morph.eventHandlerClient.playerMorphs);
+            ArrayList<MorphState> selfState = buffer.get(player.getName()); //This has to exist. If it doesn't exist something messed up.
+            buffer.remove(player.getName());
+            Morph.eventHandlerClient.playerMorphs.clear();
+            Morph.eventHandlerClient.playerMorphs.put(player.getName(), selfState);
             for(Map.Entry<String, ArrayList<MorphState>> e : buffer.entrySet())
             {
-                Morph.proxy.tickHandlerClient.playerMorphs.put(e.getKey(), e.getValue());
+                Morph.eventHandlerClient.playerMorphs.put(e.getKey(), e.getValue());
             }
         }
     }

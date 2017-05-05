@@ -3,11 +3,11 @@ package me.ichun.mods.morph.common.handler;
 import com.google.gson.Gson;
 import me.ichun.mods.morph.api.ability.Ability;
 import me.ichun.mods.morph.api.ability.IAbilityHandler;
-import me.ichun.mods.morph.api.ability.types.active.AbilityClimb;
-import me.ichun.mods.morph.api.ability.types.active.AbilityFloat;
-import me.ichun.mods.morph.api.ability.types.passive.AbilityFallNegate;
-import me.ichun.mods.morph.api.ability.types.passive.AbilityFireImmunity;
-import me.ichun.mods.morph.api.ability.types.passive.AbilityPotionEffect;
+import me.ichun.mods.morph.common.morph.ability.types.active.AbilityClimb;
+import me.ichun.mods.morph.common.morph.ability.types.active.AbilityFloat;
+import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityFallNegate;
+import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityFireImmunity;
+import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityPotionEffect;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntityLivingBase;
 
@@ -18,8 +18,8 @@ public class AbilityHandler implements IAbilityHandler
 {
     private static final AbilityHandler INSTANCE = new AbilityHandler();
 
-    public final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>>();
-    public final static HashMap<String, Class<? extends Ability>> stringToClassMap = new HashMap<String, Class<? extends Ability>>();
+    public final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<>();
+    public final static HashMap<String, Class<? extends Ability>> stringToClassMap = new HashMap<>();
 
     public static AbilityHandler getInstance()
     {
@@ -61,7 +61,7 @@ public class AbilityHandler implements IAbilityHandler
             if(!stringToClassMap.containsKey(ability.getType()))
             {
                 registerAbility(ability.getType(), ability.getClass());
-                Morph.logger.warn("Ability type \"" + ability.getType() + "\" is not registered! Registering.");
+                Morph.LOGGER.warn("Ability type \"" + ability.getType() + "\" is not registered! Registering.");
             }
             for(int i = 0; i < abilityList.size(); i++)
             {
@@ -122,14 +122,14 @@ public class AbilityHandler implements IAbilityHandler
             }
             catch(Exception e)
             {
-                Morph.logger.warn("Error creating ability of type \"" + type + "\" with json: " + json);
+                Morph.LOGGER.warn("Error creating ability of type \"" + type + "\" with json: " + json);
                 e.printStackTrace();
                 return null;
             }
         }
         else
         {
-            Morph.logger.warn("Error creating ability of type \"" + type + "\". Such ability type is not registered.");
+            Morph.LOGGER.warn("Error creating ability of type \"" + type + "\". Such ability type is not registered.");
             return null;
         }
     }

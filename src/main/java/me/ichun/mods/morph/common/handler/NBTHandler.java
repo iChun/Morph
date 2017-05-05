@@ -17,7 +17,7 @@ import java.util.TreeMap;
 
 public class NBTHandler
 {
-    public static HashMap<Class<? extends EntityLivingBase>, HashMap<String, Object>> nbtModifiers = new HashMap<Class<? extends EntityLivingBase>, HashMap<String, Object>>();
+    public static HashMap<Class<? extends EntityLivingBase>, HashMap<String, Object>> nbtModifiers = new HashMap<>();
 
     public static void modifyNBT(Class<? extends EntityLivingBase> clz, NBTTagCompound tag)
     {
@@ -81,7 +81,7 @@ public class NBTHandler
     public static void createMinecraftEntityTags(World world)
     {
         TreeMap<String, TreeMap<String, String>> list = new TreeMap<String, TreeMap<String, String>>(Ordering.natural());
-        for(Object obj : EntityList.classToStringMapping.entrySet())
+        for(Object obj : EntityList.CLASS_TO_NAME.entrySet())
         {
             Class clz = (Class)((Map.Entry)obj).getKey();
             if(EntityLivingBase.class.isAssignableFrom(clz) && clz != EntityLivingBase.class && clz != EntityLiving.class && clz != EntityMob.class)
@@ -112,19 +112,7 @@ public class NBTHandler
                         }
                     }
                 }
-                catch(InstantiationException e)
-                {
-                    e.printStackTrace();
-                }
-                catch(IllegalAccessException e)
-                {
-                    e.printStackTrace();
-                }
-                catch(InvocationTargetException e)
-                {
-                    e.printStackTrace();
-                }
-                catch(NoSuchMethodException e)
+                catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
                 {
                     e.printStackTrace();
                 }

@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.packet;
 
 import io.netty.buffer.ByteBuf;
+import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.morph.client.entity.EntityMorphAcquisition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -8,7 +9,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 
 public class PacketAcquireEntity extends AbstractPacket
 {
@@ -24,23 +24,30 @@ public class PacketAcquireEntity extends AbstractPacket
     }
 
     @Override
-    public void writeTo(ByteBuf buffer, Side side)
+    public void writeTo(ByteBuf buffer)
     {
         buffer.writeInt(acquiredId);
         buffer.writeInt(acquirerId);
     }
 
     @Override
-    public void readFrom(ByteBuf buffer, Side side)
+    public void readFrom(ByteBuf buffer)
     {
         acquiredId = buffer.readInt();
         acquirerId = buffer.readInt();
     }
 
     @Override
-    public void execute(Side side, EntityPlayer player)
+    public AbstractPacket execute(Side side, EntityPlayer player)
     {
         handleClient();
+        return null;
+    }
+
+    @Override
+    public Side receivingSide()
+    {
+        return Side.CLIENT;
     }
 
     @SideOnly(Side.CLIENT)

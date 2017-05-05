@@ -12,6 +12,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -131,17 +133,17 @@ public class MorphInfoClient extends MorphInfo
             ent.posY = player.posY; //reset the position.
         }
         ent.noClip = player.noClip;
-        
+
         ent.setSneaking(player.isSneaking());
         ent.setSprinting(player.isSprinting());
         ent.setInvisible(player.isInvisible());
         ent.setHealth(ent.getMaxHealth() * (player.getHealth() / player.getMaxHealth()));
-        
+
         if(ent instanceof EntitySlime && prevOnGround && !ent.onGround)
         {
             ((EntitySlime)ent).squishAmount = 0.6F;
         }
-        
+
         if(ent instanceof EntityDragon)
         {
             ent.prevRotationYaw += 180F;
@@ -149,20 +151,32 @@ public class MorphInfoClient extends MorphInfo
             ((EntityDragon)ent).deathTicks = player.deathTime;
         }
 
-        for(int i = 0; i < 5; i++)
+        for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
         {
-            if(ent.getEquipmentInSlot(i) == null && player.getEquipmentInSlot(i) != null ||
-                    ent.getEquipmentInSlot(i) != null && player.getEquipmentInSlot(i) == null ||
-                    ent.getEquipmentInSlot(i) != null && player.getEquipmentInSlot(i) != null &&
-                            !ent.getEquipmentInSlot(i).isItemEqual(player.getEquipmentInSlot(i)))
+            ItemStack itemstack = ent.getItemStackFromSlot(entityequipmentslot);
+            ItemStack itemstack1 = player.getItemStackFromSlot(entityequipmentslot);
+
+            if(itemstack == null && itemstack1 != null ||
+                    itemstack != null && itemstack1 == null ||
+                    itemstack != null && itemstack1 != null &&
+                            !itemstack.isItemEqual(itemstack1))
             {
-                ent.setCurrentItemOrArmor(i, player.getEquipmentInSlot(i) != null ? player.getEquipmentInSlot(i).copy() : null);
+                ent.setItemStackToSlot(entityequipmentslot, itemstack1 != null ? itemstack1.copy() : null);
             }
         }
 
-        if(ent instanceof EntityPlayer && ((EntityPlayer)ent).getItemInUse() != player.getItemInUse())
+        if(player.activeItemStack != ent.activeItemStack)
         {
-            ((EntityPlayer)ent).setItemInUse(player.getItemInUse() == null ? null : player.getItemInUse().copy(), player.getItemInUseCount());
+            if(player.activeItemStack == null)
+            {
+                ent.resetActiveHand();
+            }
+            else if(!player.activeItemStack.isItemEqual(ent.activeItemStack)) //TODO test that this works
+            {
+                ent.setActiveHand(player.getActiveHand());
+                ent.activeItemStack = player.activeItemStack.copy();
+                ent.activeItemStackUseCount = player.activeItemStackUseCount;
+            }
         }
         //TODO check flight ability?
     }

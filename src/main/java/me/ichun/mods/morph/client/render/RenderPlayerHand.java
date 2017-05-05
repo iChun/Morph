@@ -1,5 +1,7 @@
 package me.ichun.mods.morph.client.render;
 
+import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
+import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.morph.client.model.ModelInfo;
 import me.ichun.mods.morph.client.model.ModelMorph;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
@@ -14,8 +16,6 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
-import us.ichun.mods.ichunutil.client.model.ModelHelper;
-import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 
 public class RenderPlayerHand extends RenderPlayer
 {
@@ -97,7 +97,7 @@ public class RenderPlayerHand extends RenderPlayer
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            ModelPlayer modelplayer = parent.getPlayerModel();
+            ModelPlayer modelplayer = parent.getMainModel();
             modelplayer.swingProgress = 0.0F;
             modelplayer.isSneak = false;
             modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
@@ -110,13 +110,13 @@ public class RenderPlayerHand extends RenderPlayer
                 {
                     //render old arm with skin
                     ModelInfo modelInfo = clientInfo.getPrevStateModel(clientPlayer.worldObj);
-                    ResourceLocation entTexture = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.prevState.getEntInstance(clientPlayer.worldObj));
+                    ResourceLocation entTexture = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.prevState.getEntInstance(clientPlayer.worldObj));
                     bindTexture(entTexture);
 
                     replacement = modelInfo.modelArms[0];
 
-                    ModelRenderer arm = parent.getPlayerModel().bipedRightArm;
-                    parent.getPlayerModel().bipedRightArm = replacement;
+                    ModelRenderer arm = parent.getMainModel().bipedRightArm;
+                    parent.getMainModel().bipedRightArm = replacement;
 
                     //player arms are 12 blocks long
                     int heightDiff = 12 - ModelHelper.getModelHeight(replacement);
@@ -132,11 +132,11 @@ public class RenderPlayerHand extends RenderPlayer
                     replacement.rotationPointY = arm.rotationPointY + heightDiff;
                     replacement.rotationPointZ = arm.rotationPointZ;
 
-                    parent.getPlayerModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-                    parent.getPlayerModel().bipedRightArm.render(0.0625F);
+                    parent.getMainModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
+                    parent.getMainModel().bipedRightArm.render(0.0625F);
                     if(clientInfo.prevState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                     {
-                        parent.getPlayerModel().bipedRightArmwear.render(0.0625F);
+                        parent.getMainModel().bipedRightArmwear.render(0.0625F);
                     }
 
                     float skinAlpha = clientInfo.getMorphSkinAlpha(renderTick);
@@ -147,15 +147,15 @@ public class RenderPlayerHand extends RenderPlayer
 
                         bindTexture(PlayerMorphHandler.morphSkin);
 
-                        parent.getPlayerModel().bipedRightArm.render(0.0625F);
+                        parent.getMainModel().bipedRightArm.render(0.0625F);
                         if(clientInfo.prevState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                         {
-                            parent.getPlayerModel().bipedRightArmwear.render(0.0625F);
+                            parent.getMainModel().bipedRightArmwear.render(0.0625F);
                         }
                         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
                     }
 
-                    parent.getPlayerModel().bipedRightArm = arm;
+                    parent.getMainModel().bipedRightArm = arm;
 
                     replacement.rotationPointX = rotX;
                     replacement.rotationPointY = rotY;
@@ -179,8 +179,8 @@ public class RenderPlayerHand extends RenderPlayer
 
                     bindTexture(PlayerMorphHandler.morphSkin);
 
-                    ModelRenderer arm = parent.getPlayerModel().bipedRightArm;
-                    parent.getPlayerModel().bipedRightArm = replacement;
+                    ModelRenderer arm = parent.getMainModel().bipedRightArm;
+                    parent.getMainModel().bipedRightArm = replacement;
 
                     //player arms are 12 blocks long
                     float heightDiff;
@@ -208,14 +208,14 @@ public class RenderPlayerHand extends RenderPlayer
                     replacement.rotationPointY = arm.rotationPointY + heightDiff;
                     replacement.rotationPointZ = arm.rotationPointZ;
 
-                    parent.getPlayerModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-                    parent.getPlayerModel().bipedRightArm.render(0.0625F);
+                    parent.getMainModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
+                    parent.getMainModel().bipedRightArm.render(0.0625F);
                     if(clientInfo.prevState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                     {
-                        parent.getPlayerModel().bipedRightArmwear.render(0.0625F);
+                        parent.getMainModel().bipedRightArmwear.render(0.0625F);
                     }
 
-                    parent.getPlayerModel().bipedRightArm = arm;
+                    parent.getMainModel().bipedRightArm = arm;
 
                     replacement.rotationPointX = rotX;
                     replacement.rotationPointY = rotY;
@@ -230,13 +230,13 @@ public class RenderPlayerHand extends RenderPlayer
             {
                 //render new arm with skin
                 ModelInfo modelInfo = clientInfo.getNextStateModel(clientPlayer.worldObj);
-                ResourceLocation entTexture = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.nextState.getEntInstance(clientPlayer.worldObj));
+                ResourceLocation entTexture = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.nextState.getEntInstance(clientPlayer.worldObj));
                 bindTexture(entTexture);
 
                 replacement = modelInfo.modelArms[0];
 
-                ModelRenderer arm = parent.getPlayerModel().bipedRightArm;
-                parent.getPlayerModel().bipedRightArm = replacement;
+                ModelRenderer arm = parent.getMainModel().bipedRightArm;
+                parent.getMainModel().bipedRightArm = replacement;
 
                 //player arms are 12 blocks long
                 int heightDiff = 12 - ModelHelper.getModelHeight(replacement);
@@ -252,11 +252,11 @@ public class RenderPlayerHand extends RenderPlayer
                 replacement.rotationPointY = arm.rotationPointY + heightDiff;
                 replacement.rotationPointZ = arm.rotationPointZ;
 
-                parent.getPlayerModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-                parent.getPlayerModel().bipedRightArm.render(0.0625F);
+                parent.getMainModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
+                parent.getMainModel().bipedRightArm.render(0.0625F);
                 if(clientInfo.nextState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                 {
-                    parent.getPlayerModel().bipedRightArmwear.render(0.0625F);
+                    parent.getMainModel().bipedRightArmwear.render(0.0625F);
                 }
 
                 float skinAlpha = clientInfo.getMorphSkinAlpha(renderTick);
@@ -267,15 +267,15 @@ public class RenderPlayerHand extends RenderPlayer
 
                     bindTexture(PlayerMorphHandler.morphSkin);
 
-                    parent.getPlayerModel().bipedRightArm.render(0.0625F);
+                    parent.getMainModel().bipedRightArm.render(0.0625F);
                     if(clientInfo.nextState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                     {
-                        parent.getPlayerModel().bipedRightArmwear.render(0.0625F);
+                        parent.getMainModel().bipedRightArmwear.render(0.0625F);
                     }
                     GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
                 }
 
-                parent.getPlayerModel().bipedRightArm = arm;
+                parent.getMainModel().bipedRightArm = arm;
 
                 replacement.rotationPointX = rotX;
                 replacement.rotationPointY = rotY;
@@ -312,7 +312,7 @@ public class RenderPlayerHand extends RenderPlayer
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            ModelPlayer modelplayer = parent.getPlayerModel();
+            ModelPlayer modelplayer = parent.getMainModel();
             modelplayer.swingProgress = 0.0F;
             modelplayer.isSneak = false;
             modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
@@ -325,13 +325,13 @@ public class RenderPlayerHand extends RenderPlayer
                 {
                     //render old arm with skin
                     ModelInfo modelInfo = clientInfo.getPrevStateModel(clientPlayer.worldObj);
-                    ResourceLocation entTexture = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.prevState.getEntInstance(clientPlayer.worldObj));
+                    ResourceLocation entTexture = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.prevState.getEntInstance(clientPlayer.worldObj));
                     bindTexture(entTexture);
 
                     replacement = modelInfo.modelArms[1];
 
-                    ModelRenderer arm = parent.getPlayerModel().bipedLeftArm;
-                    parent.getPlayerModel().bipedLeftArm = replacement;
+                    ModelRenderer arm = parent.getMainModel().bipedLeftArm;
+                    parent.getMainModel().bipedLeftArm = replacement;
 
                     //player arms are 12 blocks long
                     int heightDiff = 12 - ModelHelper.getModelHeight(replacement);
@@ -347,11 +347,11 @@ public class RenderPlayerHand extends RenderPlayer
                     replacement.rotationPointY = arm.rotationPointY + heightDiff;
                     replacement.rotationPointZ = arm.rotationPointZ;
 
-                    parent.getPlayerModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-                    parent.getPlayerModel().bipedLeftArm.render(0.0625F);
+                    parent.getMainModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
+                    parent.getMainModel().bipedLeftArm.render(0.0625F);
                     if(clientInfo.prevState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                     {
-                        parent.getPlayerModel().bipedLeftArmwear.render(0.0625F);
+                        parent.getMainModel().bipedLeftArmwear.render(0.0625F);
                     }
 
                     float skinAlpha = clientInfo.getMorphSkinAlpha(renderTick);
@@ -362,15 +362,15 @@ public class RenderPlayerHand extends RenderPlayer
 
                         bindTexture(PlayerMorphHandler.morphSkin);
 
-                        parent.getPlayerModel().bipedLeftArm.render(0.0625F);
+                        parent.getMainModel().bipedLeftArm.render(0.0625F);
                         if(clientInfo.prevState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                         {
-                            parent.getPlayerModel().bipedLeftArmwear.render(0.0625F);
+                            parent.getMainModel().bipedLeftArmwear.render(0.0625F);
                         }
                         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
                     }
 
-                    parent.getPlayerModel().bipedLeftArm = arm;
+                    parent.getMainModel().bipedLeftArm = arm;
 
                     replacement.rotationPointX = rotX;
                     replacement.rotationPointY = rotY;
@@ -394,8 +394,8 @@ public class RenderPlayerHand extends RenderPlayer
 
                     bindTexture(PlayerMorphHandler.morphSkin);
 
-                    ModelRenderer arm = parent.getPlayerModel().bipedLeftArm;
-                    parent.getPlayerModel().bipedLeftArm = replacement;
+                    ModelRenderer arm = parent.getMainModel().bipedLeftArm;
+                    parent.getMainModel().bipedLeftArm = replacement;
 
                     //player arms are 12 blocks long
                     float heightDiff;
@@ -423,14 +423,14 @@ public class RenderPlayerHand extends RenderPlayer
                     replacement.rotationPointY = arm.rotationPointY + heightDiff;
                     replacement.rotationPointZ = arm.rotationPointZ;
 
-                    parent.getPlayerModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-                    parent.getPlayerModel().bipedLeftArm.render(0.0625F);
+                    parent.getMainModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
+                    parent.getMainModel().bipedLeftArm.render(0.0625F);
                     if(clientInfo.prevState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                     {
-                        parent.getPlayerModel().bipedLeftArmwear.render(0.0625F);
+                        parent.getMainModel().bipedLeftArmwear.render(0.0625F);
                     }
 
-                    parent.getPlayerModel().bipedLeftArm = arm;
+                    parent.getMainModel().bipedLeftArm = arm;
 
                     replacement.rotationPointX = rotX;
                     replacement.rotationPointY = rotY;
@@ -445,13 +445,13 @@ public class RenderPlayerHand extends RenderPlayer
             {
                 //render new arm with skin
                 ModelInfo modelInfo = clientInfo.getNextStateModel(clientPlayer.worldObj);
-                ResourceLocation entTexture = ObfHelper.invokeGetEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.nextState.getEntInstance(clientPlayer.worldObj));
+                ResourceLocation entTexture = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), clientInfo.nextState.getEntInstance(clientPlayer.worldObj));
                 bindTexture(entTexture);
 
                 replacement = modelInfo.modelArms[1];
 
-                ModelRenderer arm = parent.getPlayerModel().bipedLeftArm;
-                parent.getPlayerModel().bipedLeftArm = replacement;
+                ModelRenderer arm = parent.getMainModel().bipedLeftArm;
+                parent.getMainModel().bipedLeftArm = replacement;
 
                 //player arms are 12 blocks long
                 int heightDiff = 12 - ModelHelper.getModelHeight(replacement);
@@ -467,11 +467,11 @@ public class RenderPlayerHand extends RenderPlayer
                 replacement.rotationPointY = arm.rotationPointY + heightDiff;
                 replacement.rotationPointZ = arm.rotationPointZ;
 
-                parent.getPlayerModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
-                parent.getPlayerModel().bipedLeftArm.render(0.0625F);
+                parent.getMainModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
+                parent.getMainModel().bipedLeftArm.render(0.0625F);
                 if(clientInfo.nextState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                 {
-                    parent.getPlayerModel().bipedLeftArmwear.render(0.0625F);
+                    parent.getMainModel().bipedLeftArmwear.render(0.0625F);
                 }
 
                 float skinAlpha = clientInfo.getMorphSkinAlpha(renderTick);
@@ -482,15 +482,15 @@ public class RenderPlayerHand extends RenderPlayer
 
                     bindTexture(PlayerMorphHandler.morphSkin);
 
-                    parent.getPlayerModel().bipedLeftArm.render(0.0625F);
+                    parent.getMainModel().bipedLeftArm.render(0.0625F);
                     if(clientInfo.nextState.getEntInstance(clientPlayer.worldObj) instanceof AbstractClientPlayer)
                     {
-                        parent.getPlayerModel().bipedLeftArmwear.render(0.0625F);
+                        parent.getMainModel().bipedLeftArmwear.render(0.0625F);
                     }
                     GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
                 }
 
-                parent.getPlayerModel().bipedLeftArm = arm;
+                parent.getMainModel().bipedLeftArm = arm;
 
                 replacement.rotationPointX = rotX;
                 replacement.rotationPointY = rotY;

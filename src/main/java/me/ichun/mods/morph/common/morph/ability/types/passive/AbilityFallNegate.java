@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.api.ability.types.passive;
+package me.ichun.mods.morph.common.morph.ability.types.passive;
 
 import me.ichun.mods.morph.api.ability.Ability;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,7 +8,7 @@ public class AbilityFallNegate extends Ability
 {
 	public AbilityFallNegate()
 	{
-		iconResource = new ResourceLocation("morph", "textures/icon/fallNegate.png");
+		iconResource = new ResourceLocation("morph", "textures/icon/fall_negate.png");
 	}
 
 	@Override
