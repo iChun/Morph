@@ -534,10 +534,7 @@ public class EventHandlerClient
         if(event.getWorld().isRemote && event.getWorld() instanceof WorldClient)
         {
             //Clean up the Morph States and stuff like that to prevent mem leaks.
-            for(MorphInfoClient info : Morph.eventHandlerClient.morphsActive.values())
-            {
-                info.clean();
-            }
+            Morph.eventHandlerClient.morphsActive.values().forEach(MorphInfoClient::clean);
         }
     }
 
@@ -577,10 +574,7 @@ public class EventHandlerClient
             {
                 if(!mc.isGamePaused())
                 {
-                    for(MorphInfoClient info : Morph.eventHandlerClient.morphsActive.values())
-                    {
-                        info.tick();
-                    }
+                    Morph.eventHandlerClient.morphsActive.values().forEach(MorphInfo::tick);
                     for(Map.Entry<String, ArrayList<MorphState>> e : Morph.eventHandlerClient.playerMorphs.entrySet())
                     {
                         for(MorphState state : e.getValue())

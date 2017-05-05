@@ -36,6 +36,6 @@ public class AbilityHandlerDummy implements IAbilityHandler
     @Override
     public ArrayList<Ability> getEntityAbilities(Class<? extends EntityLivingBase> entClass)
     {
-        return new ArrayList<Ability>();
+        return new ArrayList<>();
     }
 }

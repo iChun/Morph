@@ -43,7 +43,7 @@ public class MorphVariant
         this.instanceTag = new NBTTagCompound();
         this.morphData = new NBTTagCompound();
         this.thisVariant = new Variant();
-        this.variants = new ArrayList<Variant>();
+        this.variants = new ArrayList<>();
     }
 
     public MorphVariant setPlayerName(String name)
@@ -72,10 +72,7 @@ public class MorphVariant
             NBTTagCompound instanceCreator = (NBTTagCompound)instanceTag.copy();
             instanceCreator.tagMap.putAll(entTag.tagMap);
             instanceCreator.tagMap.putAll(thisVariant.variantData.tagMap);
-            for(String tagToRemove : thisVariant.tagsToRemove)
-            {
-                instanceCreator.tagMap.remove(tagToRemove);
-            }
+            thisVariant.tagsToRemove.forEach(instanceCreator.tagMap::remove);
             Entity ent = EntityList.createEntityFromNBT(instanceCreator, world);
             if(ent instanceof EntityLivingBase)
             {
@@ -106,7 +103,7 @@ public class MorphVariant
 
     public ArrayList<MorphVariant> split() //Returns a new copy of all the variants in the list.
     {
-        ArrayList<MorphVariant> vars = new ArrayList<MorphVariant>();
+        ArrayList<MorphVariant> vars = new ArrayList<>();
         NBTTagCompound tag = write(new NBTTagCompound());
         MorphVariant current = new MorphVariant(entId);
         current.read(tag);
@@ -358,10 +355,7 @@ public class MorphVariant
         {
             NBTTagCompound tagCopyCopy = (NBTTagCompound)tagCopy.copy();
             tagCopyCopy.tagMap.putAll(variant.variantData.tagMap);
-            for(String tagToRemove : variant.tagsToRemove)
-            {
-                tagCopyCopy.tagMap.remove(tagToRemove);
-            }
+            variant.tagsToRemove.forEach(tagCopyCopy.tagMap::remove);
 
             if(tagCopyCopy.equals(variantToMerge.entTag))
             {
@@ -432,7 +426,7 @@ public class MorphVariant
         {
             identifier = RandomStringUtils.randomAscii(IDENTIFIER_LENGTH);
             variantData = new NBTTagCompound();
-            tagsToRemove = new ArrayList<String>();
+            tagsToRemove = new ArrayList<>();
             isFavourite = false;
             invalid = false;
         }

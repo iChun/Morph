@@ -6,7 +6,6 @@ import me.ichun.mods.morph.client.model.ModelMorph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -64,14 +63,11 @@ public class MorphInfoClient extends MorphInfo
         super.clean();
         if(modelMorph != null)
         {
-            for(ModelRenderer renderer : modelMorph.modelList)
+            modelMorph.modelList.stream().filter(renderer -> renderer.compiled).forEach(renderer ->
             {
-                if(renderer.compiled)
-                {
-                    GLAllocation.deleteDisplayLists(renderer.displayList);
-                    renderer.compiled = false;
-                }
-            }
+                GLAllocation.deleteDisplayLists(renderer.displayList);
+                renderer.compiled = false;
+            });
         }
     }
 

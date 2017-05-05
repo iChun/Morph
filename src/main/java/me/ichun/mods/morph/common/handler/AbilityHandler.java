@@ -48,7 +48,7 @@ public class AbilityHandler implements IAbilityHandler
         ArrayList<Ability> abilityList = abilityMap.get(entClass);
         if(abilityList == null)
         {
-            abilityList = new ArrayList<Ability>();
+            abilityList = new ArrayList<>();
             abilityMap.put(entClass, abilityList);
         }
         for(Ability ability : abilities)
@@ -167,6 +167,6 @@ public class AbilityHandler implements IAbilityHandler
                 return abilities;
             }
         }
-        return new ArrayList<Ability>();
+        return new ArrayList<>();
     }
 }

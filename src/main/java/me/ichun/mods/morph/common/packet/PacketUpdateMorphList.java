@@ -86,13 +86,13 @@ public class PacketUpdateMorphList extends AbstractPacket
         }
 
         //Split the variants into individual "variants" to be stored in states.
-        ArrayList<MorphVariant> morphs = new ArrayList<MorphVariant>();
+        ArrayList<MorphVariant> morphs = new ArrayList<>();
         for(MorphVariant var : morphVariants)
         {
             morphs.addAll(var.split());
         }
 
-        ArrayList<MorphState> states = new ArrayList<MorphState>();
+        ArrayList<MorphState> states = new ArrayList<>();
         for(MorphVariant var : morphs)
         {
             MorphState state = new MorphState(var);
@@ -122,7 +122,7 @@ public class PacketUpdateMorphList extends AbstractPacket
                 {
                     needsReorder = true;
                 }
-                category = new ArrayList<MorphState>();
+                category = new ArrayList<>();
                 Morph.eventHandlerClient.playerMorphs.put(state.getName(), category);
             }
             if(!category.contains(state))
@@ -132,7 +132,7 @@ public class PacketUpdateMorphList extends AbstractPacket
         }
         if(needsReorder)
         {
-            TreeMap<String, ArrayList<MorphState>> buffer = new TreeMap<String, ArrayList<MorphState>>(Ordering.natural());
+            TreeMap<String, ArrayList<MorphState>> buffer = new TreeMap<>(Ordering.natural());
             buffer.putAll(Morph.eventHandlerClient.playerMorphs);
             ArrayList<MorphState> selfState = buffer.get(player.getName()); //This has to exist. If it doesn't exist something messed up.
             buffer.remove(player.getName());

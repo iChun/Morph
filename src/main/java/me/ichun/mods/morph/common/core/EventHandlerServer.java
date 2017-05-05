@@ -182,7 +182,7 @@ public class EventHandlerServer
         ArrayList<MorphVariant> morphs = playerMorphs.get(name);
         if(morphs == null)
         {
-            morphs = new ArrayList<MorphVariant>();
+            morphs = new ArrayList<>();
             MorphVariant variant = new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayerName(name);
             variant.thisVariant.isFavourite = true;
             morphs.add(variant); //Add the player self's morph variant when getting this list.
@@ -191,6 +191,6 @@ public class EventHandlerServer
         return morphs;
     }
 
-    public HashMap<String, MorphInfo> morphsActive = new HashMap<String, MorphInfo>(); //These are the active morphs. Entity instance are retreived from here
-    public HashMap<String, ArrayList<MorphVariant>> playerMorphs = new HashMap<String, ArrayList<MorphVariant>>();//These are the available morphs for each player. No entity instance is required or created here.
+    public HashMap<String, MorphInfo> morphsActive = new HashMap<>(); //These are the active morphs. Entity instance are retreived from here
+    public HashMap<String, ArrayList<MorphVariant>> playerMorphs = new HashMap<>();//These are the available morphs for each player. No entity instance is required or created here.
 }

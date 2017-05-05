@@ -67,29 +67,26 @@ public class Morph
     @Mod.EventHandler
     public void onIMCMessage(FMLInterModComms.IMCEvent event)
     {
-        for(FMLInterModComms.IMCMessage message : event.getMessages())
+        event.getMessages().stream().filter(message -> message.key.equalsIgnoreCase("blacklist") && message.isStringMessage()).forEach(message ->
         {
-            if(message.key.equalsIgnoreCase("blacklist") && message.isStringMessage())
+            try
             {
-                try
+                Class clz = Class.forName(message.getStringValue());
+                if(EntityLivingBase.class.isAssignableFrom(clz) && !PlayerMorphHandler.blacklistedEntityClasses.contains(clz))
                 {
-                    Class clz = Class.forName(message.getStringValue());
-                    if(EntityLivingBase.class.isAssignableFrom(clz) && !PlayerMorphHandler.blacklistedEntityClasses.contains(clz))
-                    {
-                        PlayerMorphHandler.blacklistedEntityClasses.add(clz);
-                        LOGGER.info("Registered " + message.getStringValue() + " to Morph Entity blacklist");
-                    }
-                    else
-                    {
-                        LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Entity may already be in blacklist or may not be an EntityLivingBase!");
-                    }
+                    PlayerMorphHandler.blacklistedEntityClasses.add(clz);
+                    LOGGER.info("Registered " + message.getStringValue() + " to Morph Entity blacklist");
                 }
-                catch(ClassNotFoundException e)
+                else
                 {
-                    LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Class not found!");
-                    e.printStackTrace();
+                    LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Entity may already be in blacklist or may not be an EntityLivingBase!");
                 }
             }
-        }
+            catch(ClassNotFoundException e)
+            {
+                LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Class not found!");
+                e.printStackTrace();
+            }
+        });
     }
 }

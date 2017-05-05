@@ -66,7 +66,7 @@ public class NBTHandler
 
     public static HashMap<String, Object> getModifiers(Class<? extends EntityLivingBase> entClz)
     {
-        HashMap<String, Object> modifiers = new HashMap<String, Object>();
+        HashMap<String, Object> modifiers = new HashMap<>();
         while(entClz != EntityLivingBase.class)
         {
             if(nbtModifiers.containsKey(entClz))
@@ -80,7 +80,7 @@ public class NBTHandler
 
     public static void createMinecraftEntityTags(World world)
     {
-        TreeMap<String, TreeMap<String, String>> list = new TreeMap<String, TreeMap<String, String>>(Ordering.natural());
+        TreeMap<String, TreeMap<String, String>> list = new TreeMap<>(Ordering.natural());
         for(Object obj : EntityList.CLASS_TO_NAME.entrySet())
         {
             Class clz = (Class)((Map.Entry)obj).getKey();
@@ -93,7 +93,7 @@ public class NBTHandler
                     if(living.writeToNBTOptional(new NBTTagCompound()))
                     {
                         living.writeEntityToNBT(tag);
-                        TreeMap<String, String> tags = new TreeMap<String, String>(Ordering.natural());
+                        TreeMap<String, String> tags = new TreeMap<>(Ordering.natural());
                         MorphVariant.clean(living, tag);
                         tag.removeTag("HealF");
                         tag.removeTag("Health");

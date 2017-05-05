@@ -47,7 +47,7 @@ public class ThreadGetResources extends Thread
 
                 Class clz = Class.forName(e.getKey());
 
-                HashMap<String, Object> modifiers = new HashMap<String, Object>();
+                HashMap<String, Object> modifiers = new HashMap<>();
                 HashMap<String, String> map = e.getValue();
 
                 for(Map.Entry<String, String> modifier : map.entrySet())

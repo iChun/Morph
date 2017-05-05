@@ -47,8 +47,8 @@ public class ModelMorph extends ModelBase
         prevModelInfo = prev;
         nextModelInfo = next;
 
-        prevCloneToOriMap = new HashMap<ModelRenderer, ModelRenderer>();
-        nextCloneToOriMap = new HashMap<ModelRenderer, ModelRenderer>();
+        prevCloneToOriMap = new HashMap<>();
+        nextCloneToOriMap = new HashMap<>();
         if(prev != null)
         {
             prevModels = ModelHelper.getModelCubesCopy(prev.modelList, this, oldRef);
@@ -68,7 +68,7 @@ public class ModelMorph extends ModelBase
         }
         else
         {
-            prevModels = new ArrayList<ModelRenderer>();
+            prevModels = new ArrayList<>();
         }
         if(next != null)
         {
@@ -89,7 +89,7 @@ public class ModelMorph extends ModelBase
         }
         else
         {
-            nextModels = new ArrayList<ModelRenderer>();
+            nextModels = new ArrayList<>();
         }
 
         //Now that we have our reference models, fill up the reference list and create the modelList.
@@ -361,15 +361,14 @@ public class ModelMorph extends ModelBase
         }
     }
 
-    public void setRotationPointToZeroWithChildren(List children, int depth)
+    public void setRotationPointToZeroWithChildren(List<ModelRenderer> children, int depth)
     {
         if(children == null || depth > 20)
         {
             return;
         }
-        for(int i = 0; i < children.size(); i++)
+        for(ModelRenderer child : children)
         {
-            ModelRenderer child = (ModelRenderer)children.get(i);
             child.setRotationPoint(0F, 0F, 0F);
             setRotationPointToZeroWithChildren(child.childModels, depth + 1);
         }
@@ -377,13 +376,10 @@ public class ModelMorph extends ModelBase
 
     public void clean()
     {
-        for(ModelRenderer renderer : modelList)
+        modelList.stream().filter(renderer -> renderer.compiled).forEach(renderer ->
         {
-            if(renderer.compiled)
-            {
-                GLAllocation.deleteDisplayLists(renderer.displayList);
-                renderer.compiled = false;
-            }
-        }
+            GLAllocation.deleteDisplayLists(renderer.displayList);
+            renderer.compiled = false;
+        });
     }
 }

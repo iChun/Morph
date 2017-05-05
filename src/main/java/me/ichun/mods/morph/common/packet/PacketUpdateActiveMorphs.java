@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class PacketUpdateActiveMorphs extends AbstractPacket
 {
-    public HashMap<String, MorphInfo> infosToSend = new HashMap<String, MorphInfo>();
+    public HashMap<String, MorphInfo> infosToSend = new HashMap<>();
 
     public PacketUpdateActiveMorphs(){}
 
@@ -86,22 +86,21 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
     @SideOnly(Side.CLIENT)
     public void handleClient()
     {
-        for(Map.Entry<String, MorphInfo> e : infosToSend.entrySet())
+        //nextState was recreated successfully.
+        //prevent mem leaks.
+        infosToSend.entrySet().stream().filter(e -> e.getValue().nextState != null).forEach(e ->
         {
-            if(e.getValue().nextState != null) //nextState was recreated successfully.
+            MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
+            info.read(e.getValue().write(new NBTTagCompound()));
+            if(Morph.eventHandlerClient.morphsActive.containsKey(e.getKey()))
             {
-                MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
-                info.read(e.getValue().write(new NBTTagCompound()));
-                if(Morph.eventHandlerClient.morphsActive.containsKey(e.getKey()))
-                {
-                    Morph.eventHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
-                }
-                Morph.eventHandlerClient.morphsActive.put(e.getKey(), info);
-                if(e.getKey().equals(Minecraft.getMinecraft().thePlayer.getName()))
-                {
-                    Morph.eventHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().theWorld, info);
-                }
+                Morph.eventHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
             }
-        }
+            Morph.eventHandlerClient.morphsActive.put(e.getKey(), info);
+            if(e.getKey().equals(Minecraft.getMinecraft().thePlayer.getName()))
+            {
+                Morph.eventHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().theWorld, info);
+            }
+        });
     }
 }

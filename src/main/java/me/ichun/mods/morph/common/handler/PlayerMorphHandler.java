@@ -38,8 +38,8 @@ public class PlayerMorphHandler implements IApi
 {
     private static final PlayerMorphHandler INSTANCE = new PlayerMorphHandler();
 
-    public static final ArrayList<Class<? extends EntityLivingBase>> blacklistedEntityClasses = new ArrayList<Class<? extends EntityLivingBase>>();
-    public static final ArrayList<Class<? extends EntityLivingBase>> blackwhiteEntityClasses = new ArrayList<Class<? extends EntityLivingBase>>();
+    public static final ArrayList<Class<? extends EntityLivingBase>> blacklistedEntityClasses = new ArrayList<>();
+    public static final ArrayList<Class<? extends EntityLivingBase>> blackwhiteEntityClasses = new ArrayList<>();
 
     public static final ResourceLocation morphSkin = new ResourceLocation("morph", "textures/skin/morphskin.png");
 
