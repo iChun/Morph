@@ -8,11 +8,16 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 @Cancelable
 public class MorphAcquiredEvent extends PlayerEvent
 {
-    public final EntityLivingBase acquiredMorph;
+    private final EntityLivingBase acquiredMorph;
 
     public MorphAcquiredEvent(EntityPlayer player, EntityLivingBase acquired)
     {
         super(player);
         acquiredMorph = acquired;
+    }
+
+    public EntityLivingBase getAcquiredMorph()
+    {
+        return acquiredMorph;
     }
 }
