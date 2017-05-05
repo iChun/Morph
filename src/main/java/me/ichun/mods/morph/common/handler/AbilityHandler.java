@@ -3,12 +3,12 @@ package me.ichun.mods.morph.common.handler;
 import com.google.gson.Gson;
 import me.ichun.mods.morph.api.ability.Ability;
 import me.ichun.mods.morph.api.ability.IAbilityHandler;
+import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.ability.types.active.AbilityClimb;
 import me.ichun.mods.morph.common.morph.ability.types.active.AbilityFloat;
 import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityFallNegate;
 import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityFireImmunity;
 import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityPotionEffect;
-import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntityLivingBase;
 
 import java.util.ArrayList;
