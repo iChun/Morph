@@ -28,4 +28,7 @@ public class ProxyCommon
 
         Morph.channel = new PacketChannel(Morph.MOD_NAME, PacketUpdateMorphList.class, PacketUpdateActiveMorphs.class, PacketGuiInput.class, PacketDemorph.class, PacketAcquireEntity.class);
     }
+
+    public void init()
+    {}
 }

@@ -2,12 +2,12 @@
   "morph": {
     "category": "player",
     "sounds": [
-      "morph1",
-      "morph2",
-      "morph3",
-      "morph4",
-      "morph5",
-      "morph6"
+      "morph:morph1",
+      "morph:morph2",
+      "morph:morph3",
+      "morph:morph4",
+      "morph:morph5",
+      "morph:morph6"
     ]
   }
 }

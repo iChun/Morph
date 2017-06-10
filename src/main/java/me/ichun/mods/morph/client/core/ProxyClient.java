@@ -22,11 +22,17 @@ public class ProxyClient extends ProxyCommon
         Morph.eventHandlerClient = new EventHandlerClient();
         MinecraftForge.EVENT_BUS.register(Morph.eventHandlerClient);
 
-        Morph.eventHandlerClient.renderHandInstance = new RenderPlayerHand();
         RenderingRegistry.registerEntityRenderingHandler(EntityMorphAcquisition.class, new RenderMorphAcquisition.RenderFactory());
 
         iChunUtil.proxy.registerMinecraftKeyBind(Minecraft.getMinecraft().gameSettings.keyBindAttack);
         iChunUtil.proxy.registerMinecraftKeyBind(Minecraft.getMinecraft().gameSettings.keyBindUseItem);
         iChunUtil.proxy.registerKeyBind(new KeyBind(Keyboard.KEY_DELETE), null);
+    }
+
+    @Override
+    public void init()
+    {
+        super.init();
+        Morph.eventHandlerClient.renderHandInstance = new RenderPlayerHand(); //this has to be here because we reference getRenderManager which is null @ preinit
     }
 }
