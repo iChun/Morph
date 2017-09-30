@@ -41,7 +41,7 @@ public class PacketUpdateMorphList extends AbstractPacket
 
         for(MorphVariant var : morphVariants)
         {
-            pb.writeNBTTagCompoundToBuffer(var.write(new NBTTagCompound()));
+            pb.writeCompoundTag(var.write(new NBTTagCompound()));
         }
     }
 
@@ -58,7 +58,7 @@ public class PacketUpdateMorphList extends AbstractPacket
             for(int i = 0; i < morphVariants.length; i++)
             {
                 morphVariants[i] = new MorphVariant("");
-                morphVariants[i].read(pb.readNBTTagCompoundFromBuffer());
+                morphVariants[i].read(pb.readCompoundTag());
             }
         }
         catch(IOException ignored){}
@@ -96,7 +96,7 @@ public class PacketUpdateMorphList extends AbstractPacket
         for(MorphVariant var : morphs)
         {
             MorphState state = new MorphState(var);
-            state.getEntInstance(player.worldObj);
+            state.getEntInstance(player.getEntityWorld());
             states.add(state);
         }
         //Now that all the variants are stored in states and an entity created, lets sort them

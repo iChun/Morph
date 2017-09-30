@@ -54,11 +54,11 @@ public class PacketAcquireEntity extends AbstractPacket
     public void handleClient()
     {
         Minecraft mc = Minecraft.getMinecraft();
-        Entity acquired = mc.theWorld.getEntityByID(acquiredId);
-        Entity acquirer = mc.theWorld.getEntityByID(acquirerId);
+        Entity acquired = mc.world.getEntityByID(acquiredId);
+        Entity acquirer = mc.world.getEntityByID(acquirerId);
         if(acquired instanceof EntityLivingBase && acquirer instanceof EntityLivingBase)
         {
-            mc.theWorld.spawnEntityInWorld(new EntityMorphAcquisition(mc.theWorld, (EntityLivingBase)acquired, (EntityLivingBase)acquirer));
+            mc.world.spawnEntity(new EntityMorphAcquisition(mc.world, (EntityLivingBase)acquired, (EntityLivingBase)acquirer));
             acquired.setDead();
         }
     }

@@ -24,6 +24,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -112,9 +113,9 @@ public class EventHandlerClient
                     Morph.eventHandlerClient.selectorScrollHoriTimer = EventHandlerClient.SELECTOR_SCROLL_TIME;
 
                     MorphState selectedState = Morph.eventHandlerClient.getCurrentlySelectedMorphState();
-                    MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.thePlayer.getName());
+                    MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.player.getName());
 
-                    if(selectedState != null && (info != null && !info.nextState.currentVariant.equals(selectedState.currentVariant) || info == null && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName())))
+                    if(selectedState != null && (info != null && !info.nextState.currentVariant.equals(selectedState.currentVariant) || info == null && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.player.getName())))
                     {
                         Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 0, false));
                     }
@@ -138,9 +139,9 @@ public class EventHandlerClient
                 if(Morph.eventHandlerClient.selectorShow)
                 {
                     MorphState selectedState = Morph.eventHandlerClient.getCurrentlySelectedMorphState();
-                    MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.thePlayer.getName());
+                    MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.player.getName());
 
-                    if(selectedState != null && !selectedState.currentVariant.thisVariant.isFavourite && ((info == null || !info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(selectedState.currentVariant.thisVariant.identifier)) && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName())))
+                    if(selectedState != null && !selectedState.currentVariant.thisVariant.isFavourite && ((info == null || !info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(selectedState.currentVariant.thisVariant.identifier)) && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.player.getName())))
                     {
                         Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 2, false));
                     }
@@ -224,7 +225,7 @@ public class EventHandlerClient
         {
             event.setCanceled(true);
 
-            if(event.getEntityPlayer().worldObj.playerEntities.contains(event.getEntityPlayer()) && info.getPlayer() != event.getEntityPlayer())
+            if(event.getEntityPlayer().getEntityWorld().playerEntities.contains(event.getEntityPlayer()) && info.getPlayer() != event.getEntityPlayer())
             {
                 info.setPlayer(event.getEntityPlayer());
             }
@@ -240,7 +241,7 @@ public class EventHandlerClient
             {
                 if(info.morphTime < 10)
                 {
-                    EntityLivingBase entInstance = info.prevState.getEntInstance(event.getEntityPlayer().worldObj);
+                    EntityLivingBase entInstance = info.prevState.getEntInstance(event.getEntityPlayer().getEntityWorld());
                     if(info.firstUpdate)
                     {
                         info.syncEntityWithPlayer(entInstance);
@@ -261,7 +262,7 @@ public class EventHandlerClient
                     {
                         GL11.glScalef(prevScaleMag, prevScaleMag, prevScaleMag);
 
-                        EntityLivingBase renderView = mc.thePlayer;
+                        EntityLivingBase renderView = mc.player;
 
                         entInstance.renderYawOffset = renderView.renderYawOffset;
                         entInstance.rotationYaw = renderView.rotationYaw;
@@ -273,9 +274,9 @@ public class EventHandlerClient
 
                     float prog = info.getMorphSkinAlpha(renderTick);
 
-                    event.getRenderer().shadowSize = info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize;
+                    event.getRenderer().shadowSize = info.getPrevStateModel(mc.world).entRenderer.shadowSize;
 
-                    ModelInfo modelInfo = info.getPrevStateModel(event.getEntityPlayer().worldObj);
+                    ModelInfo modelInfo = info.getPrevStateModel(event.getEntityPlayer().getEntityWorld());
                     modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
 
                     GlStateManager.enableBlend();
@@ -308,8 +309,8 @@ public class EventHandlerClient
                 }
                 else
                 {
-                    EntityLivingBase prevEntInstance = info.prevState.getEntInstance(event.getEntityPlayer().worldObj);
-                    EntityLivingBase nextEntInstance = info.nextState.getEntInstance(event.getEntityPlayer().worldObj);
+                    EntityLivingBase prevEntInstance = info.prevState.getEntInstance(event.getEntityPlayer().getEntityWorld());
+                    EntityLivingBase nextEntInstance = info.nextState.getEntInstance(event.getEntityPlayer().getEntityWorld());
 
                     float prevEntSize = prevEntInstance.width > prevEntInstance.height ? prevEntInstance.width : prevEntInstance.height;
                     float prevScaleMag = prevEntSize > 2.5F ? (2.5F / prevEntSize) : 1.0F;
@@ -337,7 +338,7 @@ public class EventHandlerClient
 
                         morphProgress = info.getMorphTransitionProgress(renderTick);
 
-                        EntityLivingBase renderView = mc.thePlayer;
+                        EntityLivingBase renderView = mc.player;
 
                         prevEntInstance.renderYawOffset = nextEntInstance.renderYawOffset = renderView.renderYawOffset;
                         prevEntInstance.rotationYaw = nextEntInstance.rotationYaw = renderView.rotationYaw;
@@ -349,14 +350,14 @@ public class EventHandlerClient
                         GL11.glScalef(scale, scale, scale);
                     }
 
-                    event.getRenderer().shadowSize = EntityHelper.interpolateValues(info.getPrevStateModel(mc.theWorld).entRenderer.shadowSize, info.getNextStateModel(mc.theWorld).entRenderer.shadowSize, morphProgress);
+                    event.getRenderer().shadowSize = EntityHelper.interpolateValues(info.getPrevStateModel(mc.world).entRenderer.shadowSize, info.getNextStateModel(mc.world).entRenderer.shadowSize, morphProgress);
 
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(event.getX(), event.getY(), event.getZ());
                     GlStateManager.rotate(180F - EntityHelper.interpolateRotation(event.getEntityPlayer().prevRenderYawOffset, event.getEntityPlayer().renderYawOffset, renderTick), 0F, 1F, 0F);
                     GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-                    ModelMorph model = info.getModelMorph(event.getEntityPlayer().worldObj);
-                    model.render(renderTick, morphProgress, info.prevState.getEntInstance(event.getEntityPlayer().worldObj), info.nextState.getEntInstance(event.getEntityPlayer().worldObj));
+                    ModelMorph model = info.getModelMorph(event.getEntityPlayer().getEntityWorld());
+                    model.render(renderTick, morphProgress, info.prevState.getEntInstance(event.getEntityPlayer().getEntityWorld()), info.nextState.getEntInstance(event.getEntityPlayer().getEntityWorld()));
                     GlStateManager.popMatrix();
 
                     prevEntInstance.renderYawOffset = fff2;
@@ -381,7 +382,7 @@ public class EventHandlerClient
             }
             else
             {
-                EntityLivingBase entInstance = info.nextState.getEntInstance(event.getEntityPlayer().worldObj);
+                EntityLivingBase entInstance = info.nextState.getEntInstance(event.getEntityPlayer().getEntityWorld());
 
                 float nextEntSize = entInstance.width > entInstance.height ? entInstance.width : entInstance.height;
                 float nextScaleMag = nextEntSize > 2.5F ? (2.5F / nextEntSize) : 1.0F;
@@ -396,7 +397,7 @@ public class EventHandlerClient
                 {
                     GL11.glScalef(nextScaleMag, nextScaleMag, nextScaleMag);
 
-                    EntityLivingBase renderView = mc.thePlayer;
+                    EntityLivingBase renderView = mc.player;
 
                     entInstance.renderYawOffset = renderView.renderYawOffset;
                     entInstance.rotationYaw = renderView.rotationYaw;
@@ -406,9 +407,9 @@ public class EventHandlerClient
                     renderTick = 1.0F;
                 }
 
-                event.getRenderer().shadowSize = info.getNextStateModel(mc.theWorld).entRenderer.shadowSize;
+                event.getRenderer().shadowSize = info.getNextStateModel(mc.world).entRenderer.shadowSize;
 
-                ModelInfo modelInfo = info.getNextStateModel(event.getEntityPlayer().worldObj);
+                ModelInfo modelInfo = info.getNextStateModel(event.getEntityPlayer().getEntityWorld());
                 modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
 
                 if(info.isMorphing())
@@ -459,12 +460,12 @@ public class EventHandlerClient
         if(Morph.config.handRenderOverride == 1)
         {
             Minecraft mc = Minecraft.getMinecraft();
-            MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.thePlayer.getName());
+            MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.player.getName());
             if(info != null)
             {
                 event.setCanceled(true);
 
-                String s = mc.thePlayer.getSkinType();
+                String s = mc.player.getSkinType();
                 RenderPlayer rend = mc.getRenderManager().skinMap.get(s);
 
                 Morph.eventHandlerClient.renderHandInstance.renderTick = event.getPartialTicks();
@@ -499,15 +500,15 @@ public class EventHandlerClient
         while(ite.hasNext())
         {
             Map.Entry<String, MorphInfoClient> e = ite.next();
-            if(e.getValue().nextState.getEntInstance(event.getEntity().worldObj) == event.getEntity() || e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.getEntity().worldObj) == event.getEntity())
+            if(e.getValue().nextState.getEntInstance(event.getEntity().getEntityWorld()) == event.getEntity() || e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.getEntity().getEntityWorld()) == event.getEntity())
             {
-                if(e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.getEntity().worldObj) instanceof EntityPlayer && e.getValue().prevState.getEntInstance(event.getEntity().worldObj).getName().equals(e.getKey()) || e.getValue().nextState.getEntInstance(event.getEntity().worldObj) instanceof EntityPlayer && e.getValue().nextState.getEntInstance(event.getEntity().worldObj).getName().equals(e.getKey()))
+                if(e.getValue().prevState != null && e.getValue().prevState.getEntInstance(event.getEntity().getEntityWorld()) instanceof EntityPlayer && e.getValue().prevState.getEntInstance(event.getEntity().getEntityWorld()).getName().equals(e.getKey()) || e.getValue().nextState.getEntInstance(event.getEntity().getEntityWorld()) instanceof EntityPlayer && e.getValue().nextState.getEntInstance(event.getEntity().getEntityWorld()).getName().equals(e.getKey()))
                 {
                     //if the player is just morphing from/to itself don't render the label, we're doing that anyways.
                     event.setCanceled(true); //render layer safe, layers aren't special renders.
                 }
-                AbstractClientPlayer player = (AbstractClientPlayer)event.getEntity().worldObj.getPlayerEntityByName(e.getKey());
-                if(player == Minecraft.getMinecraft().thePlayer)
+                AbstractClientPlayer player = (AbstractClientPlayer)event.getEntity().getEntityWorld().getPlayerEntityByName(e.getKey());
+                if(player == Minecraft.getMinecraft().player)
                 {
                     //If the entity is the mc player morph, no need to render the label at all, since, well, it's the player.
                     event.setCanceled(true);
@@ -518,7 +519,7 @@ public class EventHandlerClient
                 {
                     event.setCanceled(true); //Don't render the entity label, render the actual player's label instead.
 
-                    RenderPlayer rend = (RenderPlayer)Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(player);
+                    RenderPlayer rend = (RenderPlayer)(Render)Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(player);
                     Morph.eventHandlerClient.allowSpecialRender = true;
                     rend.renderName(player, event.getX(), event.getY(), event.getZ());
                     Morph.eventHandlerClient.allowSpecialRender = false;
@@ -542,19 +543,19 @@ public class EventHandlerClient
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        if(mc.theWorld != null)
+        if(mc.world != null)
         {
             if(event.phase == TickEvent.Phase.START)
             {
-                MorphInfo info = morphsActive.get(mc.thePlayer.getName());
+                MorphInfo info = morphsActive.get(mc.player.getName());
                 if(info != null && info.isMorphing())
                 {
                     float morphTransition = info.getMorphTransitionProgress(event.renderTickTime);
 
-                    EntityLivingBase prevEnt = info.prevState.getEntInstance(mc.theWorld);
-                    EntityLivingBase nextEnt = info.nextState.getEntInstance(mc.theWorld);
+                    EntityLivingBase prevEnt = info.prevState.getEntInstance(mc.world);
+                    EntityLivingBase nextEnt = info.nextState.getEntInstance(mc.world);
 
-                    mc.thePlayer.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
+                    mc.player.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
                 }
             }
             else
@@ -570,7 +571,7 @@ public class EventHandlerClient
         if(event.phase == TickEvent.Phase.END)
         {
             Minecraft mc = Minecraft.getMinecraft();
-            if(mc.theWorld != null)
+            if(mc.world != null)
             {
                 if(!mc.isGamePaused())
                 {
@@ -579,7 +580,7 @@ public class EventHandlerClient
                     {
                         for(MorphState state : e.getValue())
                         {
-                            state.getEntInstance(mc.theWorld).ticksExisted++;
+                            state.getEntInstance(mc.world).ticksExisted++;
                         }
                     }
                 }
@@ -613,7 +614,7 @@ public class EventHandlerClient
     {
         if(event.side.isClient() && event.phase == TickEvent.Phase.START)
         {
-            if(event.player.worldObj.playerEntities.contains(event.player))
+            if(event.player.getEntityWorld().playerEntities.contains(event.player))
             {
                 MorphInfo info = morphsActive.get(event.player.getName());
                 if(info != null && info.getPlayer() != event.player)
@@ -645,7 +646,7 @@ public class EventHandlerClient
 
             GlStateManager.pushMatrix();
 
-            float progress = MathHelper.clamp_float((SELECTOR_SHOW_TIME - (selectorShowTimer - renderTick)) / (float)SELECTOR_SHOW_TIME, 0F, 1F);
+            float progress = MathHelper.clamp((SELECTOR_SHOW_TIME - (selectorShowTimer - renderTick)) / (float)SELECTOR_SHOW_TIME, 0F, 1F);
 
             if(selectorShow)
             {
@@ -732,7 +733,7 @@ public class EventHandlerClient
                 }
 
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder bufferbuilder = tessellator.getBuffer();
 
                 if(i == selectorSelectedVert)
                 {
@@ -774,11 +775,11 @@ public class EventHandlerClient
 
                         double dist = size * (j - selectorSelectedHori);
 
-                        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                        vertexbuffer.pos(width1 + dist, height1 + size, -90.0D + j).tex(0.0D, 1.0D).endVertex();
-                        vertexbuffer.pos(width1 + dist + size, height1 + size, -90.0D + j).tex(1.0D, 1.0D).endVertex();
-                        vertexbuffer.pos(width1 + dist + size, height1, -90.0D + j).tex(1.0D, 0.0D).endVertex();
-                        vertexbuffer.pos(width1 + dist, height1, -90.0D + j).tex(0.0D, 0.0D).endVertex();
+                        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                        bufferbuilder.pos(width1 + dist, height1 + size, -90.0D + j).tex(0.0D, 1.0D).endVertex();
+                        bufferbuilder.pos(width1 + dist + size, height1 + size, -90.0D + j).tex(1.0D, 1.0D).endVertex();
+                        bufferbuilder.pos(width1 + dist + size, height1, -90.0D + j).tex(1.0D, 0.0D).endVertex();
+                        bufferbuilder.pos(width1 + dist, height1, -90.0D + j).tex(0.0D, 0.0D).endVertex();
                         tessellator.draw();
 
                         GlStateManager.popMatrix();
@@ -787,11 +788,11 @@ public class EventHandlerClient
                 else
                 {
                     mc.getTextureManager().bindTexture(rlUnselected);
-                    vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                    vertexbuffer.pos(width1, height1 + size, -90.0D).tex(0.0D, 1.0D).endVertex();
-                    vertexbuffer.pos(width1 + size, height1 + size, -90.0D).tex(1.0D, 1.0D).endVertex();
-                    vertexbuffer.pos(width1 + size, height1, -90.0D).tex(1.0D, 0.0D).endVertex();
-                    vertexbuffer.pos(width1, height1, -90.0D).tex(0.0D, 0.0D).endVertex();
+                    bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                    bufferbuilder.pos(width1, height1 + size, -90.0D).tex(0.0D, 1.0D).endVertex();
+                    bufferbuilder.pos(width1 + size, height1 + size, -90.0D).tex(1.0D, 1.0D).endVertex();
+                    bufferbuilder.pos(width1 + size, height1, -90.0D).tex(1.0D, 0.0D).endVertex();
+                    bufferbuilder.pos(width1, height1, -90.0D).tex(0.0D, 0.0D).endVertex();
                     tessellator.draw();
                 }
                 i++;
@@ -849,9 +850,9 @@ public class EventHandlerClient
                         double dist = size * (j - selectorSelectedHori);
                         GlStateManager.translate((newSlide && j == 0 ? 0.0D : ((selectorSelectedHori - selectorSelectedPrevHori) * 42F) * (1.0F - progressH)) + dist, 0.0D, 0.0D);
 
-                        EntityLivingBase entInstance = state.getEntInstance(mc.theWorld);
+                        EntityLivingBase entInstance = state.getEntInstance(mc.world);
                         float entSize = Math.max(entInstance.width, entInstance.height);
-                        float prog = MathHelper.clamp_float(j - selectorSelectedHori == 0 ? (!selectorShow ? selectorScrollHoriTimer - renderTick : (3F - selectorScrollHoriTimer + renderTick)) / 3F : 0.0F, 0.0F, 1.0F);
+                        float prog = MathHelper.clamp(j - selectorSelectedHori == 0 ? (!selectorShow ? selectorScrollHoriTimer - renderTick : (3F - selectorScrollHoriTimer + renderTick)) / 3F : 0.0F, 0.0F, 1.0F);
                         float scaleMag = ((2.5F + (entSize - 2.5F) * prog) / entSize) ;
 
                         drawEntityOnScreen(state, entInstance, 20, height1, entSize > 2.5F ? 16F * scaleMag : 16F, 2, 2, renderTick, true, j == states.size() - 1);
@@ -862,7 +863,7 @@ public class EventHandlerClient
                 else
                 {
                     MorphState state = states.get(0);
-                    EntityLivingBase entInstance = state.getEntInstance(mc.theWorld);
+                    EntityLivingBase entInstance = state.getEntInstance(mc.world);
                     float entSize = Math.max(entInstance.width, entInstance.height);
                     float scaleMag = (2.5F / entSize);
                     drawEntityOnScreen(state, entInstance, 20, height1, entSize > 2.5F ? 16F * scaleMag : 16F, 2, 2, renderTick, selectorSelectedVert == i, true);
@@ -882,13 +883,13 @@ public class EventHandlerClient
 
                 mc.getTextureManager().bindTexture(rlSelected);
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                vertexbuffer.pos(width1, height1 + size, -90.0D).tex(0.0D, 1.0D).endVertex();
-                vertexbuffer.pos(width1 + size, height1 + size, -90.0D).tex(1.0D, 1.0D).endVertex();
-                vertexbuffer.pos(width1 + size, height1, -90.0D).tex(1.0D, 0.0D).endVertex();
-                vertexbuffer.pos(width1, height1, -90.0D).tex(0.0D, 0.0D).endVertex();
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                bufferbuilder.pos(width1, height1 + size, -90.0D).tex(0.0D, 1.0D).endVertex();
+                bufferbuilder.pos(width1 + size, height1 + size, -90.0D).tex(1.0D, 1.0D).endVertex();
+                bufferbuilder.pos(width1 + size, height1, -90.0D).tex(1.0D, 0.0D).endVertex();
+                bufferbuilder.pos(width1, height1, -90.0D).tex(0.0D, 0.0D).endVertex();
                 tessellator.draw();
 
                 GlStateManager.disableBlend();
@@ -908,10 +909,10 @@ public class EventHandlerClient
             selectorScrollVertTimer = selectorScrollHoriTimer = SELECTOR_SCROLL_TIME;
             selectorSelectedVert = selectorSelectedHori = 0; //Reset the selected selector position
 
-            MorphInfoClient info = morphsActive.get(mc.thePlayer.getName());
+            MorphInfoClient info = morphsActive.get(mc.player.getName());
             if(info != null)
             {
-                String entName = info.nextState.getEntInstance(mc.theWorld).getName();
+                String entName = info.nextState.getEntInstance(mc.world).getName();
 
                 int i = 0;
                 Iterator<Map.Entry<String, ArrayList<MorphState>>> ite = playerMorphs.entrySet().iterator();
@@ -1044,7 +1045,7 @@ public class EventHandlerClient
             float viewY = mc.getRenderManager().playerViewY;
             mc.getRenderManager().setPlayerViewY(180.0F);
             mc.getRenderManager().setRenderShadow(false);
-            mc.getRenderManager().doRenderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
+            mc.getRenderManager().renderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
             mc.getRenderManager().setRenderShadow(true);
 
             if(ent instanceof EntityDragon)
@@ -1072,7 +1073,7 @@ public class EventHandlerClient
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            MorphInfoClient info = morphsActive.get(Minecraft.getMinecraft().thePlayer.getName());
+            MorphInfoClient info = morphsActive.get(Minecraft.getMinecraft().player.getName());
 
             GlStateManager.translate(0.0F, 0.0F, 100F);
             if(drawText)
@@ -1083,19 +1084,19 @@ public class EventHandlerClient
                 //                    GlStateManager.pushMatrix();
                 //                    float scaleee = 0.75F;
                 //                    GlStateManager.scale(scaleee, scaleee, scaleee);
-                //                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName())) ? EnumChatFormatting.GOLD : "") + ent.getName();
-                //                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) / 2) * scaleee), 5, 16777215);
+                //                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.player.getName())) ? EnumChatFormatting.GOLD : "") + ent.getName();
+                //                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2) * scaleee), 5, 16777215);
                 //                    GlStateManager.popMatrix();
                 //                }
                 //                else
                 {
-                    Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow((selected ? TextFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getName().equalsIgnoreCase(mc.thePlayer.getName())) ? TextFormatting.GOLD : "") + ent.getName(), 26, -32, 16777215);
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? TextFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getName().equalsIgnoreCase(mc.player.getName())) ? TextFormatting.GOLD : "") + ent.getName(), 26, -32, 16777215);
                 }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
-            if(state != null && !state.currentVariant.playerName.equalsIgnoreCase(mc.thePlayer.getName()) && state.currentVariant.thisVariant.isFavourite)
+            if(state != null && !state.currentVariant.playerName.equalsIgnoreCase(mc.player.getName()) && state.currentVariant.thisVariant.isFavourite)
             {
                 double pX = 9.5D;
                 double pY = -33.5D;
@@ -1110,15 +1111,15 @@ public class EventHandlerClient
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder bufferbuilder = tessellator.getBuffer();
                 double iconX = pX;
                 double iconY = pY;
 
-                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                vertexbuffer.pos(iconX, iconY + size, 0.0D).tex(0.0D, 1.0D).endVertex();
-                vertexbuffer.pos(iconX + size, iconY + size, 0.0D).tex(1.0D, 1.0D).endVertex();
-                vertexbuffer.pos(iconX + size, iconY, 0.0D).tex(1.0D, 0.0D).endVertex();
-                vertexbuffer.pos(iconX, iconY, 0.0D).tex(0.0D, 0.0D).endVertex();
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                bufferbuilder.pos(iconX, iconY + size, 0.0D).tex(0.0D, 1.0D).endVertex();
+                bufferbuilder.pos(iconX + size, iconY + size, 0.0D).tex(1.0D, 1.0D).endVertex();
+                bufferbuilder.pos(iconX + size, iconY, 0.0D).tex(1.0D, 0.0D).endVertex();
+                bufferbuilder.pos(iconX, iconY, 0.0D).tex(0.0D, 0.0D).endVertex();
                 tessellator.draw();
 
                 GlStateManager.color(0.0F, 0.0F, 0.0F, 0.6F);
@@ -1127,11 +1128,11 @@ public class EventHandlerClient
                 iconY = pY + 1D;
 
 
-                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                vertexbuffer.pos(iconX, iconY + size, -1.0D).tex(0.0D, 1.0D).endVertex();
-                vertexbuffer.pos(iconX + size, iconY + size, -1.0D).tex(1.0D, 1.0D).endVertex();
-                vertexbuffer.pos(iconX + size, iconY, -1.0D).tex(1.0D, 0.0D).endVertex();
-                vertexbuffer.pos(iconX, iconY, -1.0D).tex(0.0D, 0.0D).endVertex();
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                bufferbuilder.pos(iconX, iconY + size, -1.0D).tex(0.0D, 1.0D).endVertex();
+                bufferbuilder.pos(iconX + size, iconY + size, -1.0D).tex(1.0D, 1.0D).endVertex();
+                bufferbuilder.pos(iconX + size, iconY, -1.0D).tex(1.0D, 0.0D).endVertex();
+                bufferbuilder.pos(iconX, iconY, -1.0D).tex(0.0D, 0.0D).endVertex();
                 tessellator.draw();
             }
 

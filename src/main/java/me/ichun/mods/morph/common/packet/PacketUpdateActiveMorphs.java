@@ -42,7 +42,7 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
         for(Map.Entry<String, MorphInfo> e : infosToSend.entrySet())
         {
             ByteBufUtils.writeUTF8String(pb, e.getKey());
-            pb.writeNBTTagCompoundToBuffer(e.getValue().write(new NBTTagCompound()));
+            pb.writeCompoundTag(e.getValue().write(new NBTTagCompound()));
         }
         ByteBufUtils.writeUTF8String(pb, "##endPacket");
     }
@@ -57,7 +57,7 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
         {
             while(!name.equals("##endPacket"))
             {
-                NBTTagCompound tag = pb.readNBTTagCompoundFromBuffer();
+                NBTTagCompound tag = pb.readCompoundTag();
 
                 MorphInfo info = new MorphInfo(null, null, null);
                 info.read(tag);
@@ -90,17 +90,18 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
         //prevent mem leaks.
         infosToSend.entrySet().stream().filter(e -> e.getValue().nextState != null).forEach(e ->
         {
-            MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
-            info.read(e.getValue().write(new NBTTagCompound()));
-            if(Morph.eventHandlerClient.morphsActive.containsKey(e.getKey()))
-            {
-                Morph.eventHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
-            }
-            Morph.eventHandlerClient.morphsActive.put(e.getKey(), info);
-            if(e.getKey().equals(Minecraft.getMinecraft().thePlayer.getName()))
-            {
-                Morph.eventHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().theWorld, info);
-            }
+            //TODO fix this
+//            MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
+//            info.read(e.getValue().write(new NBTTagCompound()));
+//            if(Morph.eventHandlerClient.morphsActive.containsKey(e.getKey()))
+//            {
+//                Morph.eventHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
+//            }
+//            Morph.eventHandlerClient.morphsActive.put(e.getKey(), info);
+//            if(e.getKey().equals(Minecraft.getMinecraft().player.getName()))
+//            {
+//                Morph.eventHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().world, info);
+//            }
         });
     }
 }

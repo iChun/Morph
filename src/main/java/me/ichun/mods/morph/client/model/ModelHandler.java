@@ -17,17 +17,12 @@ public class ModelHandler
 {
     private static HashMap<Class<? extends EntityLivingBase>, ModelInfo> entityModelMap = new HashMap<>();
     private static HashMap<String, ModelInfo> playerModelMap = new HashMap<>();
-    private static ModelInfo zombieVillagerModel;
 
     public static void dissectForModels(Class<? extends EntityLivingBase> clz, Render rend)
     {
         if(rend instanceof RenderLivingBase)
         {
             entityModelMap.put(clz, new ModelInfo(clz, rend, ((RenderLivingBase)rend).mainModel));
-            if(rend.getClass() == RenderZombie.class)
-            {
-                zombieVillagerModel = new ModelInfo(clz, rend, ((RenderZombie)rend).zombieVillagerModel);
-            }
         }
         else
         {
@@ -48,10 +43,6 @@ public class ModelHandler
             String s = ((AbstractClientPlayer)entity).getSkinType();
             ModelInfo modelInfo = playerModelMap.get(s);
             return modelInfo != null ? modelInfo : playerModelMap.get("default");
-        }
-        else if(entity instanceof EntityZombie && ((EntityZombie)entity).isVillager())
-        {
-            return zombieVillagerModel;
         }
         return getEntityModelInfo(entity.getClass());
     }

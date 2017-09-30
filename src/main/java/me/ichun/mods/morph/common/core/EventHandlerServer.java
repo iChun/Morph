@@ -36,7 +36,7 @@ public class EventHandlerServer
             if(!event.getEntityPlayer().getEntityWorld().isRemote && Morph.eventHandlerServer.morphsActive.containsKey(event.getEntityPlayer().getName()))
             {
                 event.setResult(stats);
-                event.getEntityPlayer().addChatMessage(new TextComponentTranslation("morph.denySleep"));
+                event.getEntityPlayer().sendMessage(new TextComponentTranslation("morph.denySleep"));
             }
             else if(event.getEntityPlayer().getEntityWorld().isRemote && Morph.eventHandlerClient.morphsActive.containsKey(event.getEntityPlayer().getName()))
             {
@@ -54,13 +54,13 @@ public class EventHandlerServer
             if(!player.getEntityWorld().isRemote && Morph.eventHandlerServer.morphsActive.get(player.getName()) != null)
             {
                 MorphInfo info = Morph.eventHandlerServer.morphsActive.get(player.getName());
-                EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.worldObj) : info.nextState.getEntInstance(player.worldObj);
+                EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.getEntityWorld()) : info.nextState.getEntInstance(player.getEntityWorld());
                 event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT) ? EntityHelper.getHurtSound(entInstance, entInstance.getClass()) : EntityHelper.getDeathSound(entInstance, entInstance.getClass()));
             }
             else if(player.getEntityWorld().isRemote && Morph.eventHandlerClient.morphsActive.get(player.getName()) != null)
             {
                 MorphInfo info = Morph.eventHandlerClient.morphsActive.get(player.getName());
-                EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.worldObj) : info.nextState.getEntInstance(player.worldObj);
+                EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.getEntityWorld()) : info.nextState.getEntInstance(player.getEntityWorld());
                 event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT) ? EntityHelper.getHurtSound(entInstance, entInstance.getClass()) : EntityHelper.getDeathSound(entInstance, entInstance.getClass()));
             }
         }
@@ -69,7 +69,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
-        if(!event.getEntityLiving().worldObj.isRemote)
+        if(!event.getEntityLiving().getEntityWorld().isRemote)
         {
             if(Morph.config.loseMorphsOnDeath >= 1 && event.getEntityLiving() instanceof EntityPlayerMP)
             {
@@ -107,9 +107,9 @@ public class EventHandlerServer
                 //save the player data
                 PlayerMorphHandler.getInstance().savePlayerData(player);
             }
-            if(event.getSource().getEntity() instanceof EntityPlayerMP && event.getEntityLiving() != event.getSource().getEntity())
+            if(event.getSource().getTrueSource() instanceof EntityPlayerMP && event.getEntityLiving() != event.getSource().getTrueSource())
             {
-                EntityPlayerMP player = (EntityPlayerMP)event.getSource().getEntity();
+                EntityPlayerMP player = (EntityPlayerMP)event.getSource().getTrueSource();
 
                 if(PlayerMorphHandler.getInstance().canPlayerMorph(player))
                 {
@@ -124,11 +124,11 @@ public class EventHandlerServer
                         {
                             if(info.isMorphing() && info.prevState != null)
                             {
-                                living = info.prevState.getEntInstance(player1.worldObj);
+                                living = info.prevState.getEntInstance(player1.getEntityWorld());
                             }
                             else
                             {
-                                living = info.nextState.getEntInstance(player1.worldObj);
+                                living = info.nextState.getEntInstance(player1.getEntityWorld());
                             }
                         }
                     }
@@ -166,7 +166,7 @@ public class EventHandlerServer
     {
         if(event.side.isServer() && event.phase == TickEvent.Phase.START)
         {
-            if(event.player.worldObj.playerEntities.contains(event.player))
+            if(event.player.getEntityWorld().playerEntities.contains(event.player))
             {
                 MorphInfo info = morphsActive.get(event.player.getName());
                 if(info != null && info.getPlayer() != event.player)

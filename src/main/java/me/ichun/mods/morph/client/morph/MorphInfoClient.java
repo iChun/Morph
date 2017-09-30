@@ -8,6 +8,7 @@ import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
@@ -110,7 +111,7 @@ public class MorphInfoClient extends MorphInfo
         ent.moveStrafing = player.moveStrafing;
         ent.moveForward = player.moveForward;
         ent.dimension = player.dimension;
-        ent.worldObj = player.worldObj;
+        ent.world = player.getEntityWorld();
         ent.ridingEntity = player.ridingEntity;
         ent.hurtTime = player.hurtTime;
         ent.deathTime = player.deathTime;
@@ -121,11 +122,11 @@ public class MorphInfoClient extends MorphInfo
         boolean prevOnGround = ent.onGround;
         ent.onGround = player.onGround;
 
-        if(player != mc.thePlayer) //Testing to see if the mob is on the ground or not if the morph isn't the MC player
+        if(player != mc.player) //Testing to see if the mob is on the ground or not if the morph isn't the MC player
         {
             ent.noClip = false;
             ent.setEntityBoundingBox(player.getEntityBoundingBox());
-            ent.moveEntity(0.0D, -0.01D, 0.0D);
+            ent.move(MoverType.SELF, 0.0D, -0.01D, 0.0D);
             ent.posY = player.posY; //reset the position.
         }
         ent.noClip = player.noClip;

@@ -16,7 +16,7 @@ public class MorphState
 
     public EntityLivingBase getEntInstance(World world)
     {
-        if(entInstance != null && entInstance.worldObj != world)
+        if(entInstance != null && entInstance.world != world)
         {
             entInstance = null;
         }

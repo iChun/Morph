@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 @Mod(modid = Morph.MOD_ID, name = Morph.MOD_NAME,
         version = Morph.VERSION,
         guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
-        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR + ".4.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
+        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR + ".0.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + ".0.0," + iChunUtil.VERSION_MAJOR + ".1.0)"
 )
 public class Morph

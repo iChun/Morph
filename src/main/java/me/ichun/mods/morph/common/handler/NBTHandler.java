@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -81,9 +82,9 @@ public class NBTHandler
     public static void createMinecraftEntityTags(World world)
     {
         TreeMap<String, TreeMap<String, String>> list = new TreeMap<>(Ordering.natural());
-        for(Object obj : EntityList.CLASS_TO_NAME.entrySet())
+        for(EntityEntry entry : net.minecraftforge.registries.GameData.getEntityRegistry().getValues())
         {
-            Class clz = (Class)((Map.Entry)obj).getKey();
+            Class clz = entry.getEntityClass();
             if(EntityLivingBase.class.isAssignableFrom(clz) && clz != EntityLivingBase.class && clz != EntityLiving.class && clz != EntityMob.class)
             {
                 try

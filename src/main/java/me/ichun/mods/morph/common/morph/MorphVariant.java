@@ -86,7 +86,7 @@ public class MorphVariant
 
         //by this point the variant would have been marked as invalid and a fake pig should be created to return as the entity.
 
-        EntityPig pig = (EntityPig)EntityList.createEntityByName("Pig", world);
+        EntityPig pig = (EntityPig)EntityList.newEntity(EntityPig.class, world);
         NBTTagCompound fakeTag = new NBTTagCompound();
         pig.writeEntityToNBT(fakeTag);
         clean(pig, fakeTag);
@@ -257,7 +257,7 @@ public class MorphVariant
         living.writeEntityToNBT(variant.entTag);
         clean(living, variant.entTag);
 
-        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp_double(living.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue(), 0D, 20D)); //For health balancing reasons for now.
+        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp(living.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue(), 0D, 20D)); //For health balancing reasons for now.
 
         if(variant.instanceTag.tagMap.containsKey("ForgeData")) // send the ForgeData to the variant tag.
         {

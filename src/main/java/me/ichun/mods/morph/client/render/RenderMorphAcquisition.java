@@ -39,8 +39,8 @@ public class RenderMorphAcquisition extends Render<EntityMorphAcquisition>
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        float skinProg = MathHelper.clamp_float((ent.progress + partialTicks) / 5F, 0F, 1F);
-        float morphProg = MathHelper.clamp_float(((ent.progress - 5F) + partialTicks) / 35F, 0F, 1F);
+        float skinProg = MathHelper.clamp((ent.progress + partialTicks) / 5F, 0F, 1F);
+        float morphProg = MathHelper.clamp(((ent.progress - 5F) + partialTicks) / 35F, 0F, 1F);
 
         if(ent.prevScaleX == -1) //setting up
         {
@@ -70,7 +70,7 @@ public class RenderMorphAcquisition extends Render<EntityMorphAcquisition>
         for(ModelRenderer renderer : ent.model.nextModels)
         {
             rand.setSeed(Math.abs(renderer.hashCode()));
-            float spinSpeed = MathHelper.clamp_float(morphProg, 0F, 0.45F);
+            float spinSpeed = MathHelper.clamp(morphProg, 0F, 0.45F);
             float spinValue = (float)Math.pow(3D, 4F * spinSpeed);
             float offsetX = (rand.nextFloat() - rand.nextFloat()) * spinValue;
             float offsetY = (rand.nextFloat() - rand.nextFloat()) * spinValue;

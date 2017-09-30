@@ -9,6 +9,7 @@ import me.ichun.mods.morph.common.thread.ThreadGetResources;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ProxyCommon
@@ -24,9 +25,17 @@ public class ProxyCommon
         (new ThreadGetResources(Morph.config.customPatchLink)).start();
 
         ResourceLocation rs = new ResourceLocation("morph", "morph");
-        Morph.soundMorph = GameRegistry.register(new SoundEvent(rs).setRegistryName(rs));
+        //TODO move this to the sound register event
+        Morph.soundMorph = new SoundEvent(rs).setRegistryName(rs);
+        ForgeRegistries.SOUND_EVENTS.register(Morph.soundMorph);
 
-        Morph.channel = new PacketChannel(Morph.MOD_NAME, PacketUpdateMorphList.class, PacketUpdateActiveMorphs.class, PacketGuiInput.class, PacketDemorph.class, PacketAcquireEntity.class);
+        Morph.channel = new PacketChannel(Morph.MOD_NAME,
+                PacketUpdateMorphList.class,
+                PacketUpdateActiveMorphs.class,
+                PacketGuiInput.class,
+                PacketDemorph.class,
+                PacketAcquireEntity.class
+        );
     }
 
     public void init()

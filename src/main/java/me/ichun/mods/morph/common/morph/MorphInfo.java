@@ -3,6 +3,7 @@ package me.ichun.mods.morph.common.morph;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
@@ -101,26 +102,26 @@ public class MorphInfo
 
         if(prevState != null)
         {
-            EntityLivingBase prevEnt = prevState.getEntInstance(player.worldObj);
-            EntityLivingBase nextEnt = nextState.getEntInstance(player.worldObj);
+            EntityLivingBase prevEnt = prevState.getEntInstance(player.getEntityWorld());
+            EntityLivingBase nextEnt = nextState.getEntInstance(player.getEntityWorld());
 
             float newWidth = EntityHelper.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
             float newHeight = EntityHelper.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
 
             if(!(newWidth == player.width))
             {
-                player.moveEntity(-(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
+                player.move(MoverType.SELF, -(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
             }
 
-            player.setSize(newWidth, newHeight);
+            EntityHelper.setSize(player.getClass(), player, newWidth, newHeight);
 
             player.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
         }
         else
         {
-            EntityLivingBase nextEnt = nextState.getEntInstance(player.worldObj);
+            EntityLivingBase nextEnt = nextState.getEntInstance(player.getEntityWorld());
 
-            player.setSize(nextEnt.width, nextEnt.height);
+            EntityHelper.setSize(player.getClass(), player, nextEnt.width, nextEnt.height);
 
             player.eyeHeight = nextEnt.getEyeHeight();
         }
@@ -138,12 +139,12 @@ public class MorphInfo
 
     public float getMorphProgress(float renderTick) //use 0 for serverside. This is for overall morph progression.
     {
-        return MathHelper.clamp_float((morphTime + renderTick) /  Morph.config.morphTime, 0.0F, 1.0F);
+        return MathHelper.clamp((morphTime + renderTick) /  Morph.config.morphTime, 0.0F, 1.0F);
     }
 
     public float getMorphTransitionProgress(float renderTick) //use 0 for serverside. This is for the transitioning between models, and therefore, size.
     {
-        return (float)Math.sin(Math.toRadians(MathHelper.clamp_float((morphTime - 10 + renderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
+        return (float)Math.sin(Math.toRadians(MathHelper.clamp((morphTime - 10 + renderTick) / (Morph.config.morphTime - 20F), 0.0F, 1.0F) * 90F));
     }
 
     @SideOnly(Side.CLIENT)

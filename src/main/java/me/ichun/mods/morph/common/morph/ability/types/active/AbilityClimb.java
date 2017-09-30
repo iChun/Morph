@@ -19,7 +19,7 @@ public class AbilityClimb extends Ability
 	@Override
 	public void tick()
 	{
-		if(getParent().isCollidedHorizontally)
+		if(getParent().collidedHorizontally)
 		{
             isActive = true;
 			getParent().fallDistance = 0.0F;
@@ -32,7 +32,7 @@ public class AbilityClimb extends Ability
 				getParent().motionY = 0.1176D; //(0.2D - 0.08D) * 0.98D
 			}
 		}
-		if(!getParent().worldObj.isRemote)
+		if(!getParent().world.isRemote)
 		{
             //TODO test this
 			double motionX = getParent().posX - getParent().lastTickPosX;
