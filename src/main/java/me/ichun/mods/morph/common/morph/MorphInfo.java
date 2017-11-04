@@ -2,10 +2,12 @@ package me.ichun.mods.morph.common.morph;
 
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.Morph;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -46,7 +48,14 @@ public class MorphInfo
             {
                 morphTime = Morph.config.morphTime;
             }
-            //DO STUFF HERE. LIKE SETTING THE PLAYER SIZE AND WHATNOT.
+            if(prevState != null && prevState.entInstance != null)
+            {
+                syncEntityWithPlayer(prevState.entInstance);
+            }
+            if(nextState.entInstance != null)
+            {
+                syncEntityWithPlayer(nextState.entInstance);
+            }
         }
         if(isMorphing()) //for this to be possible, the player has to be defined anyways.
         {
@@ -82,12 +91,27 @@ public class MorphInfo
 
     public void syncEntityWithPlayer(EntityLivingBase ent)
     {
+        if(player == null)
+        {
+            return;
+        }
+
+        ent.posX = player.posX;
+        ent.posY = player.posY;
+        ent.posZ = player.posZ;
+        ent.dimension = player.dimension;
+        ent.world = player.getEntityWorld();
+        ent.setHealth(ent.getMaxHealth() * (player.getHealth() / player.getMaxHealth()));
     }
 
     public void setPlayer(EntityPlayer player)
     {
         this.player = player;
 
+        if(nextState.entInstance instanceof EntityLiving)
+        {
+            ((EntityLiving)nextState.entInstance).setLeftHanded(player.getPrimaryHand() == EnumHandSide.LEFT);
+        }
         setPlayerBoundingBox();
     }
 
@@ -108,22 +132,30 @@ public class MorphInfo
             float newWidth = EntityHelper.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
             float newHeight = EntityHelper.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
 
-            if(!(newWidth == player.width))
-            {
-                player.move(MoverType.SELF, -(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
-            }
+//            if(!(newWidth == player.width))
+//            {
+//                player.move(MoverType.SELF, -(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
+//            }
 
-            EntityHelper.setSize(player.getClass(), player, newWidth, newHeight);
+//            EntityHelper.setSize(player.getClass(), player, newWidth, newHeight);
 
             player.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
+            if(nextState.entInstance instanceof EntityLiving)
+            {
+                ((EntityLiving)nextState.entInstance).setLeftHanded(player.getPrimaryHand() == EnumHandSide.LEFT);
+            }
         }
         else
         {
             EntityLivingBase nextEnt = nextState.getEntInstance(player.getEntityWorld());
 
-            EntityHelper.setSize(player.getClass(), player, nextEnt.width, nextEnt.height);
+//            EntityHelper.setSize(player.getClass(), player, nextEnt.width, nextEnt.height);
 
             player.eyeHeight = nextEnt.getEyeHeight();
+            if(nextState.entInstance instanceof EntityLiving)
+            {
+                ((EntityLiving)nextState.entInstance).setLeftHanded(player.getPrimaryHand() == EnumHandSide.LEFT);
+            }
         }
     }
 

@@ -7,13 +7,17 @@ import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -141,6 +145,14 @@ public class MorphInfoClient extends MorphInfo
             ((EntitySlime)ent).squishAmount = 0.6F;
         }
 
+        if(ent instanceof EntityRabbit)
+        {
+            if(MathHelper.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ) > 0.02D && ((EntityRabbit)ent).setJumpCompletion(0) == 0 || prevOnGround && !ent.onGround)
+            {
+                ((EntityRabbit)ent).startJumping();
+            }
+        }
+
         if(ent instanceof EntityDragon)
         {
             ent.prevRotationYaw += 180F;
@@ -153,12 +165,12 @@ public class MorphInfoClient extends MorphInfo
             ItemStack itemstack = ent.getItemStackFromSlot(entityequipmentslot);
             ItemStack itemstack1 = player.getItemStackFromSlot(entityequipmentslot);
 
-            if(itemstack == null && itemstack1 != null ||
-                    itemstack != null && itemstack1 == null ||
-                    itemstack != null && itemstack1 != null &&
+            if(itemstack.isEmpty() && !itemstack1.isEmpty() ||
+                    !itemstack.isEmpty() && itemstack1.isEmpty() ||
+                    !itemstack.isEmpty() && !itemstack1.isEmpty() &&
                             !itemstack.isItemEqual(itemstack1))
             {
-                ent.setItemStackToSlot(entityequipmentslot, itemstack1 != null ? itemstack1.copy() : null);
+                ent.setItemStackToSlot(entityequipmentslot, !itemstack1.isEmpty() ? itemstack1.copy() : ItemStack.EMPTY);
             }
         }
 

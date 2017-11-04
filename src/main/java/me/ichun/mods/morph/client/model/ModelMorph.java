@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityRabbit;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
@@ -177,6 +178,13 @@ public class ModelMorph extends ModelBase
             float nextScaleX = buffer1.get(0) / buffer.get(0);
             float nextScaleY = buffer1.get(5) / buffer.get(5);
             float nextScaleZ = buffer1.get(8) / buffer.get(8);
+
+            if(nextRef instanceof EntityRabbit)
+            {
+                nextScaleX *= 0.6F;
+                nextScaleY *= 0.6F;
+                nextScaleZ *= 0.6F;
+            }
 
             scaleX = prevScaleX + (nextScaleX - prevScaleX) * progress;
             scaleY = prevScaleY + (nextScaleY - prevScaleY) * progress;

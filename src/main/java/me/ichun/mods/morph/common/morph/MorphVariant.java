@@ -286,6 +286,8 @@ public class MorphVariant
 
     public static void clean(EntityLivingBase living, NBTTagCompound tag)
     {
+        NBTHandler.modifyNBT(living.getClass(), tag);
+
         //EntityLivingBase tags
         tag.setFloat("HealF", Short.MAX_VALUE);
         tag.setShort("Health", Short.MAX_VALUE);
@@ -303,8 +305,6 @@ public class MorphVariant
             tag.setBoolean("PersistenceRequired", true);
             tag.setBoolean("NoAI", true);
         }
-
-        NBTHandler.modifyNBT(living.getClass(), tag);
     }
 
     @Override
