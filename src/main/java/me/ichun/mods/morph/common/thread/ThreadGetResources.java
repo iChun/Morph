@@ -53,7 +53,7 @@ public class ThreadGetResources extends Thread
                 for(Map.Entry<String, String> modifier : map.entrySet())
                 {
                     String value = modifier.getValue();
-                    handleModifier(tagModifier, modifier.getKey(), value);
+                    NBTHandler.handleModifier(tagModifier, modifier.getKey(), value);
                 }
                 if(EntityLivingBase.class.isAssignableFrom(clz) && !tagModifier.modifiers.isEmpty())
                 {
@@ -79,79 +79,6 @@ public class ThreadGetResources extends Thread
         {
             Morph.LOGGER.warn("No NBT modifiers for Minecraft mobs? This might be an issue!");
         }
-    }
-
-    public void handleModifier(NBTHandler.TagModifier tagModifier, String key, String value)
-    {
-        if(value.contains(";") && !value.contains(":"))
-        {
-            key = value.substring(0, value.indexOf(";"));
-            value = value.substring(value.indexOf(";") + 1, value.length());
-        }
-        Object obj = value;
-        if(value.contains(":"))
-        {
-            NBTHandler.TagModifier nestedTagModifier = new NBTHandler.TagModifier();
-            obj = nestedTagModifier;
-            handleModifier(nestedTagModifier, value.substring(0, value.indexOf(":")), value.substring(value.indexOf(":") + 1, value.length()));
-        }
-        else if(value.equalsIgnoreCase("null"))
-        {
-            obj = null;
-        }
-        else if(value.equalsIgnoreCase("false") || value.equalsIgnoreCase("true"))
-        {
-            obj = value.equalsIgnoreCase("true");
-        }
-        else if(value.endsWith("F"))
-        {
-            try
-            {
-                obj = Float.parseFloat(value.substring(0, value.length() - 1));
-            }
-            catch(NumberFormatException ignored){}
-        }
-        else if(value.endsWith("D"))
-        {
-            try
-            {
-                obj = Double.parseDouble(value.substring(0, value.length() - 1));
-            }
-            catch(NumberFormatException ignored){}
-        }
-        else if(value.endsWith("B"))
-        {
-            try
-            {
-                obj = Byte.parseByte(value.substring(0, value.length() - 1));
-            }
-            catch(NumberFormatException ignored){}
-        }
-        else if(value.endsWith("S"))
-        {
-            try
-            {
-                obj = Short.parseShort(value.substring(0, value.length() - 1));
-            }
-            catch(NumberFormatException ignored){}
-        }
-        else if(value.endsWith("L"))
-        {
-            try
-            {
-                obj = Long.parseLong(value.substring(0, value.length() - 1));
-            }
-            catch(NumberFormatException ignored){}
-        }
-        else
-        {
-            try
-            {
-                obj = Integer.parseInt(value);
-            }
-            catch(NumberFormatException ignored){}
-        }
-        tagModifier.modifiers.put(key, obj);
     }
 
     public <T> T getResource(String name, Type mapType)

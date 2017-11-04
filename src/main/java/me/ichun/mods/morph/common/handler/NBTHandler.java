@@ -20,6 +20,7 @@ import java.util.TreeMap;
 
 public class NBTHandler
 {
+    public static HashMap<Class<? extends EntityLivingBase>, TagModifier> modModifiers = new HashMap<>();
     public static HashMap<Class<? extends EntityLivingBase>, TagModifier> nbtModifiers = new HashMap<>();
 
     public static void modifyNBT(Class<? extends EntityLivingBase> clz, NBTTagCompound tag)
@@ -36,6 +37,10 @@ public class NBTHandler
         ArrayList<TagModifier> modifiers = new ArrayList<>();
         while(entClz != Entity.class)
         {
+            if(modModifiers.containsKey(entClz))
+            {
+                modifiers.add(0, modModifiers.get(entClz));
+            }
             if(nbtModifiers.containsKey(entClz))
             {
                 modifiers.add(0, nbtModifiers.get(entClz));
@@ -47,6 +52,7 @@ public class NBTHandler
 
     public static class TagModifier
     {
+        public String parentKey;
         public HashMap<String, Object> modifiers = new HashMap<>();
 
         public void modifyTag(NBTTagCompound tag)
@@ -60,7 +66,7 @@ public class NBTHandler
                 }
                 else if(obj instanceof TagModifier)
                 {
-                    NBTTagCompound tagToModify = tag.getCompoundTag(e.getKey());
+                    NBTTagCompound tagToModify = tag.getCompoundTag(((TagModifier)obj).parentKey);
                     if(!tagToModify.hasNoTags())
                     {
                         ((TagModifier)obj).modifyTag(tagToModify);
@@ -107,6 +113,80 @@ public class NBTHandler
                 }
             }
         }
+    }
+
+    public static void handleModifier(NBTHandler.TagModifier tagModifier, String key, String value)
+    {
+        if(value.contains(";") && !value.contains(":"))
+        {
+            key = value.substring(0, value.indexOf(";"));
+            value = value.substring(value.indexOf(";") + 1, value.length());
+        }
+        Object obj = value;
+        if(value.contains(":"))
+        {
+            NBTHandler.TagModifier nestedTagModifier = new NBTHandler.TagModifier();
+            obj = nestedTagModifier;
+            nestedTagModifier.parentKey = value.substring(0, value.indexOf(":"));
+            handleModifier(nestedTagModifier, nestedTagModifier.parentKey, value.substring(value.indexOf(":") + 1, value.length()));
+        }
+        else if(value.equalsIgnoreCase("null"))
+        {
+            obj = null;
+        }
+        else if(value.equalsIgnoreCase("false") || value.equalsIgnoreCase("true"))
+        {
+            obj = value.equalsIgnoreCase("true");
+        }
+        else if(value.endsWith("F"))
+        {
+            try
+            {
+                obj = Float.parseFloat(value.substring(0, value.length() - 1));
+            }
+            catch(NumberFormatException ignored){}
+        }
+        else if(value.endsWith("D"))
+        {
+            try
+            {
+                obj = Double.parseDouble(value.substring(0, value.length() - 1));
+            }
+            catch(NumberFormatException ignored){}
+        }
+        else if(value.endsWith("B"))
+        {
+            try
+            {
+                obj = Byte.parseByte(value.substring(0, value.length() - 1));
+            }
+            catch(NumberFormatException ignored){}
+        }
+        else if(value.endsWith("S"))
+        {
+            try
+            {
+                obj = Short.parseShort(value.substring(0, value.length() - 1));
+            }
+            catch(NumberFormatException ignored){}
+        }
+        else if(value.endsWith("L"))
+        {
+            try
+            {
+                obj = Long.parseLong(value.substring(0, value.length() - 1));
+            }
+            catch(NumberFormatException ignored){}
+        }
+        else
+        {
+            try
+            {
+                obj = Integer.parseInt(value);
+            }
+            catch(NumberFormatException ignored){}
+        }
+        tagModifier.modifiers.put(key, obj);
     }
 
     public static void createMinecraftEntityTags(World world)

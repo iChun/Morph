@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.*;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -244,6 +245,14 @@ public class MorphVariant
         }
 
         NBTTagCompound saveData = new NBTTagCompound();
+
+        //Modify this stupid thing
+        if(living instanceof EntityHorse)
+        {
+            EntityHorse horse = (EntityHorse)living;
+            horse.setHorseVariant((horse.getHorseVariant() & 255) % 7);
+        }
+        //End modify stupid thing
 
         if(!living.writeToNBTOptional(saveData))
         {

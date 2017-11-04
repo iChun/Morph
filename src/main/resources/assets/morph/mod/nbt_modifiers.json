@@ -15,7 +15,8 @@
   },
   "example.class.Two": {  
     "additionalNote": "The key is the NBT tag to modify. The value will be the Object type and what value to set it to. If the value is of a numerical type, please append the type with a capital letter, no lowercase.",
-    "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom. Keep the examples at the top."
+    "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom. Keep the examples at the top.",
+    "additionalNote3": "You can also add compatibility for your own mod via the IMC system. Look in the Morph main class for documentation."
   },
   
   "tropicraft.entities.hostile.land.SpiderAdult": {  
@@ -40,14 +41,19 @@
     "ActiveEffects": "null",
     "ForcedAge": "null",
     "InLove": "null",
+    "LoveCause": "null",
     "Sitting": "null",
     "Equipment": "null",
     "DropChances": "null",
     "Leashed": "null",
     "Leash": "null",
-    "bukkit": "null",
     "ExplosionRadius": "null",
-    "ForgeData_Hats": "ForgeData:Hats_hatInfo;null"
+    "LeftHanded": "null",
+    "bukkit": "null",
+    "ForgeData_Hats": "ForgeData:Hats_hatInfo;null",
+    "ForgeData_BeeBarker1": "ForgeData:BeeBarker_barkable;null",
+    "ForgeData_BeeBarker2": "ForgeData:BeeBarker_beeHighestCharge;null",
+    "ForgeData_BeeBarker3": "ForgeData:BeeBarker_beeCharge;null"
   },
   "net.minecraft.entity.boss.EntityWither": {
     "Invul": "null"
@@ -75,6 +81,13 @@
     "Anger": "null",
 	"HurtBy": "null"
   },
+  "net.minecraft.entity.monster.EntityShulker": {
+    "AttachFace": "1B",
+    "Peek": "0",
+    "APX": "null",
+    "APY": "null",
+    "APZ": "null"
+  },
   "net.minecraft.entity.monster.EntitySlime": {
     "wasOnGround": "null"
   },
@@ -96,6 +109,9 @@
 	"Items": "null",
     "Tame": "null",
     "Temper": "null"
+  },
+  "net.minecraft.entity.passive.EntityLlama": {
+    "Strength": "6"
   },
   "net.minecraft.entity.passive.EntityRabbit": {
     "MoreCarrotTicks": "null"

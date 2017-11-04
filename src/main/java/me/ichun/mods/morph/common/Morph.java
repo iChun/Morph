@@ -9,6 +9,7 @@ import me.ichun.mods.morph.client.core.EventHandlerClient;
 import me.ichun.mods.morph.common.core.Config;
 import me.ichun.mods.morph.common.core.EventHandlerServer;
 import me.ichun.mods.morph.common.core.ProxyCommon;
+import me.ichun.mods.morph.common.handler.NBTHandler;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.SoundEvent;
@@ -75,26 +76,60 @@ public class Morph
     @Mod.EventHandler
     public void onIMCMessage(FMLInterModComms.IMCEvent event)
     {
-        event.getMessages().stream().filter(message -> message.key.equalsIgnoreCase("blacklist") && message.isStringMessage()).forEach(message ->
+        for(FMLInterModComms.IMCMessage message : event.getMessages())
         {
-            try
+            if(message.key.equalsIgnoreCase("blacklist") && message.isStringMessage())
             {
-                Class clz = Class.forName(message.getStringValue());
-                if(EntityLivingBase.class.isAssignableFrom(clz) && !PlayerMorphHandler.blacklistedEntityClasses.contains(clz))
+                try
                 {
-                    PlayerMorphHandler.blacklistedEntityClasses.add(clz);
-                    LOGGER.info("Registered " + message.getStringValue() + " to Morph Entity blacklist");
+                    Class clz = Class.forName(message.getStringValue());
+                    if(EntityLivingBase.class.isAssignableFrom(clz) && !PlayerMorphHandler.blacklistedEntityClasses.contains(clz))
+                    {
+                        PlayerMorphHandler.blacklistedEntityClasses.add(clz);
+                        LOGGER.info("Registered " + message.getStringValue() + " to Morph Entity blacklist");
+                    }
+                    else
+                    {
+                        LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Entity may already be in blacklist or may not be an EntityLivingBase!");
+                    }
+                }
+                catch(ClassNotFoundException e)
+                {
+                    LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Class not found!");
+                    e.printStackTrace();
+                }
+            }
+            else if(message.key.equalsIgnoreCase("nbt_modifier") && message.isStringMessage()) //format <class>><key>><value>. EG: net.mc.ent.EntExample>NBTKey>Value
+            {
+                String[] split = message.getStringValue().split(">");
+                if(split.length != 3)
+                {
+                    LOGGER.info("Error adding NBT modifier for class " + message.getStringValue() + ". Invalid argument count!");
                 }
                 else
                 {
-                    LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Entity may already be in blacklist or may not be an EntityLivingBase!");
+                    try
+                    {
+                        Class clz = Class.forName(split[0]);
+                        if(EntityLivingBase.class.isAssignableFrom(clz))
+                        {
+                            NBTHandler.TagModifier tagModifier = NBTHandler.modModifiers.computeIfAbsent(clz, k -> new NBTHandler.TagModifier());
+                            NBTHandler.handleModifier(tagModifier, split[1], split[2]);
+                            NBTHandler.modModifiers.put(clz, tagModifier);
+                            LOGGER.info("Registered " + message.getStringValue() + " to mod NBT modifiers");
+                        }
+                        else
+                        {
+                            LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Entity is not an EntityLivingBase!");
+                        }
+                    }
+                    catch(ClassNotFoundException e)
+                    {
+                        LOGGER.info("Error adding NBT modifier for class " + message.getStringValue() + ". Class not found!");
+                        e.printStackTrace();
+                    }
                 }
             }
-            catch(ClassNotFoundException e)
-            {
-                LOGGER.info("Error adding " + message.getStringValue() + " to Morph Entity blacklist. Class not found!");
-                e.printStackTrace();
-            }
-        });
+        }
     }
 }
