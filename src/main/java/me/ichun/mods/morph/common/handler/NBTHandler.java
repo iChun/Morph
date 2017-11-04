@@ -31,7 +31,7 @@ public class NBTHandler
         }
     }
 
-    public static ArrayList<TagModifier> getModifiers(Class<? extends EntityLivingBase> entClz)
+    public static ArrayList<TagModifier> getModifiers(Class<? extends Entity> entClz)
     {
         ArrayList<TagModifier> modifiers = new ArrayList<>();
         while(entClz != Entity.class)
@@ -40,7 +40,7 @@ public class NBTHandler
             {
                 modifiers.add(0, nbtModifiers.get(entClz));
             }
-            entClz = (Class<? extends EntityLivingBase>)entClz.getSuperclass();
+            entClz = (Class<? extends Entity>)entClz.getSuperclass();
         }
         return modifiers;
     }
@@ -72,7 +72,14 @@ public class NBTHandler
                 }
                 else if(obj instanceof String)
                 {
-                    tag.setString(e.getKey(), (String)obj);
+                    if(obj.equals("nullAsString"))
+                    {
+                        tag.setString(e.getKey(), "null");
+                    }
+                    else
+                    {
+                        tag.setString(e.getKey(), (String)obj);
+                    }
                 }
                 else if(obj instanceof Float)
                 {

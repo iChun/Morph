@@ -3,6 +3,7 @@
     "removeThisTag": "null",
     "booleanStuff": "false",
     "StringStuff": "WhateverStringWorks",
+    "StringStuff2": "nullAsString",
     "floatStuff": "100.0F",
     "doubleStuff": "100.0D",
     "integerStuff": "100",
@@ -46,7 +47,7 @@
     "Leash": "null",
     "bukkit": "null",
     "ExplosionRadius": "null",
-    "ForgeData_Hats": "ForgeDat:Hats_hatInfo;null"
+    "ForgeData_Hats": "ForgeData:Hats_hatInfo;null"
   },
   "net.minecraft.entity.boss.EntityWither": {
     "Invul": "null"
