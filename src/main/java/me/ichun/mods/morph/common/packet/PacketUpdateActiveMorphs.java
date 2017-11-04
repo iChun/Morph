@@ -71,10 +71,9 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
     }
 
     @Override
-    public AbstractPacket execute(Side side, EntityPlayer player)
+    public void execute(Side side, EntityPlayer player)
     {
         handleClient();
-        return null;
     }
 
     @Override
@@ -84,24 +83,25 @@ public class PacketUpdateActiveMorphs extends AbstractPacket
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleClient()
+    public void handleClient() //DO NOT LAMBDA SIDE ONLY THING. IT BREAKS STUFF.
     {
         //nextState was recreated successfully.
         //prevent mem leaks.
-        infosToSend.entrySet().stream().filter(e -> e.getValue().nextState != null).forEach(e ->
+        for(Map.Entry<String, MorphInfo> e : infosToSend.entrySet())
         {
-            //TODO fix this
-//            MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
-//            info.read(e.getValue().write(new NBTTagCompound()));
-//            if(Morph.eventHandlerClient.morphsActive.containsKey(e.getKey()))
-//            {
-//                Morph.eventHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
-//            }
-//            Morph.eventHandlerClient.morphsActive.put(e.getKey(), info);
-//            if(e.getKey().equals(Minecraft.getMinecraft().player.getName()))
-//            {
-//                Morph.eventHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().world, info);
-//            }
-        });
+            if(e.getValue().nextState != null)
+            {
+                MorphInfoClient info = new MorphInfoClient(null, e.getValue().prevState, e.getValue().nextState);
+                info.read(e.getValue().write(new NBTTagCompound()));
+                if(Morph.eventHandlerClient.morphsActive.containsKey(e.getKey()))
+                {
+                    Morph.eventHandlerClient.morphsActive.get(e.getKey()).clean(); //prevent mem leaks.
+                }
+                Morph.eventHandlerClient.morphsActive.put(e.getKey(), info);
+                if(e.getKey().equals(Minecraft.getMinecraft().player.getName()))
+                {
+                    Morph.eventHandlerClient.renderHandInstance.reset(Minecraft.getMinecraft().world, info);
+                }}
+        }
     }
 }

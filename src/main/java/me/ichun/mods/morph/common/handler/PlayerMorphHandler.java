@@ -51,7 +51,7 @@ public class PlayerMorphHandler implements IApi
     public static void init()
     {
         MorphApi.setApiImpl(INSTANCE);
-        FMLCommonHandler.instance().bus().register(INSTANCE); //For capturing player logins/logouts
+        MinecraftForge.EVENT_BUS.register(INSTANCE); //For capturing player logins/logouts
     }
 
     @Override

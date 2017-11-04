@@ -24,11 +24,6 @@ public class ProxyCommon
 
         (new ThreadGetResources(Morph.config.customPatchLink)).start();
 
-        ResourceLocation rs = new ResourceLocation("morph", "morph");
-        //TODO move this to the sound register event
-        Morph.soundMorph = new SoundEvent(rs).setRegistryName(rs);
-        ForgeRegistries.SOUND_EVENTS.register(Morph.soundMorph);
-
         Morph.channel = new PacketChannel(Morph.MOD_NAME,
                 PacketUpdateMorphList.class,
                 PacketUpdateActiveMorphs.class,

@@ -13,7 +13,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
@@ -27,6 +30,15 @@ import java.util.Map;
 
 public class EventHandlerServer
 {
+    @SubscribeEvent
+    public void onRegisterSound(RegistryEvent.Register<SoundEvent> event)
+    {
+        ResourceLocation rs = new ResourceLocation("morph", "morph");
+        Morph.soundMorph = new SoundEvent(rs).setRegistryName(rs);
+
+        event.getRegistry().register(Morph.soundMorph);
+    }
+
     @SubscribeEvent
     public void onPlayerSleep(PlayerSleepInBedEvent event)
     {

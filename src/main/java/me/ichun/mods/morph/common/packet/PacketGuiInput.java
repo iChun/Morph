@@ -43,7 +43,7 @@ public class PacketGuiInput extends AbstractPacket
     }
 
     @Override
-    public AbstractPacket execute(Side side, EntityPlayer player)
+    public void execute(Side side, EntityPlayer player)
     {
         ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
         boolean found = false;
@@ -85,7 +85,6 @@ public class PacketGuiInput extends AbstractPacket
         {
             Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
         }
-        return null;
     }
 
     @Override

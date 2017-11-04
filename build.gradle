@@ -16,8 +16,8 @@ compileJava {
 
 // Requires iChunUtil to run. Just put iChunUtil-deobf.jar in the /libs/ folder or it won't compile.
 // If you're getting errors with fields not being public, you need to put iChunUtil's AT.cfg files into /src/api/resources/ ;Blame AbrarSyed for this.
-version = "1.12.2-7.0.0"
-group= "morph" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.12.2-7.0.1"
+group= "morph"
 archivesBaseName = "Morph"
 
 minecraft {

@@ -236,7 +236,7 @@ public class MorphVariant
         return false;
     }
 
-    public static MorphVariant createVariant(EntityLivingBase living)
+    public static MorphVariant createVariant(EntityLivingBase living)//TODO study this class again omg
     {
         if(living instanceof EntityPlayer)
         {
@@ -277,27 +277,15 @@ public class MorphVariant
 
     public static void clean(EntityLivingBase living, NBTTagCompound tag)
     {
-        //Entity tags
-        tag.removeTag("Fire");
-        tag.removeTag("Riding");
-
         //EntityLivingBase tags
         tag.setFloat("HealF", Short.MAX_VALUE);
         tag.setShort("Health", Short.MAX_VALUE);
-        tag.removeTag("HurtTime");
-        tag.removeTag("HurtByTimestamp");
-        tag.removeTag("DeathTime");
-        tag.removeTag("AbsorptionAmount");
-        tag.removeTag("Attributes");
-        tag.removeTag("ActiveEffects");
 
         //EntityAgeable tags
         tag.setInteger("Age", living.isChild() ? -24000 : 0);
-        tag.removeTag("ForcedAge");
-        tag.removeTag("InLove");
 
         //EntityTameable tags
-        tag.removeTag("Sitting"); //we're making an ability for this maybe?
+//        tag.removeTag("Sitting"); //we're making an ability for this maybe?
 
         //EntityLiving tags
         if(living instanceof EntityLiving)
@@ -306,14 +294,8 @@ public class MorphVariant
             tag.setBoolean("PersistenceRequired", true);
             tag.setBoolean("NoAI", true);
         }
-        tag.removeTag("Equipment");
-        tag.removeTag("DropChances");
-        tag.removeTag("Leashed");
-        tag.removeTag("Leash");
 
         NBTHandler.modifyNBT(living.getClass(), tag);
-
-        tag.removeTag("bukkit");
     }
 
     @Override
