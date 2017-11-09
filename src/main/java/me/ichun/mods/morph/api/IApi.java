@@ -59,6 +59,14 @@ public interface IApi
     public EntityLivingBase getMorphEntity(World worldInstance, String playerName, Side side);
 
     /**
+     * Returns if the entity passed is a morphed entity instance (which means it doesn't exist in the world)
+     * @param entityLivingBase Entity to pass
+     * @param side Client or Server side?
+     * @return if the entity is a morph
+     */
+    public boolean isEntityAMorph(EntityLivingBase entityLivingBase, Side side);
+
+    /**
      * Forces a player to demorph. May return false if called while player is mid-morphing
      * Called Serverside only.
      * @param player Player to force to demorph

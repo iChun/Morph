@@ -8,6 +8,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -102,6 +103,8 @@ public class MorphInfo
         ent.dimension = player.dimension;
         ent.world = player.getEntityWorld();
         ent.setHealth(ent.getMaxHealth() * (player.getHealth() / player.getMaxHealth()));
+
+        ent.entityCollisionReduction = 1.0F;
     }
 
     public void setPlayer(EntityPlayer player)
@@ -132,12 +135,7 @@ public class MorphInfo
             float newWidth = EntityHelper.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
             float newHeight = EntityHelper.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
 
-//            if(!(newWidth == player.width))
-//            {
-//                player.move(MoverType.SELF, -(newWidth - player.width) / 2D, 0D, -(newWidth - player.width) / 2D);
-//            }
-
-//            EntityHelper.setSize(player.getClass(), player, newWidth, newHeight);
+            setPlayerSize(player, newWidth, newHeight);
 
             player.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
             if(nextState.entInstance instanceof EntityLiving)
@@ -149,7 +147,7 @@ public class MorphInfo
         {
             EntityLivingBase nextEnt = nextState.getEntInstance(player.getEntityWorld());
 
-//            EntityHelper.setSize(player.getClass(), player, nextEnt.width, nextEnt.height);
+            setPlayerSize(player, nextEnt.width, nextEnt.height);
 
             player.eyeHeight = nextEnt.getEyeHeight();
             if(nextState.entInstance instanceof EntityLiving)
@@ -157,6 +155,24 @@ public class MorphInfo
                 ((EntityLiving)nextState.entInstance).setLeftHanded(player.getPrimaryHand() == EnumHandSide.LEFT);
             }
         }
+    }
+
+    public static void setPlayerSize(EntityPlayer player, float width, float height)
+    {
+        float f = (float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX);
+
+        double d0 = (double)width / 2.0D;
+        player.setEntityBoundingBox(new AxisAlignedBB(player.posX - d0, player.posY, player.posZ - d0, player.posX + d0, player.posY + (double)height, player.posZ + d0));
+
+        if (((float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) < f)
+        {
+            return;
+        }
+
+        float difference = ((float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - f;
+        player.move(MoverType.SELF, difference, 0.0D, difference);
+        player.move(MoverType.SELF, -(difference + difference), 0.0D, -(difference + difference));
+        player.move(MoverType.SELF, difference, 0.0D, difference);
     }
 
     public EntityLivingBase getEntity(MorphState state)

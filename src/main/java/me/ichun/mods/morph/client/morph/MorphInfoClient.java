@@ -7,8 +7,8 @@ import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntitySlime;
@@ -16,7 +16,6 @@ import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -120,6 +119,7 @@ public class MorphInfoClient extends MorphInfo
         ent.hurtTime = player.hurtTime;
         ent.deathTime = player.deathTime;
         ent.isSwingInProgress = player.isSwingInProgress;
+        ent.swingingHand = player.swingingHand;
         ent.swingProgress = player.swingProgress;
         ent.swingProgressInt = player.swingProgressInt;
 
@@ -133,7 +133,9 @@ public class MorphInfoClient extends MorphInfo
             ent.move(MoverType.SELF, 0.0D, -0.01D, 0.0D);
             ent.posY = player.posY; //reset the position.
         }
-        ent.noClip = player.noClip;
+        ent.noClip = true;
+        ent.entityCollisionReduction = 1.0F;
+        ent.setEntityBoundingBox(player.getEntityBoundingBox());
 
         ent.setSneaking(player.isSneaking());
         ent.setSprinting(player.isSprinting());
@@ -176,15 +178,23 @@ public class MorphInfoClient extends MorphInfo
 
         if(player.activeItemStack != ent.activeItemStack)
         {
-            if(player.activeItemStack == null)
+            if(player.activeItemStack == ItemStack.EMPTY)
             {
                 ent.resetActiveHand();
+                if(ent instanceof IRangedAttackMob)
+                {
+                    ((IRangedAttackMob)ent).setSwingingArms(false);
+                }
             }
             else if(!player.activeItemStack.isItemEqual(ent.activeItemStack)) //TODO test that this works
             {
                 ent.setActiveHand(player.getActiveHand());
                 ent.activeItemStack = player.activeItemStack.copy();
                 ent.activeItemStackUseCount = player.activeItemStackUseCount;
+                if(ent instanceof IRangedAttackMob)
+                {
+                    ((IRangedAttackMob)ent).setSwingingArms(true);
+                }
             }
         }
         //TODO check flight ability?

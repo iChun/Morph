@@ -11,9 +11,11 @@ import me.ichun.mods.morph.client.model.ModelMorph;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.client.render.RenderPlayerHand;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.packet.PacketGuiInput;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -24,21 +26,19 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -541,6 +541,130 @@ public class EventHandlerClient
     }
 
     @SubscribeEvent
+    public void onRenderBlockOverlay(RenderBlockOverlayEvent event)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        MorphInfo info = morphsActive.get(player.getName());
+        if(info != null && info.nextState.getEntInstance(player.getEntityWorld()).width < 0.45F && player.isEntityInsideOpaqueBlock())
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPushPlayerSPOutOfBlock(PlayerSPPushOutOfBlocksEvent event)
+    {
+        MorphInfo info = morphsActive.get(event.getEntityPlayer().getName());
+        if(info != null) //player is morphed
+        {
+            event.setCanceled(true);
+
+            PlayerMorphHandler.setPlayerSize(event.getEntityPlayer(), info);
+            AxisAlignedBB axisalignedbb = event.getEntityPlayer().getEntityBoundingBox();
+            event.setEntityBoundingBox(axisalignedbb);
+
+            float playerWidth = event.getEntityPlayer().width;
+            float playerHeight = event.getEntityPlayer().height;
+            event.getEntityPlayer().width = info.nextState.getEntInstance(event.getEntityPlayer().getEntityWorld()).width;
+            event.getEntityPlayer().height = info.nextState.getEntInstance(event.getEntityPlayer().getEntityWorld()).height;
+
+            pushOutOfBlocksSP(event.getEntityPlayer(), event.getEntityPlayer().posX - (double)event.getEntityPlayer().width * 0.35D, axisalignedbb.minY + 0.5D, event.getEntityPlayer().posZ + (double)event.getEntityPlayer().width * 0.35D);
+            pushOutOfBlocksSP(event.getEntityPlayer(), event.getEntityPlayer().posX - (double)event.getEntityPlayer().width * 0.35D, axisalignedbb.minY + 0.5D, event.getEntityPlayer().posZ - (double)event.getEntityPlayer().width * 0.35D);
+            pushOutOfBlocksSP(event.getEntityPlayer(), event.getEntityPlayer().posX + (double)event.getEntityPlayer().width * 0.35D, axisalignedbb.minY + 0.5D, event.getEntityPlayer().posZ - (double)event.getEntityPlayer().width * 0.35D);
+            pushOutOfBlocksSP(event.getEntityPlayer(), event.getEntityPlayer().posX + (double)event.getEntityPlayer().width * 0.35D, axisalignedbb.minY + 0.5D, event.getEntityPlayer().posZ + (double)event.getEntityPlayer().width * 0.35D);
+
+            event.getEntityPlayer().width = playerWidth;
+            event.getEntityPlayer().height = playerHeight;
+        }
+    }
+
+    public boolean pushOutOfBlocksSP(EntityPlayer player, double x, double y, double z)
+    {
+        if (player.noClip)
+        {
+            return false;
+        }
+        else
+        {
+            BlockPos blockpos = new BlockPos(x, y, z);
+            double d0 = x - (double)blockpos.getX();
+            double d1 = z - (double)blockpos.getZ();
+
+            int entHeight = Math.max((int)Math.ceil(player.height), 1);
+
+            boolean inTranslucentBlock = !isHeadspaceFree(player.getEntityWorld(), blockpos, entHeight);
+
+            if (inTranslucentBlock)
+            {
+                int i = -1;
+                double d2 = 9999.0D;
+
+                if (isHeadspaceFree(player.getEntityWorld(), blockpos.west(), entHeight) && d0 < d2)
+                {
+                    d2 = d0;
+                    i = 0;
+                }
+
+                if (isHeadspaceFree(player.getEntityWorld(), blockpos.east(), entHeight) && 1.0D - d0 < d2)
+                {
+                    d2 = 1.0D - d0;
+                    i = 1;
+                }
+
+                if (isHeadspaceFree(player.getEntityWorld(), blockpos.north(), entHeight) && d1 < d2)
+                {
+                    d2 = d1;
+                    i = 4;
+                }
+
+                if (isHeadspaceFree(player.getEntityWorld(), blockpos.south(), entHeight) && 1.0D - d1 < d2)
+                {
+                    d2 = 1.0D - d1;
+                    i = 5;
+                }
+
+                float f = 0.1F;
+
+                if (i == 0)
+                {
+                    player.motionX = -0.10000000149011612D;
+                }
+
+                if (i == 1)
+                {
+                    player.motionX = 0.10000000149011612D;
+                }
+
+                if (i == 4)
+                {
+                    player.motionZ = -0.10000000149011612D;
+                }
+
+                if (i == 5)
+                {
+                    player.motionZ = 0.10000000149011612D;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    private boolean isHeadspaceFree(World world, BlockPos pos, int height)
+    {
+        for (int y = 0; y < height; y++)
+        {
+            if (!isOpenBlockSpace(world, pos.add(0, y, 0))) return false;
+        }
+        return true;
+    }
+
+    private boolean isOpenBlockSpace(World world, BlockPos pos)
+    {
+        IBlockState iblockstate = world.getBlockState(pos);
+        return !iblockstate.getBlock().isNormalCube(iblockstate, world, pos);
+    }
+    @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
@@ -613,14 +737,24 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        if(event.side.isClient() && event.phase == TickEvent.Phase.START)
+        if(event.side.isClient())
         {
             if(event.player.getEntityWorld().playerEntities.contains(event.player))
             {
                 MorphInfo info = morphsActive.get(event.player.getName());
-                if(info != null && info.getPlayer() != event.player)
+                if(info != null)
                 {
-                    info.setPlayer(event.player);
+                    if(event.phase == TickEvent.Phase.START)
+                    {
+                        if(info.getPlayer() != event.player)
+                        {
+                            info.setPlayer(event.player);
+                        }
+                    }
+                    else
+                    {
+                        PlayerMorphHandler.setPlayerSize(event.player, info);
+                    }
                 }
             }
         }

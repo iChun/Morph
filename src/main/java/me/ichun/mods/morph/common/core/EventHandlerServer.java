@@ -10,6 +10,7 @@ import me.ichun.mods.morph.common.packet.PacketDemorph;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -18,10 +19,13 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +79,15 @@ public class EventHandlerServer
                 EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.getEntityWorld()) : info.nextState.getEntInstance(player.getEntityWorld());
                 event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT) ? EntityHelper.getHurtSound(entInstance, entInstance.getClass()) : EntityHelper.getDeathSound(entInstance, entInstance.getClass()));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingAttack(LivingAttackEvent event)
+    {
+        if(!event.getEntityLiving().world.isRemote && PlayerMorphHandler.getInstance().isEntityAMorph(event.getEntityLiving(), Side.SERVER))
+        {
+            event.setCanceled(true);
         }
     }
 
@@ -173,17 +186,28 @@ public class EventHandlerServer
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        if(event.side.isServer() && event.phase == TickEvent.Phase.START)
+        if(event.side.isServer())
         {
             if(event.player.getEntityWorld().playerEntities.contains(event.player))
             {
                 MorphInfo info = morphsActive.get(event.player.getName());
-                if(info != null && info.getPlayer() != event.player)
+                if(info != null)
                 {
-                    info.setPlayer(event.player);
+                    if(event.phase == TickEvent.Phase.START)
+                    {
+                        if(info.getPlayer() != event.player)
+                        {
+                            info.setPlayer(event.player);
+                        }
+                        PlayerMorphHandler.setPlayerSize(event.player, info); //needs to be set twice because there is an update call forced post-post-event
+                    }
+                    else
+                    {
+                        PlayerMorphHandler.setPlayerSize(event.player, info);
+                    }
                 }
             }
         }

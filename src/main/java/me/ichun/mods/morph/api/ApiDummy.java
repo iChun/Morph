@@ -47,6 +47,12 @@ public class ApiDummy implements IApi
     }
 
     @Override
+    public boolean isEntityAMorph(EntityLivingBase entityLivingBase, Side side)
+    {
+        return false;
+    }
+
+    @Override
     public boolean forceDemorph(EntityPlayerMP player)
     {
         return false;

@@ -168,6 +168,13 @@ public class ModelMorph extends ModelBase
             float prevScaleY = buffer1.get(5) / buffer.get(5);
             float prevScaleZ = buffer1.get(8) / buffer.get(8);
 
+            if(prevRef instanceof EntityRabbit)
+            {
+                prevScaleX *= 0.6F;
+                prevScaleY *= 0.6F;
+                prevScaleZ *= 0.6F;
+            }
+
             GlStateManager.pushMatrix();
             GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
             rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(nextRef);
@@ -325,13 +332,13 @@ public class ModelMorph extends ModelBase
                 nextModel.addBox(0F, 0F, 0F, 0, 0, 0, 0.0625F);
             }
 
-            if(nextModel.childModels != null)
+            if(nextModel.childModels != null) //TODO test horse to wolf morph
             {
                 ModelRenderer emptyCopy = ModelHelper.buildCopy(nextModel, this, 0, true, true);
                 setRotationPointToZeroWithChildren(emptyCopy.childModels, 0);
                 if(prevModel.childModels != null)
                 {
-                    for(int k = 0; k < prevModel.childModels.size(); k++)
+                    for(int k = 0; k < prevModel.childModels.size() && k < nextModel.childModels.size(); k++)
                     {
                         fillWithChildren(((ModelRenderer)prevModel.childModels.get(k)).childModels, ((ModelRenderer)nextModel.childModels.get(k)).childModels, depth + 1);
                     }
@@ -352,7 +359,7 @@ public class ModelMorph extends ModelBase
                 setRotationPointToZeroWithChildren(emptyCopy.childModels, 0);
                 if(nextModel.childModels != null)
                 {
-                    for(int k = 0; k < nextModel.childModels.size(); k++)
+                    for(int k = 0; k < nextModel.childModels.size() && k < prevModel.childModels.size(); k++)
                     {
                         fillWithChildren(((ModelRenderer)nextModel.childModels.get(k)).childModels, ((ModelRenderer)prevModel.childModels.get(k)).childModels, depth + 1);
                     }

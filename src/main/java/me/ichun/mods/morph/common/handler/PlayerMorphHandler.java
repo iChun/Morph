@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,6 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerMorphHandler implements IApi
 {
@@ -148,6 +151,21 @@ public class PlayerMorphHandler implements IApi
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean isEntityAMorph(EntityLivingBase entityLivingBase, Side side)
+    {
+        HashMap infos = side.isServer() ? Morph.eventHandlerServer.morphsActive : Morph.eventHandlerClient.morphsActive;
+        for(Object obj : infos.entrySet())
+        {
+            Map.Entry<String, MorphInfo> e = (Map.Entry<String, MorphInfo>)obj;
+            if(e.getValue().prevState != null && e.getValue().prevState.getEntInstance(entityLivingBase.getEntityWorld()) == entityLivingBase || e.getValue().nextState.getEntInstance(entityLivingBase.getEntityWorld()) == entityLivingBase)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isEntityMorphableConfig(EntityLivingBase entity)
@@ -343,7 +361,6 @@ public class PlayerMorphHandler implements IApi
         return true;
     }
 
-
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
@@ -368,6 +385,47 @@ public class PlayerMorphHandler implements IApi
     }
 
     public static final String MORPH_DATA_NAME = "MorphSave";
+
+    public static void setPlayerSize(EntityPlayer player, MorphInfo info)
+    {
+        if(!info.isMorphing())
+        {
+            EntityLivingBase morphEnt = info.nextState.getEntInstance(player.getEntityWorld());
+            double morphWidth = (double)morphEnt.width;
+            if(Math.abs((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX) - morphWidth) > 0.000001D || Math.abs((player.getEntityBoundingBox().maxY - player.getEntityBoundingBox().minY) - (double)morphEnt.height) > 0.000001D)
+            {
+                player.width = morphEnt.width;
+                player.height = morphEnt.height;
+                double difference = ((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - morphWidth;
+                if(difference > 0)
+                {
+                    player.move(MoverType.SELF, difference, 0.0D, difference);
+                }
+                MorphInfo.setPlayerSize(player, (float)morphWidth, morphEnt.height);
+            }
+        }
+        else
+        {
+            EntityLivingBase prevEnt = info.prevState.getEntInstance(player.getEntityWorld());
+            EntityLivingBase nextEnt = info.nextState.getEntInstance(player.getEntityWorld());
+
+            float morphTransition = info.getMorphTransitionProgress(0F);
+            float newWidth = EntityHelper.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
+            float newHeight = EntityHelper.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
+
+            if(Math.abs((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX) - (double)newWidth) > 0.000001D || Math.abs((player.getEntityBoundingBox().maxY - player.getEntityBoundingBox().minY) - (double)newHeight) > 0.000001D)
+            {
+                player.width = newWidth;
+                player.height = newHeight;
+                double difference = ((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - newWidth;
+                if(difference > 0)
+                {
+                    player.move(MoverType.SELF, difference, 0.0D, difference);
+                }
+                MorphInfo.setPlayerSize(player, newWidth, newHeight);
+            }
+        }
+    }
 
     public void savePlayerData(EntityPlayer player)
     {
@@ -410,6 +468,7 @@ public class PlayerMorphHandler implements IApi
             {
                 info.morphTime = Morph.config.morphTime;
             }
+            info.setPlayer(player);
             Morph.eventHandlerServer.morphsActive.put(player.getName(), info);
             update = true;
         }

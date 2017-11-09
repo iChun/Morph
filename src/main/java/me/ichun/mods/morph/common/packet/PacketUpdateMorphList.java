@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphVariant;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -67,7 +68,7 @@ public class PacketUpdateMorphList extends AbstractPacket
     @Override
     public void execute(Side side, EntityPlayer player)
     {
-        handleClient(player);
+        handleClient();
     }
 
     @Override
@@ -77,7 +78,7 @@ public class PacketUpdateMorphList extends AbstractPacket
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleClient(EntityPlayer player)
+    public void handleClient()
     {
         if(fullList)
         {
@@ -95,17 +96,18 @@ public class PacketUpdateMorphList extends AbstractPacket
         for(MorphVariant var : morphs)
         {
             MorphState state = new MorphState(var);
-            state.getEntInstance(player.getEntityWorld());
+            state.getEntInstance(Minecraft.getMinecraft().world);
             states.add(state);
         }
         //Now that all the variants are stored in states and an entity created, lets sort them
 
         //TODO unforntunately we are currently sorting the list alphabetically except the player state is at the top.
+        String playerName = Minecraft.getMinecraft().player.getName();
         Collections.sort(states);
         for(int i = 0; i < states.size(); i++)
         {
             MorphState state = states.get(i);
-            if(state.currentVariant.entId.equals(MorphVariant.PLAYER_MORPH_ID) && state.currentVariant.playerName.equals(player.getName()))
+            if(state.currentVariant.entId.equals(MorphVariant.PLAYER_MORPH_ID) && state.currentVariant.playerName.equals(playerName))
             {
                 states.remove(i);
                 states.add(0, state); //Self state should always be on top.
@@ -133,10 +135,10 @@ public class PacketUpdateMorphList extends AbstractPacket
         {
             TreeMap<String, ArrayList<MorphState>> buffer = new TreeMap<>(Ordering.natural());
             buffer.putAll(Morph.eventHandlerClient.playerMorphs);
-            ArrayList<MorphState> selfState = buffer.get(player.getName()); //This has to exist. If it doesn't exist something messed up.
-            buffer.remove(player.getName());
+            ArrayList<MorphState> selfState = buffer.get(playerName); //This has to exist. If it doesn't exist something messed up.
+            buffer.remove(playerName);
             Morph.eventHandlerClient.playerMorphs.clear();
-            Morph.eventHandlerClient.playerMorphs.put(player.getName(), selfState);
+            Morph.eventHandlerClient.playerMorphs.put(playerName, selfState);
             for(Map.Entry<String, ArrayList<MorphState>> e : buffer.entrySet())
             {
                 Morph.eventHandlerClient.playerMorphs.put(e.getKey(), e.getValue());
