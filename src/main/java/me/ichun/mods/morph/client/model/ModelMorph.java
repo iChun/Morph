@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.client.model;
 
+import com.google.common.collect.Lists;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
@@ -332,46 +333,30 @@ public class ModelMorph extends ModelBase
                 nextModel.addBox(0F, 0F, 0F, 0, 0, 0, 0.0625F);
             }
 
-            if(nextModel.childModels != null) //TODO test horse to wolf morph
+            if(prevModel.childModels != null || nextModel.childModels != null)
             {
-                ModelRenderer emptyCopy = ModelHelper.buildCopy(nextModel, this, 0, true, true);
-                setRotationPointToZeroWithChildren(emptyCopy.childModels, 0);
-                if(prevModel.childModels != null)
+                ModelRenderer prevEmptyCopy = ModelHelper.buildCopy(prevModel, this, 0, true, true);
+                ModelRenderer nextEmptyCopy = ModelHelper.buildCopy(nextModel, this, 0, true, true);
+                if(prevModel.childModels == null)
                 {
-                    for(int k = 0; k < prevModel.childModels.size() && k < nextModel.childModels.size(); k++)
-                    {
-                        fillWithChildren(((ModelRenderer)prevModel.childModels.get(k)).childModels, ((ModelRenderer)nextModel.childModels.get(k)).childModels, depth + 1);
-                    }
-                    for(int k = prevModel.childModels.size(); k < emptyCopy.childModels.size(); k++)
-                    {
-                        prevModel.addChild((ModelRenderer)emptyCopy.childModels.get(k));
-                    }
+                    prevModel.childModels = Lists.newArrayList();
+                    prevEmptyCopy.childModels = Lists.newArrayList();
                 }
-                else
+                if(nextModel.childModels == null)
                 {
-                    prevModel.childModels = emptyCopy.childModels;
+                    nextModel.childModels = Lists.newArrayList();
+                    nextEmptyCopy.childModels = Lists.newArrayList();
                 }
-            }
-
-            if(prevModel.childModels != null)
-            {
-                ModelRenderer emptyCopy = ModelHelper.buildCopy(prevModel, this, 0, true, true);
-                setRotationPointToZeroWithChildren(emptyCopy.childModels, 0);
-                if(nextModel.childModels != null)
+                for(int k = prevModel.childModels.size(); k < nextEmptyCopy.childModels.size(); k++)
                 {
-                    for(int k = 0; k < nextModel.childModels.size() && k < prevModel.childModels.size(); k++)
-                    {
-                        fillWithChildren(((ModelRenderer)nextModel.childModels.get(k)).childModels, ((ModelRenderer)prevModel.childModels.get(k)).childModels, depth + 1);
-                    }
-                    for(int k = nextModel.childModels.size(); k < emptyCopy.childModels.size(); k++)
-                    {
-                        nextModel.addChild((ModelRenderer)emptyCopy.childModels.get(k));
-                    }
+                    prevModel.addChild(nextEmptyCopy.childModels.get(k));
                 }
-                else
+                for(int k = nextModel.childModels.size(); k < prevEmptyCopy.childModels.size(); k++)
                 {
-                    nextModel.childModels = emptyCopy.childModels;
+                    nextModel.addChild(prevEmptyCopy.childModels.get(k));
                 }
+                //At this point the model should have the same children count
+                fillWithChildren(prevModel.childModels, nextModel.childModels, depth + 1);
             }
         }
     }

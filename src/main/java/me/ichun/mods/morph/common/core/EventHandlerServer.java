@@ -186,7 +186,7 @@ public class EventHandlerServer
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
         if(event.side.isServer())
@@ -202,11 +202,11 @@ public class EventHandlerServer
                         {
                             info.setPlayer(event.player);
                         }
-                        PlayerMorphHandler.setPlayerSize(event.player, info); //needs to be set twice because there is an update call forced post-post-event
+                        PlayerMorphHandler.setPlayerSize(event.player, info, true); //needs to be set twice because there is an update call forced post-post-event
                     }
                     else
                     {
-                        PlayerMorphHandler.setPlayerSize(event.player, info);
+                        PlayerMorphHandler.setPlayerSize(event.player, info, true);
                     }
                 }
             }

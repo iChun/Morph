@@ -62,6 +62,11 @@ public class MorphInfo
         {
             morphTime++;
 
+            if(!isMorphing())
+            {
+                prevState = null;
+            }
+
             setPlayerBoundingBox();
         }
         if(prevState != null && prevState.entInstance != null && isMorphing())
@@ -169,10 +174,20 @@ public class MorphInfo
             return;
         }
 
+        boolean collidedHorizontally = player.collidedHorizontally;
+        boolean collidedVertically = player.collidedVertically;
+        boolean onGround = player.onGround;
+        boolean collided = player.collided;
+
         float difference = ((float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - f;
         player.move(MoverType.SELF, difference, 0.0D, difference);
         player.move(MoverType.SELF, -(difference + difference), 0.0D, -(difference + difference));
         player.move(MoverType.SELF, difference, 0.0D, difference);
+
+        player.collidedHorizontally = collidedHorizontally || player.collidedHorizontally;
+        player.collidedVertically = collidedVertically || player.collidedVertically;
+        player.onGround = onGround || player.onGround;
+        player.collided = collided || player.collided;
     }
 
     public EntityLivingBase getEntity(MorphState state)

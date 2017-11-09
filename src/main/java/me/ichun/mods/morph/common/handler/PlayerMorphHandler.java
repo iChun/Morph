@@ -386,7 +386,7 @@ public class PlayerMorphHandler implements IApi
 
     public static final String MORPH_DATA_NAME = "MorphSave";
 
-    public static void setPlayerSize(EntityPlayer player, MorphInfo info)
+    public static void setPlayerSize(EntityPlayer player, MorphInfo info, boolean setSize)
     {
         if(!info.isMorphing())
         {
@@ -394,12 +394,23 @@ public class PlayerMorphHandler implements IApi
             double morphWidth = (double)morphEnt.width;
             if(Math.abs((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX) - morphWidth) > 0.000001D || Math.abs((player.getEntityBoundingBox().maxY - player.getEntityBoundingBox().minY) - (double)morphEnt.height) > 0.000001D)
             {
-                player.width = morphEnt.width;
-                player.height = morphEnt.height;
+                if(setSize)
+                {
+                    player.width = morphEnt.width;
+                    player.height = morphEnt.height;
+                }
                 double difference = ((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - morphWidth;
                 if(difference > 0)
                 {
+                    boolean collidedHorizontally = player.collidedHorizontally;
+                    boolean collidedVertically = player.collidedVertically;
+                    boolean onGround = player.onGround;
+                    boolean collided = player.collided;
                     player.move(MoverType.SELF, difference, 0.0D, difference);
+                    player.collidedHorizontally = collidedHorizontally || player.collidedHorizontally;
+                    player.collidedVertically = collidedVertically || player.collidedVertically;
+                    player.onGround = onGround || player.onGround;
+                    player.collided = collided || player.collided;
                 }
                 MorphInfo.setPlayerSize(player, (float)morphWidth, morphEnt.height);
             }
@@ -415,12 +426,23 @@ public class PlayerMorphHandler implements IApi
 
             if(Math.abs((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX) - (double)newWidth) > 0.000001D || Math.abs((player.getEntityBoundingBox().maxY - player.getEntityBoundingBox().minY) - (double)newHeight) > 0.000001D)
             {
-                player.width = newWidth;
-                player.height = newHeight;
+                if(setSize)
+                {
+                    player.width = newWidth;
+                    player.height = newHeight;
+                }
                 double difference = ((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - newWidth;
                 if(difference > 0)
                 {
+                    boolean collidedHorizontally = player.collidedHorizontally;
+                    boolean collidedVertically = player.collidedVertically;
+                    boolean onGround = player.onGround;
+                    boolean collided = player.collided;
                     player.move(MoverType.SELF, difference, 0.0D, difference);
+                    player.collidedHorizontally = collidedHorizontally || player.collidedHorizontally;
+                    player.collidedVertically = collidedVertically || player.collidedVertically;
+                    player.onGround = onGround || player.onGround;
+                    player.collided = collided || player.collided;
                 }
                 MorphInfo.setPlayerSize(player, newWidth, newHeight);
             }

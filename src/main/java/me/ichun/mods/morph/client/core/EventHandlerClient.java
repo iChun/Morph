@@ -559,7 +559,7 @@ public class EventHandlerClient
         {
             event.setCanceled(true);
 
-            PlayerMorphHandler.setPlayerSize(event.getEntityPlayer(), info);
+            PlayerMorphHandler.setPlayerSize(event.getEntityPlayer(), info, false);
             AxisAlignedBB axisalignedbb = event.getEntityPlayer().getEntityBoundingBox();
             event.setEntityBoundingBox(axisalignedbb);
 
@@ -750,10 +750,39 @@ public class EventHandlerClient
                         {
                             info.setPlayer(event.player);
                         }
+
+                        float f;
+                        float f1;
+
+                        if (event.player.isElytraFlying())
+                        {
+                            f = 0.6F;
+                            f1 = 0.6F;
+                        }
+                        else if (event.player.isPlayerSleeping())
+                        {
+                            f = 0.2F;
+                            f1 = 0.2F;
+                        }
+                        else if (event.player.isSneaking())
+                        {
+                            f = 0.6F;
+                            f1 = 1.65F;
+                        }
+                        else
+                        {
+                            f = 0.6F;
+                            f1 = 1.8F;
+                        }
+
+                        event.player.width = f;
+                        event.player.height = f1;
+
+                        PlayerMorphHandler.setPlayerSize(event.player, info, false);
                     }
                     else
                     {
-                        PlayerMorphHandler.setPlayerSize(event.player, info);
+                        PlayerMorphHandler.setPlayerSize(event.player, info, true);
                     }
                 }
             }
