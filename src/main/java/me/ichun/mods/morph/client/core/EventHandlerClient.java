@@ -1097,7 +1097,7 @@ public class EventHandlerClient
 
                 float scaleMag = entSize > 2.5F ? (float)((2.5F + (entSize - 2.5F) * (mag > magAcceptance && selected ? ((mag - magAcceptance) / (1.0F - magAcceptance)) : 0.0F)) / entSize) : 1.0F;
 
-                drawEntityOnScreen(favouriteStates.get(i), favouriteStates.get(i).getEntInstance(mc.world), reso.getScaledWidth() / 2 + (int)(radius * Math.cos(angle)), (reso.getScaledHeight() + 32) / 2 + (int)(radius * Math.sin(angle)), 16 * prog * scaleMag + (float)(selected ? 6 * mag : 0), 2, 2, renderTick, selected, true);
+                drawEntityOnScreen(favouriteStates.get(i), favouriteStates.get(i).getEntInstance(mc.world), reso.getScaledWidth() / 2 + (int)(radius * Math.cos(angle)), (reso.getScaledHeight() + 24) / 2 + (int)(radius * Math.sin(angle)), 16 * prog * scaleMag + (float)(selected ? 6 * mag : 0), 2, 2, renderTick, selected, true);
             }
 
             GlStateManager.popMatrix();

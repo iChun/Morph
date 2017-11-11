@@ -5,7 +5,6 @@ import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
 import me.ichun.mods.morph.common.morph.MorphVariant;
-import me.ichun.mods.morph.common.packet.PacketAcquireEntity;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.command.*;
 import net.minecraft.entity.*;
@@ -16,7 +15,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -200,7 +198,7 @@ public class CommandMorph extends CommandBase
                                         }
 
                                         ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
-                                        boolean updatePlayer = false;
+                                        int updatePlayer = -2;
                                         boolean donotadd = false;
                                         for(MorphVariant var : morphs)
                                         {
@@ -214,21 +212,21 @@ public class CommandMorph extends CommandBase
                                             else if(variant.entId.equals(var.entId)) //non-player variants
                                             {
                                                 updatePlayer = MorphVariant.combineVariants(var, variant);
-                                                if(!updatePlayer) //failed to merge for reasons. Return false acquisition.
+                                                if(updatePlayer == -2) //failed to merge for reasons. Return false acquisition.
                                                 {
                                                     donotadd = true;
                                                 }
                                                 else
                                                 {
                                                     //The variant should be a new variant so it'll be the latest entry in the variants list.
-                                                    variant = var.createWithVariant(var.variants.get(var.variants.size() - 1));
+                                                    variant = var.createWithVariant(updatePlayer == -1 ? var.thisVariant : var.variants.get(updatePlayer));
                                                     newMorph = true;
                                                 }
                                                 break;
                                             }
                                         }
 
-                                        if(!updatePlayer && !donotadd) //No preexisting variant exists.
+                                        if(updatePlayer == -2 && !donotadd) //No preexisting variant exists.
                                         {
                                             morphs.add(variant);
                                             newMorph = true;
@@ -266,6 +264,10 @@ public class CommandMorph extends CommandBase
                     {
                         notifyCommandListener(sender, this, "morph.command.cannotFindEntity");
                     }
+                }
+                else
+                {
+                    throw new WrongUsageException(getUsage(sender));
                 }
             }
         }

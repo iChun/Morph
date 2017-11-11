@@ -45,6 +45,10 @@ public class MorphState
     @Override
     public int compareTo(MorphState state)
     {
+        if(getName().toLowerCase().equals(state.getName().toLowerCase()))
+        {
+            return currentVariant.compareTo(state.currentVariant);
+        }
         return getName().toLowerCase().compareTo(state.getName().toLowerCase());
     }
 

@@ -262,7 +262,7 @@ public class PlayerMorphHandler implements IApi
         }
 
         ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
-        boolean updatePlayer = false;
+        int variantIndex = -2;
         for(MorphVariant var : morphs)
         {
             if(variant.entId.equals(MorphVariant.PLAYER_MORPH_ID)) //Special case players first
@@ -274,22 +274,22 @@ public class PlayerMorphHandler implements IApi
             }
             else if(variant.entId.equals(var.entId)) //non-player variants
             {
-                updatePlayer = MorphVariant.combineVariants(var, variant);
-                if(!updatePlayer) //failed to merge for reasons. Return false acquisition.
+                variantIndex = MorphVariant.combineVariants(var, variant);
+                if(variantIndex == -2) //failed to merge for reasons. Return false acquisition.
                 {
                     return false;
                 }
                 else
                 {
                     //The variant should be a new variant so it'll be the latest entry in the variants list.
-                    variant = var.createWithVariant(var.variants.get(var.variants.size() - 1));
+                    variant = var.createWithVariant(variantIndex == -1 ? var.thisVariant : var.variants.get(variantIndex));
                     Morph.channel.sendTo(new PacketUpdateMorphList(false, variant), player);
                 }
                 break;
             }
         }
 
-        if(!updatePlayer) //No preexisting variant exists.
+        if(variantIndex == -2) //No preexisting variant exists.
         {
             morphs.add(variant);
 

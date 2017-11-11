@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph;
 
+import com.google.common.collect.Ordering;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -18,7 +19,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class MorphVariant
         implements Comparable<MorphVariant>
@@ -237,6 +240,14 @@ public class MorphVariant
         return false;
     }
 
+    public NBTTagCompound getVariantTag()
+    {
+        NBTTagCompound tag = (NBTTagCompound)entTag.copy();
+        tag.tagMap.putAll(thisVariant.variantData.tagMap);
+        thisVariant.tagsToRemove.forEach(tag.tagMap::remove);
+        return tag;
+    }
+
     public static MorphVariant createVariant(EntityLivingBase living)//TODO study this class again omg
     {
         if(living instanceof EntityPlayer)
@@ -296,7 +307,7 @@ public class MorphVariant
         tag.setInteger("Age", living.isChild() ? -24000 : 0);
 
         //EntityTameable tags
-//        tag.removeTag("Sitting"); //we're making an ability for this maybe?
+        //        tag.removeTag("Sitting"); //we're making an ability for this maybe?
 
         //EntityLiving tags
         if(living instanceof EntityLiving)
@@ -325,38 +336,65 @@ public class MorphVariant
     /**
      * Returns false if variants were not combined successfully or if the variant already exists
      * You cannot combine player variants even though they might be categorised together!
+     * Returns -2 for failed merge. -1 for thisVariant. 0-X for a index of variants.
      */
-    public static boolean combineVariants(MorphVariant source, MorphVariant variantToMerge)
+    public static int combineVariants(MorphVariant source, MorphVariant variantToMerge)
     {
         if(source.entId.equals(PLAYER_MORPH_ID) || variantToMerge.entId.equals(PLAYER_MORPH_ID) || !source.entId.equals(variantToMerge.entId))
         {
-            return false;
+            return -2;
         }
 
         NBTTagCompound tagCopy = (NBTTagCompound)source.entTag.copy();
 
         double sourceHealth = tagCopy.getDouble("Morph_HealthBalancing");
         double variantHealth = variantToMerge.entTag.getDouble("Morph_HealthBalancing");
+        tagCopy.removeTag("Morph_HealthBalancing");
+        variantToMerge.entTag.removeTag("Morph_HealthBalancing");
         if(tagCopy.equals(variantToMerge.entTag)) //Compare variant with current variant
         {
-            return false;
+            if(variantHealth > sourceHealth) //Give this variant a new health
+            {
+                source.entTag.setDouble("Morph_HealthBalancing", variantHealth);
+                for(Variant variant : source.variants)
+                {
+                    if(variant.variantData.getDouble("Morph_HealthBalancing") == variantHealth) //remove this variant since the original has the number and the tag
+                    {
+                        variant.variantData.removeTag("Morph_HealthBalancing");
+                    }
+                    else if(!variant.variantData.hasKey("Morph_HealthBalancing")) // this variant didn't have a morph health balancing tag. Add the old one.
+                    {
+                        variant.variantData.setDouble("Morph_HealthBalancing", sourceHealth);
+                    }
+                }
+            }
+            return -1;
         }
 
         //TODO reorganise the tags so that the most unique variant is not the main variant?
 
-        for(Variant variant : source.variants)
+        ArrayList<Variant> variants1 = source.variants;
+        for(int i = 0; i < variants1.size(); i++)
         {
+            Variant variant = variants1.get(i);
             NBTTagCompound tagCopyCopy = (NBTTagCompound)tagCopy.copy();
             tagCopyCopy.tagMap.putAll(variant.variantData.tagMap);
             variant.tagsToRemove.forEach(tagCopyCopy.tagMap::remove);
 
+            sourceHealth = tagCopyCopy.getDouble("Morph_HealthBalancing");
+            tagCopyCopy.removeTag("Morph_HealthBalancing");
             if(tagCopyCopy.equals(variantToMerge.entTag))
             {
-                return false;
+                if(variantHealth > sourceHealth && sourceHealth > 0D) //Give this variant a new health
+                {
+                    variant.variantData.setDouble("Morph_HealthBalancing", variantHealth);
+                }
+                return i;
             }
         }
 
         //At this point, this variant is considered "unique"
+        variantToMerge.entTag.setDouble("Morph_HealthBalancing", variantHealth);
 
         //Create the variant
         Variant variant = new Variant();
@@ -385,7 +423,7 @@ public class MorphVariant
         //Add the variant to the variants list. Ensure this entry is the last entry added, it is used to update the player of the new variant.
         source.variants.add(variant);
 
-        return true;
+        return source.variants.size() - 1;
     }
 
     @Override
@@ -400,6 +438,43 @@ public class MorphVariant
         if(entId.equals(PLAYER_MORPH_ID) && var.entId.equals(PLAYER_MORPH_ID))
         {
             return playerName.compareTo(var.playerName);
+        }
+        else if(entId.equals(var.entId))
+        {
+            TreeMap<String, NBTBase> map = new TreeMap<>(Ordering.natural());
+            TreeMap<String, NBTBase> varmap = new TreeMap<>(Ordering.natural());
+            NBTTagCompound tag = getVariantTag();
+            NBTTagCompound vartag = var.getVariantTag();
+            map.putAll(tag.tagMap);
+            varmap.putAll(vartag.tagMap);
+            map.remove("Morph_HealthBalancing");
+            varmap.remove("Morph_HealthBalancing");
+            if(map.size() == varmap.size())
+            {
+                Iterator<Map.Entry<String, NBTBase>> ite = map.entrySet().iterator();
+                Iterator<Map.Entry<String, NBTBase>> varite = varmap.entrySet().iterator();
+                while(ite.hasNext())
+                {
+                    Map.Entry<String, NBTBase> e = ite.next();
+                    Map.Entry<String, NBTBase> vare = varite.next();
+                    if(e.getKey().equals(vare.getKey()))
+                    {
+                        if(e.getValue().toString().equals(vare.getValue().toString()))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            return e.getValue().toString().compareTo(vare.getValue().toString());
+                        }
+                    }
+                    else
+                    {
+                        return e.getKey().compareTo(vare.getKey());
+                    }
+                }
+            }
+            return Integer.compare(map.size(), varmap.size());
         }
         else
         {
