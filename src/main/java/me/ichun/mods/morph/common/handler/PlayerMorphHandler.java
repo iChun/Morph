@@ -472,7 +472,6 @@ public class PlayerMorphHandler implements IApi
             MorphVariant variant = variants.get(i);
             tag.setTag("variant_" + i, variant.write(new NBTTagCompound()));
         }
-
         //TODO maybe a command to purge the current morphs?
     }
 

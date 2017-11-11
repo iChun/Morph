@@ -80,9 +80,11 @@ public class PacketUpdateMorphList extends AbstractPacket
     @SideOnly(Side.CLIENT)
     public void handleClient()
     {
+        boolean organiseFavourites = fullList;
         if(fullList)
         {
             Morph.eventHandlerClient.playerMorphs.clear();
+            Morph.eventHandlerClient.favouriteStates.clear();
         }
 
         //Split the variants into individual "variants" to be stored in states.
@@ -98,19 +100,34 @@ public class PacketUpdateMorphList extends AbstractPacket
             MorphState state = new MorphState(var);
             state.getEntInstance(Minecraft.getMinecraft().world);
             states.add(state);
+            if(var.thisVariant.isFavourite)
+            {
+                organiseFavourites = true;
+                Morph.eventHandlerClient.favouriteStates.add(state);
+            }
         }
         //Now that all the variants are stored in states and an entity created, lets sort them
 
         //TODO unforntunately we are currently sorting the list alphabetically except the player state is at the top.
         String playerName = Minecraft.getMinecraft().player.getName();
         Collections.sort(states);
+        if(organiseFavourites)
+        {
+            Collections.sort(Morph.eventHandlerClient.favouriteStates);
+        }
         for(int i = 0; i < states.size(); i++)
         {
             MorphState state = states.get(i);
             if(state.currentVariant.entId.equals(MorphVariant.PLAYER_MORPH_ID) && state.currentVariant.playerName.equals(playerName))
             {
+                //Self state should always be on top.
                 states.remove(i);
-                states.add(0, state); //Self state should always be on top.
+                states.add(0, state);
+                if(organiseFavourites)
+                {
+                    Morph.eventHandlerClient.favouriteStates.remove(state);
+                    Morph.eventHandlerClient.favouriteStates.add(0, state);
+                }
             }
         }
         boolean needsReorder = false;

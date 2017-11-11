@@ -3,6 +3,7 @@ package me.ichun.mods.morph.client.core;
 import me.ichun.mods.ichunutil.client.core.event.RendererSafeCompatibilityEvent;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.keybind.KeyEvent;
+import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.morph.client.model.ModelHandler;
@@ -38,6 +39,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -46,6 +48,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -60,8 +63,11 @@ public class EventHandlerClient
     public static final int SELECTOR_SHOW_TIME = 10;
     public static final int SELECTOR_SCROLL_TIME = 3;
 
+    public static final int RADIAL_SHOW_TIME = 3;
+
     public HashMap<String, MorphInfoClient> morphsActive = new HashMap<>(); //Current morphs per-player
     public LinkedHashMap<String, ArrayList<MorphState>> playerMorphs = new LinkedHashMap<>(); //Minecraft Player's available morphs. LinkedHashMap maintains insertion order.
+    public ArrayList<MorphState> favouriteStates = new ArrayList<>();
 
     public int renderMorphDepth;
 
@@ -80,6 +86,13 @@ public class EventHandlerClient
     public int selectorSelectedHori = 0; //which morph in category is selected
     public int selectorScrollVertTimer = 0;
     public int selectorScrollHoriTimer = 0;
+
+    public boolean showFavourites = false;
+    public int radialShowTimer = 0;
+    public double radialDeltaX = 0D;
+    public double radialDeltaY = 0D;
+    public float radialPlayerYaw;
+    public float radialPlayerPitch;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRendererSafeCompatibility(RendererSafeCompatibilityEvent event)
@@ -121,6 +134,11 @@ public class EventHandlerClient
                         Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 0, false));
                     }
                 }
+                else if(showFavourites)
+                {
+                    showFavourites = false;
+                    selectRadialMenu();
+                }
             }
             else if(event.keyBind.equals(Morph.config.keySelectorCancel) || (event.keyBind.keyIndex == mc.gameSettings.keyBindUseItem.getKeyCode() && event.keyBind.isMinecraftBind()))
             {
@@ -133,6 +151,10 @@ public class EventHandlerClient
                     Morph.eventHandlerClient.selectorShow = false;
                     Morph.eventHandlerClient.selectorShowTimer = EventHandlerClient.SELECTOR_SHOW_TIME - Morph.eventHandlerClient.selectorShowTimer;
                     Morph.eventHandlerClient.selectorScrollHoriTimer = EventHandlerClient.SELECTOR_SCROLL_TIME;
+                }
+                else if(showFavourites)
+                {
+                    showFavourites = false;
                 }
             }
             else if(event.keyBind.equals(Morph.config.keySelectorRemoveMorph) || event.keyBind.keyIndex == Keyboard.KEY_DELETE)
@@ -148,10 +170,48 @@ public class EventHandlerClient
                     }
                 }
             }
+            else if(event.keyBind.equals(Morph.config.keyFavourite))
+            {
+                if(Morph.eventHandlerClient.selectorShow)
+                {
+                    MorphState selectedState = Morph.eventHandlerClient.getCurrentlySelectedMorphState();
+                    if(selectedState != null && !selectedState.currentVariant.playerName.equalsIgnoreCase(mc.player.getName()))
+                    {
+                        selectedState.currentVariant.thisVariant.isFavourite = !selectedState.currentVariant.thisVariant.isFavourite;
+                        Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 1, selectedState.currentVariant.thisVariant.isFavourite));
+                        MorphState playerState = favouriteStates.get(0);
+                        favouriteStates.remove(0);
+                        if(selectedState.currentVariant.thisVariant.isFavourite)
+                        {
+                            if(!favouriteStates.contains(selectedState))
+                            {
+                                favouriteStates.add(selectedState);
+                                Collections.sort(favouriteStates);
+                            }
+                        }
+                        else
+                        {
+                            favouriteStates.remove(selectedState);
+                        }
+                        favouriteStates.add(0, playerState);
+                    }
+                }
+                else if(mc.currentScreen == null)
+                {
+                    showFavourites = true;
+                    radialShowTimer = RADIAL_SHOW_TIME;
+                    radialDeltaX = 0D;
+                    radialDeltaY = 0D;
+                    radialPlayerYaw = mc.player.rotationYaw;
+                    radialPlayerPitch = mc.player.rotationPitch;
+                }
+            }
         }
-        else
+        else if(event.keyBind.equals(Morph.config.keyFavourite) && showFavourites)
         {
             //RADIAL MENU
+            showFavourites = false;
+            selectRadialMenu();
         }
     }
 
@@ -190,18 +250,18 @@ public class EventHandlerClient
                 event.setCanceled(true);
             }
         }
-        //        else if(Morph.eventHandlerClient.radialShow)
-        //        {
-        //            Morph.eventHandlerClient.radialDeltaX += event.dx / 100D;
-        //            Morph.eventHandlerClient.radialDeltaY += event.dy / 100D;
-        //
-        //            double mag = Math.sqrt(Morph.eventHandlerClient.radialDeltaX * Morph.eventHandlerClient.radialDeltaX + Morph.eventHandlerClient.radialDeltaY * Morph.eventHandlerClient.radialDeltaY);
-        //            if(mag > 1.0D)
-        //            {
-        //                Morph.eventHandlerClient.radialDeltaX /= mag;
-        //                Morph.eventHandlerClient.radialDeltaY /= mag;
-        //            }
-        //        }
+        else if(Morph.eventHandlerClient.showFavourites)
+        {
+            Morph.eventHandlerClient.radialDeltaX += event.getDx() / 100D;
+            Morph.eventHandlerClient.radialDeltaY += event.getDy() / 100D;
+
+            double mag = Math.sqrt(Morph.eventHandlerClient.radialDeltaX * Morph.eventHandlerClient.radialDeltaX + Morph.eventHandlerClient.radialDeltaY * Morph.eventHandlerClient.radialDeltaY);
+            if(mag > 1.0D)
+            {
+                Morph.eventHandlerClient.radialDeltaX /= mag;
+                Morph.eventHandlerClient.radialDeltaY /= mag;
+            }
+        }
     }
 
     @SubscribeEvent
@@ -682,10 +742,22 @@ public class EventHandlerClient
 
                     mc.player.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
                 }
+
+                if(showFavourites)
+                {
+                    Mouse.getDX();
+                    Mouse.getDY();
+                    mc.mouseHelper.deltaX = mc.mouseHelper.deltaY = 0;
+//                    mc.renderViewEntity.prevRotationYawHead = mc.renderViewEntity.rotationYawHead = radialPlayerYaw;
+//                    mc.renderViewEntity.prevRotationYaw = mc.renderViewEntity.rotationYaw = radialPlayerYaw;
+//                    mc.renderViewEntity.prevRotationPitch = mc.renderViewEntity.rotationPitch = radialPlayerPitch;
+                }
             }
             else
             {
-                drawSelector(mc, event.renderTickTime);
+                ScaledResolution reso = new ScaledResolution(mc);
+                drawSelector(mc, reso, event.renderTickTime);
+                drawRadialMenu(mc, reso, event.renderTickTime);
             }
         }
     }
@@ -727,6 +799,10 @@ public class EventHandlerClient
                 if(selectorShowTimer > 0)
                 {
                     selectorShowTimer--;
+                }
+                if(radialShowTimer > 0)
+                {
+                    radialShowTimer--;
                 }
                 selectorScrollVertTimer--;
                 selectorScrollHoriTimer--;
@@ -795,7 +871,240 @@ public class EventHandlerClient
         Minecraft.getMinecraft().addScheduledTask(this::disconnectFromServer);
     }
 
-    public void drawSelector(Minecraft mc, float renderTick)
+    public void selectRadialMenu()
+    {
+        double mag = Math.sqrt(radialDeltaX * radialDeltaX + radialDeltaY * radialDeltaY);
+        double magAcceptance = 0.8D;
+
+        double radialAngle = -720F;
+        if(mag > magAcceptance)
+        {
+            //is on radial menu
+            //TODO atan2?
+            double aSin = Math.toDegrees(Math.asin(radialDeltaX));
+            if(radialDeltaY >= 0 && radialDeltaX >= 0)
+            {
+                radialAngle = aSin;
+            }
+            else if(radialDeltaY < 0 && radialDeltaX >= 0)
+            {
+                radialAngle = 90D + (90D - aSin);
+            }
+            else if(radialDeltaY < 0 && radialDeltaX < 0)
+            {
+                radialAngle = 180D - aSin;
+            }
+            else if(radialDeltaY >= 0 && radialDeltaX < 0)
+            {
+                radialAngle = 270D + (90D + aSin);
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        if(mag > 0.9999999D)
+        {
+            mag = Math.round(mag);
+        }
+
+        for(int i = 0; i < favouriteStates.size(); i++)
+        {
+            float leeway = 360F / favouriteStates.size();
+            if(mag > magAcceptance * 0.75D && (i == 0 && (radialAngle < (leeway / 2) && radialAngle >= 0F || radialAngle > (360F) - (leeway / 2)) || i != 0 && radialAngle < (leeway * i) + (leeway / 2) && radialAngle > (leeway * i ) - (leeway / 2)))
+            {
+                MorphState selectedState = favouriteStates.get(i);
+                MorphInfoClient info = morphsActive.get(Minecraft.getMinecraft().player.getName());
+
+                if(selectedState != null && (info != null && !info.nextState.currentVariant.equals(selectedState.currentVariant) || info == null && !selectedState.currentVariant.playerName.equalsIgnoreCase(Minecraft.getMinecraft().player.getName())))
+                {
+                    Morph.channel.sendToServer(new PacketGuiInput(selectedState.currentVariant.thisVariant.identifier, 0, false));
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public void drawRadialMenu(Minecraft mc, ScaledResolution reso, float renderTick)
+    {
+        if((radialShowTimer > 0 || showFavourites) && !mc.gameSettings.hideGUI)
+        {
+            double mag = Math.sqrt(radialDeltaX * radialDeltaX + radialDeltaY * radialDeltaY);
+            double magAcceptance = 0.8D;
+
+            float prog = 1.0F - (radialShowTimer - renderTick) / (float)RADIAL_SHOW_TIME;
+            if(prog > 1.0F)
+            {
+                prog = 1.0F;
+            }
+
+            int radius = 80;
+            radius *= Math.pow(prog, 0.5D);
+
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+            GlStateManager.pushMatrix();
+            GlStateManager.loadIdentity();
+
+            GlStateManager.matrixMode(GL11.GL_PROJECTION);
+            GlStateManager.pushMatrix();
+            GlStateManager.loadIdentity();
+
+            int NUM_PIZZA_SLICES = 100;
+
+            float zLev = -0.05F;
+
+            GlStateManager.disableTexture2D();
+
+            float rad;
+
+            int stencilBit = -1;
+            if(RendererHelper.canUseStencils())
+            {
+                stencilBit = MinecraftForgeClient.reserveStencilBit();
+                if(stencilBit >= 0)
+                {
+                    GL11.glEnable(GL11.GL_STENCIL_TEST);
+                    GlStateManager.depthMask(false);
+                    GlStateManager.colorMask(false, false, false, false);
+
+                    final int stencilMask = 1 << stencilBit;
+
+                    GL11.glStencilMask(stencilMask);
+                    GL11.glStencilFunc(GL11.GL_ALWAYS, stencilMask, stencilMask);
+                    GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+                    GL11.glClearStencil(0);
+                    GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
+
+                    rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog * (257F / (float)reso.getScaledHeight());
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+                    GlStateManager.glBegin(GL11.GL_TRIANGLE_FAN);
+                    GlStateManager.glVertex3f(0, 0, zLev);
+                    for(int i = 0; i <= NUM_PIZZA_SLICES; i++)
+                    { //NUM_PIZZA_SLICES decides how round the circle looks.
+                        double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+                        GlStateManager.glVertex3f((float)(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad), (float)(Math.sin(angle) * rad), zLev);
+                    }
+                    GlStateManager.glEnd();
+
+                    GL11.glStencilFunc(GL11.GL_ALWAYS, 0, stencilMask);
+
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+                    rad = 0.44F * prog * (257F / (float)reso.getScaledHeight());
+
+                    GlStateManager.glBegin(GL11.GL_TRIANGLE_FAN);
+                    GlStateManager.glVertex3f(0, 0, zLev);
+                    for(int i = 0; i <= NUM_PIZZA_SLICES; i++)
+                    { //NUM_PIZZA_SLICES decides how round the circle looks.
+                        double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+                        GlStateManager.glVertex3f((float)(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad), (float)(Math.sin(angle) * rad), zLev);
+                    }
+                    GlStateManager.glEnd();
+
+                    GL11.glStencilMask(0x00);
+                    GL11.glStencilFunc(GL11.GL_EQUAL, stencilMask, stencilMask);
+
+                    GlStateManager.depthMask(true);
+                    GlStateManager.colorMask(true, true, true, true);
+                }
+            }
+
+            rad = (mag > magAcceptance ? 0.85F : 0.82F) * prog * (257F / (float)reso.getScaledHeight());
+
+            GlStateManager.color(0.0F, 0.0F, 0.0F, mag > magAcceptance ? 0.6F : 0.4F);
+
+            GlStateManager.glBegin(GL11.GL_TRIANGLE_FAN);
+            GlStateManager.glVertex3f(0, 0, zLev);
+            for(int i = 0; i <= NUM_PIZZA_SLICES; i++){ //NUM_PIZZA_SLICES decides how round the circle looks.
+                double angle = Math.PI * 2 * i / NUM_PIZZA_SLICES;
+                GlStateManager.glVertex3f((float)(Math.cos(angle) * reso.getScaledHeight_double() / reso.getScaledWidth_double() * rad), (float)(Math.sin(angle) * rad), zLev);
+            }
+            GlStateManager.glEnd();
+
+            if(RendererHelper.canUseStencils() && stencilBit >= 0)
+            {
+                GL11.glDisable(GL11.GL_STENCIL_TEST);
+
+                MinecraftForgeClient.releaseStencilBit(stencilBit);
+            }
+
+            GlStateManager.enableTexture2D();
+
+            GlStateManager.popMatrix();
+
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+
+            GlStateManager.popMatrix();
+
+            GlStateManager.pushMatrix();
+
+            double radialAngle = -720F;
+            if(mag > magAcceptance)
+            {
+                //is on radial menu
+                double aSin = Math.toDegrees(Math.asin(radialDeltaX));
+
+                if(radialDeltaY >= 0 && radialDeltaX >= 0)
+                {
+                    radialAngle = aSin;
+                }
+                else if(radialDeltaY < 0 && radialDeltaX >= 0)
+                {
+                    radialAngle = 90D + (90D - aSin);
+                }
+                else if(radialDeltaY < 0 && radialDeltaX < 0)
+                {
+                    radialAngle = 180D - aSin;
+                }
+                else if(radialDeltaY >= 0 && radialDeltaX < 0)
+                {
+                    radialAngle = 270D + (90D + aSin);
+                }
+            }
+
+            if(mag > 0.9999999D)
+            {
+                mag = Math.round(mag);
+            }
+
+            GlStateManager.depthMask(true);
+            GlStateManager.enableDepth();
+            GlStateManager.enableAlpha();
+
+            for(int i = 0; i < favouriteStates.size(); i++)
+            {
+                double angle = Math.PI * 2 * i / favouriteStates.size();
+
+                angle -= Math.toRadians(90D);
+
+                float leeway = 360F / favouriteStates.size();
+
+                boolean selected = false;
+
+                if(mag > magAcceptance * 0.75D && (i == 0 && (radialAngle < (leeway / 2) && radialAngle >= 0F || radialAngle > (360F) - (leeway / 2)) || i != 0 && radialAngle < (leeway * i) + (leeway / 2) && radialAngle > (leeway * i ) - (leeway / 2)))
+                {
+                    selected = true;
+                }
+
+                float entSize = favouriteStates.get(i).getEntInstance(mc.world).width > favouriteStates.get(i).getEntInstance(mc.world).height ? favouriteStates.get(i).getEntInstance(mc.world).width : favouriteStates.get(i).getEntInstance(mc.world).height;
+
+                float scaleMag = entSize > 2.5F ? (float)((2.5F + (entSize - 2.5F) * (mag > magAcceptance && selected ? ((mag - magAcceptance) / (1.0F - magAcceptance)) : 0.0F)) / entSize) : 1.0F;
+
+                drawEntityOnScreen(favouriteStates.get(i), favouriteStates.get(i).getEntInstance(mc.world), reso.getScaledWidth() / 2 + (int)(radius * Math.cos(angle)), (reso.getScaledHeight() + 32) / 2 + (int)(radius * Math.sin(angle)), 16 * prog * scaleMag + (float)(selected ? 6 * mag : 0), 2, 2, renderTick, selected, true);
+            }
+
+            GlStateManager.popMatrix();
+        }
+    }
+
+    public void drawSelector(Minecraft mc, ScaledResolution reso, float renderTick)
     {
         if((selectorShowTimer > 0 || selectorShow) && !mc.gameSettings.hideGUI)
         {
@@ -825,8 +1134,6 @@ public class EventHandlerClient
             progress = (float)Math.pow(progress, 2D);
 
             GlStateManager.translate(-52F * progress, 0.0F, 0.0F);
-
-            ScaledResolution reso = new ScaledResolution(mc);
 
             int gap = (reso.getScaledHeight() - (42 * 5)) / 2;
 
@@ -1033,6 +1340,7 @@ public class EventHandlerClient
                     drawEntityOnScreen(state, entInstance, 20, height1, entSize > 2.5F ? 16F * scaleMag : 16F, 2, 2, renderTick, selectorSelectedVert == i, true);
                 }
                 GlStateManager.translate(0.0F, 0.0F, 20F);
+                GlStateManager.color(1F, 1F, 1F, 1F);
                 i++;
             }
             GlStateManager.popMatrix();
@@ -1178,7 +1486,7 @@ public class EventHandlerClient
 
             GlStateManager.disableAlpha();
 
-            GlStateManager.translate((float)posX, (float)posY, 50.0F);
+            GlStateManager.translate((float)posX, (float)posY, 75.0F);
 
             GlStateManager.scale((float)(-scale), (float)scale, (float)scale);
             GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
@@ -1242,17 +1550,16 @@ public class EventHandlerClient
             GlStateManager.translate(0.0F, 0.0F, 100F);
             if(drawText)
             {
-                //TODO radial changes
-                //                if(radialShow)
-                //                {
-                //                    GlStateManager.pushMatrix();
-                //                    float scaleee = 0.75F;
-                //                    GlStateManager.scale(scaleee, scaleee, scaleee);
-                //                    String name = (selected ? EnumChatFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.player.getName())) ? EnumChatFormatting.GOLD : "") + ent.getName();
-                //                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2) * scaleee), 5, 16777215);
-                //                    GlStateManager.popMatrix();
-                //                }
-                //                else
+                if(showFavourites)
+                {
+                    GlStateManager.pushMatrix();
+                    float scaleee = 0.75F;
+                    GlStateManager.scale(scaleee, scaleee, scaleee);
+                    String name = (selected ? TextFormatting.YELLOW : (info != null && info.nextState.currentVariant.thisVariant.identifier.equalsIgnoreCase(state.currentVariant.thisVariant.identifier) || info == null && state.currentVariant.playerName.equalsIgnoreCase(mc.player.getName())) ? TextFormatting.GOLD : "") + ent.getName();
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(name, (int)(-3 - (Minecraft.getMinecraft().fontRenderer.getStringWidth(name) / 2) * scaleee), 5, 16777215);
+                    GlStateManager.popMatrix();
+                }
+                else
                 {
                     Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? TextFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getName().equalsIgnoreCase(mc.player.getName())) ? TextFormatting.GOLD : "") + ent.getName(), 26, -32, 16777215);
                 }
@@ -1260,7 +1567,7 @@ public class EventHandlerClient
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
-            if(state != null && !state.currentVariant.playerName.equalsIgnoreCase(mc.player.getName()) && state.currentVariant.thisVariant.isFavourite)
+            if(state != null && !state.currentVariant.playerName.equalsIgnoreCase(mc.player.getName()) && state.currentVariant.thisVariant.isFavourite && !showFavourites)
             {
                 double pX = 9.5D;
                 double pY = -33.5D;
@@ -1533,5 +1840,6 @@ public class EventHandlerClient
         //world is null, not connected to any worlds, get rid of objects for GC.
         morphsActive.clear();
         playerMorphs.clear();
+        favouriteStates.clear();
     }
 }
