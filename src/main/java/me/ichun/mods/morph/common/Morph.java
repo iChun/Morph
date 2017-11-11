@@ -6,19 +6,19 @@ import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import me.ichun.mods.morph.client.core.EventHandlerClient;
+import me.ichun.mods.morph.common.command.CommandMorph;
 import me.ichun.mods.morph.common.core.Config;
 import me.ichun.mods.morph.common.core.EventHandlerServer;
 import me.ichun.mods.morph.common.core.ProxyCommon;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import me.ichun.mods.morph.common.handler.PlayerMorphHandler;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 
 @Mod(modid = Morph.MOD_ID, name = Morph.MOD_NAME,
         version = Morph.VERSION,
@@ -64,6 +64,17 @@ public class Morph
     public void init(FMLInitializationEvent event)
     {
         proxy.init();
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerAboutToStartEvent event)
+    {
+        ICommandManager manager = event.getServer().getCommandManager();
+        if(manager instanceof CommandHandler)
+        {
+            CommandHandler handler = (CommandHandler)manager;
+            handler.registerCommand(new CommandMorph());
+        }
     }
 
     @Mod.EventHandler

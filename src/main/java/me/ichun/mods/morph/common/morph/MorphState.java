@@ -1,6 +1,8 @@
 package me.ichun.mods.morph.common.morph;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.dragon.phase.PhaseList;
 import net.minecraft.world.World;
 
 public class MorphState
@@ -23,6 +25,10 @@ public class MorphState
         if(entInstance == null)
         {
             entInstance = currentVariant.createEntityInstance(world);
+            if(entInstance instanceof EntityDragon)
+            {
+                ((EntityDragon)entInstance).setNoAI(false);
+            }
         }
         return entInstance;
     }

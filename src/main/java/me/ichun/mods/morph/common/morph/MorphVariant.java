@@ -335,6 +335,8 @@ public class MorphVariant
 
         NBTTagCompound tagCopy = (NBTTagCompound)source.entTag.copy();
 
+        double sourceHealth = tagCopy.getDouble("Morph_HealthBalancing");
+        double variantHealth = variantToMerge.entTag.getDouble("Morph_HealthBalancing");
         if(tagCopy.equals(variantToMerge.entTag)) //Compare variant with current variant
         {
             return false;

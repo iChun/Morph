@@ -93,8 +93,9 @@ morph.config.prop.sortMorphs.comment=Sort the morphs in the GUI?\n0 = Order of a
 morph.config.prop.renderCrosshairInRadialMenu.comment=As per request, render the crosshair position when in the radial menu.
 
 morph.command.demorph=/morph demorph [player] [force demorph even if offline (true/false)] - Makes a player demorph
-morph.command.clear=/morph clear [player] - Clears a player's morphs
-morph.command.morphtarget=/morph morphtarget [player] - Tries to make the player morph the mob they're looking at
+morph.command.clear=/morph clear [player] [force clear even if offline (true/false)] - Clears a player's morphs
+morph.command.morph=/morph morph [player] [entity name] - Tries to make the player morph the mob they're looking at if 'entity name' is omitted, else tries to create an entity by 'entity name' and morphs the player to that entity.
+morph.command.give=/morph give [player] [entity name] - Tries to give the player the morph of the mob they're looking at if 'entity name' is omitted, else tries to create an entity by 'entity name' and gives the player that morph. Use '*' to try and give all morphs (warning, laggy).
 morph.command.addtolist=/morph whitelist <player> - Adds a player to the morph skill whitelist, turning it on
 morph.command.removefromlist=/morph unwhitelist <player> - Removes a player from the morph skill whitelist
 
@@ -112,3 +113,10 @@ morph.command.addingToBlackWhite=Adding %s to the Black/White list for the Morph
 morph.command.alreadyInList=Player already in Black/White list
 morph.command.removingFromBlackWhite=Removing %s from the Black/White list for the Morph Skill.
 morph.command.notInList=Player is not on Black/White list
+morph.command.playerNotFoundForcedNoTagsChanged=Could not find player %s. No tags changed.
+morph.command.successfulForce=Succeeded in a forced command on %s.
+morph.command.cannotFindEntity=Unable to find/create entity.
+morph.command.successful=Succeeded executing command on %s.
+morph.command.unsuccessful=Unsuccessful in executing command on %s.
+
+subtitles.morph.morph=Entity morphing

@@ -203,7 +203,18 @@ public class PlayerMorphHandler implements IApi
     @Override
     public boolean forceDemorph(EntityPlayerMP player)
     {
-        //TODO this
+        MorphInfo info = Morph.eventHandlerServer.morphsActive.get(player.getName());
+        if(info != null)
+        {
+            MorphVariant variant = new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayerName(player.getName());
+            variant.thisVariant.isFavourite = true;
+            MorphInfo newInfo = new MorphInfo(player, info.nextState, new MorphState(variant));
+            newInfo.morphTime = 0;
+            Morph.eventHandlerServer.morphsActive.put(player.getName(), newInfo);
+            Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getName()));
+            EntityHelper.playSoundAtEntity(player, Morph.soundMorph, player.getSoundCategory(), 1.0F, 1.0F);
+            return true;
+        }
         return false;
     }
 
@@ -465,6 +476,7 @@ public class PlayerMorphHandler implements IApi
         }
 
         //Save the morph variants
+        int oldMorphCount = tag.getInteger("variantCount");
         ArrayList<MorphVariant> variants = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
         tag.setInteger("variantCount", variants.size());
         for(int i = 0; i < variants.size(); i++)
@@ -472,7 +484,15 @@ public class PlayerMorphHandler implements IApi
             MorphVariant variant = variants.get(i);
             tag.setTag("variant_" + i, variant.write(new NBTTagCompound()));
         }
-        //TODO maybe a command to purge the current morphs?
+
+        //Remove any extra old ones.
+        if(oldMorphCount > variants.size())
+        {
+            for(int i = variants.size(); i < oldMorphCount; i++)
+            {
+                tag.removeTag("variant_" + i);
+            }
+        }
     }
 
     public boolean loadPlayerData(EntityPlayer player) //Returns true if the player has a morph and requires synching to the clients.
