@@ -166,6 +166,11 @@ public class MorphInfo
     {
         float f = (float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX);
 
+        if(Math.abs(f - width) < 0.00001D && Math.abs((player.getEntityBoundingBox().maxY - player.getEntityBoundingBox().minY) - height) < 0.00001D)
+        {
+            return;
+        }
+
         double d0 = (double)width / 2.0D;
         player.setEntityBoundingBox(new AxisAlignedBB(player.posX - d0, player.posY, player.posZ - d0, player.posX + d0, player.posY + (double)height, player.posZ + d0));
 

@@ -4,10 +4,13 @@ import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.world.GameType;
 
 import java.util.ArrayList;
 
@@ -30,13 +33,26 @@ public class ModelInfo
 
     public void forceRender(Entity ent, double d, double d1, double d2, float f, float f1)
     {
-        EntityHelper.storeBossStatus(); //TODO check if this is still required
-
         if(Minecraft.getMinecraft().getRenderManager().renderEngine != null && Minecraft.getMinecraft().getRenderManager().renderViewEntity != null)
         {
             try
             {
+                GameType oriGameType = null;
+                NetworkPlayerInfo npi = null;
+                if(ent instanceof EntityOtherPlayerMP)
+                {
+                    npi = Minecraft.getMinecraft().getConnection().getPlayerInfo(((EntityOtherPlayerMP)ent).getGameProfile().getId());
+                    if(npi != null)
+                    {
+                        oriGameType = npi.getGameType();
+                        npi.setGameType(GameType.ADVENTURE);
+                    }
+                }
                 entRenderer.doRender(ent, d, d1, d2, f, f1);
+                if(npi != null)
+                {
+                    npi.setGameType(oriGameType);
+                }
             }
             catch(Exception e)
             {
@@ -44,7 +60,5 @@ public class ModelInfo
                 e.printStackTrace();
             }
         }
-
-        EntityHelper.restoreBossStatus();
     }
 }

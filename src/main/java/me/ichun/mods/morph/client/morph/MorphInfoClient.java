@@ -3,9 +3,13 @@ package me.ichun.mods.morph.client.morph;
 import me.ichun.mods.morph.client.model.ModelHandler;
 import me.ichun.mods.morph.client.model.ModelInfo;
 import me.ichun.mods.morph.client.model.ModelMorph;
+import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -17,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -56,7 +61,42 @@ public class MorphInfoClient extends MorphInfo
     {
         if(modelMorph == null)
         {
+            GameType oriGameTypePrev = null;
+            NetworkPlayerInfo npiPrev = null;
+            if(prevState != null)
+            {
+                if(prevState.getEntInstance(world) instanceof EntityOtherPlayerMP)
+                {
+                    npiPrev = Minecraft.getMinecraft().getConnection().getPlayerInfo(((EntityOtherPlayerMP)prevState.getEntInstance(world)).getGameProfile().getId());
+                    if(npiPrev != null)
+                    {
+                        oriGameTypePrev = npiPrev.getGameType();
+                        npiPrev.setGameType(GameType.ADVENTURE);
+                    }
+                }
+            }
+
+            GameType oriGameTypeNext = null;
+            NetworkPlayerInfo npiNext = null;
+            if(nextState.getEntInstance(world) instanceof EntityOtherPlayerMP)
+            {
+                npiNext = Minecraft.getMinecraft().getConnection().getPlayerInfo(((EntityOtherPlayerMP)nextState.getEntInstance(world)).getGameProfile().getId());
+                if(npiNext != null)
+                {
+                    oriGameTypeNext = npiNext.getGameType();
+                    npiNext.setGameType(GameType.ADVENTURE);
+                }
+            }
             modelMorph = new ModelMorph(getPrevStateModel(world), getNextStateModel(world), prevState != null ? prevState.getEntInstance(world) : null, nextState.getEntInstance(world));
+
+            if(npiPrev != null)
+            {
+                npiPrev.setGameType(oriGameTypePrev);
+            }
+            if(npiNext != null)
+            {
+                npiNext.setGameType(oriGameTypeNext);
+            }
         }
         return modelMorph;
     }
@@ -72,6 +112,47 @@ public class MorphInfoClient extends MorphInfo
                 GLAllocation.deleteDisplayLists(renderer.displayList);
                 renderer.compiled = false;
             });
+        }
+    }
+
+    @Override
+    public void tick()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        GameType oriGameTypePrev = null;
+        NetworkPlayerInfo npiPrev = null;
+        if(prevState != null && prevState.getEntInstance(mc.world) instanceof EntityOtherPlayerMP)
+        {
+            EntityOtherPlayerMP player = (EntityOtherPlayerMP)prevState.getEntInstance(mc.world);
+            npiPrev = Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getGameProfile().getId());
+            if(npiPrev != null)
+            {
+                oriGameTypePrev = npiPrev.getGameType();
+                npiPrev.setGameType(GameType.SPECTATOR);
+            }
+        }
+
+        GameType oriGameTypeNext = null;
+        NetworkPlayerInfo npiNext = null;
+        if(nextState.getEntInstance(mc.world) instanceof EntityOtherPlayerMP)
+        {
+            EntityOtherPlayerMP player = (EntityOtherPlayerMP)nextState.getEntInstance(mc.world);
+            npiNext = Minecraft.getMinecraft().getConnection().getPlayerInfo(player.getGameProfile().getId());
+            if(npiNext != null)
+            {
+                oriGameTypeNext = npiNext.getGameType();
+                npiNext.setGameType(GameType.SPECTATOR);
+            }
+        }
+        super.tick();
+        if(npiPrev != null)
+        {
+            npiPrev.setGameType(oriGameTypePrev);
+        }
+        if(npiNext != null)
+        {
+            npiNext.setGameType(oriGameTypeNext);
         }
     }
 

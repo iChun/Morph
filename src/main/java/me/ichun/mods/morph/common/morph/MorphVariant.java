@@ -1,9 +1,13 @@
 package me.ichun.mods.morph.common.morph;
 
 import com.google.common.collect.Ordering;
+import com.mojang.authlib.GameProfile;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.NBTHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
@@ -102,7 +106,12 @@ public class MorphVariant
     @SideOnly(Side.CLIENT)
     private EntityPlayer createPlayer(World world, String player)
     {
-        return new EntityOtherPlayerMP(world, EntityHelper.getGameProfile(player));
+        GameProfile gp = EntityHelper.getGameProfile(player);
+        if(Minecraft.getMinecraft().getConnection().getPlayerInfo(gp.getId()) == null)
+        {
+            Minecraft.getMinecraft().getConnection().playerInfoMap.put(gp.getId(), new NetworkPlayerInfo(gp));
+        }
+        return new EntityOtherPlayerMP(world, gp);
     }
 
     public ArrayList<MorphVariant> split() //Returns a new copy of all the variants in the list.

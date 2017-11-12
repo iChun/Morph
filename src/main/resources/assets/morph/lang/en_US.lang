@@ -93,6 +93,7 @@ morph.config.prop.sortMorphs.comment=Sort the morphs in the GUI?\n0 = Order of a
 morph.config.prop.renderCrosshairInRadialMenu.comment=As per request, render the crosshair position when in the radial menu.
 
 morph.command.demorph=/morph demorph [player] [force demorph even if offline (true/false)] - Makes a player demorph
+morph.command.remove=/morph remove <player> <entity name> - Removes a class of morphs from the player
 morph.command.clear=/morph clear [player] [force clear even if offline (true/false)] - Clears a player's morphs
 morph.command.morph=/morph morph [player] [entity name] - Tries to make the player morph the mob they're looking at if 'entity name' is omitted, else tries to create an entity by 'entity name' and morphs the player to that entity.
 morph.command.give=/morph give [player] [entity name] - Tries to give the player the morph of the mob they're looking at if 'entity name' is omitted, else tries to create an entity by 'entity name' and gives the player that morph. Use '*' to try and give all morphs (warning, laggy).

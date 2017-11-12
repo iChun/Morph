@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.client.core;
 
+import com.mojang.authlib.GameProfile;
 import me.ichun.mods.ichunutil.client.core.event.RendererSafeCompatibilityEvent;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.keybind.KeyEvent;
@@ -19,12 +20,14 @@ import me.ichun.mods.morph.common.packet.PacketGuiInput;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -38,6 +41,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.*;
@@ -305,9 +309,24 @@ public class EventHandlerClient
                     EntityLivingBase entInstance = info.prevState.getEntInstance(event.getEntityPlayer().getEntityWorld());
                     if(info.firstUpdate)
                     {
+                        GameType oriGameType = null;
+                        NetworkPlayerInfo npi = null;
+                        if(entInstance instanceof EntityOtherPlayerMP)
+                        {
+                            npi = Minecraft.getMinecraft().getConnection().getPlayerInfo(((EntityOtherPlayerMP)entInstance).getGameProfile().getId());
+                            if(npi != null)
+                            {
+                                oriGameType = npi.getGameType();
+                                npi.setGameType(GameType.SPECTATOR);
+                            }
+                        }
                         info.syncEntityWithPlayer(entInstance);
                         entInstance.onUpdate();
                         info.syncEntityWithPlayer(entInstance);
+                        if(npi != null)
+                        {
+                            npi.setGameType(oriGameType);
+                        }
                     }
 
                     float prevEntSize = entInstance.width > entInstance.height ? entInstance.width : entInstance.height;
@@ -1513,6 +1532,17 @@ public class EventHandlerClient
             {
                 GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
             }
+            GameType oriGameType = null;
+            NetworkPlayerInfo npi = null;
+            if(ent instanceof EntityOtherPlayerMP)
+            {
+                npi = Minecraft.getMinecraft().getConnection().getPlayerInfo(((EntityOtherPlayerMP)ent).getGameProfile().getId());
+                if(npi != null)
+                {
+                    oriGameType = npi.getGameType();
+                    npi.setGameType(GameType.ADVENTURE);
+                }
+            }
 
             float viewY = mc.getRenderManager().playerViewY;
             mc.getRenderManager().setPlayerViewY(180.0F);
@@ -1520,6 +1550,10 @@ public class EventHandlerClient
             mc.getRenderManager().renderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
             mc.getRenderManager().setRenderShadow(true);
 
+            if(npi != null)
+            {
+                npi.setGameType(oriGameType);
+            }
             if(ent instanceof EntityDragon)
             {
                 GlStateManager.rotate(180F, 0.0F, -1.0F, 0.0F);

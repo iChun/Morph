@@ -63,6 +63,7 @@ public class CommandMorph extends CommandBase
             {
                 //				<demorph|clear|morph|give> [player] [force (true/false) / entity name]
                 sender.sendMessage(new TextComponentTranslation("morph.command.demorph").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morph.command.remove").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.clear").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.morph").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.give").setStyle(TEXT_GRAY));
@@ -128,6 +129,41 @@ public class CommandMorph extends CommandBase
                         notifyCommandListener(sender, this, "morph.command.notInMorph", player.getName());
                     }
                 }
+                else if(args[0].equalsIgnoreCase("remove"))
+                {
+                    if(args.length == 3)
+                    {
+                        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
+                        if(morphs != null && !morphs.isEmpty())
+                        {
+                            boolean found = false;
+                            for(int i = morphs.size() - 1; i >= 0; i--)
+                            {
+                                MorphVariant var = morphs.get(i);
+                                if(args[2].startsWith("player:") && var.entId.equalsIgnoreCase(MorphVariant.PLAYER_MORPH_ID) && !var.playerName.equalsIgnoreCase(player.getName()) && var.playerName.equalsIgnoreCase(args[2].substring("player:".length(), args[2].length())) || var.entId.equalsIgnoreCase(args[2]))
+                                {
+                                    morphs.remove(i);
+                                    found = true;
+                                }
+                            }
+                            if(found)
+                            {
+                                PlayerMorphHandler.getInstance().savePlayerData(player);
+                                morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+                                Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player); //Send the player's morph list to them
+                                notifyCommandListener(sender, this, "morph.command.successful", player.getName());
+                            }
+                            else
+                            {
+                                notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new WrongUsageException(getUsage(sender));
+                    }
+                }
                 else if(args[0].equalsIgnoreCase("clear"))
                 {
                     Morph.eventHandlerServer.playerMorphs.remove(player.getName());
@@ -152,10 +188,17 @@ public class CommandMorph extends CommandBase
                     }
                     else if(!args[2].equalsIgnoreCase("*"))
                     {
-                        Entity ent = EntityList.createEntityByIDFromName(new ResourceLocation(args[2]), player.getEntityWorld());
-                        if(ent instanceof EntityLivingBase)
+                        if(args[2].startsWith("player:"))
                         {
-                            entToMorphTo = (EntityLivingBase)ent;
+                            entToMorphTo = new EntityPlayerMP(FMLCommonHandler.instance().getMinecraftServerInstance(), DimensionManager.getWorld(0), EntityHelper.getGameProfile(args[2].substring("player:".length(), args[2].length())), new PlayerInteractionManager(DimensionManager.getWorld(0)));
+                        }
+                        else
+                        {
+                            Entity ent = EntityList.createEntityByIDFromName(new ResourceLocation(args[2]), player.getEntityWorld());
+                            if(ent instanceof EntityLivingBase)
+                            {
+                                entToMorphTo = (EntityLivingBase)ent;
+                            }
                         }
                     }
                     else if(args[0].equalsIgnoreCase("give"))
@@ -290,7 +333,53 @@ public class CommandMorph extends CommandBase
                 }
             }
         }
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "demorph", "clear", "morph", "give", "help") : args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : args.length == 3 ? args[0].equalsIgnoreCase("demorph") || args[0].equalsIgnoreCase("clear") ? getListOfStringsMatchingLastWord(args, "true") : args[0].equalsIgnoreCase("morph") || args[0].equalsIgnoreCase("give") ? getListOfStringsMatchingLastWord(args, entityNames) : getListOfStringsMatchingLastWord(args, "") : getListOfStringsMatchingLastWord(args, "");
+        ArrayList<String> entityNamesWithPlayers = new ArrayList<>(entityNames);
+        if(args.length >= 2 && args[0].equalsIgnoreCase("give"))
+        {
+            for(int i = 0; i < server.getOnlinePlayerNames().length; i++)
+            {
+                if(!args[1].equals(server.getOnlinePlayerNames()[i]))
+                {
+                    entityNamesWithPlayers.add("player:" + server.getOnlinePlayerNames()[i]);
+                }
+            }
+        }
+        if(args.length == 3 && args[0].equalsIgnoreCase("remove"))
+        {
+            EntityPlayerMP player;
+            try
+            {
+                player = getPlayer(server, sender, args[1]);
+            }
+            catch(CommandException e)
+            {
+                player = null;
+            }
+            if(player != null)
+            {
+                ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
+                if(morphs != null && !morphs.isEmpty())
+                {
+                    ArrayList<String> names = new ArrayList<>();
+                    for(MorphVariant var : morphs)
+                    {
+                        if(!(var.entId.equals(MorphVariant.PLAYER_MORPH_ID) && player.getName().equals(var.playerName)))
+                        {
+                            if(var.entId.equals(MorphVariant.PLAYER_MORPH_ID))
+                            {
+                                names.add("player:" + var.playerName);
+                            }
+                            else
+                            {
+                                names.add(var.entId);
+                            }
+                        }
+                    }
+                    return getListOfStringsMatchingLastWord(args, names);
+                }
+            }
+        }
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "demorph", "remove", "clear", "morph", "give", "help") : args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : args.length == 3 ? args[0].equalsIgnoreCase("demorph") || args[0].equalsIgnoreCase("clear") ? getListOfStringsMatchingLastWord(args, "true") : args[0].equalsIgnoreCase("morph") || args[0].equalsIgnoreCase("give") ? getListOfStringsMatchingLastWord(args, entityNamesWithPlayers) : getListOfStringsMatchingLastWord(args, "") : getListOfStringsMatchingLastWord(args, "");
     }
 
     @Override
