@@ -14,6 +14,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -64,20 +65,20 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onPlaySoundAtEntity(PlaySoundAtEntityEvent event)
     {
-        if(event.getEntity() instanceof EntityPlayer && (event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT) || event.getSound().equals(SoundEvents.ENTITY_PLAYER_DEATH)))
+        if(event.getEntity() instanceof EntityPlayer && (event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT)|| event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_DROWN)|| event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE) || event.getSound().equals(SoundEvents.ENTITY_PLAYER_DEATH)))
         {
             EntityPlayer player = (EntityPlayer)event.getEntity();
             if(!player.getEntityWorld().isRemote && Morph.eventHandlerServer.morphsActive.get(player.getName()) != null)
             {
                 MorphInfo info = Morph.eventHandlerServer.morphsActive.get(player.getName());
                 EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.getEntityWorld()) : info.nextState.getEntInstance(player.getEntityWorld());
-                event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT) ? EntityHelper.getHurtSound(entInstance, entInstance.getClass()) : EntityHelper.getDeathSound(entInstance, entInstance.getClass()));
+                event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_DEATH) ? EntityHelper.getDeathSound(entInstance, entInstance.getClass()) : EntityHelper.getHurtSound(entInstance, entInstance.getClass(), event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE) ? DamageSource.ON_FIRE : event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_DROWN) ? DamageSource.DROWN : DamageSource.GENERIC));
             }
             else if(player.getEntityWorld().isRemote && Morph.eventHandlerClient.morphsActive.get(player.getName()) != null)
             {
                 MorphInfo info = Morph.eventHandlerClient.morphsActive.get(player.getName());
                 EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.getEntityWorld()) : info.nextState.getEntInstance(player.getEntityWorld());
-                event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT) ? EntityHelper.getHurtSound(entInstance, entInstance.getClass()) : EntityHelper.getDeathSound(entInstance, entInstance.getClass()));
+                event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_DEATH) ? EntityHelper.getDeathSound(entInstance, entInstance.getClass()) : EntityHelper.getHurtSound(entInstance, entInstance.getClass(), event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE) ? DamageSource.ON_FIRE : event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_DROWN) ? DamageSource.DROWN : DamageSource.GENERIC));
             }
         }
     }
@@ -112,13 +113,13 @@ public class EventHandlerServer
                     EntityHelper.playSoundAtEntity(player, Morph.soundMorph, player.getSoundCategory(), 1.0F, 1.0F);
                 }
 
-                ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+                ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
 
                 if(Morph.config.loseMorphsOnDeath == 1)
                 {
                     //remove all the morphs
                     morphs.clear();
-                    morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+                    morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                 }
                 else
                 {
@@ -213,16 +214,16 @@ public class EventHandlerServer
         }
     }
 
-    public ArrayList<MorphVariant> getPlayerMorphs(String name)
+    public ArrayList<MorphVariant> getPlayerMorphs(EntityPlayer player)
     {
-        ArrayList<MorphVariant> morphs = playerMorphs.get(name);
+        ArrayList<MorphVariant> morphs = playerMorphs.get(player.getName());
         if(morphs == null)
         {
             morphs = new ArrayList<>();
-            MorphVariant variant = new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayerName(name);
+            MorphVariant variant = new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayer(player);
             variant.thisVariant.isFavourite = true;
             morphs.add(variant); //Add the player self's morph variant when getting this list.
-            playerMorphs.put(name, morphs);
+            playerMorphs.put(player.getName(), morphs);
         }
         return morphs;
     }

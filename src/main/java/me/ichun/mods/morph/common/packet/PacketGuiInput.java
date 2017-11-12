@@ -45,7 +45,7 @@ public class PacketGuiInput extends AbstractPacket
     @Override
     public void execute(Side side, EntityPlayer player)
     {
-        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
         boolean found = false;
         for(int i = morphs.size() - 1; i >= 0; i--)
         {

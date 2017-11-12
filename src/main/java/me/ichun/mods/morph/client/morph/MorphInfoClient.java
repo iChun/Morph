@@ -267,7 +267,7 @@ public class MorphInfoClient extends MorphInfo
                     ((IRangedAttackMob)ent).setSwingingArms(false);
                 }
             }
-            else if(!player.activeItemStack.isItemEqual(ent.activeItemStack)) //TODO test that this works
+            else if(!player.activeItemStack.isItemEqual(ent.activeItemStack))
             {
                 ent.setActiveHand(player.getActiveHand());
                 ent.activeItemStack = player.activeItemStack.copy();

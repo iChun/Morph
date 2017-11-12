@@ -149,7 +149,7 @@ public class CommandMorph extends CommandBase
                             if(found)
                             {
                                 PlayerMorphHandler.getInstance().savePlayerData(player);
-                                morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+                                morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                                 Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player); //Send the player's morph list to them
                                 notifyCommandListener(sender, this, "morph.command.successful", player.getName());
                             }
@@ -168,7 +168,7 @@ public class CommandMorph extends CommandBase
                 {
                     Morph.eventHandlerServer.playerMorphs.remove(player.getName());
                     PlayerMorphHandler.getInstance().savePlayerData(player);
-                    ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+                    ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                     Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player); //Send the player's morph list to them
                     notifyCommandListener(sender, this, "morph.command.clearingMorphs", player.getName());
                 }
@@ -281,7 +281,7 @@ public class CommandMorph extends CommandBase
                         }
                         if(newMorph)
                         {
-                            ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+                            ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                             Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
                             PlayerMorphHandler.getInstance().savePlayerData(player);
                             notifyCommandListener(sender, this, "morph.command.successful", player.getName());

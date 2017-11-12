@@ -1609,11 +1609,6 @@ public class EventHandlerClient
 
                 Minecraft.getMinecraft().getTextureManager().bindTexture(rlFavourite);
 
-                //TODO lightmap here...?
-                //int k2 = 240;
-                //int l2 = k2 >> 16 & 65535;
-                //int i3 = k2 & 65535;
-
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder bufferbuilder = tessellator.getBuffer();

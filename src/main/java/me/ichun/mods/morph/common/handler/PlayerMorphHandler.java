@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.handler;
 
+import com.mojang.util.UUIDTypeAdapter;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.api.IApi;
@@ -32,10 +33,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerMorphHandler implements IApi
 {
@@ -206,7 +204,7 @@ public class PlayerMorphHandler implements IApi
         MorphInfo info = Morph.eventHandlerServer.morphsActive.get(player.getName());
         if(info != null)
         {
-            MorphVariant variant = new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayerName(player.getName());
+            MorphVariant variant = new MorphVariant(MorphVariant.PLAYER_MORPH_ID).setPlayer(player);
             variant.thisVariant.isFavourite = true;
             MorphInfo newInfo = new MorphInfo(player, info.nextState, new MorphState(variant));
             newInfo.morphTime = 0;
@@ -379,7 +377,7 @@ public class PlayerMorphHandler implements IApi
         {
             Morph.channel.sendToAllExcept(new PacketUpdateActiveMorphs(event.player.getName()), event.player);
         }
-        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(event.player.getName());
+        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.getPlayerMorphs(event.player);
         Morph.channel.sendTo(new PacketUpdateActiveMorphs(null), event.player); //Send the player a list of everyone's morphs
         Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), event.player); //Send the player's morph list to them
     }
@@ -477,7 +475,7 @@ public class PlayerMorphHandler implements IApi
 
         //Save the morph variants
         int oldMorphCount = tag.getInteger("variantCount");
-        ArrayList<MorphVariant> variants = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+        ArrayList<MorphVariant> variants = Morph.eventHandlerServer.getPlayerMorphs(player);
         tag.setInteger("variantCount", variants.size());
         for(int i = 0; i < variants.size(); i++)
         {
@@ -516,13 +514,35 @@ public class PlayerMorphHandler implements IApi
 
         //Load up the player's morph list.
         int morphCount = tag.getInteger("variantCount");
-        ArrayList<MorphVariant> variants = Morph.eventHandlerServer.getPlayerMorphs(player.getName());
+        ArrayList<MorphVariant> variants = Morph.eventHandlerServer.getPlayerMorphs(player);
         for(int i = 0; i < morphCount; i++)
         {
             MorphVariant variant = new MorphVariant("");
             variant.read(tag.getCompoundTag("variant_" + i));
 
-            if(!variants.contains(variant))
+            boolean ignore = false;
+
+            if(variant.entId.equals(MorphVariant.PLAYER_MORPH_ID))
+            {
+                try
+                {
+                    UUID playerUUID = UUIDTypeAdapter.fromString(variant.entTag.getString("UUID"));
+                    if(playerUUID.equals(player.getGameProfile().getId()))
+                    {
+                        variant.playerName = player.getGameProfile().getName();
+                    }
+                    else
+                    {
+                        variant.playerName = EntityHelper.getGameProfile(playerUUID, variant.playerName).getName();
+                    }
+                }
+                catch(IllegalArgumentException ignored)
+                {
+                    ignore = true;
+                }
+            }
+
+            if(!variants.contains(variant) && !ignore)
             {
                 variants.add(variant);
             }

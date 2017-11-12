@@ -22,10 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class MorphVariant
         implements Comparable<MorphVariant>
@@ -54,9 +51,10 @@ public class MorphVariant
         this.variants = new ArrayList<>();
     }
 
-    public MorphVariant setPlayerName(String name)
+    public MorphVariant setPlayer(EntityPlayer player)
     {
-        playerName = name;
+        playerName = player.getName();
+        entTag.setString("UUID", player.getGameProfile().getId().toString());
         return this;
     }
 
@@ -76,7 +74,6 @@ public class MorphVariant
         }
         else
         {
-            //TODO should I try...catch here to prevent crashes?
             NBTTagCompound instanceCreator = (NBTTagCompound)instanceTag.copy();
             instanceCreator.tagMap.putAll(entTag.tagMap);
             instanceCreator.tagMap.putAll(thisVariant.variantData.tagMap);
@@ -257,11 +254,11 @@ public class MorphVariant
         return tag;
     }
 
-    public static MorphVariant createVariant(EntityLivingBase living)//TODO study this class again omg
+    public static MorphVariant createVariant(EntityLivingBase living)
     {
         if(living instanceof EntityPlayer)
         {
-            return new MorphVariant(PLAYER_MORPH_ID).setPlayerName(living.getName());
+            return new MorphVariant(PLAYER_MORPH_ID).setPlayer((EntityPlayer)living);
         }
 
         NBTTagCompound saveData = new NBTTagCompound();
@@ -379,8 +376,6 @@ public class MorphVariant
             }
             return -1;
         }
-
-        //TODO reorganise the tags so that the most unique variant is not the main variant?
 
         ArrayList<Variant> variants1 = source.variants;
         for(int i = 0; i < variants1.size(); i++)

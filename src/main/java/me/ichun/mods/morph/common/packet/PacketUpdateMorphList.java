@@ -108,7 +108,6 @@ public class PacketUpdateMorphList extends AbstractPacket
         }
         //Now that all the variants are stored in states and an entity created, lets sort them
 
-        //TODO unforntunately we are currently sorting the list alphabetically except the player state is at the top.
         String playerName = Minecraft.getMinecraft().player.getName();
         Collections.sort(states);
         if(organiseFavourites)
