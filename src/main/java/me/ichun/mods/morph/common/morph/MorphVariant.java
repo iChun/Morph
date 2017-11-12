@@ -291,7 +291,7 @@ public class MorphVariant
         {
             variant.entTag.tagMap.put("ForgeData", variant.instanceTag.tagMap.get("ForgeData"));
         }
-        if (living.getCustomNameTag() != null && living.getCustomNameTag().length() > 0)
+        if (living.hasCustomName() && living.getCustomNameTag().length() > 0)
         {
             variant.entTag.setString("CustomName", living.getCustomNameTag());
             variant.entTag.setBoolean("CustomNameVisible", living.getAlwaysRenderNameTag());
@@ -325,10 +325,7 @@ public class MorphVariant
             tag.setBoolean("NoAI", true);
         }
 
-        if(tag.getTag("ForgeData").hasNoTags())
-        {
-            tag.removeTag("ForgeData");
-        }
+        tag.tagMap.entrySet().removeIf(e -> e.getValue().hasNoTags());
     }
 
     @Override
