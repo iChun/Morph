@@ -129,20 +129,11 @@ public class PacketUpdateMorphList extends AbstractPacket
                 }
             }
         }
-        boolean needsReorder = false;
+        boolean needsReorder = !fullList;
         for(MorphState state : states)
         {
-            ArrayList<MorphState> category = Morph.eventHandlerClient.playerMorphs.get(state.getName());
-            if(category == null)
-            {
-                if(!fullList)
-                {
-                    needsReorder = true;
-                }
-                category = new ArrayList<>();
-                Morph.eventHandlerClient.playerMorphs.put(state.getName(), category);
-            }
-            if(!category.contains(state))
+            ArrayList<MorphState> category = Morph.eventHandlerClient.playerMorphs.computeIfAbsent(state.getName(), k -> new ArrayList<>());
+            if(!category.contains(state) || category.remove(state))
             {
                 category.add(state);
             }

@@ -324,6 +324,11 @@ public class MorphVariant
             tag.setBoolean("PersistenceRequired", true);
             tag.setBoolean("NoAI", true);
         }
+
+        if(tag.getTag("ForgeData").hasNoTags())
+        {
+            tag.removeTag("ForgeData");
+        }
     }
 
     @Override
@@ -344,7 +349,7 @@ public class MorphVariant
     /**
      * Returns false if variants were not combined successfully or if the variant already exists
      * You cannot combine player variants even though they might be categorised together!
-     * Returns -2 for failed merge. -1 for thisVariant. 0-X for a index of variants.
+     * Returns -2 for failed merge. -1 for thisVariant. 0-X for a index of variants if new health is > old variant. size() - 1 if new variant
      */
     public static int combineVariants(MorphVariant source, MorphVariant variantToMerge)
     {
@@ -375,8 +380,9 @@ public class MorphVariant
                         variant.variantData.setDouble("Morph_HealthBalancing", sourceHealth);
                     }
                 }
+                return -1;
             }
-            return -1;
+            return -2;
         }
 
         ArrayList<Variant> variants1 = source.variants;
@@ -394,8 +400,9 @@ public class MorphVariant
                 if(variantHealth > sourceHealth && sourceHealth > 0D) //Give this variant a new health
                 {
                     variant.variantData.setDouble("Morph_HealthBalancing", variantHealth);
+                    return i;
                 }
-                return i;
+                return -2;
             }
         }
 

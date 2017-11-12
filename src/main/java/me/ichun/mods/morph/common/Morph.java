@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.event.*;
 @Mod(modid = Morph.MOD_ID, name = Morph.MOD_NAME,
         version = Morph.VERSION,
         guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
-        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR + ".0.1," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
+        dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR + ".0.3," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + ".0.0," + iChunUtil.VERSION_MAJOR + ".1.0)",
         acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE
 )
@@ -31,7 +31,7 @@ public class Morph
 {
     public static final String MOD_NAME = "Morph";
     public static final String MOD_ID = "morph";
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.0";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".0.1";
 
     @Mod.Instance(MOD_ID)
     public static Morph instance;
