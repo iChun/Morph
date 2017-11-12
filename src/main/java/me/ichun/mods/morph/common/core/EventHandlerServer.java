@@ -10,7 +10,6 @@ import me.ichun.mods.morph.common.packet.PacketDemorph;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;

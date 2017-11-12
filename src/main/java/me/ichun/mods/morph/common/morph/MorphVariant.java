@@ -3,7 +3,6 @@ package me.ichun.mods.morph.common.morph;
 import com.google.common.collect.Ordering;
 import com.mojang.authlib.GameProfile;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
-import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -22,7 +21,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MorphVariant
         implements Comparable<MorphVariant>

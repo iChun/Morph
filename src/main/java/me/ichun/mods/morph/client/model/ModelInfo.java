@@ -1,7 +1,6 @@
 package me.ichun.mods.morph.client.model;
 
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
-import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;

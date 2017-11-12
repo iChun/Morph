@@ -1,6 +1,5 @@
 package me.ichun.mods.morph.client.core;
 
-import com.mojang.authlib.GameProfile;
 import me.ichun.mods.ichunutil.client.core.event.RendererSafeCompatibilityEvent;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.keybind.KeyEvent;

@@ -4,7 +4,6 @@ import com.google.common.collect.Ordering;
 import com.google.gson.GsonBuilder;
 import me.ichun.mods.morph.common.morph.MorphVariant;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
