@@ -213,11 +213,6 @@ public class RenderPlayerHand extends RenderPlayer
 
                     parent.getMainModel().setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, clientPlayer);
                     parent.getMainModel().bipedRightArm.render(0.0625F);
-                    if(clientInfo.prevState.getEntInstance(clientPlayer.world) instanceof AbstractClientPlayer)
-                    {
-                        parent.getMainModel().bipedRightArmwear.render(0.0625F);
-                    }
-
                     parent.getMainModel().bipedRightArm = arm;
 
                     replacement.rotationPointX = rotX;
