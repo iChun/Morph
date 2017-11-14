@@ -207,6 +207,10 @@ public class MorphInfoClient extends MorphInfo
 
         if(player != mc.player) //Testing to see if the mob is on the ground or not if the morph isn't the MC player
         {
+            ent.motionX = player.posX - player.lastTickPosX;
+            ent.motionY = player.posY - player.lastTickPosY;
+            ent.motionZ = player.posZ - player.lastTickPosZ;
+
             ent.noClip = false;
             ent.setEntityBoundingBox(player.getEntityBoundingBox());
             float distanceWalkedModified = ent.distanceWalkedModified;

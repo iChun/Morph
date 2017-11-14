@@ -407,23 +407,23 @@ public class PlayerMorphHandler implements IApi
                     player.width = morphEnt.width;
                     player.height = morphEnt.height;
                 }
-                double difference = ((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - morphWidth;
-                if(difference > 0)
-                {
-                    boolean collidedHorizontally = player.collidedHorizontally;
-                    boolean collidedVertically = player.collidedVertically;
-                    boolean onGround = player.onGround;
-                    boolean collided = player.collided;
-                    float distanceWalkedModified = player.distanceWalkedModified;
-                    float distanceWalkedOnStepModified = player.distanceWalkedOnStepModified;
-                    player.move(MoverType.SELF, difference, 0.0D, difference);
-                    player.distanceWalkedModified = distanceWalkedModified;
-                    player.distanceWalkedOnStepModified = distanceWalkedOnStepModified;
-                    player.collidedHorizontally = collidedHorizontally || player.collidedHorizontally;
-                    player.collidedVertically = collidedVertically || player.collidedVertically;
-                    player.onGround = onGround || player.onGround;
-                    player.collided = collided || player.collided;
-                }
+//                double difference = ((player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - morphWidth;
+//                if(difference > 0)
+//                {
+//                    boolean collidedHorizontally = player.collidedHorizontally;
+//                    boolean collidedVertically = player.collidedVertically;
+//                    boolean onGround = player.onGround;
+//                    boolean collided = player.collided;
+//                    float distanceWalkedModified = player.distanceWalkedModified;
+//                    float distanceWalkedOnStepModified = player.distanceWalkedOnStepModified;
+//                    player.move(MoverType.SELF, difference, 0.0D, difference);
+//                    player.distanceWalkedModified = distanceWalkedModified;
+//                    player.distanceWalkedOnStepModified = distanceWalkedOnStepModified;
+//                    player.collidedHorizontally = collidedHorizontally || player.collidedHorizontally;
+//                    player.collidedVertically = collidedVertically || player.collidedVertically;
+//                    player.onGround = onGround || player.onGround;
+//                    player.collided = collided || player.collided;
+//                }
                 MorphInfo.setPlayerSize(player, (float)morphWidth, morphEnt.height);
             }
         }
