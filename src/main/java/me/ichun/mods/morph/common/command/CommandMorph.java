@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.command;
 
+import com.google.common.collect.Ordering;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
 import me.ichun.mods.morph.common.Morph;
@@ -27,9 +28,7 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CommandMorph extends CommandBase
 {
@@ -62,6 +61,7 @@ public class CommandMorph extends CommandBase
             if(args[0].equalsIgnoreCase("help"))
             {
                 //				<demorph|clear|morph|give> [player] [force (true/false) / entity name]
+                sender.sendMessage(new TextComponentTranslation("morph.command.analyse").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.demorph").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.remove").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.clear").setStyle(TEXT_GRAY));
@@ -157,6 +157,98 @@ public class CommandMorph extends CommandBase
                             {
                                 notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
                             }
+                        }
+                    }
+                    else
+                    {
+                        throw new WrongUsageException(getUsage(sender));
+                    }
+                }
+                else if(args[0].equalsIgnoreCase("analyse"))
+                {
+                    if(args.length == 3)
+                    {
+                        if(args[2].startsWith("player:"))
+                        {
+                            notifyCommandListener(sender, this, "morph.command.analysePlayer");
+                            return;
+                        }
+                        ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
+                        if(morphs != null && !morphs.isEmpty())
+                        {
+                            for(MorphVariant var : morphs)
+                            {
+                                if(var.entId.equals(args[2]))
+                                {
+                                    EntityLivingBase living = var.createEntityInstance(player.getEntityWorld());
+                                    if(var.thisVariant.invalid)
+                                    {
+                                        notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
+                                        return;
+                                    }
+                                    notifyCommandListener(sender, this, "morph.command.analyseClass", living.getClass().getName());
+
+                                    TreeSet<String> tags = new TreeSet<>(Ordering.natural());
+                                    tags.addAll(var.entTag.tagMap.keySet());
+                                    TreeSet<String> added = new TreeSet<>();
+                                    added.addAll(var.thisVariant.variantData.tagMap.keySet());
+                                    TreeSet<String> removed = new TreeSet<>();
+                                    removed.addAll(var.thisVariant.tagsToRemove);
+                                    for(MorphVariant.Variant variant : var.variants)
+                                    {
+                                        added.addAll(variant.variantData.tagMap.keySet());
+                                        removed.addAll(variant.tagsToRemove);
+                                    }
+                                    tags.addAll(added);
+                                    tags.addAll(removed);
+                                    tags.remove("Age");
+                                    tags.remove("CanPickUpLoot");
+                                    tags.remove("HealF");
+                                    tags.remove("Health");
+                                    tags.remove("Morph_HealthBalancing");
+                                    tags.remove("NoAI");
+                                    tags.remove("PersistenceRequired");
+                                    added.remove("Morph_HealthBalancing");
+
+                                    StringBuilder addedSb = new StringBuilder();
+                                    for(String tag : tags)
+                                    {
+                                        addedSb.append(tag);
+                                        addedSb.append(", ");
+                                    }
+                                    notifyCommandListener(sender, this, "morph.command.analyseAllTags", addedSb.toString().substring(0, addedSb.toString().length() - 2));
+
+                                    TreeSet<String> allModified = new TreeSet<>();
+                                    added.stream().filter(removed::contains).forEach(allModified::add);
+                                    removed.stream().filter(added::contains).forEach(allModified::add);
+                                    TreeSet<String> temp = new TreeSet<>(added);
+                                    added.removeAll(removed);
+                                    removed.removeAll(temp);
+
+                                    StringBuilder modifiedSb = new StringBuilder();
+                                    for(String tag : allModified)
+                                    {
+                                        modifiedSb.append("+/-");
+                                        modifiedSb.append(tag);
+                                        modifiedSb.append(", ");
+                                    }
+                                    for(String tag : added)
+                                    {
+                                        modifiedSb.append("+");
+                                        modifiedSb.append(tag);
+                                        modifiedSb.append(", ");
+                                    }
+                                    for(String tag : removed)
+                                    {
+                                        modifiedSb.append("-");
+                                        modifiedSb.append(tag);
+                                        modifiedSb.append(", ");
+                                    }
+                                    notifyCommandListener(sender, this, "morph.command.analyseVariantTags", modifiedSb.toString().substring(0, modifiedSb.toString().length() - 2));
+                                    return;
+                                }
+                            }
+                            notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
                         }
                     }
                     else
@@ -344,7 +436,7 @@ public class CommandMorph extends CommandBase
                 }
             }
         }
-        if(args.length == 3 && args[0].equalsIgnoreCase("remove"))
+        if(args.length == 3 && (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("analyse")))
         {
             EntityPlayerMP player;
             try
@@ -379,7 +471,7 @@ public class CommandMorph extends CommandBase
                 }
             }
         }
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "demorph", "remove", "clear", "morph", "give", "help") : args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : args.length == 3 ? args[0].equalsIgnoreCase("demorph") || args[0].equalsIgnoreCase("clear") ? getListOfStringsMatchingLastWord(args, "true") : args[0].equalsIgnoreCase("morph") || args[0].equalsIgnoreCase("give") ? getListOfStringsMatchingLastWord(args, entityNamesWithPlayers) : getListOfStringsMatchingLastWord(args, "") : getListOfStringsMatchingLastWord(args, "");
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "analyse", "demorph", "remove", "clear", "morph", "give", "help") : args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : args.length == 3 ? args[0].equalsIgnoreCase("demorph") || args[0].equalsIgnoreCase("clear") ? getListOfStringsMatchingLastWord(args, "true") : args[0].equalsIgnoreCase("morph") || args[0].equalsIgnoreCase("give") ? getListOfStringsMatchingLastWord(args, entityNamesWithPlayers) : getListOfStringsMatchingLastWord(args, "") : getListOfStringsMatchingLastWord(args, "");
     }
 
     @Override

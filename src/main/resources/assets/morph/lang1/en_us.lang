@@ -92,6 +92,7 @@ morph.config.prop.showAbilitiesInGui.comment=Show the abilities the morph has in
 morph.config.prop.sortMorphs.comment=Sort the morphs in the GUI?\n0 = Order of acquisition (Server default)\n1 = Alphabetically (according to Operating System)\n2 = Alphabetically, and attempt to sort grouped morphs as well\n3 = Most recently used since connecting to the server
 morph.config.prop.renderCrosshairInRadialMenu.comment=As per request, render the crosshair position when in the radial menu.
 
+morph.command.analyse=/morph analyse <player> <entity name> - Analyses a class of morphs from the player for NBT variation
 morph.command.demorph=/morph demorph [player] [force demorph even if offline (true/false)] - Makes a player demorph
 morph.command.remove=/morph remove <player> <entity name> - Removes a class of morphs from the player
 morph.command.clear=/morph clear [player] [force clear even if offline (true/false)] - Clears a player's morphs
@@ -119,5 +120,8 @@ morph.command.successfulForce=Succeeded in a forced command on %s.
 morph.command.cannotFindEntity=Unable to find/create entity.
 morph.command.successful=Succeeded executing command on %s.
 morph.command.unsuccessful=Unsuccessful in executing command on %s.
+morph.command.analyseClass=Analysing class: %s
+morph.command.analyseAllTags=NBT Tags: %s
+morph.command.analyseVariantTags=Variant Tags (+ means added or modified, - means removed): %s
 
 subtitles.morph.morph=Entity morphing

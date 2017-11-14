@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.dragon.phase.PhaseList;
@@ -29,6 +30,10 @@ public class MorphState
             {
                 ((EntityDragon)entInstance).setNoAI(false);
                 ((EntityDragon)entInstance).getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
+            }
+            else if(entInstance instanceof EntityLiving)
+            {
+                ((EntityLiving)entInstance).setNoAI(true);
             }
         }
         return entInstance;

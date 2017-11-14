@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.api.IApi;
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.event.MorphAcquiredEvent;
+import me.ichun.mods.morph.api.event.MorphEvent;
 import me.ichun.mods.morph.client.morph.MorphInfoClient;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
@@ -317,12 +318,17 @@ public class PlayerMorphHandler implements IApi
             return false;
         }
         MorphInfo currentInfo = Morph.eventHandlerServer.morphsActive.get(player.getName());
-        if(currentInfo == null)
+        if(currentInfo == null) //DO NOT USE computeIfAbsent
         {
             currentInfo = new MorphInfo(player, null, new MorphState(MorphVariant.createVariant(player))); //if player isn't morphed, create a morph state where the player is the next state.
         }
         MorphInfo newInfo = new MorphInfo(player, currentInfo.nextState, new MorphState(variant));
         newInfo.morphTime = 0;
+        if(MinecraftForge.EVENT_BUS.post(new MorphEvent(player, newInfo.prevState.getEntInstance(player.getEntityWorld()), newInfo.nextState.getEntInstance(player.getEntityWorld()))))
+        {
+            //Event was cancelled.
+            return false;
+        }
         Morph.eventHandlerServer.morphsActive.put(player.getName(), newInfo);
         Morph.channel.sendToAll(new PacketUpdateActiveMorphs(player.getName()));
         EntityHelper.playSoundAtEntity(player, Morph.soundMorph, player.getSoundCategory(), 1.0F, 1.0F);

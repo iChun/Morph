@@ -108,7 +108,7 @@
     "EggLayTime": "null",
     "IsChickenJockey": "null"
   },
-  "net.minecraft.entity.passive.EntityHorse": {
+  "net.minecraft.entity.passive.AbstractHorse": {
     "Bred": "null",
     "EatingHaystack": "null",
     "HasReproduced": "null",
