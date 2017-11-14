@@ -51,7 +51,7 @@ public class RenderPlayerHand extends RenderPlayer
             ModelInfo prevModel = info.getPrevStateModel(world);
             ModelInfo nextModel = info.getNextStateModel(world);
 
-            if(prevModel.modelArms[0] != null)
+            if(prevModel != null && prevModel.modelArms[0] != null)
             {
                 rightHandInterim.prevModels.add(prevModel.modelArms[0]);
             }
@@ -60,7 +60,7 @@ public class RenderPlayerHand extends RenderPlayer
                 rightHandInterim.nextModels.add(nextModel.modelArms[0]);
             }
 
-            if(prevModel.modelArms[1] != null)
+            if(prevModel != null && prevModel.modelArms[1] != null)
             {
                 leftHandInterim.prevModels.add(prevModel.modelArms[1]);
             }
@@ -75,8 +75,11 @@ public class RenderPlayerHand extends RenderPlayer
             rightHandInterim.modelList.clear();
             leftHandInterim.modelList.clear();
 
-            rightHandInterim.modelList.addAll(ModelHelper.getModelCubesCopy(rightHandInterim.prevModels, rightHandInterim, null));
-            leftHandInterim.modelList.addAll(ModelHelper.getModelCubesCopy(leftHandInterim.prevModels, leftHandInterim, null));
+            if(prevModel != null)
+            {
+                rightHandInterim.modelList.addAll(ModelHelper.getModelCubesCopy(rightHandInterim.prevModels, rightHandInterim, null));
+                leftHandInterim.modelList.addAll(ModelHelper.getModelCubesCopy(leftHandInterim.prevModels, leftHandInterim, null));
+            }
         }
     }
 

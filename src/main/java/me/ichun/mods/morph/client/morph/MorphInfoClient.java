@@ -209,7 +209,11 @@ public class MorphInfoClient extends MorphInfo
         {
             ent.noClip = false;
             ent.setEntityBoundingBox(player.getEntityBoundingBox());
+            float distanceWalkedModified = ent.distanceWalkedModified;
+            float distanceWalkedOnStepModified = ent.distanceWalkedOnStepModified;
             ent.move(MoverType.SELF, 0.0D, -0.01D, 0.0D);
+            ent.distanceWalkedModified = distanceWalkedModified;
+            ent.distanceWalkedOnStepModified = distanceWalkedOnStepModified;
             ent.posY = player.posY; //reset the position.
         }
         ent.noClip = true;

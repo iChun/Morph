@@ -185,9 +185,13 @@ public class MorphInfo
         boolean collided = player.collided;
 
         float difference = ((float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - f;
+        float distanceWalkedModified = player.distanceWalkedModified;
+        float distanceWalkedOnStepModified = player.distanceWalkedOnStepModified;
         player.move(MoverType.SELF, difference, 0.0D, difference);
         player.move(MoverType.SELF, -(difference + difference), 0.0D, -(difference + difference));
         player.move(MoverType.SELF, difference, 0.0D, difference);
+        player.distanceWalkedModified = distanceWalkedModified;
+        player.distanceWalkedOnStepModified = distanceWalkedOnStepModified;
 
         player.collidedHorizontally = collidedHorizontally || player.collidedHorizontally;
         player.collidedVertically = collidedVertically || player.collidedVertically;
