@@ -85,7 +85,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if(!event.getEntityLiving().world.isRemote && PlayerMorphHandler.getInstance().isEntityAMorph(event.getEntityLiving(), Side.SERVER))
+        if(!event.getEntityLiving().world.isRemote && (PlayerMorphHandler.getInstance().isEntityAMorph(event.getEntityLiving(), Side.SERVER) || event.getSource().getTrueSource() instanceof EntityLivingBase && PlayerMorphHandler.getInstance().isEntityAMorph((EntityLivingBase)event.getSource().getTrueSource(), Side.SERVER)))
         {
             event.setCanceled(true);
         }
