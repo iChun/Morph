@@ -153,6 +153,7 @@ public class CommandMorph extends CommandBase
                                 newMorphs.add(var);
                             }
                         }
+                        morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                         for(MorphVariant var : morphsToClean)
                         {
                             EntityLivingBase living = var.createEntityInstance(player.getEntityWorld());
@@ -162,9 +163,10 @@ public class CommandMorph extends CommandBase
                                 continue;
                             }
 
-                            ArrayList<MorphVariant> newMorphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
+                            variant.thisVariant.isFavourite = var.thisVariant.isFavourite;
+
                             int variantIndex = -2;
-                            for(MorphVariant var1 : newMorphs)
+                            for(MorphVariant var1 : morphs)
                             {
                                 if(variant.entId.equals(var1.entId)) //non-player variants
                                 {
@@ -184,17 +186,19 @@ public class CommandMorph extends CommandBase
 
                             if(variantIndex == -2) //No preexisting variant exists.
                             {
-                                newMorphs.add(variant);
+                                morphs.add(variant);
                             }
                         }
-                        morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
 
                         Collections.sort(morphs);
 
                         PlayerMorphHandler.getInstance().savePlayerData(player);
 
                         Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
+                        notifyCommandListener(sender, this, "morph.command.successful", player.getName());
+                        return;
                     }
+                    notifyCommandListener(sender, this, "morph.command.unsuccessful", player.getName());
                 }
                 else if(args[0].equalsIgnoreCase("remove"))
                 {

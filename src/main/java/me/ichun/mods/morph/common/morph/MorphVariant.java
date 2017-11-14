@@ -377,6 +377,7 @@ public class MorphVariant
                         variant.variantData.setDouble("Morph_HealthBalancing", sourceHealth);
                     }
                 }
+                source.thisVariant.isFavourite = variantToMerge.thisVariant.isFavourite;
                 return -1;
             }
             return -2;
@@ -397,6 +398,7 @@ public class MorphVariant
                 if(variantHealth > sourceHealth && sourceHealth > 0D) //Give this variant a new health
                 {
                     variant.variantData.setDouble("Morph_HealthBalancing", variantHealth);
+                    variant.isFavourite = variantToMerge.thisVariant.isFavourite;
                     return i;
                 }
                 return -2;
@@ -429,6 +431,7 @@ public class MorphVariant
                 variant.variantData.tagMap.put(key, e.getValue());
             }
         }
+        variant.isFavourite = variantToMerge.thisVariant.isFavourite;
 
         //Add the variant to the variants list. Ensure this entry is the last entry added, it is used to update the player of the new variant.
         source.variants.add(variant);
