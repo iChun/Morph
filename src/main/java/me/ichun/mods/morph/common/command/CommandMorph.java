@@ -63,6 +63,7 @@ public class CommandMorph extends CommandBase
                 //				<demorph|clear|morph|give> [player] [force (true/false) / entity name]
                 sender.sendMessage(new TextComponentTranslation("morph.command.analyse").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.demorph").setStyle(TEXT_GRAY));
+                sender.sendMessage(new TextComponentTranslation("morph.command.clean").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.remove").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.clear").setStyle(TEXT_GRAY));
                 sender.sendMessage(new TextComponentTranslation("morph.command.morph").setStyle(TEXT_GRAY));
@@ -127,6 +128,72 @@ public class CommandMorph extends CommandBase
                     else
                     {
                         notifyCommandListener(sender, this, "morph.command.notInMorph", player.getName());
+                    }
+                }
+                else if(args[0].equalsIgnoreCase("clean"))
+                {
+                    PlayerMorphHandler.getInstance().forceDemorph(player);
+                    ArrayList<MorphVariant> morphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
+                    if(morphs != null && !morphs.isEmpty())
+                    {
+                        Morph.eventHandlerServer.playerMorphs.remove(player.getName());
+
+                        ArrayList<MorphVariant> morphsToClean = new ArrayList<>();
+                        for(int i = 0; i < morphs.size(); i++)
+                        {
+                            MorphVariant var = morphs.get(i);
+                            if(!var.entId.startsWith("player:"))
+                            {
+                                morphsToClean.addAll(var.split());
+                            }
+                            else
+                            {
+                                //readd player morphs. nothing to clean.
+                                ArrayList<MorphVariant> newMorphs = Morph.eventHandlerServer.playerMorphs.computeIfAbsent(player.getName(), v -> new ArrayList<>());
+                                newMorphs.add(var);
+                            }
+                        }
+                        for(MorphVariant var : morphsToClean)
+                        {
+                            EntityLivingBase living = var.createEntityInstance(player.getEntityWorld());
+                            MorphVariant variant = MorphVariant.createVariant(living);
+                            if(variant == null) //Variant could not be created.
+                            {
+                                continue;
+                            }
+
+                            ArrayList<MorphVariant> newMorphs = Morph.eventHandlerServer.playerMorphs.get(player.getName());
+                            int variantIndex = -2;
+                            for(MorphVariant var1 : newMorphs)
+                            {
+                                if(variant.entId.equals(var1.entId)) //non-player variants
+                                {
+                                    variantIndex = MorphVariant.combineVariants(var1, variant);
+                                    if(variantIndex == -2) //failed to merge for reasons. Return false acquisition.
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        //The variant should be a new variant so it'll be the latest entry in the variants list.
+                                        variant = var1.createWithVariant(variantIndex == -1 ? var1.thisVariant : var1.variants.get(variantIndex));
+                                    }
+                                    break;
+                                }
+                            }
+
+                            if(variantIndex == -2) //No preexisting variant exists.
+                            {
+                                newMorphs.add(variant);
+                            }
+                        }
+                        morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
+
+                        Collections.sort(morphs);
+
+                        PlayerMorphHandler.getInstance().savePlayerData(player);
+
+                        Morph.channel.sendTo(new PacketUpdateMorphList(true, morphs.toArray(new MorphVariant[morphs.size()])), player);
                     }
                 }
                 else if(args[0].equalsIgnoreCase("remove"))
@@ -471,7 +538,7 @@ public class CommandMorph extends CommandBase
                 }
             }
         }
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "analyse", "demorph", "remove", "clear", "morph", "give", "help") : args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : args.length == 3 ? args[0].equalsIgnoreCase("demorph") || args[0].equalsIgnoreCase("clear") ? getListOfStringsMatchingLastWord(args, "true") : args[0].equalsIgnoreCase("morph") || args[0].equalsIgnoreCase("give") ? getListOfStringsMatchingLastWord(args, entityNamesWithPlayers) : getListOfStringsMatchingLastWord(args, "") : getListOfStringsMatchingLastWord(args, "");
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, "analyse", "demorph", "clean", "remove", "clear", "morph", "give", "help") : args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : args.length == 3 ? args[0].equalsIgnoreCase("demorph") || args[0].equalsIgnoreCase("clear") ? getListOfStringsMatchingLastWord(args, "true") : args[0].equalsIgnoreCase("morph") || args[0].equalsIgnoreCase("give") ? getListOfStringsMatchingLastWord(args, entityNamesWithPlayers) : getListOfStringsMatchingLastWord(args, "") : getListOfStringsMatchingLastWord(args, "");
     }
 
     @Override
