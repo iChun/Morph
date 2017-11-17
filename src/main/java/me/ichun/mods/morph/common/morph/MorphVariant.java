@@ -108,7 +108,9 @@ public class MorphVariant
         GameProfile gp = EntityHelper.getGameProfile(player);
         if(Minecraft.getMinecraft().getConnection().getPlayerInfo(gp.getId()) == null)
         {
-            Minecraft.getMinecraft().getConnection().playerInfoMap.put(gp.getId(), new NetworkPlayerInfo(gp));
+            NetworkPlayerInfo info = new NetworkPlayerInfo(gp);
+            info.setResponseTime(-100);
+            Minecraft.getMinecraft().getConnection().playerInfoMap.put(gp.getId(), info);
         }
         return new EntityOtherPlayerMP(world, gp);
     }

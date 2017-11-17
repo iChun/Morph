@@ -142,6 +142,12 @@ public class MorphInfoClient extends MorphInfo
                 oriGameTypeNext = npiNext.getGameType();
                 npiNext.setGameType(GameType.SPECTATOR);
             }
+            else
+            {
+                NetworkPlayerInfo info = new NetworkPlayerInfo(player.getGameProfile());
+                info.setResponseTime(-100);
+                Minecraft.getMinecraft().getConnection().playerInfoMap.put(player.getGameProfile().getId(), info);
+            }
         }
         super.tick();
         if(npiPrev != null)

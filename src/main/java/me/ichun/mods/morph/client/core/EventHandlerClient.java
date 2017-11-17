@@ -267,6 +267,37 @@ public class EventHandlerClient
         }
     }
 
+    public HashMap<UUID, NetworkPlayerInfo> networkPlayerInfos = new HashMap<>();
+
+    @SubscribeEvent
+    public void onRenderGameOverlayEvent(RenderGameOverlayEvent.Pre event)
+    {
+        if(event.getType() == RenderGameOverlayEvent.ElementType.PLAYER_LIST && Minecraft.getMinecraft().getConnection() != null)
+        {
+            networkPlayerInfos.clear();
+            Iterator<Map.Entry<UUID, NetworkPlayerInfo>> ite = Minecraft.getMinecraft().getConnection().playerInfoMap.entrySet().iterator();
+            while(ite.hasNext())
+            {
+                Map.Entry<UUID, NetworkPlayerInfo> e = ite.next();
+                if(e.getValue().getResponseTime() <= -100)
+                {
+                    networkPlayerInfos.put(e.getKey(), e.getValue());
+                    ite.remove();
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderGameOverlayEvent(RenderGameOverlayEvent.Post event)
+    {
+        if(event.getType() == RenderGameOverlayEvent.ElementType.PLAYER_LIST && Minecraft.getMinecraft().getConnection() != null)
+        {
+            Minecraft.getMinecraft().getConnection().playerInfoMap.putAll(networkPlayerInfos);
+            networkPlayerInfos.clear();
+        }
+    }
+
     @SubscribeEvent
     public void onRenderPlayerPre(RenderPlayerEvent.Pre event)
     {
