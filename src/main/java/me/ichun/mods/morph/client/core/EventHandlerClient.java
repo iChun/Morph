@@ -1572,6 +1572,12 @@ public class EventHandlerClient
                     oriGameType = npi.getGameType();
                     npi.setGameType(GameType.ADVENTURE);
                 }
+                else
+                {
+                    NetworkPlayerInfo info = new NetworkPlayerInfo(((EntityOtherPlayerMP)ent).getGameProfile());
+                    info.setResponseTime(-100);
+                    Minecraft.getMinecraft().getConnection().playerInfoMap.put(((EntityOtherPlayerMP)ent).getGameProfile().getId(), info);
+                }
             }
 
             float viewY = mc.getRenderManager().playerViewY;
