@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.event.*;
         version = Morph.VERSION,
         guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
         dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR + ".1.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
-        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + ".0.0," + iChunUtil.VERSION_MAJOR + ".1.0)",
+        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + ".1.0," + iChunUtil.VERSION_MAJOR + ".2.0)",
         acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE
 )
 public class Morph
