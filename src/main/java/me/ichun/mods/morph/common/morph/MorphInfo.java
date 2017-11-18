@@ -5,6 +5,8 @@ import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHandSide;
@@ -13,8 +15,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import java.util.UUID;
+
 public class MorphInfo
 {
+    public static final UUID MORPH_HEALTH_ID = UUID.fromString("965EEABB-8AD4-381E-8313-59FBCBAF16D6"); // UUID.nameUUIDFromBytes("Morph health modifier for morph balancing".getBytes()).toString().toUpperCase()
+
     protected EntityPlayer player; //Should ideally never be null, but can be.
 
     public MorphState prevState; //Can be null.
@@ -25,8 +32,6 @@ public class MorphInfo
     public boolean firstUpdate = true;
 
     public boolean wasSleeping;
-
-    //TODO health offset save here.
 
     public MorphInfo(EntityPlayer player, MorphState prevState, MorphState nextState)
     {
@@ -67,6 +72,7 @@ public class MorphInfo
                 prevState = null;
             }
 
+            setPlayerHealth();
             setPlayerBoundingBox();
         }
         if(prevState != null && prevState.entInstance != null && isMorphing())
@@ -112,7 +118,7 @@ public class MorphInfo
         ent.entityCollisionReduction = 1.0F;
     }
 
-    public void setPlayer(EntityPlayer player)
+    public void setPlayer(@Nonnull EntityPlayer player)
     {
         this.player = player;
 
@@ -120,6 +126,7 @@ public class MorphInfo
         {
             ((EntityLiving)nextState.entInstance).setLeftHanded(player.getPrimaryHand() == EnumHandSide.LEFT);
         }
+        setPlayerHealth();
         setPlayerBoundingBox();
     }
 
@@ -128,8 +135,61 @@ public class MorphInfo
         return player;
     }
 
+    public void setPlayerHealth()
+    {
+        if(player == null || Morph.config.morphHealthBalancing == 0)
+        {
+            return;
+        }
+
+        AttributeModifier amm = createAttributeModifier();
+        AttributeModifier current = player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getModifier(MORPH_HEALTH_ID);
+        if(current == null || current.getAmount() != amm.getAmount()) //health has not been set or doesn't match
+        {
+            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).removeModifier(MORPH_HEALTH_ID);
+            player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(amm);
+        }
+    }
+
+    public AttributeModifier createAttributeModifier()
+    {
+        float morphTransition = getMorphTransitionProgress(0F);
+
+        int calcHealth = 20;
+        if(prevState != null)
+        {
+            double prevStateHealth = 20D;
+            double nextStateHealth = 20D;
+            if(!prevState.currentVariant.entId.startsWith("player:") && prevState.currentVariant.entTag.hasKey("Morph_HealthBalancing"))
+            {
+                prevStateHealth = prevState.currentVariant.entTag.getDouble("Morph_HealthBalancing");
+            }
+            if(!nextState.currentVariant.entId.startsWith("player:") && nextState.currentVariant.entTag.hasKey("Morph_HealthBalancing"))
+            {
+                nextStateHealth = nextState.currentVariant.entTag.getDouble("Morph_HealthBalancing");
+            }
+            calcHealth = Math.max(1, (int)Math.round(prevStateHealth + morphTransition * (nextStateHealth - prevStateHealth)));
+        }
+        else
+        {
+            double nextStateHealth = 20D;
+            if(!nextState.currentVariant.entId.startsWith("player:") && nextState.currentVariant.entTag.hasKey("Morph_HealthBalancing"))
+            {
+                nextStateHealth = nextState.currentVariant.entTag.getDouble("Morph_HealthBalancing");
+            }
+            calcHealth = Math.max(1, (int)nextStateHealth);
+        }
+
+        return new AttributeModifier(MORPH_HEALTH_ID, "Morph health modifier", (double)calcHealth - 20D, 0);
+    }
+
     public void setPlayerBoundingBox()
     {
+        if(player == null)
+        {
+            return;
+        }
+
         float morphTransition = getMorphTransitionProgress(0F);
 
         if(prevState != null)

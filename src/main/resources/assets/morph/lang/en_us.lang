@@ -32,6 +32,8 @@ morph.config.prop.blackwhitelistedPlayers.name=Black/Whitelisted Players
 morph.config.prop.listIsBlacklist.name=Player List Mode
 morph.config.prop.loseMorphsOnDeath.name=Lose Morphs on Death
 morph.config.prop.instaMorph.name=Insta-Morph
+morph.config.prop.morphHealthBalancing.name=Morph Health Balancing
+morph.config.prop.maxMorphHealth.name=Max Morph Health
 morph.config.prop.NBTStripper.name=Mod NBT Stripper
 morph.config.prop.useLocalResources.name=Use Local Resources
 morph.config.prop.canSleepMorphed.name=Can Sleep Morphed?
@@ -73,6 +75,8 @@ morph.config.prop.listIsBlacklist.comment=Is the player list a blacklist or whit
 morph.config.prop.blackwhitelistedPlayers.comment=These players are on the list for Black/White listing for the Morph Skill.\nFormatting is as follows: <name>, <name>, <name>\nExample: Cojomax99, pahimar, ohaiiChun
 morph.config.prop.loseMorphsOnDeath.comment=Will you lose your morphs on death?\n0 = No\n1 = Yes, all morphs\n2 = Yes, the morph you're currently using
 morph.config.prop.instaMorph.comment=Will you insta-morph into a new morph acquired?
+morph.config.prop.morphHealthBalancing.comment=Can morphing affect your health?
+morph.config.prop.maxMorphHealth.comment=Maximum health when in Morph.
 morph.config.prop.NBTStripper.comment=Enable mod mob NBT Stripping?\nThis support is mostly provided by the community and is not officially supported by the mod\nThe stripper was added to remove non-essential information from the Entity NBT to remove duplicate morphs.
 morph.config.prop.useLocalResources.comment=Force the mod to use the local copy of resources in the config folder?\nThis is meant for debugging purposes and for modified local mod mob abilities mappings/NBT stripper.\nDo take note that mappings server and clientside are not synched so both ends will require the same mappings.
 morph.config.prop.canSleepMorphed.comment=Can you sleep while morphed?

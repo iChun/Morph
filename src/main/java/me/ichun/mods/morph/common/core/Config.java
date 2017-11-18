@@ -54,6 +54,14 @@ public class Config extends ConfigBase
 
     @ConfigProp(category = "gameplay")
     @IntBool
+    public int morphHealthBalancing = 1;
+
+    @ConfigProp(category = "gameplay")
+    @IntMinMax(min = 1, max = 1000)
+    public int maxMorphHealth = 20;
+
+    @ConfigProp(category = "gameplay")
+    @IntBool
     public int useLocalResources = 0;
 
     @ConfigProp(category = "gameplay")

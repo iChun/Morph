@@ -10,6 +10,7 @@ import me.ichun.mods.morph.common.packet.PacketDemorph;
 import me.ichun.mods.morph.common.packet.PacketUpdateActiveMorphs;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorphList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -177,6 +178,7 @@ public class EventHandlerServer
                 if(!info.isMorphing() && info.nextState.currentVariant.playerName.equals(info.getPlayer().getName())) //Player has fully demorphed
                 {
                     ite.remove();
+                    info.getPlayer().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).removeModifier(MorphInfo.MORPH_HEALTH_ID);
                     Morph.channel.sendToAll(new PacketDemorph(info.getPlayer().getName()));
                 }
             }
@@ -188,7 +190,7 @@ public class EventHandlerServer
     {
         if(event.side.isServer())
         {
-            if(event.player.getEntityWorld().playerEntities.contains(event.player))
+            if(event.player.getEntityWorld().playerEntities.contains(event.player)) //check to see if the entity is even spawned.
             {
                 MorphInfo info = morphsActive.get(event.player.getName());
                 if(info != null)

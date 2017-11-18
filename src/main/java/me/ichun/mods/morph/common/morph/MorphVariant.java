@@ -3,6 +3,7 @@ package me.ichun.mods.morph.common.morph;
 import com.google.common.collect.Ordering;
 import com.mojang.authlib.GameProfile;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -287,7 +288,7 @@ public class MorphVariant
         living.writeEntityToNBT(variant.entTag);
         clean(living, variant.entTag);
 
-        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp(living.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getBaseValue(), 0D, 20D)); //For health balancing reasons for now.
+        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp(living.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue(), 1D, (double)Morph.config.maxMorphHealth)); //For health balancing reasons for now.
 
         if(variant.instanceTag.tagMap.containsKey("ForgeData")) // send the ForgeData to the variant tag.
         {
