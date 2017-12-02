@@ -5,6 +5,8 @@ import me.ichun.mods.morph.client.model.ModelInfo;
 import me.ichun.mods.morph.client.model.ModelMorph;
 import me.ichun.mods.morph.common.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphState;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -18,6 +20,9 @@ import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
@@ -236,9 +241,21 @@ public class MorphInfoClient extends MorphInfo
 
         if(ent instanceof EntityRabbit)
         {
-            if(MathHelper.sqrt(player.motionX * player.motionX + player.motionZ * player.motionZ) > 0.02D && ((EntityRabbit)ent).setJumpCompletion(0) == 0 || prevOnGround && !ent.onGround)
+            if(MathHelper.sqrt(ent.motionX * ent.motionX + ent.motionZ * ent.motionZ) > 0.02D && ((EntityRabbit)ent).setJumpCompletion(0) == 0 || prevOnGround && !ent.onGround)
             {
                 ((EntityRabbit)ent).startJumping();
+
+                //createRunningParticles();
+                int i = MathHelper.floor(player.posX);
+                int j = MathHelper.floor(player.posY - 0.20000000298023224D);
+                int k = MathHelper.floor(player.posZ);
+                BlockPos blockpos = new BlockPos(i, j, k);
+                IBlockState iblockstate = player.getEntityWorld().getBlockState(blockpos);
+
+                if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
+                {
+                    player.getEntityWorld().spawnParticle(EnumParticleTypes.BLOCK_CRACK, player.posX + ((double)player.getRNG().nextFloat() - 0.5D) * (double)player.width, player.getEntityBoundingBox().minY + 0.1D, player.posZ + ((double)player.getRNG().nextFloat() - 0.5D) * (double)player.width, -ent.motionX * 4.0D, 1.5D, -ent.motionZ * 4.0D, Block.getStateId(iblockstate));
+                }
             }
         }
 
