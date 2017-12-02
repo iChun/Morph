@@ -56,6 +56,7 @@ morph.config.prop.keySelectorCancel.name=Selector Cancel
 morph.config.prop.keySelectorRemoveMorph.name=Selector Remove Morph
 morph.config.prop.keyFavourite.name=Selector Favourite/Radial Menu
 morph.config.prop.handRenderOverride.name=Hand Render Override
+morph.config.prop.disableMorphAcquisitionAnimation.name=Disable Morph Acquisition Animation
 morph.config.prop.showAbilitiesInGui.name=Show Abilities In GUI
 morph.config.prop.sortMorphs.name=Sort Morphs
 morph.config.prop.renderCrosshairInRadialMenu.name=Render Crosshair in Radial Menu
@@ -82,7 +83,7 @@ morph.config.prop.useLocalResources.comment=Force the mod to use the local copy 
 morph.config.prop.canSleepMorphed.comment=Can you sleep while morphed?
 morph.config.prop.allowMorphSelection.comment=Requested by SoundLogic\nCan you open the morph GUI?
 morph.config.prop.showPlayerLabel.comment=Show the player label of a morphed player?
-morph.config.prop.abilities.comment=Enable abilities?
+morph.config.prop.abilities.comment=Enable abilities?\nNB: Abilities do not currently exist in the 1.12.2 version. This config is for future-proofing.
 morph.config.prop.customPatchLink.comment=Redirect the mod to a different JSON patch location rather then the default patch hosted on GitHub.\nIf you would like to use the default, leave this blank.\nThis also affects nbt_modifiers.json.\nIf the link to your file is "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/ability_support.json", put "https://raw.github.com/iChun/Morph/master/src/main/resources/assets/morph/mod/", you cannot change the file name (eg: ability_support.json) part of the link.
 morph.config.prop.hostileAbilityMode.comment=Hostile Ability Modes\n0 = Off, hostile mobs attack you despite being morphed.\n1 = Hostile mobs do not attack you if you are a hostile mob.\n2 = Hostile mobs of different types do not attack you if you are a hostile mob but hostile mobs of the same kind do.\n3 = Hostile mobs of the same type do not attack you but hostile mobs of other types attack you.\n4 = Hostile mobs have a decreased detection range around you.\n5 = Like 1, but a hostile mob will target you if you attacked them.
 morph.config.prop.hostileAbilityDistanceCheck.comment=Hostile Ability Distance Check for Hostile Ability Mode 4\nYou have to be *this* close before hostile mobs know you are not one of them.\nDefault: 6
@@ -99,6 +100,7 @@ morph.config.prop.keySelectorCancel.comment=Key Code to close the selector\nDefa
 morph.config.prop.keySelectorRemoveMorph.comment=Key Code to remove morph on the selector.\nDelete also works by default\nDefault: 14 (Backspace)
 morph.config.prop.keyFavourite.comment=Key Code to favourite/unfavourite morph on the selector and show the radial menu.\nDefault: 41 (` [also known as ~])
 morph.config.prop.handRenderOverride.comment=Allow the mod to override player hand rendering?
+morph.config.prop.disableMorphAcquisitionAnimation.comment=Disable the animation when you acquire a new morph.
 morph.config.prop.showAbilitiesInGui.comment=Show the abilities the morph has in the GUI?
 morph.config.prop.sortMorphs.comment=Sort the morphs in the GUI?\n0 = Order of acquisition (Server default)\n1 = Alphabetically (according to Operating System)\n2 = Alphabetically, and attempt to sort grouped morphs as well\n3 = Most recently used since connecting to the server
 morph.config.prop.renderCrosshairInRadialMenu.comment=As per request, render the crosshair position when in the radial menu.

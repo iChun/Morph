@@ -3,6 +3,7 @@ package me.ichun.mods.morph.common.packet;
 import io.netty.buffer.ByteBuf;
 import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.morph.client.entity.EntityMorphAcquisition;
+import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,7 +56,7 @@ public class PacketAcquireEntity extends AbstractPacket
         Minecraft mc = Minecraft.getMinecraft();
         Entity acquired = mc.world.getEntityByID(acquiredId);
         Entity acquirer = mc.world.getEntityByID(acquirerId);
-        if(acquired instanceof EntityLivingBase && acquirer instanceof EntityLivingBase)
+        if(acquired instanceof EntityLivingBase && acquirer instanceof EntityLivingBase && Morph.config.disableMorphAcquisitionAnimation != 1)
         {
             mc.world.spawnEntity(new EntityMorphAcquisition(mc.world, (EntityLivingBase)acquired, (EntityLivingBase)acquirer));
             acquired.setDead();
