@@ -389,27 +389,31 @@ public class EventHandlerClient
                     ModelInfo modelInfo = info.getPrevStateModel(event.getEntityPlayer().getEntityWorld());
                     modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
 
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                    GlStateManager.enableAlpha();
-                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
-
                     ResourceLocation resourceLoc = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
-                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
-                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+                    if(resourceLoc != null)
+                    {
+                        GlStateManager.enableBlend();
+                        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                        GlStateManager.enableAlpha();
+                        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
 
-                    modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+                        String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                        String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
 
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-                    GlStateManager.disableAlpha();
+                        modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                        GlStateManager.disableAlpha();
+                    }
 
                     entInstance.renderYawOffset = ff2;
                     entInstance.rotationYaw = ff3;
@@ -524,29 +528,33 @@ public class EventHandlerClient
 
                 if(info.isMorphing())
                 {
-                    float prog = info.getMorphSkinAlpha(renderTick);
-
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                    GlStateManager.enableAlpha();
-                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
-
                     ResourceLocation resourceLoc = ObfHelper.getEntityTexture(modelInfo.entRenderer, modelInfo.entRenderer.getClass(), entInstance);
-                    String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
-                    String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+                    if(resourceLoc != null)
+                    {
+                        float prog = info.getMorphSkinAlpha(renderTick);
 
-                    modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+                        GlStateManager.enableBlend();
+                        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                        GlStateManager.enableAlpha();
+                        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, prog);
 
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
-                    ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+                        String resourceDomain = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourceDomain);
+                        String resourcePath = ReflectionHelper.getPrivateValue(ResourceLocation.class, resourceLoc, ObfHelper.resourcePath);
 
-                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                    GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-                    GlStateManager.disableAlpha();
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "morph", ObfHelper.resourceDomain);
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, "textures/skin/morphskin.png", ObfHelper.resourcePath);
+
+                        modelInfo.forceRender(entInstance, event.getX(), event.getY(), event.getZ(), f1, renderTick);
+
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourceDomain, ObfHelper.resourceDomain);
+                        ReflectionHelper.setPrivateValue(ResourceLocation.class, resourceLoc, resourcePath, ObfHelper.resourcePath);
+
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                        GlStateManager.disableAlpha();
+                    }
                 }
 
                 entInstance.renderYawOffset = ff2;

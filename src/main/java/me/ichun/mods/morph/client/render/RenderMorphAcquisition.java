@@ -44,19 +44,27 @@ public class RenderMorphAcquisition extends Render<EntityMorphAcquisition>
 
         if(ent.prevScaleX == -1) //setting up
         {
-            FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-            FloatBuffer buffer1 = GLAllocation.createDirectFloatBuffer(16);
-
-            GlStateManager.pushMatrix();
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
             Render rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(ent.acquired);
-            ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), ent.acquired, iChunUtil.eventHandlerClient.renderTick);
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
-            GlStateManager.popMatrix();
 
-            ent.prevScaleX = buffer1.get(0) / buffer.get(0);
-            ent.prevScaleY = buffer1.get(5) / buffer.get(5);
-            ent.prevScaleZ = buffer1.get(8) / buffer.get(8);
+            if(rend instanceof RenderLivingBase)
+            {
+                FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
+                FloatBuffer buffer1 = GLAllocation.createDirectFloatBuffer(16);
+
+                GlStateManager.pushMatrix();
+                GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+                ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), ent.acquired, iChunUtil.eventHandlerClient.renderTick);
+                GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
+                GlStateManager.popMatrix();
+
+                ent.prevScaleX = buffer1.get(0) / buffer.get(0);
+                ent.prevScaleY = buffer1.get(5) / buffer.get(5);
+                ent.prevScaleZ = buffer1.get(8) / buffer.get(8);
+            }
+            else
+            {
+                ent.prevScaleX = ent.prevScaleY = ent.prevScaleZ = 1F;
+            }
         }
 
         float scaleX = ent.prevScaleX + (1.0F - ent.prevScaleX) * morphProg;
@@ -81,7 +89,7 @@ public class RenderMorphAcquisition extends Render<EntityMorphAcquisition>
         }
 
         ent.model.updateModelList(morphProg, ent.model.modelList, ent.model.prevModels, ent.model.nextModels, 0);
-        if(skinProg < 1F)
+        if(skinProg < 1F && ent.acquiredTexture != null)
         {
             bindTexture(ent.acquiredTexture);
             for(ModelRenderer cube : ent.model.modelList)

@@ -158,16 +158,20 @@ public class ModelMorph extends ModelBase
 
         if(prevRef != null && nextRef != null)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+            float prevScaleX = 1F, prevScaleY = 1F, prevScaleZ = 1F;
             Render rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(prevRef);
-            ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), prevRef, iChunUtil.eventHandlerClient.renderTick);
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
-            GlStateManager.popMatrix();
+            if(rend instanceof RenderLivingBase)
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+                ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), prevRef, iChunUtil.eventHandlerClient.renderTick);
+                GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
+                GlStateManager.popMatrix();
 
-            float prevScaleX = buffer1.get(0) / buffer.get(0);
-            float prevScaleY = buffer1.get(5) / buffer.get(5);
-            float prevScaleZ = buffer1.get(8) / buffer.get(8);
+                prevScaleX = buffer1.get(0) / buffer.get(0);
+                prevScaleY = buffer1.get(5) / buffer.get(5);
+                prevScaleZ = buffer1.get(8) / buffer.get(8);
+            }
 
             if(prevRef instanceof EntityRabbit)
             {
@@ -176,16 +180,20 @@ public class ModelMorph extends ModelBase
                 prevScaleZ *= 0.6F;
             }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+            float nextScaleX = 1F, nextScaleY = 1F, nextScaleZ = 1F;
             rend = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(nextRef);
-            ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), nextRef, iChunUtil.eventHandlerClient.renderTick);
-            GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
-            GlStateManager.popMatrix();
+            if(rend instanceof RenderLivingBase)
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer);
+                ObfHelper.invokePreRenderCallback((RenderLivingBase)rend, rend.getClass(), nextRef, iChunUtil.eventHandlerClient.renderTick);
+                GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, buffer1);
+                GlStateManager.popMatrix();
 
-            float nextScaleX = buffer1.get(0) / buffer.get(0);
-            float nextScaleY = buffer1.get(5) / buffer.get(5);
-            float nextScaleZ = buffer1.get(8) / buffer.get(8);
+                nextScaleX = buffer1.get(0) / buffer.get(0);
+                nextScaleY = buffer1.get(5) / buffer.get(5);
+                nextScaleZ = buffer1.get(8) / buffer.get(8);
+            }
 
             if(nextRef instanceof EntityRabbit)
             {
