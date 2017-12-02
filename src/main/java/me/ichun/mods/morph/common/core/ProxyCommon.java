@@ -18,8 +18,6 @@ public class ProxyCommon
         AbilityHandler.init();
         PlayerMorphHandler.init();
 
-        (new ThreadGetResources(Morph.config.customPatchLink)).start();
-
         Morph.channel = new PacketChannel(Morph.MOD_NAME,
                 PacketUpdateMorphList.class,
                 PacketUpdateActiveMorphs.class,
@@ -31,4 +29,9 @@ public class ProxyCommon
 
     public void init()
     {}
+
+    public void postInit()
+    {
+        (new ThreadGetResources(Morph.config.customPatchLink)).start();
+    }
 }

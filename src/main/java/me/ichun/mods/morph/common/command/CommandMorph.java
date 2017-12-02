@@ -298,7 +298,7 @@ public class CommandMorph extends CommandBase
                                         addedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
                                         addedSb.append("), ");
                                     }
-                                    notifyCommandListener(sender, this, "morph.command.analyseAllTags", addedSb.toString().substring(0, addedSb.toString().length() - 2));
+                                    notifyCommandListener(sender, this, "morph.command.analyseAllTags", addedSb.toString().isEmpty() ? "" : addedSb.toString().substring(0, addedSb.toString().length() - 2));
 
                                     TreeMap<String, NBTBase> allModified = new TreeMap<>(Ordering.natural());
                                     added.keySet().stream().filter(removed.keySet()::contains).forEach((k) -> allModified.put(k, added.get(k)));
@@ -338,7 +338,7 @@ public class CommandMorph extends CommandBase
                                         modifiedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
                                         modifiedSb.append("), ");
                                     }
-                                    notifyCommandListener(sender, this, "morph.command.analyseVariantTags", modifiedSb.toString().substring(0, modifiedSb.toString().length() - 2));
+                                    notifyCommandListener(sender, this, "morph.command.analyseVariantTags", modifiedSb.toString().isEmpty() ? "" : modifiedSb.toString().substring(0, modifiedSb.toString().length() - 2));
                                     return;
                                 }
                             }

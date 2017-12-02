@@ -67,6 +67,12 @@ public class Morph
     }
 
     @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        proxy.postInit();
+    }
+
+    @Mod.EventHandler
     public void serverStarting(FMLServerAboutToStartEvent event)
     {
         ICommandManager manager = event.getServer().getCommandManager();
