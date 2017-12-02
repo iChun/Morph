@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.player.EntityPlayer;
@@ -1639,7 +1640,7 @@ public class EventHandlerClient
                 }
                 else
                 {
-                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? TextFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getName().equalsIgnoreCase(mc.player.getName())) ? TextFormatting.GOLD : "") + ent.getName(), 26, -32, 16777215);
+                    Minecraft.getMinecraft().fontRenderer.drawStringWithShadow((selected ? TextFormatting.YELLOW : (info != null && info.nextState.getName().equalsIgnoreCase(state.getName()) || info == null && ent.getName().equalsIgnoreCase(mc.player.getName())) ? TextFormatting.GOLD : "") + (Minecraft.getMinecraft().gameSettings.showDebugInfo ? EntityList.getKey(ent) != null ? EntityList.getKey(ent).toString() : "" : ent.getName()), 26, -32, 16777215);
                 }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

@@ -14,6 +14,7 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -22,10 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class MorphVariant
         implements Comparable<MorphVariant>
@@ -266,6 +264,8 @@ public class MorphVariant
         return tag;
     }
 
+    public static HashSet<String> creationBlacklist = new HashSet<>();
+
     public static MorphVariant createVariant(EntityLivingBase living)
     {
         if(living instanceof EntityPlayer)
@@ -273,44 +273,57 @@ public class MorphVariant
             return new MorphVariant(PLAYER_MORPH_ID).setPlayer((EntityPlayer)living);
         }
 
-        NBTTagCompound saveData = new NBTTagCompound();
-
-        //Modify this stupid thing
-        if(living instanceof EntityHorse)
+        try
         {
-            EntityHorse horse = (EntityHorse)living;
-            horse.setHorseVariant((horse.getHorseVariant() & 255) % 7);
-        }
-        //End modify stupid thing
+            NBTTagCompound saveData = new NBTTagCompound();
 
-        if(!living.writeToNBTOptional(saveData))
+            //Modify this stupid thing
+            if(living instanceof EntityHorse)
+            {
+                EntityHorse horse = (EntityHorse)living;
+                horse.setHorseVariant((horse.getHorseVariant() & 255) % 7);
+            }
+            //End modify stupid thing
+
+            if(!living.writeToNBTOptional(saveData))
+            {
+                return null;
+            }
+
+            MorphVariant variant = new MorphVariant(saveData.getString("id"));
+            variant.instanceTag = saveData;
+            clean(living, variant.instanceTag);
+
+            living.writeEntityToNBT(variant.entTag);
+            clean(living, variant.entTag);
+
+            variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp(living.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue(), 1D, (double)Morph.config.maxMorphHealth)); //For health balancing reasons for now.
+
+            if(variant.instanceTag.tagMap.containsKey("ForgeData")) // send the ForgeData to the variant tag.
+            {
+                variant.entTag.tagMap.put("ForgeData", variant.instanceTag.tagMap.get("ForgeData"));
+            }
+            if(living.hasCustomName() && living.getCustomNameTag().length() > 0)
+            {
+                variant.entTag.setString("CustomName", living.getCustomNameTag());
+                variant.entTag.setBoolean("CustomNameVisible", living.getAlwaysRenderNameTag());
+            }
+            variant.instanceTag.removeTag("ForgeData");
+            variant.instanceTag.removeTag("CustomName");
+            variant.instanceTag.removeTag("CustomNameVisible");
+
+            return variant;
+        }
+        catch(ReportedException e)
         {
-            return null;
+            if(!creationBlacklist.contains(living.getClass().getName()))
+            {
+                creationBlacklist.add(living.getClass().getName());
+                Morph.LOGGER.warn("Error creating Morph variant for " + living.getClass().getName());
+                e.printStackTrace();
+            }
         }
-
-        MorphVariant variant = new MorphVariant(saveData.getString("id"));
-        variant.instanceTag = saveData;
-        clean(living, variant.instanceTag);
-
-        living.writeEntityToNBT(variant.entTag);
-        clean(living, variant.entTag);
-
-        variant.entTag.setDouble("Morph_HealthBalancing", MathHelper.clamp(living.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue(), 1D, (double)Morph.config.maxMorphHealth)); //For health balancing reasons for now.
-
-        if(variant.instanceTag.tagMap.containsKey("ForgeData")) // send the ForgeData to the variant tag.
-        {
-            variant.entTag.tagMap.put("ForgeData", variant.instanceTag.tagMap.get("ForgeData"));
-        }
-        if (living.hasCustomName() && living.getCustomNameTag().length() > 0)
-        {
-            variant.entTag.setString("CustomName", living.getCustomNameTag());
-            variant.entTag.setBoolean("CustomNameVisible", living.getAlwaysRenderNameTag());
-        }
-        variant.instanceTag.removeTag("ForgeData");
-        variant.instanceTag.removeTag("CustomName");
-        variant.instanceTag.removeTag("CustomNameVisible");
-
-        return variant;
+        return null;
     }
 
     public static void clean(EntityLivingBase living, NBTTagCompound tag)

@@ -1,5 +1,5 @@
-{  
-  "example.class.One": {  
+{
+  "example.class.One": {
     "removeThisTag": "null",
     "booleanStuff": "false",
     "StringStuff": "WhateverStringWorks",
@@ -13,21 +13,14 @@
     "nestedTagCompound": "TagName:TagKey;ValuesAsAboveExamples",
     "nestedTagCompound2": "TagName:TagName2:TagName3:TagKey;ValuesAsAboveExamples"
   },
-  "example.class.Two": {  
+  "example.class.Two": {
     "additionalNote": "The key is the NBT tag to modify. The value will be the Object type and what value to set it to. If the value is of a numerical type, please append the type with a capital letter, no lowercase.",
     "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom. Keep the examples at the top.",
     "additionalNote3": "You can also add compatibility for your own mod via the IMC system. Look in the Morph main class for documentation."
   },
-  
-  "tropicraft.entities.hostile.land.SpiderAdult": {  
-    "maxEggsToSpawn": "null"
-  },
-  "tropicraft.entities.hostile.EntityLand": {  
-    "ICoroAI_entID": "null",
-    "homeX": "null",
-    "homeY": "null",
-    "homeZ": "null",
-    "tamedByUser": "null"
+
+  "crazypants.enderzoo.entity.EntityOwl": {
+    "EggLayTime": "null"
   },
 
   "net.minecraft.entity.EntityLivingBase": {
@@ -85,7 +78,7 @@
   },
   "net.minecraft.entity.monster.EntityPigZombie": {
     "Anger": "null",
-	"HurtBy": "null"
+    "HurtBy": "null"
   },
   "net.minecraft.entity.monster.EntityShulker": {
     "AttachFace": "1B",
@@ -99,7 +92,7 @@
   },
   "net.minecraft.entity.monster.EntityZombie": {
     "CanBreakDoors": "true",
-	"ConversionTime": "null"
+    "ConversionTime": "null"
   },
   "net.minecraft.entity.passive.EntityBat": {
     "BatFlags": "null"
@@ -112,7 +105,7 @@
     "Bred": "null",
     "EatingHaystack": "null",
     "HasReproduced": "null",
-	"Items": "null",
+    "Items": "null",
     "Tame": "null",
     "Temper": "null"
   },
@@ -126,7 +119,7 @@
     "Career": "null",
     "CareerLevel": "null",
     "Inventory": "null",
-	"Offers": "null",
+    "Offers": "null",
     "Riches": "null",
     "Willing": "null"
   },

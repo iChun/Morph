@@ -11,6 +11,8 @@ import net.minecraft.command.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
@@ -259,19 +261,25 @@ public class CommandMorph extends CommandBase
                                     }
                                     notifyCommandListener(sender, this, "morph.command.analyseClass", living.getClass().getName());
 
-                                    TreeSet<String> tags = new TreeSet<>(Ordering.natural());
-                                    tags.addAll(var.entTag.tagMap.keySet());
-                                    TreeSet<String> added = new TreeSet<>();
-                                    added.addAll(var.thisVariant.variantData.tagMap.keySet());
-                                    TreeSet<String> removed = new TreeSet<>();
-                                    removed.addAll(var.thisVariant.tagsToRemove);
+                                    TreeMap<String, NBTBase> tags = new TreeMap<>(Ordering.natural());
+                                    tags.putAll(var.entTag.tagMap);
+                                    TreeMap<String, NBTBase> added = new TreeMap<>(Ordering.natural());
+                                    added.putAll(var.thisVariant.variantData.tagMap);
+                                    TreeMap<String, NBTBase> removed = new TreeMap<>(Ordering.natural());
+                                    for(String s : var.thisVariant.tagsToRemove)
+                                    {
+                                        removed.put(s, null);
+                                    }
                                     for(MorphVariant.Variant variant : var.variants)
                                     {
-                                        added.addAll(variant.variantData.tagMap.keySet());
-                                        removed.addAll(variant.tagsToRemove);
+                                        added.putAll(variant.variantData.tagMap);
+                                        for(String s : variant.tagsToRemove)
+                                        {
+                                            removed.put(s, null);
+                                        }
                                     }
-                                    tags.addAll(added);
-                                    tags.addAll(removed);
+                                    tags.putAll(added);
+                                    tags.putAll(removed);
                                     tags.remove("Age");
                                     tags.remove("CanPickUpLoot");
                                     tags.remove("HealF");
@@ -282,38 +290,53 @@ public class CommandMorph extends CommandBase
                                     added.remove("Morph_HealthBalancing");
 
                                     StringBuilder addedSb = new StringBuilder();
-                                    for(String tag : tags)
+                                    for(Map.Entry<String, NBTBase> tag : tags.entrySet())
                                     {
-                                        addedSb.append(tag);
+                                        addedSb.append(tag.getKey());
                                         addedSb.append(", ");
+                                        addedSb.append(" (");
+                                        addedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
+                                        addedSb.append("), ");
                                     }
                                     notifyCommandListener(sender, this, "morph.command.analyseAllTags", addedSb.toString().substring(0, addedSb.toString().length() - 2));
 
-                                    TreeSet<String> allModified = new TreeSet<>();
-                                    added.stream().filter(removed::contains).forEach(allModified::add);
-                                    removed.stream().filter(added::contains).forEach(allModified::add);
-                                    TreeSet<String> temp = new TreeSet<>(added);
-                                    added.removeAll(removed);
-                                    removed.removeAll(temp);
+                                    TreeMap<String, NBTBase> allModified = new TreeMap<>(Ordering.natural());
+                                    added.keySet().stream().filter(removed.keySet()::contains).forEach((k) -> allModified.put(k, added.get(k)));
+                                    removed.keySet().stream().filter(added.keySet()::contains).forEach((k) -> allModified.put(k, added.get(k)));
+                                    TreeSet<String> temp = new TreeSet<>(added.keySet());
+                                    for(String s : removed.keySet())
+                                    {
+                                        added.remove(s);
+                                    }
+                                    for(String s : temp)
+                                    {
+                                        removed.remove(s);
+                                    }
 
                                     StringBuilder modifiedSb = new StringBuilder();
-                                    for(String tag : allModified)
+                                    for(Map.Entry<String, NBTBase> tag : allModified.entrySet())
                                     {
                                         modifiedSb.append("+/-");
-                                        modifiedSb.append(tag);
-                                        modifiedSb.append(", ");
+                                        modifiedSb.append(tag.getKey());
+                                        modifiedSb.append(" (");
+                                        modifiedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
+                                        modifiedSb.append("), ");
                                     }
-                                    for(String tag : added)
+                                    for(Map.Entry<String, NBTBase> tag : added.entrySet())
                                     {
                                         modifiedSb.append("+");
-                                        modifiedSb.append(tag);
-                                        modifiedSb.append(", ");
+                                        modifiedSb.append(tag.getKey());
+                                        modifiedSb.append(" (");
+                                        modifiedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
+                                        modifiedSb.append("), ");
                                     }
-                                    for(String tag : removed)
+                                    for(Map.Entry<String, NBTBase> tag : removed.entrySet())
                                     {
                                         modifiedSb.append("-");
-                                        modifiedSb.append(tag);
-                                        modifiedSb.append(", ");
+                                        modifiedSb.append(tag.getKey());
+                                        modifiedSb.append(" (");
+                                        modifiedSb.append(tag.getValue() == null ? "null" : tag.getValue().getClass().getSimpleName().substring(6));
+                                        modifiedSb.append("), ");
                                     }
                                     notifyCommandListener(sender, this, "morph.command.analyseVariantTags", modifiedSb.toString().substring(0, modifiedSb.toString().length() - 2));
                                     return;
@@ -366,6 +389,7 @@ public class CommandMorph extends CommandBase
                     }
                     else if(args[0].equalsIgnoreCase("give"))
                     {
+                        notifyCommandListener(sender, this, "...", player.getName());
                         boolean newMorph = false;
                         for(EntityEntry entry : ForgeRegistries.ENTITIES.getValues())
                         {
