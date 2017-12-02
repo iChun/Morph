@@ -30,7 +30,7 @@ import java.util.TreeMap;
 public class MorphVariant
         implements Comparable<MorphVariant>
 {
-    public static final int VARIANT_PROTOCOL = 1;
+    public static final int VARIANT_PROTOCOL = 2;
     public static final int IDENTIFIER_LENGTH = 20;
 
     public static final String PLAYER_MORPH_ID = "PlayerMorph";
@@ -203,7 +203,14 @@ public class MorphVariant
 
     public void repair(int varProtocol)
     {
-        //nothing here yet.
+        if(varProtocol <= 1)
+        {
+            if(entTag.hasKey("CanPickUpLoot"))
+            {
+                entTag.setBoolean("CanPickUpLoot", false);
+            }
+        }
+        //Further repairs down here
     }
 
     public Variant getVariantByIdentifier(String ident)
@@ -323,7 +330,7 @@ public class MorphVariant
         //EntityLiving tags
         if(living instanceof EntityLiving)
         {
-            tag.setBoolean("CanPickUpLoot", true);
+            tag.setBoolean("CanPickUpLoot", false);
             tag.setBoolean("PersistenceRequired", true);
             tag.setBoolean("NoAI", true);
         }

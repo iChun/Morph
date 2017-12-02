@@ -109,7 +109,7 @@ public class MorphInfo
         }
 
         ent.posX = player.posX;
-        ent.posY = player.posY;
+        ent.posY = -500D; //This is done so the entity doesn't attack the player or pick up items or interact with the world ETC.
         ent.posZ = player.posZ;
         ent.dimension = player.dimension;
         ent.world = player.getEntityWorld();
