@@ -31,7 +31,7 @@ public class Morph
 {
     public static final String MOD_NAME = "Morph";
     public static final String MOD_ID = "morph";
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".1.0";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".1.1";
 
     @Mod.Instance(MOD_ID)
     public static Morph instance;
