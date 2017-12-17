@@ -71,10 +71,10 @@ public class EventHandlerServer
             MorphInfo info = player.getEntityWorld().isRemote ? Morph.eventHandlerClient.morphsActive.get(player.getName()) : Morph.eventHandlerServer.morphsActive.get(player.getName());
             if(info != null)
             {
-                if((event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT)|| event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_DROWN)|| event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE) || event.getSound().equals(SoundEvents.ENTITY_PLAYER_DEATH)))
+                if((SoundEvents.ENTITY_PLAYER_HURT.equals(event.getSound())|| SoundEvents.ENTITY_PLAYER_HURT_DROWN.equals(event.getSound())|| SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE.equals(event.getSound()) || SoundEvents.ENTITY_PLAYER_DEATH.equals(event.getSound())))
                 {
                     EntityLivingBase entInstance = info.getMorphProgress(0F) < 0.5F ? info.prevState.getEntInstance(player.getEntityWorld()) : info.nextState.getEntInstance(player.getEntityWorld());
-                    event.setSound(event.getSound().equals(SoundEvents.ENTITY_PLAYER_DEATH) ? EntityHelper.getDeathSound(entInstance, entInstance.getClass()) : EntityHelper.getHurtSound(entInstance, entInstance.getClass(), event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE) ? DamageSource.ON_FIRE : event.getSound().equals(SoundEvents.ENTITY_PLAYER_HURT_DROWN) ? DamageSource.DROWN : DamageSource.GENERIC));
+                    event.setSound(SoundEvents.ENTITY_PLAYER_DEATH.equals(event.getSound()) ? EntityHelper.getDeathSound(entInstance, entInstance.getClass()) : EntityHelper.getHurtSound(entInstance, entInstance.getClass(), SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE.equals(event.getSound()) ? DamageSource.ON_FIRE : SoundEvents.ENTITY_PLAYER_HURT_DROWN.equals(event.getSound()) ? DamageSource.DROWN : DamageSource.GENERIC));
                 }
             }
         }
