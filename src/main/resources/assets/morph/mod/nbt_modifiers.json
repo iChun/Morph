@@ -14,6 +14,7 @@
     "nestedTagCompound2": "TagName:TagName2:TagName3:TagKey;ValuesAsAboveExamples"
   },
   "example.class.Two": {
+    "whatThisJsonIsFor": "There will be an issue of duplicate morphs because of mod mobs having variant NBT data that do not relate to their appearance as a character. Because Morph uses NBT to detect variance, this class is required to synchronise NBT tags that do not affect appearance.",
     "additionalNote": "The key is the NBT tag to modify. The value will be the Object type and what value to set it to. If the value is of a numerical type, please append the type with a capital letter, no lowercase.",
     "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom. Keep the examples at the top.",
     "additionalNote3": "You can also add compatibility for your own mod via the IMC system. Look in the Morph main class for documentation."
