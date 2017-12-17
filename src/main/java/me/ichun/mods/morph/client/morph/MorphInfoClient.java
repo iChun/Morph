@@ -241,7 +241,7 @@ public class MorphInfoClient extends MorphInfo
 
         if(ent instanceof EntityRabbit)
         {
-            if(MathHelper.sqrt(ent.motionX * ent.motionX + ent.motionZ * ent.motionZ) > 0.02D && ((EntityRabbit)ent).setJumpCompletion(0) == 0 || prevOnGround && !ent.onGround)
+            if(MathHelper.sqrt(ent.motionX * ent.motionX + ent.motionZ * ent.motionZ) > 0.02D && ((EntityRabbit)ent).getJumpCompletion(0) == 0 || prevOnGround && !ent.onGround)
             {
                 ((EntityRabbit)ent).startJumping();
 
