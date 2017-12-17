@@ -234,7 +234,11 @@ public class PlayerMorphHandler implements IApi
     @Override
     public boolean acquireMorph(EntityPlayerMP player, EntityLivingBase entityToAcquire, boolean forceMorph, boolean killEntityClientside)
     {
-        if(Morph.config.childMorphs == 0 && entityToAcquire.isChild() || Morph.config.playerMorphs == 0 && entityToAcquire instanceof EntityPlayer || Morph.config.bossMorphs == 0 && !entityToAcquire.isNonBoss() || player.getClass() == FakePlayer.class || player.connection == null)
+        if(Morph.config.childMorphs == 0 && entityToAcquire.isChild() || Morph.config.playerMorphs == 0 && entityToAcquire instanceof EntityPlayer || Morph.config.bossMorphs == 0 && !entityToAcquire.isNonBoss())// Config options
+        {
+            return false;
+        }
+        if(!Morph.eventHandlerServer.playerMorphs.containsKey(player.getName()) || FakePlayer.class.isAssignableFrom(player.getClass()) || player.connection == null) //Fake player checks
         {
             return false;
         }
@@ -247,7 +251,7 @@ public class PlayerMorphHandler implements IApi
             return false;
         }
 
-        if(MinecraftForge.EVENT_BUS.post(new MorphAcquiredEvent(player, entityToAcquire)))
+        if(MinecraftForge.EVENT_BUS.post(new MorphAcquiredEvent(player, entityToAcquire))) //Throw morph acquired event
         {
             //Event was cancelled.
             return false;
