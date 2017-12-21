@@ -2174,7 +2174,7 @@
     "swim|false,1.2F,0.4F,true"
   ],
   "net.minecraft.entity.boss.EntityWither": [
-    "fly|false",
+    "fly|true",
     "fireImmunity",
     "hostile",
     "witherResistance"
