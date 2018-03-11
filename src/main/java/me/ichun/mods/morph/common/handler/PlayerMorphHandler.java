@@ -434,7 +434,7 @@ public class PlayerMorphHandler implements IApi
 //                    player.onGround = onGround || player.onGround;
 //                    player.collided = collided || player.collided;
 //                }
-                MorphInfo.setPlayerSize(player, (float)morphWidth, morphEnt.height);
+                MorphInfo.setPlayerSize(player, info, (float)morphWidth, morphEnt.height);
             }
         }
         else
@@ -470,7 +470,7 @@ public class PlayerMorphHandler implements IApi
                     player.onGround = onGround || player.onGround;
                     player.collided = collided || player.collided;
                 }
-                MorphInfo.setPlayerSize(player, newWidth, newHeight);
+                MorphInfo.setPlayerSize(player, info, newWidth, newHeight);
             }
         }
     }

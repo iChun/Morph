@@ -1,7 +1,9 @@
 package me.ichun.mods.morph.common.morph;
 
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.morph.api.ability.Ability;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.handler.AbilityHandler;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -16,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class MorphInfo
@@ -69,12 +72,20 @@ public class MorphInfo
 
             if(!isMorphing())
             {
+                if(prevState.abilities != null)
+                {
+                    for(Ability ability : prevState.abilities)
+                    {
+                        ability.kill(nextState.abilities != null ? nextState.abilities : new ArrayList<>());
+                    }
+                }
                 prevState = null;
             }
 
             setPlayerHealth();
             setPlayerBoundingBox();
         }
+        float morphTransition = getMorphTransitionProgress(0F);
         if(prevState != null && prevState.entInstance != null && isMorphing())
         {
             if(morphTime / (float)Morph.config.morphTime < 0.5F)
@@ -82,6 +93,18 @@ public class MorphInfo
                 prevState.entInstance.onUpdate();
             }
             syncEntityWithPlayer(prevState.entInstance);
+            for(Ability ability : prevState.abilities)
+            {
+                ability.setParent(getPlayer());
+                if(ability.getParent() != null)
+                {
+                    if(!(nextState.abilities != null && AbilityHandler.getInstance().hasAbility(nextState.abilities, ability.type)))
+                    {
+                        ability.strength = 1.0F - morphTransition;
+                    }
+                    ability.tick();
+                }
+            }
         }
         if(nextState.entInstance != null)
         {
@@ -90,6 +113,29 @@ public class MorphInfo
                 nextState.entInstance.onUpdate();
             }
             syncEntityWithPlayer(nextState.entInstance);
+            for(Ability ability : nextState.abilities)
+            {
+                ability.setParent(getPlayer());
+                if(ability.getParent() != null)
+                {
+                    if(isMorphing())
+                    {
+                        if(prevState != null && prevState.abilities != null && AbilityHandler.getInstance().hasAbility(prevState.abilities, ability.type)) //prev state has this ability. Set to full strength
+                        {
+                            ability.strength = 1.0F;
+                        }
+                        else
+                        {
+                            ability.strength = morphTransition;
+                        }
+                    }
+                    else
+                    {
+                        ability.strength = 1.0F;
+                    }
+                    ability.tick();
+                }
+            }
         }
         if(player != null)
         {
@@ -128,6 +174,23 @@ public class MorphInfo
         }
         setPlayerHealth();
         setPlayerBoundingBox();
+
+        if(prevState != null && prevState.abilities != null)
+        {
+            for(Ability ability : prevState.abilities)
+            {
+                ability.setParent(this.player);
+                ability.init();
+            }
+        }
+        if(nextState.abilities != null)
+        {
+            for(Ability ability : nextState.abilities)
+            {
+                ability.setParent(this.player);
+                ability.init();
+            }
+        }
     }
 
     public EntityPlayer getPlayer()
@@ -190,17 +253,17 @@ public class MorphInfo
             return;
         }
 
-        float morphTransition = getMorphTransitionProgress(0F);
-
         if(prevState != null)
         {
+            float morphTransition = getMorphTransitionProgress(0F);
+
             EntityLivingBase prevEnt = prevState.getEntInstance(player.getEntityWorld());
             EntityLivingBase nextEnt = nextState.getEntInstance(player.getEntityWorld());
 
             float newWidth = EntityHelper.interpolateValues(prevEnt.width, nextEnt.width, morphTransition);
             float newHeight = EntityHelper.interpolateValues(prevEnt.height, nextEnt.height, morphTransition);
 
-            setPlayerSize(player, newWidth, newHeight);
+            setPlayerSize(player, this, newWidth, newHeight);
 
             player.eyeHeight = EntityHelper.interpolateValues(prevEnt.getEyeHeight(), nextEnt.getEyeHeight(), morphTransition);
             if(nextState.entInstance instanceof EntityLiving)
@@ -212,7 +275,7 @@ public class MorphInfo
         {
             EntityLivingBase nextEnt = nextState.getEntInstance(player.getEntityWorld());
 
-            setPlayerSize(player, nextEnt.width, nextEnt.height);
+            setPlayerSize(player, this, nextEnt.width, nextEnt.height);
 
             player.eyeHeight = nextEnt.getEyeHeight();
             if(nextState.entInstance instanceof EntityLiving)
@@ -222,7 +285,7 @@ public class MorphInfo
         }
     }
 
-    public static void setPlayerSize(EntityPlayer player, float width, float height)
+    public static void setPlayerSize(EntityPlayer player, MorphInfo info, float width, float height)
     {
         float f = (float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX);
 
@@ -247,9 +310,12 @@ public class MorphInfo
         float difference = ((float)(player.getEntityBoundingBox().maxX - player.getEntityBoundingBox().minX)) - f;
         float distanceWalkedModified = player.distanceWalkedModified;
         float distanceWalkedOnStepModified = player.distanceWalkedOnStepModified;
-        player.move(MoverType.SELF, difference, 0.0D, difference);
-        player.move(MoverType.SELF, -(difference + difference), 0.0D, -(difference + difference));
-        player.move(MoverType.SELF, difference, 0.0D, difference);
+        if(!player.world.isRemote || info.isMorphing())
+        {
+            player.move(MoverType.SELF, difference, 0.0D, difference);
+            player.move(MoverType.SELF, -(difference + difference), 0.0D, -(difference + difference));
+            player.move(MoverType.SELF, difference, 0.0D, difference);
+        }
         player.distanceWalkedModified = distanceWalkedModified;
         player.distanceWalkedOnStepModified = distanceWalkedOnStepModified;
 

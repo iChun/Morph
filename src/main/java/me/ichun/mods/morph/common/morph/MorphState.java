@@ -1,16 +1,21 @@
 package me.ichun.mods.morph.common.morph;
 
+import me.ichun.mods.morph.api.ability.Ability;
+import me.ichun.mods.morph.common.handler.AbilityHandler;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.dragon.phase.PhaseList;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+
 public class MorphState
     implements Comparable<MorphState>
 {
     public final MorphVariant currentVariant;  //The current morph variant we are using to create the entity instance
     protected EntityLivingBase entInstance; //Entity Instance to be used for rendering
+    public ArrayList<Ability> abilities;
 
     public MorphState(MorphVariant variant)
     {
@@ -35,6 +40,7 @@ public class MorphState
             {
                 ((EntityLiving)entInstance).setNoAI(true);
             }
+            abilities = AbilityHandler.getInstance().getEntityAbilities(entInstance.getClass());
         }
         return entInstance;
     }

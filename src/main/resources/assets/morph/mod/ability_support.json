@@ -2044,9 +2044,6 @@
   ],
   
   
-  "net.minecraft.entity.passive.EntityBat": [
-    "fly|true"
-  ],
   "net.minecraft.entity.monster.EntityBlaze": [
     "fly|false",
     "fireImmunity",
@@ -2059,12 +2056,6 @@
     "poisonResistance",
 	"potionEffect|19,140,0,false"
   ],
-  "net.minecraft.entity.passive.EntityChicken": [
-    "float|-0.114,true"
-  ],
-  "net.minecraft.entity.monster.EntityCreeper": [
-    "hostile"
-  ],
   "net.minecraft.entity.boss.EntityDragon": [
     "fly|false",
     "hostile"
@@ -2076,12 +2067,6 @@
   "net.minecraft.entity.monster.EntityGhast": [
     "fly|false",
     "fireImmunity",
-    "hostile"
-  ],
-  "net.minecraft.entity.monster.EntityGolem": [
-    "fallNegate"
-  ],
-  "net.minecraft.entity.monster.EntityGiantZombie": [
     "hostile"
   ],
   "net.minecraft.entity.passive.EntityHorse": [
@@ -2106,9 +2091,6 @@
     "fireImmunity",
     "hostile"
   ],
-  "net.minecraft.entity.monster.EntitySilverfish": [
-    "hostile"
-  ],
   "net.minecraft.entity.monster.EntitySkeleton": [
     "fireImmunity",
     "hostile",
@@ -2122,10 +2104,6 @@
   ],
   "net.minecraft.entity.monster.EntitySnowman": [
     "waterAllergy"
-  ],
-  "net.minecraft.entity.monster.EntitySpider": [
-    "climb",
-    "hostile"
   ],
   "net.minecraft.entity.passive.EntitySquid": [
     "swim|false,1.2F,0.4F,true"

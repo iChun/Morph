@@ -1,15 +1,14 @@
 package me.ichun.mods.morph.common.handler;
 
-import com.google.gson.Gson;
 import me.ichun.mods.morph.api.ability.Ability;
+import me.ichun.mods.morph.api.ability.AbilityApi;
 import me.ichun.mods.morph.api.ability.IAbilityHandler;
+import me.ichun.mods.morph.api.ability.type.*;
 import me.ichun.mods.morph.common.Morph;
-import me.ichun.mods.morph.common.morph.ability.types.active.AbilityClimb;
-import me.ichun.mods.morph.common.morph.ability.types.active.AbilityFloat;
-import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityFallNegate;
-import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityFireImmunity;
-import me.ichun.mods.morph.common.morph.ability.types.passive.AbilityPotionEffect;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityChicken;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +17,8 @@ public class AbilityHandler implements IAbilityHandler
 {
     private static final AbilityHandler INSTANCE = new AbilityHandler();
 
-    public final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> abilityMap = new HashMap<>();
-    public final static HashMap<String, Class<? extends Ability>> stringToClassMap = new HashMap<>();
+    public final static HashMap<Class<? extends EntityLivingBase>, ArrayList<Ability>> ABILITY_MAP = new HashMap<>();
+    public final static HashMap<String, Class<? extends Ability>> STRING_TO_CLASS_MAP = new HashMap<>();
 
     public static AbilityHandler getInstance()
     {
@@ -28,29 +27,33 @@ public class AbilityHandler implements IAbilityHandler
 
     public static void init()
     {
-        Ability.setAbilityHandlerImpl(INSTANCE);
-        INSTANCE.registerAbility("potionEffect"       , AbilityPotionEffect.class  );
-        INSTANCE.registerAbility("climb"              , AbilityClimb.class         );
-        INSTANCE.registerAbility("fallNegate"         , AbilityFallNegate.class    );
-        INSTANCE.registerAbility("fireImmunity"	      , AbilityFireImmunity.class  );
-        INSTANCE.registerAbility("float"              , AbilityFloat.class         );
+        AbilityApi.setApiImpl(INSTANCE);
+        INSTANCE.registerAbility("float", AbilityFloat.class);
+        INSTANCE.registerAbility("flightFlap", AbilityFlightFlap.class);
+        INSTANCE.registerAbility("hostile", AbilityHostile.class);
+        INSTANCE.registerAbility("fallNegate", AbilityFallNegate.class);
+        INSTANCE.registerAbility("climb", AbilityClimb.class);
+
+        //TODO REMOVE THESE LINES
+        INSTANCE.mapAbilities(EntityBat.class, new AbilityFlightFlap());
+        INSTANCE.mapAbilities(EntityChicken.class, new AbilityFloat());
+        INSTANCE.mapAbilities(EntityCreeper.class, new AbilityHostile());
+        INSTANCE.mapAbilities(EntityGiantZombie.class, new AbilityHostile());
+        INSTANCE.mapAbilities(EntityGolem.class, new AbilityFallNegate());
+        INSTANCE.mapAbilities(EntitySilverfish.class, new AbilityHostile());
+        INSTANCE.mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
     }
 
     @Override
     public void registerAbility(String name, Class<? extends Ability> clz)
     {
-        stringToClassMap.put(name, clz);
+        STRING_TO_CLASS_MAP.put(name, clz);
     }
 
     @Override
     public void mapAbilities(Class<? extends EntityLivingBase> entClass, Ability... abilities)
     {
-        ArrayList<Ability> abilityList = abilityMap.get(entClass);
-        if(abilityList == null)
-        {
-            abilityList = new ArrayList<>();
-            abilityMap.put(entClass, abilityList);
-        }
+        ArrayList<Ability> abilityList = ABILITY_MAP.computeIfAbsent(entClass, k -> new ArrayList<>());
         for(Ability ability : abilities)
         {
             if(ability == null)
@@ -58,7 +61,7 @@ public class AbilityHandler implements IAbilityHandler
                 continue;
             }
             boolean added = false;
-            if(!stringToClassMap.containsKey(ability.getType()))
+            if(!STRING_TO_CLASS_MAP.containsKey(ability.getType()))
             {
                 registerAbility(ability.getType(), ability.getClass());
                 Morph.LOGGER.warn("Ability type \"" + ability.getType() + "\" is not registered! Registering.");
@@ -83,7 +86,7 @@ public class AbilityHandler implements IAbilityHandler
     @Override
     public void removeAbility(Class<? extends EntityLivingBase> entClass, String type)
     {
-        ArrayList<Ability> abilityList = abilityMap.get(entClass);
+        ArrayList<Ability> abilityList = ABILITY_MAP.get(entClass);
         if(abilityList != null)
         {
             for(int i = abilityList.size() - 1; i >= 0; i--)
@@ -100,7 +103,11 @@ public class AbilityHandler implements IAbilityHandler
     @Override
     public boolean hasAbility(Class<? extends EntityLivingBase> entClass, String type)
     {
-        ArrayList<Ability> abilities = getEntityAbilities(entClass);
+        return hasAbility(getEntityAbilities(entClass), type);
+    }
+
+    public boolean hasAbility(ArrayList<Ability> abilities, String type)
+    {
         for(Ability ability : abilities)
         {
             if(ability.getType().equalsIgnoreCase(type))
@@ -114,11 +121,11 @@ public class AbilityHandler implements IAbilityHandler
     @Override
     public Ability createNewAbilityByType(String type, String json)
     {
-        if(stringToClassMap.containsKey(type))
+        if(STRING_TO_CLASS_MAP.containsKey(type))
         {
             try
             {
-                return (new Gson()).fromJson(json, stringToClassMap.get(type));
+                return AbilityApi.GSON.fromJson(json, STRING_TO_CLASS_MAP.get(type));
             }
             catch(Exception e)
             {
@@ -139,18 +146,23 @@ public class AbilityHandler implements IAbilityHandler
     {
         if(Morph.config.abilities == 1)
         {
-            ArrayList<Ability> abilities = abilityMap.get(entClass);
-            if(abilities == null)
+            ArrayList<Ability> abilitiesDefault = ABILITY_MAP.get(entClass);
+            if(abilitiesDefault == null)
             {
                 Class superClz = entClass.getSuperclass();
                 if(superClz != EntityLivingBase.class)
                 {
-                    abilityMap.put(entClass, getEntityAbilities(superClz));
+                    ABILITY_MAP.put(entClass, getEntityAbilities(superClz));
                     return getEntityAbilities(entClass);
                 }
             }
             else
             {
+                ArrayList<Ability> abilities = new ArrayList<>();
+                for(Ability ability : abilitiesDefault)
+                {
+                    abilities.add(ability.clone());
+                }
                 String[] disabledAbilities = Morph.config.disabledAbilities;
                 for(int i = abilities.size() - 1; i >= 0 ; i--)
                 {

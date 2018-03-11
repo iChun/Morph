@@ -103,6 +103,13 @@ public class EntityMorphAcquisition extends Entity
     }
 
     @Override
+    public void setDead()
+    {
+        super.setDead();
+        model.clean();
+    }
+
+    @Override
     public boolean isEntityAlive()
     {
         return !this.isDead;
