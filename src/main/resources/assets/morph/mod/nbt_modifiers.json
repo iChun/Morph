@@ -116,6 +116,9 @@
   "net.minecraft.entity.passive.EntityRabbit": {
     "MoreCarrotTicks": "null"
   },
+  "net.minecraft.entity.passive.EntitySheep": {
+    "ForgeData_nextDye": "ForgeData:nextDye;11370"
+  },
   "net.minecraft.entity.passive.EntityVillager": {
     "Career": "null",
     "CareerLevel": "null",
