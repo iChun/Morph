@@ -53,7 +53,21 @@
     "ForgeData_Hats": "ForgeData:Hats_hatInfo;null",
     "ForgeData_BeeBarker1": "ForgeData:BeeBarker_barkable;null",
     "ForgeData_BeeBarker2": "ForgeData:BeeBarker_beeHighestCharge;null",
-    "ForgeData_BeeBarker3": "ForgeData:BeeBarker_beeCharge;null"
+    "ForgeData_BeeBarker3": "ForgeData:BeeBarker_beeCharge;null",
+    "hitByDarkSteelSword": "null",
+    "ForgeData_ezModsApp": "ForgeData:exModsApp;null",
+    "EggLayTime": "null",
+    "Spinning": "null",
+    "SpinCounter": "null",
+    "SpinCooldown": "null",
+    "ForgeData_cnpcmarks": "ForgeData:cnpcmarkdata:marks;null",
+    "Counter": "null",
+    "Analyzed": "null",
+    "Gain": "null",
+    "Growth": "null",
+    "Strength": "null",
+    "ForgeData_spawnedByPoweredSpawner": "ForgeData:spawnedByPoweredSpawner;null",
+    "ForgeData_CursedEarth": "ForgeData:CursedEarth;null"
   },
   "net.minecraft.entity.boss.EntityWither": {
     "Invul": "null"
