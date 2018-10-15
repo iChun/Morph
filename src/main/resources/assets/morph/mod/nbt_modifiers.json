@@ -56,18 +56,25 @@
     "ForgeData_BeeBarker3": "ForgeData:BeeBarker_beeCharge;null",
     "hitByDarkSteelSword": "null",
     "ForgeData_ezModsApp": "ForgeData:exModsApp;null",
-    "EggLayTime": "null",
+    "ForgeData_cnpcmarks": "ForgeData:cnpcmarkdata:marks;null",
+    "ForgeData_spawnedByPoweredSpawner": "ForgeData:spawnedByPoweredSpawner;null",
+    "ForgeData_CursedEarth": "ForgeData:CursedEarth;null"
+  },
+  "nex.entity.monster.EntitySpinout": {
     "Spinning": "null",
     "SpinCounter": "null",
-    "SpinCooldown": "null",
-    "ForgeData_cnpcmarks": "ForgeData:cnpcmarkdata:marks;null",
-    "Counter": "null",
+    "SpinCooldown": "null"
+  },
+  "nex.entity.monster.EntitySpore": {
+    "Counter": "null"
+  },
+  "com.setycz.chickens.entity.EntityChickensChicken": {
     "Analyzed": "null",
     "Gain": "null",
     "Growth": "null",
     "Strength": "null",
-    "ForgeData_spawnedByPoweredSpawner": "ForgeData:spawnedByPoweredSpawner;null",
-    "ForgeData_CursedEarth": "ForgeData:CursedEarth;null"
+    "EggLayTime": "null",
+    "Type": "null"
   },
   "net.minecraft.entity.boss.EntityWither": {
     "Invul": "null"
