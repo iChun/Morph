@@ -66,7 +66,7 @@ public class NBTHandler
                 else if(obj instanceof TagModifier)
                 {
                     NBTTagCompound tagToModify = tag.getCompoundTag(((TagModifier)obj).parentKey);
-                    if(!tagToModify.hasNoTags())
+                    if(!tagToModify.isEmpty())
                     {
                         ((TagModifier)obj).modifyTag(tagToModify);
                     }

@@ -348,7 +348,7 @@ public class MorphVariant
             tag.setBoolean("NoAI", true);
         }
 
-        tag.tagMap.entrySet().removeIf(e -> e.getValue().hasNoTags());
+        tag.tagMap.entrySet().removeIf(e -> e.getValue().isEmpty());
     }
 
     @Override

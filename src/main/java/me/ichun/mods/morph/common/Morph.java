@@ -128,7 +128,7 @@ public class Morph
                     try
                     {
                         Class clz = Class.forName(split[0]);
-                        if(EntityLivingBase.class.isAssignableFrom(clz))
+                        if(EntityLivingBase.class.isAssignableFrom(clz)) //TEST issue with dye it yourself
                         {
                             NBTHandler.TagModifier tagModifier = NBTHandler.modModifiers.computeIfAbsent(clz, k -> new NBTHandler.TagModifier());
                             NBTHandler.handleModifier(tagModifier, split[1], split[2]);

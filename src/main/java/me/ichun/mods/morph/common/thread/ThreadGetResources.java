@@ -55,7 +55,7 @@ public class ThreadGetResources extends Thread
                     String value = modifier.getValue();
                     NBTHandler.handleModifier(tagModifier, modifier.getKey(), value);
                 }
-                if(EntityLivingBase.class.isAssignableFrom(clz) && !tagModifier.modifiers.isEmpty())
+                if(!tagModifier.modifiers.isEmpty() && EntityLivingBase.class.isAssignableFrom(clz))
                 {
                     NBTHandler.nbtModifiers.put(clz, tagModifier);
                     if(clz.getName().startsWith("net.minecraft"))
