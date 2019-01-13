@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventHandlerServer
 {
@@ -226,6 +227,6 @@ public class EventHandlerServer
         return morphs;
     }
 
-    public HashMap<String, MorphInfo> morphsActive = new HashMap<>(); //These are the active morphs. Entity instance are retreived from here
-    public HashMap<String, ArrayList<MorphVariant>> playerMorphs = new HashMap<>();//These are the available morphs for each player. No entity instance is required or created here.
+    public Map<String, MorphInfo> morphsActive = new ConcurrentHashMap<>(); //These are the active morphs. Entity instance are retreived from here
+    public Map<String, ArrayList<MorphVariant>> playerMorphs = new ConcurrentHashMap<>();//These are the available morphs for each player. No entity instance is required or created here.
 }
