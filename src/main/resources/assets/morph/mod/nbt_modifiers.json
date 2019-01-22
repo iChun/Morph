@@ -65,6 +65,7 @@
     "DeathLootTable": "null",
     "bukkit": "null",
     "ForgeData_DraconicEvolution": "ForgeData:DESpawnedMob;null",
+    "ForgeData_FluidCows": "ForgeData:t_cd;null",
     "ForgeData_Hats": "ForgeData:Hats_hatInfo;null",
     "ForgeData_BeeBarker1": "ForgeData:BeeBarker_barkable;null",
     "ForgeData_BeeBarker2": "ForgeData:BeeBarker_beeHighestCharge;null",
