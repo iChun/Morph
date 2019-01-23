@@ -50,6 +50,8 @@
     "ForcedAge": "null",
     "InLove": "null",
     "LoveCause": "null",
+    "LoveCauseLeast": "null",
+    "LoveCauseMost": "null",
     "Sitting": "null",
     "Equipment": "null",
     "DropChances": "null",
