@@ -19,11 +19,25 @@
     "additionalNote2": "Please keep this list alphabetically sorted when you add your own mobs. Keep Minecraft classes as the bottom. Keep the examples at the top.",
     "additionalNote3": "You can also add compatibility for your own mod via the IMC system. Look in the Morph main class for documentation."
   },
-
+  "com.setycz.chickens.entity.EntityChickensChicken": {
+    "Analyzed": "null",
+    "Gain": "null",
+    "Growth": "null",
+    "Strength": "null",
+    "EggLayTime": "null",
+    "Type": "null"
+  },
   "crazypants.enderzoo.entity.EntityOwl": {
     "EggLayTime": "null"
   },
-
+  "nex.entity.monster.EntitySpinout": {
+    "Spinning": "null",
+    "SpinCounter": "null",
+    "SpinCooldown": "null"
+  },
+  "nex.entity.monster.EntitySpore": {
+    "Counter": "null"
+  },
   "net.minecraft.entity.EntityLivingBase": {
     "Fire": "null",
     "Riding": "null",
@@ -36,6 +50,8 @@
     "ForcedAge": "null",
     "InLove": "null",
     "LoveCause": "null",
+    "LoveCauseLeast": "null",
+    "LoveCauseMost": "null",
     "Sitting": "null",
     "Equipment": "null",
     "DropChances": "null",
@@ -50,10 +66,17 @@
     "HandDropChances": "null",
     "DeathLootTable": "null",
     "bukkit": "null",
+    "ForgeData_DraconicEvolution": "ForgeData:DESpawnedMob;null",
+    "ForgeData_FluidCows": "ForgeData:t_cd;null",
     "ForgeData_Hats": "ForgeData:Hats_hatInfo;null",
     "ForgeData_BeeBarker1": "ForgeData:BeeBarker_barkable;null",
     "ForgeData_BeeBarker2": "ForgeData:BeeBarker_beeHighestCharge;null",
-    "ForgeData_BeeBarker3": "ForgeData:BeeBarker_beeCharge;null"
+    "ForgeData_BeeBarker3": "ForgeData:BeeBarker_beeCharge;null",
+    "hitByDarkSteelSword": "null",
+    "ForgeData_ezModsApp": "ForgeData:exModsApp;null",
+    "ForgeData_cnpcmarks": "ForgeData:cnpcmarkdata:marks;null",
+    "ForgeData_spawnedByPoweredSpawner": "ForgeData:spawnedByPoweredSpawner;null",
+    "ForgeData_CursedEarth": "ForgeData:CursedEarth;null"
   },
   "net.minecraft.entity.boss.EntityWither": {
     "Invul": "null"
