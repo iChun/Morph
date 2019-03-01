@@ -356,20 +356,23 @@ public class PlayerMorphHandler implements IApi
             String s = client.getSkinType();
             RenderPlayer rend = Minecraft.getMinecraft().getRenderManager().skinMap.get(s);
 
-            Morph.eventHandlerClient.renderHandInstance.renderTick = iChunUtil.eventHandlerClient.renderTick; //TODO this needed?
-            Morph.eventHandlerClient.renderHandInstance.parent = rend;
-            Morph.eventHandlerClient.renderHandInstance.clientInfo = info;
-
-            if(isLeftArm)
+            if(rend != null) //for some reason this is possible. I don't know why so I'll just null check it.
             {
-                Morph.eventHandlerClient.renderHandInstance.renderLeftArm((AbstractClientPlayer)player);
-            }
-            else
-            {
-                Morph.eventHandlerClient.renderHandInstance.renderRightArm((AbstractClientPlayer)player);
-            }
+                Morph.eventHandlerClient.renderHandInstance.renderTick = iChunUtil.eventHandlerClient.renderTick; //TODO this needed?
+                Morph.eventHandlerClient.renderHandInstance.parent = rend;
+                Morph.eventHandlerClient.renderHandInstance.clientInfo = info;
 
-            Morph.eventHandlerClient.renderHandInstance.clientInfo = null;
+                if(isLeftArm)
+                {
+                    Morph.eventHandlerClient.renderHandInstance.renderLeftArm((AbstractClientPlayer)player);
+                }
+                else
+                {
+                    Morph.eventHandlerClient.renderHandInstance.renderRightArm((AbstractClientPlayer)player);
+                }
+
+                Morph.eventHandlerClient.renderHandInstance.clientInfo = null;
+            }
         }
     }
 

@@ -16,12 +16,12 @@ compileJava {
 
 // Requires iChunUtil to run. Just put iChunUtil-deobf.jar in the /libs/ folder or it won't compile.
 // If you're getting errors with fields not being public, you need to put iChunUtil's AT.cfg files into /src/api/resources/ ;Blame AbrarSyed for this.
-version = "1.12.2-7.1.2"
+version = "1.12.2-7.1.3"
 group= "morph"
 archivesBaseName = "Morph"
 
 minecraft {
-    version = "1.12.2-14.23.2.2624"
+    version = "1.12.2-14.23.5.2815"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -68,5 +68,20 @@ task apiJar(type: Jar) {
     classifier = 'api'
 }
 
+// sign jar
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+
+    keyStore = project.properties.keyStore
+    alias = project.properties.keyStoreAlias
+    storePass = project.properties.keyStorePass
+    keyPass = project.properties.keyStoreKeyPass
+}
+
 // make sure all of these happen when we run build
-build.dependsOn sourceJar, deobfJar, apiJar
+build.dependsOn sourceJar, deobfJar, apiJar, signJar

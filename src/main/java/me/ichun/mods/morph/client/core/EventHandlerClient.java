@@ -582,28 +582,31 @@ public class EventHandlerClient
             MorphInfoClient info = Morph.eventHandlerClient.morphsActive.get(mc.player.getName());
             if(info != null)
             {
-                event.setCanceled(true);
-
                 String s = mc.player.getSkinType();
                 RenderPlayer rend = mc.getRenderManager().skinMap.get(s);
 
-                Morph.eventHandlerClient.renderHandInstance.renderTick = event.getPartialTicks();
-                Morph.eventHandlerClient.renderHandInstance.parent = rend;
-                Morph.eventHandlerClient.renderHandInstance.clientInfo = info;
-
-                mc.getRenderManager().skinMap.put(s, Morph.eventHandlerClient.renderHandInstance);
-
-                boolean flag = mc.getRenderViewEntity() instanceof EntityLivingBase && ((EntityLivingBase)mc.getRenderViewEntity()).isPlayerSleeping();
-                if (mc.gameSettings.thirdPersonView == 0 && !flag && !mc.gameSettings.hideGUI && !mc.playerController.isSpectator())
+                if(rend != null) //for some reason this is possible. I don't know why so I'll just null check it.
                 {
-                    mc.entityRenderer.enableLightmap();
-                    mc.getItemRenderer().renderItemInFirstPerson(event.getPartialTicks());
-                    mc.entityRenderer.disableLightmap();
+                    event.setCanceled(true);
+
+                    Morph.eventHandlerClient.renderHandInstance.renderTick = event.getPartialTicks();
+                    Morph.eventHandlerClient.renderHandInstance.parent = rend;
+                    Morph.eventHandlerClient.renderHandInstance.clientInfo = info;
+
+                    mc.getRenderManager().skinMap.put(s, Morph.eventHandlerClient.renderHandInstance);
+
+                    boolean flag = mc.getRenderViewEntity() instanceof EntityLivingBase && ((EntityLivingBase)mc.getRenderViewEntity()).isPlayerSleeping();
+                    if(mc.gameSettings.thirdPersonView == 0 && !flag && !mc.gameSettings.hideGUI && !mc.playerController.isSpectator())
+                    {
+                        mc.entityRenderer.enableLightmap();
+                        mc.getItemRenderer().renderItemInFirstPerson(event.getPartialTicks());
+                        mc.entityRenderer.disableLightmap();
+                    }
+
+                    mc.getRenderManager().skinMap.put(s, rend);
+
+                    Morph.eventHandlerClient.renderHandInstance.clientInfo = null;
                 }
-
-                mc.getRenderManager().skinMap.put(s, rend);
-
-                Morph.eventHandlerClient.renderHandInstance.clientInfo = null;
             }
         }
     }

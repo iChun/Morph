@@ -251,7 +251,7 @@ public class CommandMorph extends CommandBase
                         {
                             for(MorphVariant var : morphs)
                             {
-                                if(var.entId.equals(args[2]))
+                                if(var.entId.equals(args[2])) //TODO doesn't read into tag compounds.
                                 {
                                     EntityLivingBase living = var.createEntityInstance(player.getEntityWorld());
                                     if(var.thisVariant.invalid)

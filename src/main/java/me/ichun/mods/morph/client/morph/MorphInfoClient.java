@@ -263,7 +263,7 @@ public class MorphInfoClient extends MorphInfo
         {
             ent.prevRotationYaw += 180F;
             ent.rotationYaw += 180F;
-            ((EntityDragon)ent).deathTicks = player.deathTime;
+            ((EntityDragon)ent).deathTicks = player.deathTime * 10;
         }
 
         for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
