@@ -359,7 +359,7 @@ public class MorphVariant
             MorphVariant var = (MorphVariant)o;
             if(entId.equals(PLAYER_MORPH_ID))
             {
-                return var.entId.equals(PLAYER_MORPH_ID) && playerName.equals(var.playerName);
+                return PLAYER_MORPH_ID.equals(var.entId) && playerName.equals(var.playerName);
             }
             return entId.equals(var.entId) && playerName.equals(var.playerName) && entTag.equals(var.entTag) && thisVariant.identifier.equals(var.thisVariant.identifier); //Do not compare the variant arraylist? >_>
         }

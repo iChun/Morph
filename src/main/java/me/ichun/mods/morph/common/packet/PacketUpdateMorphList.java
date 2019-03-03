@@ -145,10 +145,20 @@ public class PacketUpdateMorphList extends AbstractPacket
             ArrayList<MorphState> selfState = buffer.get(playerName); //This has to exist. If it doesn't exist something messed up.
             buffer.remove(playerName);
             Morph.eventHandlerClient.playerMorphs.clear();
-            Morph.eventHandlerClient.playerMorphs.put(playerName, selfState);
+            if(selfState != null)
+            {
+                Morph.eventHandlerClient.playerMorphs.put(playerName, selfState);
+            }
+            else
+            {
+                Morph.LOGGER.error("Uh oh. Something went wrong. We don't have a Morph State for ourself!");
+            }
             for(Map.Entry<String, ArrayList<MorphState>> e : buffer.entrySet())
             {
-                Morph.eventHandlerClient.playerMorphs.put(e.getKey(), e.getValue());
+                if(e.getValue() != null)
+                {
+                    Morph.eventHandlerClient.playerMorphs.put(e.getKey(), e.getValue());
+                }
             }
         }
     }

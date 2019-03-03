@@ -28,20 +28,20 @@ public class AbilityHandler implements IAbilityHandler
     public static void init()
     {
         AbilityApi.setApiImpl(INSTANCE);
-        INSTANCE.registerAbility("float", AbilityFloat.class);
-        INSTANCE.registerAbility("flightFlap", AbilityFlightFlap.class);
-        INSTANCE.registerAbility("hostile", AbilityHostile.class);
-        INSTANCE.registerAbility("fallNegate", AbilityFallNegate.class);
-        INSTANCE.registerAbility("climb", AbilityClimb.class);
-
-        //TODO REMOVE THESE LINES
-        INSTANCE.mapAbilities(EntityBat.class, new AbilityFlightFlap());
-        INSTANCE.mapAbilities(EntityChicken.class, new AbilityFloat());
-        INSTANCE.mapAbilities(EntityCreeper.class, new AbilityHostile());
-        INSTANCE.mapAbilities(EntityGiantZombie.class, new AbilityHostile());
-        INSTANCE.mapAbilities(EntityGolem.class, new AbilityFallNegate());
-        INSTANCE.mapAbilities(EntitySilverfish.class, new AbilityHostile());
-        INSTANCE.mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
+//        INSTANCE.registerAbility("float", AbilityFloat.class);
+//        INSTANCE.registerAbility("flightFlap", AbilityFlightFlap.class);
+//        INSTANCE.registerAbility("hostile", AbilityHostile.class);
+//        INSTANCE.registerAbility("fallNegate", AbilityFallNegate.class);
+//        INSTANCE.registerAbility("climb", AbilityClimb.class);
+//
+//        //TODO REMOVE THESE LINES
+//        INSTANCE.mapAbilities(EntityBat.class, new AbilityFlightFlap());
+//        INSTANCE.mapAbilities(EntityChicken.class, new AbilityFloat());
+//        INSTANCE.mapAbilities(EntityCreeper.class, new AbilityHostile());
+//        INSTANCE.mapAbilities(EntityGiantZombie.class, new AbilityHostile());
+//        INSTANCE.mapAbilities(EntityGolem.class, new AbilityFallNegate());
+//        INSTANCE.mapAbilities(EntitySilverfish.class, new AbilityHostile());
+//        INSTANCE.mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
     }
 
     @Override

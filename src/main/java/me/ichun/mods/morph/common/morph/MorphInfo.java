@@ -332,7 +332,7 @@ public class MorphInfo
 
     public boolean isMorphing()
     {
-        return morphTime < Morph.config.morphTime;
+        return morphTime < Morph.config.morphTime && prevState != null;
     }
 
     public float getMorphProgress(float renderTick) //use 0 for serverside. This is for overall morph progression.

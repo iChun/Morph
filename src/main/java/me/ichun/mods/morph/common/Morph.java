@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.event.*;
 
 @Mod(modid = Morph.MOD_ID, name = Morph.MOD_NAME,
         version = Morph.VERSION,
-        certificateFingerprint = Morph.CERT_FINGERPRINT,
+        certificateFingerprint = iChunUtil.CERT_FINGERPRINT,
         guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
         dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR + ".1.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + ".1.0," + iChunUtil.VERSION_MAJOR + ".2.0)",
@@ -34,8 +34,6 @@ public class Morph
 
     public static final String MOD_NAME = "Morph";
     public static final String MOD_ID = "morph";
-
-    public static final String CERT_FINGERPRINT = "4db5c2bd1b556f252a5b8b54b256d381b2a0a6b8";
 
     @Mod.Instance(MOD_ID)
     public static Morph instance;
