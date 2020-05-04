@@ -1,12 +1,17 @@
 package me.ichun.mods.morph.api.ability.type;
 
 import me.ichun.mods.morph.api.ability.Ability;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AbilityClimb extends Ability
 {
-    public AbilityClimb()
-    {
-        type = "climb";
+    public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/climb.png");
+
+    @Override
+    public String getType() {
+        return "climb";
     }
 
     @Override
@@ -25,6 +30,13 @@ public class AbilityClimb extends Ability
             }
             getParent().fallDistance -= getParent().fallDistance * getStrength();
         }
-        //TODO test fall distance negation
+        getParent().fallDistance -= getParent().fallDistance * getStrength();
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public ResourceLocation getIcon()
+    {
+        return iconResource;
     }
 }

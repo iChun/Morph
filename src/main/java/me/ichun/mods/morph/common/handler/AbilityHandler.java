@@ -28,20 +28,23 @@ public class AbilityHandler implements IAbilityHandler
     public static void init()
     {
         AbilityApi.setApiImpl(INSTANCE);
-//        INSTANCE.registerAbility("float", AbilityFloat.class);
-//        INSTANCE.registerAbility("flightFlap", AbilityFlightFlap.class);
-//        INSTANCE.registerAbility("hostile", AbilityHostile.class);
-//        INSTANCE.registerAbility("fallNegate", AbilityFallNegate.class);
-//        INSTANCE.registerAbility("climb", AbilityClimb.class);
-//
-//        //TODO REMOVE THESE LINES
-//        INSTANCE.mapAbilities(EntityBat.class, new AbilityFlightFlap());
-//        INSTANCE.mapAbilities(EntityChicken.class, new AbilityFloat());
-//        INSTANCE.mapAbilities(EntityCreeper.class, new AbilityHostile());
-//        INSTANCE.mapAbilities(EntityGiantZombie.class, new AbilityHostile());
-//        INSTANCE.mapAbilities(EntityGolem.class, new AbilityFallNegate());
-//        INSTANCE.mapAbilities(EntitySilverfish.class, new AbilityHostile());
-//        INSTANCE.mapAbilities(EntitySpider.class, new AbilityClimb(), new AbilityHostile());
+        AbilityApi.setApiImpl(INSTANCE);
+        INSTANCE.registerAbility("climb", AbilityClimb.class);
+        INSTANCE.registerAbility("fallNegate", AbilityFallNegate.class);
+        INSTANCE.registerAbility("fear", AbilityFear.class);
+        INSTANCE.registerAbility("fireImmunity", AbilityFireImmunity.class);
+        INSTANCE.registerAbility("flightFlap", AbilityFlightFlap.class);
+        INSTANCE.registerAbility("float", AbilityFloat.class);
+        INSTANCE.registerAbility("fly", AbilityFly.class);
+        INSTANCE.registerAbility("hostile", AbilityHostile.class);
+        INSTANCE.registerAbility("poisonResistance", AbilityPoisonResistance.class);
+        INSTANCE.registerAbility("potionEffect", AbilityPotionEffect.class);
+        INSTANCE.registerAbility("sink", AbilitySink.class);
+        INSTANCE.registerAbility("step", AbilityStep.class);
+        INSTANCE.registerAbility("sunburn", AbilitySunburn.class);
+        INSTANCE.registerAbility("swim", AbilitySwim.class);
+        INSTANCE.registerAbility("waterAllergy", AbilityWaterAllergy.class);
+        INSTANCE.registerAbility("witherResistance", AbilityWitherResistance.class);
     }
 
     @Override

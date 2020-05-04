@@ -2042,8 +2042,9 @@
   "twilightforest.entity.passive.EntityTFTinyBird": [
     "fly|true"
   ],
-  
-  
+  "net.minecraft.entity.passive.EntityChicken": [
+    "float|-0.114,true"
+  ],
   "net.minecraft.entity.monster.EntityBlaze": [
     "fly|false",
     "fireImmunity",
@@ -2057,16 +2058,29 @@
 	"potionEffect|19,140,0,false"
   ],
   "net.minecraft.entity.boss.EntityDragon": [
-    "fly|false",
+    "flightFlap|false",
     "hostile"
   ],
   "net.minecraft.entity.monster.EntityEnderman": [
     "waterAllergy",
     "hostile"
   ],
+  "net.minecraft.entity.monster.EntitySpider": [
+    "climb",
+    "hostile"
+  ],
   "net.minecraft.entity.monster.EntityGhast": [
     "fly|false",
     "fireImmunity",
+    "hostile"
+  ],
+  "net.minecraft.entity.monster.EntityGiantZombie": [
+    "hostile"
+  ],
+  "net.minecraft.entity.passive.EntityBat": [
+    "flightFlap"
+  ],
+  "net.minecraft.entity.monster.EntitySilverfish": [
     "hostile"
   ],
   "net.minecraft.entity.passive.EntityHorse": [
@@ -2083,6 +2097,9 @@
     "hostile",
 	"sink"
   ],
+  "net.minecraft.entity.monster.EntityCreeper": [
+    "hostile"
+  ],
   "net.minecraft.entity.passive.EntityOcelot": [
     "fallNegate",
 	"fear|6,1.05D,net.minecraft.entity.monster.EntityCreeper"
@@ -2094,9 +2111,13 @@
   "net.minecraft.entity.monster.EntitySkeleton": [
     "fireImmunity",
     "hostile",
-    "sunburn",
+    "sunburn"
+  ],
+  "net.minecraft.entity.monster.EntityWitherSkeleton": [
+    "fireImmunity",
+    "hostile",
     "witherResistance",
-	"potionEffect|20,200,0,false"
+    "potionEffect|20,200,0,false"
   ],
   "net.minecraft.entity.monster.EntitySlime": [
     "hostile",

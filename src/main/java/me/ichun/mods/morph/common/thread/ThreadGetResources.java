@@ -4,13 +4,16 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
+import me.ichun.mods.morph.api.ability.Ability;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.handler.AbilityHandler;
 import me.ichun.mods.morph.common.handler.NBTHandler;
 import net.minecraft.entity.EntityLivingBase;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,6 +82,124 @@ public class ThreadGetResources extends Thread
         {
             Morph.LOGGER.warn("No NBT modifiers for Minecraft mobs? This might be an issue!");
         }
+
+        HashMap<String, String[]> abilitiesJson = getResource("ability_support.json", new TypeToken<HashMap<String, String[]>>() {}.getType());
+        int mcMappings = 0;
+        for(Map.Entry<String, String[]> e : abilitiesJson.entrySet())
+        {
+            try
+            {
+                Class.forName(e.getKey());
+
+                ArrayList<Ability> abilities = new ArrayList<>();
+                for(String ability : e.getValue())
+                {
+                    boolean hasArgs = false;
+                    if(ability == null)
+                        continue;
+                    if(ability.contains("|"))
+                    {
+                        ArrayList<String> argVars = new ArrayList<>();
+                        hasArgs = true;
+                        String args = ability.split("\\|")[1];
+                        ability = ability.split("\\|")[0];
+                        if(args.contains(","))
+                        {
+                            for(String arg : args.split(","))
+                            {
+                                argVars.add(arg.trim());
+                            }
+                        }
+                        else
+                        {
+                            argVars.add(args.trim());
+                        }
+                        try
+                        {
+                            Class abilityClass = AbilityHandler.getInstance().STRING_TO_CLASS_MAP.get(ability);
+                            if(abilityClass != null)
+                            {
+                                Ability ab = ((Ability)abilityClass.getConstructor().newInstance());
+                                try
+                                {
+                                    ab.parse(argVars.toArray(new String[0]));
+                                }
+                                catch(Exception e2)
+                                {
+                                    Morph.LOGGER.warn("Mappings are erroring! These mappings are probably invalid or outdated: "  + abilityClass.getName() + ", "+ ability + ", args: " + args);
+                                }
+                                abilities.add(ab);
+                            }
+                            else
+                            {
+                                Morph.LOGGER.warn("Ability \"" + ability + "\" does not exist for: "  + e.getKey() + ", args: " + args);
+                            }
+                        }
+                        catch(Exception e2)
+                        {
+                            e2.printStackTrace();
+                        }
+                    }
+                    if(!ability.isEmpty() && !hasArgs)
+                    {
+                        Class abilityClass = AbilityHandler.getInstance().STRING_TO_CLASS_MAP.get(ability);
+                        if(abilityClass != null)
+                        {
+                            try
+                            {
+                                abilities.add((Ability)abilityClass.getConstructor().newInstance());
+                            }
+                            catch(Exception e2)
+                            {
+                                e2.printStackTrace();
+                            }
+                        }
+                        else
+                        {
+                            Morph.LOGGER.warn("Ability \"" + ability + "\" does not exist for: "  + e.getKey());
+                        }
+                    }
+                }
+
+                if(abilities.size() > 0){
+                    Class<? extends EntityLivingBase> entityClass = (Class<? extends EntityLivingBase>) Class.forName(e.getKey());
+                    if(entityClass != null){
+                        if(AbilityHandler.getInstance().ABILITY_MAP.containsKey(entityClass))
+                        {
+                            Morph.LOGGER.warn("Ignoring ability mapping for " + e.getKey() + "! Already has abilities mapped!");
+                        }
+                        else
+                        {
+                            if(entityClass.getName().startsWith("net.minecraft"))
+                            {
+                                mcMappings++;
+                            }
+                            else
+                            {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append("Adding ability mappings ");
+                                for(int i = 0; i < abilities.size(); i++)
+                                {
+                                    Ability a = abilities.get(i);
+                                    sb.append(a.getType());
+                                    if(i != abilities.size() - 1)
+                                    {
+                                        sb.append(", ");
+                                    }
+                                }
+                                sb.append(" to ");
+                                sb.append(entityClass);
+
+                                Morph.LOGGER.info(sb.toString());
+                            }
+                            AbilityHandler.getInstance().mapAbilities(entityClass, abilities.toArray(new Ability[0]));
+                        }
+                    }
+                }
+            }
+            catch(ClassNotFoundException ignored) {}
+        }
+        Morph.LOGGER.info("Found and mapped ability mappings for " + mcMappings + " presumably Minecraft mobs.");
     }
 
     public <T> T getResource(String name, Type mapType)
@@ -101,7 +222,7 @@ public class ThreadGetResources extends Thread
                 fileIn.close();
             }
         }
-        catch(Exception e)
+        catch(Throwable e)
         {
             if(Morph.config.useLocalResources == 1)
             {

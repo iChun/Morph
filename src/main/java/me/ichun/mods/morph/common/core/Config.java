@@ -86,10 +86,21 @@ public class Config extends ConfigBase
     public int abilities = 1; //TODO this
 
     @ConfigProp(category = "abilities", useSession = true)
+    @IntBool
+    public int showAbilitiesInGui = 1;
+
+    @ConfigProp(category = "abilities", useSession = true)
     public String[] disabledAbilities = new String[0]; //TODO this
 
-    @ConfigProp(category = "clientOnly", side = Side.CLIENT)
-    public String[] abilitiesToHideInGui = new String[0]; //TODO this
+    @ConfigProp(category = "abilities", useSession = true)
+    @IntBool
+    public int enableFlight = 1;
+
+    @ConfigProp(category = "abilities")
+    public int hostileAbilityMode = 0;
+
+    @ConfigProp(category = "abilities")
+    public int hostileAbilityDistanceCheck = 6;
 
     @ConfigProp(category = "clientOnly", side = Side.CLIENT)
     @IntBool
