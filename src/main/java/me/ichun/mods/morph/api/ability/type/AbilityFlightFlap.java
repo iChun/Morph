@@ -1,8 +1,10 @@
 package me.ichun.mods.morph.api.ability.type;
 
 import me.ichun.mods.morph.api.ability.Ability;
+import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.MobEffects;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -17,9 +19,11 @@ public class AbilityFlightFlap extends Ability
     public transient int limitCount;
     public transient boolean jumpKeyHeld;
 
-    public AbilityFlightFlap()
-    {
-        type = "flightFlap";
+    public static final ResourceLocation iconResource = new ResourceLocation("morph", "textures/icon/fly.png");
+
+    @Override
+    public String getType() {
+        return "flightFlap";
     }
 
     @Override
@@ -33,6 +37,10 @@ public class AbilityFlightFlap extends Ability
     @Override
     public void tick()
     {
+        if(Morph.config.enableFlight == 0)
+        {
+            return;
+        }
         if(getParent().world.isRemote)
         {
             tickClient();
@@ -67,5 +75,12 @@ public class AbilityFlightFlap extends Ability
             onGround = getParent().onGround;
             jumpKeyHeld = Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode());
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public ResourceLocation getIcon()
+    {
+        return iconResource;
     }
 }

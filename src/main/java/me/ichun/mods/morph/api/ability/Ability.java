@@ -64,6 +64,11 @@ public abstract class Ability
         iconResource = null;
     }
 
+    /**
+     * Function for mod mob support, with args.
+     */
+    public Ability parse(String[] args) { return this; }
+
     //TEMP
     public Ability setNotCharacteristic()
     {

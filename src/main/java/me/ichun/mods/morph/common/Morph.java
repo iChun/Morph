@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.event.*;
 )
 public class Morph
 {
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".1.3";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".1.5";
 
     public static final String MOD_NAME = "Morph";
     public static final String MOD_ID = "morph";
