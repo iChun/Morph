@@ -16,7 +16,7 @@ compileJava {
 
 // Requires iChunUtil to run. Just put iChunUtil-deobf.jar in the /libs/ folder or it won't compile.
 // If you're getting errors with fields not being public, you need to put iChunUtil's AT.cfg files into /src/api/resources/ ;Blame AbrarSyed for this.
-version = "1.12.2-7.1.5"
+version = "1.12.2-7.2.0"
 group= "morph"
 archivesBaseName = "Morph"
 

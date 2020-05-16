@@ -2109,7 +2109,6 @@
     "hostile"
   ],
   "net.minecraft.entity.monster.EntitySkeleton": [
-    "fireImmunity",
     "hostile",
     "sunburn"
   ],

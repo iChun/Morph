@@ -25,12 +25,12 @@ import net.minecraftforge.fml.common.event.*;
         certificateFingerprint = iChunUtil.CERT_FINGERPRINT,
         guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
         dependencies = "required-after:ichunutil@[" + iChunUtil.VERSION_MAJOR + ".2.0," + (iChunUtil.VERSION_MAJOR + 1) + ".0.0)",
-        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + ".1.0," + iChunUtil.VERSION_MAJOR + ".2.0)",
+        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + ".2.0," + iChunUtil.VERSION_MAJOR + ".3.0)",
         acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE
 )
 public class Morph
 {
-    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".1.5";
+    public static final String VERSION = iChunUtil.VERSION_MAJOR + ".2.0";
 
     public static final String MOD_NAME = "Morph";
     public static final String MOD_ID = "morph";
