@@ -45,7 +45,7 @@ public class Config extends ConfigBase
     public int showPlayerLabel = 0;
 
     @ConfigProp(category = "gameplay")
-    @IntBool
+    @IntMinMax(min = 0, max = 2)
     public int loseMorphsOnDeath = 0;
 
     @ConfigProp(category = "gameplay")

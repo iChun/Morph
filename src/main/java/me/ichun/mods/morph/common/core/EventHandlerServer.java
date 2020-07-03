@@ -116,6 +116,7 @@ public class EventHandlerServer
                 {
                     //remove all the morphs
                     morphs.clear();
+                    playerMorphs.remove(player.getName());
                     morphs = Morph.eventHandlerServer.getPlayerMorphs(player);
                 }
                 else

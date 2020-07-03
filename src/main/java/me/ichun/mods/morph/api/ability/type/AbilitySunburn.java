@@ -67,7 +67,7 @@ public class AbilitySunburn extends Ability
                         if(itemstack.getItemDamage() >= itemstack.getMaxDamage())
                         {
                             getParent().renderBrokenItemStack(itemstack);
-                            getParent().setItemStackToSlot(EntityEquipmentSlot.HEAD, null);
+                            getParent().setItemStackToSlot(EntityEquipmentSlot.HEAD, ItemStack.EMPTY);
                         }
                     }
 
