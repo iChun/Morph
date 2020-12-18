@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard;
 
 public class AbilityFlightFlap extends Ability
 {
-    public Boolean resetUpwardsMotion; //reset motionY when the trigered?
+    public Boolean resetUpwardsMotion = true; //reset motionY when the trigered?
     public Double upwardsMotion; //the upwards motion to set/add
     public Integer limit; //limit the number of times this can be triggered (until the entity hits the ground)
 
@@ -52,28 +52,18 @@ public class AbilityFlightFlap extends Ability
     public void tickClient()
     {
         if(getParent() == Minecraft.getMinecraft().player && !Minecraft.getMinecraft().player.capabilities.isFlying)
-        {
-            if(getParent().onGround && !onGround && limit != null && limit > 0)
-            {
-                limitCount = limit;
+        {            
+            if(getParent().onGround)
+                return;
+            
+            if(!Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode()) && !Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())){
+                getParent().motionY = 0F;
+            }else if(Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode())){
+                getParent().motionY = 0.25F;
+            }else if(Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())){
+                getParent().motionY = -0.25F;
             }
-            if(!onGround && Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode()) && !jumpKeyHeld && (limitCount < 0 || limitCount > 0))
-            {
-                limitCount--;
-                if(resetUpwardsMotion != null && resetUpwardsMotion)
-                {
-                    getParent().motionY = 0F;
-                }
-                double amount = (upwardsMotion != null ? upwardsMotion : 0.42D);
-                if (getParent().isPotionActive(MobEffects.JUMP_BOOST))
-                {
-                    amount += (double)((float)(getParent().getActivePotionEffect(MobEffects.JUMP_BOOST).getAmplifier() + 1) * 0.1F);
-                }
-                amount *= getStrength();
-                getParent().motionY += amount;
-            }
-            onGround = getParent().onGround;
-            jumpKeyHeld = Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode());
+            
         }
     }
 
