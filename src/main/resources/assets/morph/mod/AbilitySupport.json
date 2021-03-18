@@ -2186,5 +2186,13 @@
     "hostile",
 	"fear|9,0.6D,net.minecraft.entity.passive.EntityVillager",
     "sunburn"
-  ]
+  ],
+  "thedarkcolour.futuremc.entity.bee.EntityBee": [
+    "fly|false",
+    "waterAllergy"
+	  "potionEffect|19,40,0,false"
+  ],
+    "thedarkcolour.futuremc.entity.fish.cod.EntityCod": [
+	"swim|false,1.2F,0.4F,true"
+  ],
 }
