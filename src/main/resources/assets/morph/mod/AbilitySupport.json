@@ -2173,6 +2173,14 @@
   "net.minecraft.entity.passive.EntitySquid": [
     "swim|false,1.2F,0.4F,true"
   ],
+  "net.minecraft.entity.monster.EntityGuardian": [
+    "swim|false,4F,1F,true",
+    "hostile"
+  ],
+  "net.minecraft.entity.monster.EntityElderGuardian": [
+    "swim|false,4F,1F,true",
+    "hostile"
+  ],
   "net.minecraft.entity.boss.EntityWither": [
     "fly|false",
     "fireImmunity",
