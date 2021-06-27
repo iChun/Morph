@@ -1,0 +1,17 @@
+{
+  "config.morph.cat.morph.name": "Morph Ability",
+  "config.morph.cat.morph.desc": "Options for the morph ability.",
+
+  "config.morph.prop.morphTime.name": "Morph Time",
+  "config.morph.prop.morphTime.desc": "Time (in ticks) for a morph to complete.",
+  "config.morph.prop.disabledMobs.name": "Disabled Mobs",
+  "config.morph.prop.disabledMobs.desc": "Resource Location name for Mob types you cannot acquire biomass or morphs from.",
+  "config.morph.prop.supportedAttributes.name": "Supported Attributes",
+  "config.morph.prop.supportedAttributes.desc": "Which attributes are supported by more, and how are values better. Format: <Resource Name of Attribute>;<more/less>. EG: \"minecraft:generic.max_health;more\".",
+  "config.morph.prop.morphClassic.name": "Morph Classic",
+  "config.morph.prop.morphClassic.desc": "Enable this for Morph Classic. No Biomass or Morph restrictions.",
+  "config.morph.prop.aggressiveSizeRecalculation.name": "Aggressive Size Recalculation",
+  "config.morph.prop.aggressiveSizeRecalculation.desc": "Morph normally only recalculates size when it has to. This makes Morph recalculate the player size every tick whilst morphed.",
+
+  "subtitles.morph.morph": "Entity morphing"
+}

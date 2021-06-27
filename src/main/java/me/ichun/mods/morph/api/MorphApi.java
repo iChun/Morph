@@ -1,8 +1,12 @@
 package me.ichun.mods.morph.api;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class MorphApi
 {
-    private static IApi apiImpl = new ApiDummy();
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static IApi apiImpl = new IApi(){};
 
     /**
      * Get the IApi implementation for Morph.
@@ -21,5 +25,10 @@ public class MorphApi
     public static void setApiImpl(IApi apiImpl)
     {
         MorphApi.apiImpl = apiImpl;
+    }
+
+    public static Logger getLogger()
+    {
+        return LOGGER;
     }
 }

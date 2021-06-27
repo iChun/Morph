@@ -1,7 +1,0 @@
-{
-  "net.minecraft.entity.passive.EntityBat": [
-    {
-      "type": "flyFlap"
-    }
-  ]
-}
