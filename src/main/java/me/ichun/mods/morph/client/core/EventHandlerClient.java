@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.client.core;
 
 import me.ichun.mods.morph.api.morph.MorphInfo;
+import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
@@ -12,6 +13,8 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.ArrayList;
 
 public class EventHandlerClient
 {
@@ -42,7 +45,7 @@ public class EventHandlerClient
 
                 MorphRenderHandler.renderMorphInfo(player, info, event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getPartialRenderTick());
 
-                MorphRenderHandler.setShadowSize(event.getRenderer(), player, info, event.getPartialRenderTick());
+                MorphRenderHandler.setShadowSize(event.getRenderer(), info, event.getPartialRenderTick());
             }
         }
     }
@@ -78,5 +81,37 @@ public class EventHandlerClient
     public void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event)
     {
         morphData = null;
+    }
+
+    public void updateMorph(MorphVariant variant)
+    {
+        if(morphData != null)
+        {
+            boolean added = false;
+
+            ArrayList<MorphVariant> morphs = morphData.morphs;
+            for(int i = 0; i < morphs.size(); i++)
+            {
+                MorphVariant morph = morphs.get(i);
+                if(morph.id.equals(variant.id))
+                {
+                    morphs.remove(i);
+                    morphs.add(i, variant);
+                    added = true;
+                    break;
+                }
+            }
+
+            if(!added) //presume a new morph
+            {
+                morphs.add(variant);
+            }
+
+            //TODO update if the selector is open
+        }
+        else
+        {
+            Morph.LOGGER.error("We got morph data but we don't have the save data! Variant: {}", variant.id);
+        }
     }
 }

@@ -2,7 +2,10 @@ package me.ichun.mods.morph.common.morph;
 
 import com.google.common.base.Splitter;
 import me.ichun.mods.morph.api.IApi;
+import me.ichun.mods.morph.api.event.AcquireMorphEvent;
+import me.ichun.mods.morph.api.event.MorphPlayerEvent;
 import me.ichun.mods.morph.api.morph.MorphInfo;
+import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.mode.ClassicMode;
@@ -11,11 +14,15 @@ import me.ichun.mods.morph.common.morph.mode.MorphMode;
 import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
+import me.ichun.mods.morph.common.packet.PacketMorphInfo;
+import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -132,9 +139,40 @@ public class MorphHandler implements IApi
             variant.thisVariant = new MorphVariant.Variant();
         }
 
-        variant.variants.add(variant.thisVariant);
-
         return variant;
+    }
+
+    @Override
+    public void acquireMorph(ServerPlayerEntity player, MorphVariant variant)
+    {
+        PlayerMorphData playerMorphData = MorphHandler.INSTANCE.getPlayerMorphData(player);
+        if(!playerMorphData.containsVariant(variant))
+        {
+            if(MinecraftForge.EVENT_BUS.post(new AcquireMorphEvent(player, variant))) return;
+
+            MorphVariant parentVariant = playerMorphData.addVariant(variant);
+
+            Morph.channel.sendTo(new PacketUpdateMorph(parentVariant.write(new CompoundNBT())), player);
+        }
+    }
+
+    @Override
+    public boolean morphTo(ServerPlayerEntity player, MorphVariant variant)
+    {
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
+
+        if(MinecraftForge.EVENT_BUS.post(new MorphPlayerEvent(player, variant))) return false;
+
+        if(info.getMorphProgress(1F) < 1F) //mid morph
+        {
+            return false;
+        }
+
+        info.setNextState(new MorphState(variant), currentMode.getMorphingDuration(player));
+
+        Morph.channel.sendTo(new PacketMorphInfo(player.getEntityId(), info.write(new CompoundNBT())), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
+
+        return true;
     }
 
     @Override

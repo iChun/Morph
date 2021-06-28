@@ -194,7 +194,7 @@ public class MorphInfo
             else //just started morphing
             {
                 MorphVariant variant = MorphVariant.createPlayerMorph(player.getGameProfile().getId(), true);
-                variant.thisVariant.identifier = "default_player_state";
+                variant.thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
                 prevState = new MorphState(variant);
             }
 

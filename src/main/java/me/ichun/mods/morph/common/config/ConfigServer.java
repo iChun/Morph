@@ -1,8 +1,8 @@
 package me.ichun.mods.morph.common.config;
 
-import com.google.common.base.Splitter;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
+import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.util.ResourceLocation;
@@ -18,6 +18,7 @@ import java.util.List;
 public class ConfigServer extends ConfigBase
 {
     @CategoryDivider(name = "morph")
+    @Prop(min = 0)
     public int morphTime = 100; // 5 seconds
 
     private List<String> disabledMobs = new ArrayList<>();

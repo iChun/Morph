@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.morph.api.morph.MorphInfo;
+import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -48,12 +49,12 @@ public class MorphRenderHandler
             float transitionProgress = info.getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                renderLiving(info.prevState.getEntityInstance(player.world), stack, buffer, light, partialTick);
+                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world), stack, buffer, light, partialTick);
                 skinProg = MorphInfo.sineifyProgress(morphProgress / 0.125F);
             }
             else if(transitionProgress >= 1F)
             {
-                renderLiving(info.nextState.getEntityInstance(player.world), stack, buffer, light, partialTick);
+                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, buffer, light, partialTick);
                 skinProg = 1F - MorphInfo.sineifyProgress((morphProgress - 0.875F) / 0.125F);
             }
 
@@ -62,13 +63,13 @@ public class MorphRenderHandler
         }
         else //has completed morph
         {
-            renderLiving(info.nextState.getEntityInstance(player.world), stack, buffer, light, partialTick);
+            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, buffer, light, partialTick);
         }
-
+        //TODO fix slime shadow size rendering
         isRenderingMorph = false;
     }
 
-    private static void renderLiving(LivingEntity livingInstance, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
+    private static void renderLiving(MorphState state, LivingEntity livingInstance, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
     {
         EntityRenderer livingRenderer = Minecraft.getInstance().getRenderManager().getRenderer(livingInstance);
 
@@ -77,6 +78,7 @@ public class MorphRenderHandler
             float yaw = MathHelper.lerp(partialTick, livingInstance.prevRotationYaw, livingInstance.rotationYaw);
             stack.push();
             livingRenderer.render(livingInstance, yaw, partialTick, stack, buffer, light);
+            state.renderedShadowSize = livingRenderer.shadowSize;
             stack.pop();
         }
     }
@@ -86,7 +88,7 @@ public class MorphRenderHandler
         if(transitionProgress <= 0F)
         {
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.prevState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture prevModel = currentCapture;
 
             currentCapture = null; //reset before we do anything else accidentally.
@@ -97,7 +99,7 @@ public class MorphRenderHandler
         else if(transitionProgress >= 1F)
         {
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.nextState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture nextModel = currentCapture;
 
             currentCapture = null; //reset before we do anything else accidentally.
@@ -108,11 +110,11 @@ public class MorphRenderHandler
         else
         {
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.prevState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture prevModel = currentCapture;
 
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.nextState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture nextModel = currentCapture;
 
             currentCapture = null; //reset before we do anything else accidentally.
@@ -148,38 +150,22 @@ public class MorphRenderHandler
         }
     }
 
-    public static void setShadowSize(PlayerRenderer renderer, PlayerEntity player, MorphInfo info, float partialTick)
+    public static void setShadowSize(PlayerRenderer renderer, MorphInfo info, float partialTick)
     {
         float morphProgress = info.getMorphProgress(partialTick);
         if(morphProgress < 1F) //midmorph
         {
-            float prevSize = 0F;
-            float nextSize = 0F;
-
-            EntityRenderer prevRenderer = Minecraft.getInstance().getRenderManager().getRenderer(info.prevState.getEntityInstance(player.world));
-            if(prevRenderer != null)
-            {
-                prevSize = prevRenderer.shadowSize;
-            }
-
-            EntityRenderer nextRenderer = Minecraft.getInstance().getRenderManager().getRenderer(info.nextState.getEntityInstance(player.world));
-            if(nextRenderer != null)
-            {
-                nextSize = nextRenderer.shadowSize;
-            }
+            float prevSize = info.prevState.renderedShadowSize;
+            float nextSize = info.nextState.renderedShadowSize;
 
             renderer.shadowSize = prevSize + (nextSize - prevSize) * info.getTransitionProgressSine(partialTick);
-            changedShadowSize = true;
         }
         else
         {
-            EntityRenderer livingRenderer = Minecraft.getInstance().getRenderManager().getRenderer(info.nextState.getEntityInstance(player.world));
-            if(livingRenderer != null)
-            {
-                renderer.shadowSize = livingRenderer.shadowSize;
-                changedShadowSize = true;
-            }
+            renderer.shadowSize = info.nextState.renderedShadowSize;
         }
+
+        changedShadowSize = true;
     }
 
     public static class ModelRendererCapture

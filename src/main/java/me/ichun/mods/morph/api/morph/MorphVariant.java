@@ -2,12 +2,14 @@ package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -17,18 +19,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
-public class MorphVariant
+public class MorphVariant implements Comparable<MorphVariant>
 {
     public static final int IDENTIFIER_LENGTH = 20;
+    public static final String IDENTIFIER_DEFAULT_PLAYER_STATE = "default_player_state";
 
     @Nonnull
     public ResourceLocation id; // the ID of the morph
     @Nonnull
     public CompoundNBT nbtMorph; //special morph specific NBT
     public CompoundNBT nbtCommon; //common nbt tags shared by all variants
-    public ArrayList<Variant> variants; //null if it is not of a save.
+    public ArrayList<Variant> variants; //empty if it is not of a save. if populated, thisVariant should not be used.
 
-    public Variant thisVariant; //this is set for a specific variant/render
+    public Variant thisVariant; //this is set for a specific variant/render. variants should be left empty.
 
     public MorphVariant(ResourceLocation id)
     {
@@ -220,6 +223,41 @@ public class MorphVariant
         return flag;
     }
 
+    @Nonnull
+    public LivingEntity createEntityInstance(World world)
+    {
+        LivingEntity entInstance = null;
+        EntityType<?> value = ForgeRegistries.ENTITIES.getValue(id);
+        if(value != null)
+        {
+            if(value.equals(EntityType.PLAYER))
+            {
+                //TODO special handling for the player
+            }
+            else
+            {
+                CompoundNBT tags = getCumulativeTags();
+
+                Entity ent = value.create(world);
+                if(ent instanceof LivingEntity)
+                {
+                    ent.read(tags);
+
+                    entInstance = (LivingEntity)ent;
+                    entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
+                }
+            }
+        }
+
+        if(entInstance == null) //we can't find the entity type or errored out somewhere... have a pig.
+        {
+            MorphApi.getLogger().error("Cannot find entity type: " + id);
+            entInstance = EntityType.PIG.create(world);
+        }
+
+        return entInstance;
+    }
+
     public CompoundNBT getCumulativeTags()
     {
         return getCumulativeTagsWithVariant(thisVariant);
@@ -305,6 +343,29 @@ public class MorphVariant
         return false;
     }
 
+    @Override
+    public int compareTo(MorphVariant o)
+    {
+        EntityType<?> type = ForgeRegistries.ENTITIES.getValue(id);
+        EntityType<?> otherType = ForgeRegistries.ENTITIES.getValue(o.id);
+        if(type != null)
+        {
+            if(otherType != null)
+            {
+                return type.getName().getUnformattedComponentText().compareTo(otherType.getName().getUnformattedComponentText());
+            }
+            return 1; //we have a type, we're greater
+        }
+        else
+        {
+            if(otherType == null)
+            {
+                return 0; //they also don't have a type, no comparator
+            }
+            return -1;//we don't have a type
+        }
+    }
+
     public static MorphVariant createFromNBT(CompoundNBT tag)
     {
         MorphVariant variant = new MorphVariant();
@@ -370,6 +431,16 @@ public class MorphVariant
                 nbtVariant = tag.getCompound("nbtVariant");
             }
             isFavourite = tag.getBoolean("isFavourite");
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if(obj instanceof Variant)
+            {
+                return playerUUID != null ? playerUUID.equals(((Variant)obj).playerUUID) : nbtVariant.equals(((Variant)obj).nbtVariant);
+            }
+            return false;
         }
     }
 }

@@ -4,6 +4,7 @@ import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -33,6 +34,10 @@ public interface IApi
     {
         return null;
     }
+
+    default void acquireMorph(ServerPlayerEntity player, MorphVariant variant){}
+
+    default boolean morphTo(ServerPlayerEntity player, MorphVariant variant) { return false; }
 
     default Map<ResourceLocation, Boolean> getSupportedAttributes() { return Collections.emptyMap(); }
 

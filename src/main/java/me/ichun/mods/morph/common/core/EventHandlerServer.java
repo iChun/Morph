@@ -36,7 +36,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
-        if(!event.getEntityLiving().getEntityWorld().isRemote && !event.getEntityLiving().removed && event.getSource().getTrueSource() instanceof ServerPlayerEntity && !(event.getSource().getTrueSource() instanceof FakePlayer))
+        if(!event.getEntityLiving().getEntityWorld().isRemote && event.getSource().getTrueSource() instanceof ServerPlayerEntity && !(event.getSource().getTrueSource() instanceof FakePlayer) && !event.getSource().getTrueSource().removed)
         {
             MorphHandler.INSTANCE.handleMurderEvent((ServerPlayerEntity)event.getSource().getTrueSource(), event.getEntityLiving());
         }

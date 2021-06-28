@@ -22,8 +22,34 @@ public class PlayerMorphData
         this.owner = owner;
         this.morphs = new ArrayList<>();
         MorphVariant variant = MorphVariant.createPlayerMorph(owner, false);
-        variant.variants.get(0).identifier = "default_player_state";
+        variant.variants.get(0).identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
         this.morphs.add(variant); //add the player as a morph, this should never be deleted.
+    }
+
+    public boolean containsVariant(MorphVariant variant)
+    {
+        for(MorphVariant morph : morphs)
+        {
+            if(morph.id.equals(variant.id))
+            {
+                return morph.containsVariant(variant);
+            }
+        }
+        return false;
+    }
+
+    public MorphVariant addVariant(MorphVariant variant) //returns the morph it was added to.
+    {
+        for(MorphVariant morph : morphs)
+        {
+            //combine variants does the ID checking.
+            morph.combineVariants(variant);
+            return morph;
+        }
+
+        //we it wasn't added, add it.
+        morphs.add(variant);
+        return variant;
     }
 
     public void read(CompoundNBT tag)

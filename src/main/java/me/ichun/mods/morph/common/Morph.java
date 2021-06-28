@@ -10,6 +10,7 @@ import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.packet.PacketMorphInfo;
 import me.ichun.mods.morph.common.packet.PacketPlayerData;
 import me.ichun.mods.morph.common.packet.PacketRequestMorphInfo;
+import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -72,7 +73,8 @@ public class Morph
         channel = new PacketChannel(new ResourceLocation(MOD_ID, "channel"), PROTOCOL,
                 PacketPlayerData.class,
                 PacketRequestMorphInfo.class,
-                PacketMorphInfo.class
+                PacketMorphInfo.class,
+                PacketUpdateMorph.class
         );
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

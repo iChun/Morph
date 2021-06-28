@@ -1,19 +1,20 @@
 package me.ichun.mods.morph.api.morph;
 
-import me.ichun.mods.morph.api.MorphApi;
-import net.minecraft.entity.*;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-public class MorphState
+public class MorphState implements Comparable<MorphState>
 {
     public MorphVariant variant;
     private LivingEntity entInstance;
+    public float renderedShadowSize;
 
     private MorphState(){}
 
@@ -41,33 +42,7 @@ public class MorphState
     {
         if(entInstance == null || entInstance.world != world)
         {
-            EntityType<?> value = ForgeRegistries.ENTITIES.getValue(variant.id);
-            if(value != null)
-            {
-                if(value.equals(EntityType.PLAYER))
-                {
-                    //TODO special handling for the player
-                }
-                else
-                {
-                    CompoundNBT tags = variant.getCumulativeTags();
-
-                    Entity ent = value.create(world);
-                    if(ent instanceof LivingEntity)
-                    {
-                        ent.read(tags);
-
-                        entInstance = (LivingEntity)ent;
-                        entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
-                    }
-                }
-            }
-
-            if(entInstance == null) //we can't find the entity type or errored out somewhere... have a pig.
-            {
-                MorphApi.getLogger().error("Cannot find entity type: " + variant.id);
-                entInstance = EntityType.PIG.create(world);
-            }
+            entInstance = variant.createEntityInstance(world);
         }
 
         return entInstance;
@@ -95,6 +70,12 @@ public class MorphState
             return Objects.equals(variant, state.variant);
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(MorphState o)
+    {
+        return variant.compareTo(o.variant);
     }
 
     public static MorphState createFromNbt(CompoundNBT tag)
@@ -141,7 +122,7 @@ public class MorphState
         living.setSneaking(player.isSneaking());
         living.setSwimming(player.isSwimming());
         living.setSprinting(player.isSprinting());
-        living.setSilent(player.isSilent());
+        living.setSilent(true); //we don't wanna hear the mob when they get damaged by fire ticks or something
 
         living.setHealth(living.getMaxHealth() * (player.getHealth() / player.getMaxHealth()));
         living.hurtTime = player.hurtTime;
@@ -172,7 +153,6 @@ public class MorphState
         living.forceFireTicks(player.getFireTimer());
 
         specialEntityPlayerSync(living, player);
-        //TODO syncing of death of ender dragon
     }
 
     public static void specialEntityPlayerSync(LivingEntity living, PlayerEntity player)
@@ -181,5 +161,6 @@ public class MorphState
         {
             ((AgeableEntity)living).setGrowingAge(living.isChild() ? -24000 : 0);
         }
+        //TODO syncing of death of ender dragon
     }
 }
