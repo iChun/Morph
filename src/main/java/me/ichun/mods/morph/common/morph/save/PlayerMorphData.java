@@ -54,9 +54,14 @@ public class PlayerMorphData
             }
         }
 
-        //we it wasn't added, add it.
-        morphs.add(variant);
-        return variant;
+        //it wasn't added, add it.
+        MorphVariant varClone = MorphVariant.createFromNBT(variant.write(new CompoundNBT()));
+
+        varClone.variants.add(variant.thisVariant);
+        varClone.thisVariant = null;
+
+        morphs.add(varClone);
+        return varClone;
     }
 
     public CompoundNBT write(CompoundNBT tag)

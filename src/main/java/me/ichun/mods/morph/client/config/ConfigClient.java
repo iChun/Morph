@@ -18,6 +18,8 @@ public class ConfigClient extends ConfigBase
     @Prop(min = 0, max = 20)
     public double selectorScale = 1D;
 
+    public boolean selectorAllowMouseControl = true;
+
     public ConfigClient()
     {
         super(ModLoadingContext.get().getActiveContainer().getModId() + "-client.toml");

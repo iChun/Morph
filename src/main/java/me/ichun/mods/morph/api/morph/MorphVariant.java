@@ -299,28 +299,36 @@ public class MorphVariant implements Comparable<MorphVariant>
         EntityType<?> value = ForgeRegistries.ENTITIES.getValue(id);
         if(value != null)
         {
-            if(value.equals(EntityType.PLAYER))
+            try
             {
-                //TODO special handling for the player
-            }
-            else
-            {
-                CompoundNBT tags = getCumulativeTags();
-
-                Entity ent = value.create(world);
-                if(ent instanceof LivingEntity)
+                if(value.equals(EntityType.PLAYER))
                 {
-                    ent.read(tags);
-
-                    entInstance = (LivingEntity)ent;
-                    entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
+                    //TODO special handling for the player
                 }
+                else
+                {
+                    CompoundNBT tags = getCumulativeTags();
+
+                    Entity ent = value.create(world);
+                    if(ent instanceof LivingEntity)
+                    {
+                        ent.read(tags);
+
+                        entInstance = (LivingEntity)ent;
+                        entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
+                    }
+                }
+            }
+            catch(Throwable t)
+            {
+                MorphApi.getLogger().error("Error creating Morph entity for ID: {}", id);
+                t.printStackTrace();
             }
         }
 
         if(entInstance == null) //we can't find the entity type or errored out somewhere... have a pig.
         {
-            MorphApi.getLogger().error("Cannot find entity type: " + id);
+            MorphApi.getLogger().error("Cannot find entity type: {}", id);
             entInstance = EntityType.PIG.create(world);
         }
 

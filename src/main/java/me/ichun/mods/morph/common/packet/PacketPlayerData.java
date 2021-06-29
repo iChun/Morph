@@ -36,6 +36,12 @@ public class PacketPlayerData extends AbstractPacket
         PlayerMorphData playerMorphData = new PlayerMorphData();
         playerMorphData.read(nbt);
 
-        context.enqueueWork(() -> Morph.eventHandlerClient.morphData = playerMorphData);
+        context.enqueueWork(() -> {
+            Morph.eventHandlerClient.morphData = playerMorphData;
+            if(Morph.eventHandlerClient.hudRenderer != null)
+            {
+                Morph.eventHandlerClient.hudRenderer.clean();
+            }
+        });
     }
 }

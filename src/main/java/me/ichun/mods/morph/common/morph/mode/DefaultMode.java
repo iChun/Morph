@@ -6,6 +6,7 @@ import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 
 public class DefaultMode implements MorphMode
 {

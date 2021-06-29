@@ -242,19 +242,26 @@ public class MorphInfo
         if(tag.contains("prevState"))
         {
             MorphState state = MorphState.createFromNbt(tag.getCompound("prevState"));
-            if(nextState != null && nextState.equals(state) && tag.contains("nextState"))
+            if(state.variant.thisVariant != null)
             {
-                prevState = nextState;
-            }
-            else
-            {
-                prevState = state;
+                if(nextState != null && nextState.equals(state) && tag.contains("nextState"))
+                {
+                    prevState = nextState;
+                }
+                else
+                {
+                    prevState = state;
+                }
             }
         }
 
         if(tag.contains("nextState"))
         {
             nextState = MorphState.createFromNbt(tag.getCompound("nextState"));
+            if(nextState.variant.thisVariant == null) //MorphState variants should ALWAYS have a thisVariant.
+            {
+                prevState = nextState = null;
+            }
         }
 
         morphTime = tag.getInt("morphTime");

@@ -85,6 +85,7 @@ public class MorphRenderHandler
         }
     }
 
+    //TODO fix the high memory use of this call
     public static void renderTransitionState(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float partialTick, float transitionProgress, float skinAlpha)
     {
         if(transitionProgress <= 0F)
