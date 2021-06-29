@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.client.render;
+package me.ichun.mods.morph.client.core;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -33,7 +33,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
 
-public class HudRenderer
+public class HudHandler
 {
     public static final ResourceLocation TEX_QS_SELECTED = new ResourceLocation("morph", "textures/gui/gui_selected.png");
     public static final ResourceLocation TEX_QS_UNSELECTED = new ResourceLocation("morph", "textures/gui/gui_unselected.png");

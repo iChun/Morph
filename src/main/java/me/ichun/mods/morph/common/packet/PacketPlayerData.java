@@ -38,9 +38,9 @@ public class PacketPlayerData extends AbstractPacket
 
         context.enqueueWork(() -> {
             Morph.eventHandlerClient.morphData = playerMorphData;
-            if(Morph.eventHandlerClient.hudRenderer != null)
+            if(Morph.eventHandlerClient.hudHandler != null)
             {
-                Morph.eventHandlerClient.hudRenderer.clean();
+                Morph.eventHandlerClient.hudHandler.clean();
             }
         });
     }

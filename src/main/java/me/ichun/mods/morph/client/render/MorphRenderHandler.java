@@ -178,7 +178,7 @@ public class MorphRenderHandler
         public void capture(ModelRenderer renderer, MatrixStack stack)
         {
             HashMap<ModelRenderer, Identifiable<?>> store = new HashMap<>();
-            ModelHelper.createPartFor("", renderer, store, null);
+            ModelHelper.createPartFor("", renderer, store, null, false);
             Project.Part part = (Project.Part)store.get(renderer);
             part.rotPX = part.rotPY = part.rotPZ = part.rotAX = part.rotAY = part.rotAZ = 0F;
             part.children.clear();

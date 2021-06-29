@@ -329,6 +329,7 @@ public class MorphVariant implements Comparable<MorphVariant>
         if(entInstance == null) //we can't find the entity type or errored out somewhere... have a pig.
         {
             MorphApi.getLogger().error("Cannot find entity type: {}", id);
+            Thread.dumpStack();
             entInstance = EntityType.PIG.create(world);
         }
 
