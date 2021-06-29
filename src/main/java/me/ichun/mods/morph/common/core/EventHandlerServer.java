@@ -5,6 +5,8 @@ import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.common.packet.PacketPlayerData;
+import me.ichun.mods.morph.common.packet.PacketSessionSync;
+import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -19,6 +21,8 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 
 public class EventHandlerServer
@@ -69,6 +73,10 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
+        if(!(event.getPlayer().getServer().isSinglePlayer() && event.getPlayer().getGameProfile().getName().equals(event.getPlayer().getServer().getServerOwner()))) //if the player is not the client in singleplayer
+        {
+            Morph.channel.sendTo(new PacketSessionSync(MorphHandler.BIOMASS_UPGRADES_SESSION.values()), (ServerPlayerEntity)event.getPlayer());
+        }
         Morph.channel.sendTo(new PacketPlayerData(MorphHandler.INSTANCE.getPlayerMorphData(event.getPlayer()).write(new CompoundNBT())), (ServerPlayerEntity)event.getPlayer());
     }
 
@@ -88,7 +96,13 @@ public class EventHandlerServer
     }
 
     @SubscribeEvent
-    public void onServerStoppedDown(FMLServerStoppedEvent event)
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event) //do this early so we do it before the server loads our world save.
+    {
+        ResourceHandler.updateServerSession();
+    }
+
+    @SubscribeEvent
+    public void onServerStopped(FMLServerStoppedEvent event)
     {
         MorphHandler.INSTANCE.setSaveData(null);
     }

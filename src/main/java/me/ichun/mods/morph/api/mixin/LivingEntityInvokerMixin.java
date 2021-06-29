@@ -24,9 +24,6 @@ public interface LivingEntityInvokerMixin
     SoundEvent callGetDrinkSound(ItemStack stack);
 
     @Invoker
-    SoundEvent callGetEatSound(ItemStack stack);
-
-    @Invoker
     float callGetSoundVolume();
 
     @Invoker

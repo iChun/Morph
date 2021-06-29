@@ -13,5 +13,13 @@
   "config.morph.prop.aggressiveSizeRecalculation.name": "Aggressive Size Recalculation",
   "config.morph.prop.aggressiveSizeRecalculation.desc": "Morph normally only recalculates size when it has to. This makes Morph recalculate the player size every tick whilst morphed.",
 
-  "subtitles.morph.morph": "Entity morphing"
+  "subtitles.morph.morph": "Entity morphing",
+
+  "key.categories.morph": "Morph",
+
+  "morph.key.selectorUp": "Selector Up",
+  "morph.key.selectorDown": "Selector Down",
+  "morph.key.favourite": "Favorites",
+  "morph.key.ability": "Abilities",
+  "morph.key.biomass": "Biomass Menu"
 }

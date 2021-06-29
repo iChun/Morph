@@ -2,6 +2,8 @@ package me.ichun.mods.morph.common.morph;
 
 import com.google.common.base.Splitter;
 import me.ichun.mods.morph.api.IApi;
+import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
+import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.event.AcquireMorphEvent;
 import me.ichun.mods.morph.api.event.MorphPlayerEvent;
 import me.ichun.mods.morph.api.morph.MorphInfo;
@@ -30,11 +32,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class MorphHandler implements IApi
+public final class MorphHandler implements IApi
 {
-    public static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
     public static final Splitter ON_SEMI_COLON = Splitter.on(";").trimResults().omitEmptyStrings();
     public static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png");
+
+    public static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
+    public static final HashMap<String, BiomassUpgradeInfo> BIOMASS_UPGRADES = new HashMap<>();
+    public static final HashMap<String, BiomassUpgradeInfo> BIOMASS_UPGRADES_SESSION = new HashMap<>();
 
     private MorphMode currentMode;
     private MorphSavedData saveData;
@@ -73,17 +78,13 @@ public class MorphHandler implements IApi
 
     //API overrides
     public static final MorphHandler INSTANCE = new MorphHandler();
+
+    //Morph overrides
     @Override
     @Nonnull
     public MorphInfo getMorphInfo(PlayerEntity player)
     {
         return player.getCapability(MorphInfo.CAPABILITY_INSTANCE).orElseThrow(() -> new IllegalArgumentException("Player " + player.getName().getUnformattedComponentText() + " has no morph state capabilities"));
-    }
-
-    @Override
-    public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
-    {
-        return currentMode != null ? currentMode.canAcquireBiomass(player, living) : IApi.super.canAcquireBiomass(player, living);
     }
 
     @Override
@@ -148,6 +149,8 @@ public class MorphHandler implements IApi
         PlayerMorphData playerMorphData = MorphHandler.INSTANCE.getPlayerMorphData(player);
         if(!playerMorphData.containsVariant(variant))
         {
+            if(Morph.configServer.disabledMobsRL.contains(variant.id)) return;
+
             if(MinecraftForge.EVENT_BUS.post(new AcquireMorphEvent(player, variant))) return;
 
             MorphVariant parentVariant = playerMorphData.addVariant(variant);
@@ -161,12 +164,10 @@ public class MorphHandler implements IApi
     {
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
 
-        if(MinecraftForge.EVENT_BUS.post(new MorphPlayerEvent(player, variant))) return false;
+        //mid morph
+        if(info.getMorphProgress(1F) < 1F) return false;
 
-        if(info.getMorphProgress(1F) < 1F) //mid morph
-        {
-            return false;
-        }
+        if(MinecraftForge.EVENT_BUS.post(new MorphPlayerEvent(player, variant))) return false;
 
         info.setNextState(new MorphState(variant), currentMode.getMorphingDuration(player));
 
@@ -194,6 +195,43 @@ public class MorphHandler implements IApi
     {
         return TEX_MORPH_SKIN;
     }
+
+    //Biomass overrides
+    @Override
+    public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
+    {
+        return currentMode != null ? currentMode.canAcquireBiomass(player, living) : IApi.super.canAcquireBiomass(player, living);
+    }
+
+    @Nullable
+    @Override
+    public BiomassUpgradeInfo getBiomassUpgradeInfo(String id)
+    {
+        for(Map.Entry<String, BiomassUpgradeInfo> e : BIOMASS_UPGRADES_SESSION.entrySet())
+        {
+            if(e.getKey().equals(id))
+            {
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public BiomassUpgrade getBiomassUpgrade(PlayerEntity player, String id)
+    {
+        PlayerMorphData playerMorphData = getPlayerMorphData(player);
+        for(BiomassUpgrade upgrade : playerMorphData.upgrades)
+        {
+            if(upgrade.id.equals(id))
+            {
+                return upgrade;
+            }
+        }
+        return null;
+    }
+
 
     //NBT Modifier stuff
     public static NbtModifier getNbtModifierFor(LivingEntity living)

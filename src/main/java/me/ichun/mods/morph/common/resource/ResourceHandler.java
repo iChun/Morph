@@ -1,8 +1,7 @@
 package me.ichun.mods.morph.common.resource;
 
 import com.google.gson.*;
-import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
-import me.ichun.mods.ichunutil.common.head.HeadHandler;
+import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
@@ -24,6 +23,7 @@ import java.util.zip.ZipInputStream;
 public class ResourceHandler
 {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    public static final Gson GSON_MINIFY = new GsonBuilder().disableHtmlEscaping().create();
 
     private static Path morphDir;
     private static boolean init;
@@ -47,6 +47,10 @@ public class ResourceHandler
                 }
 
                 loadNbtModifiers();
+                //TODO mob characteristics/upgrades?
+                loadBiomassUpgrades(); //TODO propagate the upgrades to the players if there are players connected
+
+                updateServerSession();
             }
             catch(IOException e)
             {
@@ -101,6 +105,72 @@ public class ResourceHandler
         }
         return i;
     }
+
+    public static void updateServerSession()
+    {
+        MorphHandler.BIOMASS_UPGRADES_SESSION.clear();
+        MorphHandler.BIOMASS_UPGRADES_SESSION.putAll(MorphHandler.BIOMASS_UPGRADES);
+    }
+
+    public static void loadBiomassUpgrades()
+    {
+        MorphHandler.BIOMASS_UPGRADES.clear();
+
+        readBiomassUpgrades(morphDir.resolve("biomass"));
+
+        Morph.LOGGER.info("Loaded {} Biomass Upgrade(s)", MorphHandler.BIOMASS_UPGRADES.size());
+    }
+
+    private static void readBiomassUpgrades(Path path)
+    {
+        try
+        {
+            if(!Files.exists(path))
+            {
+                Files.createDirectories(path);
+            }
+
+            String json = FileUtils.readFileToString(path.resolve("upgrades.json").toFile(), "UTF-8");
+            readBiomassUpgradesJson(json);
+        }
+        catch(IOException | JsonSyntaxException e)
+        {
+            Morph.LOGGER.error("Error reading directory for Biomass Upgrades: {}", path);
+            e.printStackTrace();
+        }
+    }
+
+    private static void readBiomassUpgradesJson(String json) throws JsonSyntaxException
+    {
+        BiomassUpgradeInfos upgradeInfo = GSON.fromJson(json, BiomassUpgradeInfos.class);
+        if(upgradeInfo.upgrades == null)
+        {
+            Morph.LOGGER.warn("No Biomass Upgrades defined!");
+            return;
+        }
+
+        for(BiomassUpgradeInfo upgrade : upgradeInfo.upgrades)
+        {
+            if(upgrade.id == null)
+            {
+                Morph.LOGGER.warn("Biomass Upgrade with no ID!");
+                continue;
+            }
+
+            MorphHandler.BIOMASS_UPGRADES.put(upgrade.id, upgrade);
+        }
+
+        int count = MorphHandler.BIOMASS_UPGRADES.size();
+
+        MorphHandler.BIOMASS_UPGRADES.entrySet().removeIf(e -> e.getValue().parentId == null && !e.getValue().id.equals("biomass_capacity") || !MorphHandler.BIOMASS_UPGRADES.containsKey(e.getValue().parentId));
+
+        if(count != MorphHandler.BIOMASS_UPGRADES.size())
+        {
+            Morph.LOGGER.warn("Biomass Upgrades with no parent ID removed!");
+        }
+    }
+    private static class BiomassUpgradeInfos{ public BiomassUpgradeInfo[] upgrades; }
+
 
     public static void loadNbtModifiers()
     {
@@ -176,7 +246,7 @@ public class ResourceHandler
             }
             catch(Throwable t)
             {
-                Morph.LOGGER.error("Error deserialising NbtModifier for {}", clz.getName());
+                Morph.LOGGER.error("Error deserialising NBT Modifier for {}", clz.getName());
                 t.printStackTrace();
             }
             return true;

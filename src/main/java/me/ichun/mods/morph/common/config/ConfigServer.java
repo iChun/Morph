@@ -8,6 +8,7 @@ import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
@@ -18,7 +19,7 @@ import java.util.List;
 public class ConfigServer extends ConfigBase
 {
     @CategoryDivider(name = "morph")
-    @Prop(min = 0)
+    @Prop(min = 1) //1 second so that morphs can complete
     public int morphTime = 100; // 5 seconds
 
     private List<String> disabledMobs = new ArrayList<>();
@@ -32,7 +33,7 @@ public class ConfigServer extends ConfigBase
         list.add("minecraft:generic.attack_speed;more");
         list.add("minecraft:generic.armor;more");
         list.add("minecraft:generic.luck;more");
-        list.add("minecraft:horse.jump_strength;more");
+        list.add("minecraft:horse.jump_strength;more"); //TODO test this
         list.add("forge:swim_speed;more");
         list.add("forge:reach_distance;more");
     });
@@ -101,5 +102,12 @@ public class ConfigServer extends ConfigBase
     public String getConfigName()
     {
         return Morph.MOD_NAME;
+    }
+
+    @Nonnull
+    @Override
+    public ModConfig.Type getConfigType()
+    {
+        return ModConfig.Type.SERVER;
     }
 }

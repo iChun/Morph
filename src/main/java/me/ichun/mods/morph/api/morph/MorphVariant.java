@@ -14,10 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MorphVariant implements Comparable<MorphVariant>
 {
@@ -140,6 +137,77 @@ public class MorphVariant implements Comparable<MorphVariant>
         variants.add(variant.thisVariant);
 
         return true;
+    }
+
+    public boolean removeVariant(Variant variant)
+    {
+        boolean flag = false;
+        for(int i = variants.size() - 1; i >= 0; i--)
+        {
+            if(variants.get(i).identifier.equals(variant.identifier))
+            {
+                variants.remove(i);
+                flag = true;
+            }
+        }
+
+        if(flag)
+        {
+            gatherNewCommons();
+        }
+
+        return flag;
+    }
+
+    public Variant getVariantById(String id)
+    {
+        for(Variant variant : variants)
+        {
+            if(variant.identifier.equals(id))
+            {
+                return variant;
+            }
+        }
+
+        if(thisVariant != null && thisVariant.identifier.equals(id))
+        {
+            return thisVariant;
+        }
+
+        return null;
+    }
+
+    public void gatherNewCommons()
+    {
+        HashMap<String, INBT> commons = new HashMap<>();
+
+        //add all the tags we know of first
+        for(Variant variant : variants)
+        {
+            commons.putAll(variant.nbtVariant.tagMap);
+        }
+
+        //now we compare
+        commons.entrySet().removeIf(e -> {
+            for(Variant variant : variants)
+            {
+                if(!variant.nbtVariant.tagMap.containsKey(e.getKey()) || !e.getValue().equals(variant.nbtVariant.tagMap.get(e.getKey())))
+                {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        //remove from the variants
+        nbtCommon.tagMap.putAll(commons);
+        for(String s : commons.keySet())
+        {
+            for(Variant variant : variants)
+            {
+                variant.nbtVariant.tagMap.remove(s);
+            }
+        }
     }
 
     public boolean containsVariant(MorphVariant variant)

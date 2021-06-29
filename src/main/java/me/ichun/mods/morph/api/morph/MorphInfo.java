@@ -259,7 +259,7 @@ public class MorphInfo
 
     public LivingEntity getActiveMorphEntity()
     {
-        if(getMorphProgress(1F) < 0.5F && prevState != null)
+        if(getMorphProgress(1F) < 0.5F)
         {
             return prevState.getEntityInstance(player.world);
         }
@@ -270,56 +270,37 @@ public class MorphInfo
         return null;
     }
 
-    @Nullable
-    public SoundEvent getHurtSound(DamageSource source) {
+    private LivingEntity getActiveMorphEntityOrPlayer()
+    {
         LivingEntity activeMorph = getActiveMorphEntity();
         if(activeMorph == null)
         {
             activeMorph = player;
         }
 
-        return ((LivingEntityInvokerMixin)activeMorph).callGetHurtSound(source);
+        return activeMorph;
+    }
+
+    @Nullable
+    public SoundEvent getHurtSound(DamageSource source) {
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetHurtSound(source);
     }
 
     @Nullable
     public SoundEvent getDeathSound() {
-        LivingEntity activeMorph = getActiveMorphEntity();
-        if(activeMorph == null)
-        {
-            activeMorph = player;
-        }
-
-        return ((LivingEntityInvokerMixin)activeMorph).callGetDeathSound();
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetDeathSound();
     }
 
     public SoundEvent getFallSound(int height) {
-        LivingEntity activeMorph = getActiveMorphEntity();
-        if(activeMorph == null)
-        {
-            activeMorph = player;
-        }
-
-        return ((LivingEntityInvokerMixin)activeMorph).callGetFallSound(height);
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetFallSound(height);
     }
 
     public SoundEvent getDrinkSound(ItemStack stack) {
-        LivingEntity activeMorph = getActiveMorphEntity();
-        if(activeMorph == null)
-        {
-            activeMorph = player;
-        }
-
-        return ((LivingEntityInvokerMixin)activeMorph).callGetDrinkSound(stack);
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetDrinkSound(stack);
     }
 
     public SoundEvent getEatSound(ItemStack stack) {
-        LivingEntity activeMorph = getActiveMorphEntity();
-        if(activeMorph == null)
-        {
-            activeMorph = player;
-        }
-
-        return ((LivingEntityInvokerMixin)activeMorph).callGetEatSound(stack);
+        return getActiveMorphEntityOrPlayer().getEatSound(stack);
     }
 
     public float getSoundVolume()

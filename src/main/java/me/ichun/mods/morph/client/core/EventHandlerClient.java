@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.client.core;
 
+import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
@@ -15,6 +16,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class EventHandlerClient
 {

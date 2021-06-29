@@ -3,7 +3,7 @@ package me.ichun.mods.morph.api;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MorphApi
+public final class MorphApi
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private static IApi apiImpl = new IApi(){};

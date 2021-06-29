@@ -1,22 +1,25 @@
 package me.ichun.mods.morph.common;
 
+import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.client.core.EventHandlerClient;
+import me.ichun.mods.morph.client.core.KeyBinds;
 import me.ichun.mods.morph.common.config.ConfigServer;
 import me.ichun.mods.morph.common.core.EventHandlerServer;
 import me.ichun.mods.morph.common.morph.MorphHandler;
-import me.ichun.mods.morph.common.packet.PacketMorphInfo;
-import me.ichun.mods.morph.common.packet.PacketPlayerData;
-import me.ichun.mods.morph.common.packet.PacketRequestMorphInfo;
-import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
+import me.ichun.mods.morph.common.packet.*;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -25,13 +28,16 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 
@@ -74,10 +80,13 @@ public class Morph
                 PacketPlayerData.class,
                 PacketRequestMorphInfo.class,
                 PacketMorphInfo.class,
-                PacketUpdateMorph.class
+                PacketUpdateMorph.class,
+                PacketSessionSync.class
         );
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            bus.addListener(this::onClientSetup);
+
             MinecraftForge.EVENT_BUS.register(eventHandlerClient = new EventHandlerClient());
 
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> me.ichun.mods.ichunutil.client.core.EventHandlerClient::getConfigGui);
@@ -103,6 +112,11 @@ public class Morph
         }, () -> null);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    private void onClientSetup(FMLClientSetupEvent event)
+    {
+        KeyBinds.init();
+    }
 
     public static class Sounds
     {

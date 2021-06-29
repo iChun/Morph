@@ -1,5 +1,7 @@
 package me.ichun.mods.morph.api;
 
+import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
+import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import net.minecraft.entity.LivingEntity;
@@ -13,15 +15,11 @@ import java.util.Map;
 
 public interface IApi
 {
+    //Morph Stuff
     @Nullable
     default MorphInfo getMorphInfo(PlayerEntity player)
     {
         return null;
-    }
-
-    default boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
-    {
-        return false;
     }
 
     default boolean canAcquireMorph(PlayerEntity player, LivingEntity living)
@@ -46,4 +44,17 @@ public interface IApi
 
     @Nullable
     default ResourceLocation getMorphSkinTexture() { return null; }
+
+
+    //Biomass Stuff
+    default boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
+    {
+        return false;
+    }
+
+    @Nullable
+    default BiomassUpgradeInfo getBiomassUpgradeInfo(String id) { return null; }
+
+    @Nullable
+    default BiomassUpgrade getBiomassUpgrade(PlayerEntity player, String id) { return null; } //null means no upgrade.
 }
