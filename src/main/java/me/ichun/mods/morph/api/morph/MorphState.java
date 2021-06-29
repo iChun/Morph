@@ -8,7 +8,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.UUID;
 
 public class MorphState implements Comparable<MorphState>
 {
@@ -25,7 +27,7 @@ public class MorphState implements Comparable<MorphState>
 
     public void tick(PlayerEntity player)
     {
-        LivingEntity livingInstance = getEntityInstance(player.world);
+        LivingEntity livingInstance = getEntityInstance(player.world, player.getGameProfile().getId());
 
         syncEntityPosRotWithPlayer(livingInstance, player);
 
@@ -38,11 +40,11 @@ public class MorphState implements Comparable<MorphState>
     }
 
     @Nonnull
-    public LivingEntity getEntityInstance(World world)
+    public LivingEntity getEntityInstance(World world, @Nullable UUID playerId)
     {
         if(entInstance == null || entInstance.world != world)
         {
-            entInstance = variant.createEntityInstance(world);
+            entInstance = variant.createEntityInstance(world, playerId);
         }
 
         return entInstance;

@@ -14,9 +14,9 @@ public class ClassicMode implements MorphMode
     }
 
     @Override
-    public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
+    public boolean canMorph(PlayerEntity player)
     {
-        return false; // no biomass capabilities in classic.
+        return true;
     }
 
     @Override
@@ -29,5 +29,11 @@ public class ClassicMode implements MorphMode
     public int getMorphingDuration(PlayerEntity player)
     {
         return Morph.configServer.morphTime;
+    }
+
+    @Override
+    public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
+    {
+        return false; // no biomass capabilities in classic.
     }
 }

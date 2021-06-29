@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.morph.MorphInfo;
+import me.ichun.mods.morph.client.config.ConfigClient;
 import me.ichun.mods.morph.client.core.EventHandlerClient;
 import me.ichun.mods.morph.client.core.KeyBinds;
 import me.ichun.mods.morph.common.config.ConfigServer;
@@ -51,6 +52,7 @@ public class Morph
     public static final Logger LOGGER = LogManager.getLogger();
 
     public static ConfigServer configServer;
+    public static ConfigClient configClient;
 
     public static EventHandlerClient eventHandlerClient;
     public static EventHandlerServer eventHandlerServer;
@@ -81,10 +83,13 @@ public class Morph
                 PacketRequestMorphInfo.class,
                 PacketMorphInfo.class,
                 PacketUpdateMorph.class,
-                PacketSessionSync.class
+                PacketSessionSync.class,
+                PacketMorphInput.class
         );
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            configClient = new ConfigClient().init();
+
             bus.addListener(this::onClientSetup);
 
             MinecraftForge.EVENT_BUS.register(eventHandlerClient = new EventHandlerClient());

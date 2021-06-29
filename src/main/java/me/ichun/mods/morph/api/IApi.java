@@ -22,6 +22,8 @@ public interface IApi
         return null;
     }
 
+    default boolean canMorph(PlayerEntity player) { return false; }
+
     default boolean canAcquireMorph(PlayerEntity player, LivingEntity living)
     {
         return false;

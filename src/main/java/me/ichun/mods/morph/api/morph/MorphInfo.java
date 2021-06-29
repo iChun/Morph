@@ -3,6 +3,7 @@ package me.ichun.mods.morph.api.morph;
 import me.ichun.mods.morph.api.mixin.LivingEntityInvokerMixin;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -88,6 +89,11 @@ public class MorphInfo
         if(morphTime == morphingTime)
         {
             prevState = null; //bye bye last state. We don't need you anymore.
+
+            if(nextState.variant.id.equals(EntityType.PLAYER.getRegistryName()) && nextState.variant.thisVariant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE))
+            {
+                nextState = null;
+            }
         }
 
         //TODO do stuff
@@ -127,21 +133,21 @@ public class MorphInfo
             float transitionProgress = getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                LivingEntity prevInstance = prevState.getEntityInstance(player.world);
+                LivingEntity prevInstance = prevState.getEntityInstance(player.world, player.getGameProfile().getId());
                 prevInstance.recalculateSize();
                 return prevInstance.size;
             }
             else if(transitionProgress >= 1F)
             {
-                LivingEntity nextInstance = nextState.getEntityInstance(player.world);
+                LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
                 nextInstance.recalculateSize();
                 return nextInstance.size;
             }
             else
             {
-                LivingEntity prevInstance = prevState.getEntityInstance(player.world);
+                LivingEntity prevInstance = prevState.getEntityInstance(player.world, player.getGameProfile().getId());
                 prevInstance.recalculateSize();
-                LivingEntity nextInstance = nextState.getEntityInstance(player.world);
+                LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
                 nextInstance.recalculateSize();
                 EntitySize prevSize = prevInstance.size;
                 EntitySize nextSize = nextInstance.size;
@@ -150,7 +156,7 @@ public class MorphInfo
         }
         else
         {
-            LivingEntity nextInstance = nextState.getEntityInstance(player.world);
+            LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
             nextInstance.recalculateSize();
             return nextInstance.size;
         }
@@ -164,22 +170,22 @@ public class MorphInfo
             float transitionProgress = getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                return prevState.getEntityInstance(player.world).getEyeHeight();
+                return prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
             }
             else if(transitionProgress >= 1F)
             {
-                return nextState.getEntityInstance(player.world).getEyeHeight();
+                return nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
             }
             else
             {
-                float prevHeight = prevState.getEntityInstance(player.world).getEyeHeight();
-                float nextHeight = nextState.getEntityInstance(player.world).getEyeHeight();
+                float prevHeight = prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
+                float nextHeight = nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
                 return prevHeight + (nextHeight - prevHeight) * transitionProgress;
             }
         }
         else
         {
-            return nextState.getEntityInstance(player.world).getEyeHeight();
+            return nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
         }
     }
 
@@ -261,11 +267,11 @@ public class MorphInfo
     {
         if(getMorphProgress(1F) < 0.5F)
         {
-            return prevState.getEntityInstance(player.world);
+            return prevState.getEntityInstance(player.world, player.getGameProfile().getId());
         }
         else if(nextState != null)
         {
-            return nextState.getEntityInstance(player.world);
+            return nextState.getEntityInstance(player.world, player.getGameProfile().getId());
         }
         return null;
     }
@@ -311,14 +317,14 @@ public class MorphInfo
             {
                 float transitionProg = getTransitionProgressLinear(1F);
 
-                float prevVolume = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world)).callGetSoundVolume();
-                float nextVolume = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world)).callGetSoundVolume();
+                float prevVolume = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
+                float nextVolume = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
 
                 return prevVolume + (nextVolume - prevVolume) * transitionProg;
             }
             else
             {
-                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world)).callGetSoundVolume();
+                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
             }
         }
 
@@ -333,14 +339,14 @@ public class MorphInfo
             {
                 float transitionProg = getTransitionProgressLinear(1F);
 
-                float prevPitch = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world)).callGetSoundPitch();
-                float nextPitch = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world)).callGetSoundPitch();
+                float prevPitch = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
+                float nextPitch = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
 
                 return prevPitch + (nextPitch - prevPitch) * transitionProg;
             }
             else
             {
-                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world)).callGetSoundPitch();
+                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
             }
         }
 

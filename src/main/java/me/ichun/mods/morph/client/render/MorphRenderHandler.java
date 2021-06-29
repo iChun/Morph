@@ -1,7 +1,6 @@
 package me.ichun.mods.morph.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.model.tabula.ModelTabula;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
@@ -49,12 +48,14 @@ public class MorphRenderHandler
             float transitionProgress = info.getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world), stack, buffer, light, partialTick);
+                MorphState.syncEntityWithPlayer(info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
+                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
                 skinProg = MorphInfo.sineifyProgress(morphProgress / 0.125F);
             }
             else if(transitionProgress >= 1F)
             {
-                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, buffer, light, partialTick);
+                MorphState.syncEntityWithPlayer(info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
+                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
                 skinProg = 1F - MorphInfo.sineifyProgress((morphProgress - 0.875F) / 0.125F);
             }
 
@@ -63,9 +64,10 @@ public class MorphRenderHandler
         }
         else //has completed morph
         {
-            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, buffer, light, partialTick);
+            MorphState.syncEntityWithPlayer(info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
+            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
         }
-        //TODO fix slime shadow size rendering
+
         isRenderingMorph = false;
     }
 
@@ -88,7 +90,7 @@ public class MorphRenderHandler
         if(transitionProgress <= 0F)
         {
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture prevModel = currentCapture;
 
             currentCapture = null; //reset before we do anything else accidentally.
@@ -99,7 +101,7 @@ public class MorphRenderHandler
         else if(transitionProgress >= 1F)
         {
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture nextModel = currentCapture;
 
             currentCapture = null; //reset before we do anything else accidentally.
@@ -110,23 +112,23 @@ public class MorphRenderHandler
         else
         {
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture prevModel = currentCapture;
 
             currentCapture = new ModelRendererCapture();
-            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
             ModelRendererCapture nextModel = currentCapture;
 
             currentCapture = null; //reset before we do anything else accidentally.
             RenderHelper.getDummyBuffer().finish();
 
             stack.push();
-            stack.translate(0F, info.prevState.getEntityInstance(player.world).getHeight() / 2F, 0F);
+            stack.translate(0F, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
             MatrixStack.Entry prevMid = stack.getLast();
             stack.pop();
 
             stack.push();
-            stack.translate(0F, info.nextState.getEntityInstance(player.world).getHeight() / 2F, 0F);
+            stack.translate(0F, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
             MatrixStack.Entry nextMid = stack.getLast();
             stack.pop();
 
@@ -335,7 +337,7 @@ public class MorphRenderHandler
                     modelPart.setTextureOffset(texOffX, texOffY);
                 });
 
-                modelPart.render(newStack, buffer.getBuffer(RenderType.getEntityTranslucent(MorphHandler.TEX_MORPH_SKIN)), light, overlay, 1F, 1F, 1F, skinAlpha);
+                modelPart.render(newStack, buffer.getBuffer(RenderType.getEntityTranslucent(MorphHandler.INSTANCE.getMorphSkinTexture())), light, overlay, 1F, 1F, 1F, skinAlpha);
             }
         }
 

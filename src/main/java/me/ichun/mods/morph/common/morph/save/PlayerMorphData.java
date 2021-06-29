@@ -47,9 +47,11 @@ public class PlayerMorphData
     {
         for(MorphVariant morph : morphs)
         {
-            //combine variants does the ID checking.
-            morph.combineVariants(variant);
-            return morph;
+            if(morph.isSameMorphType(variant))
+            {
+                morph.combineVariants(variant);
+                return morph;
+            }
         }
 
         //we it wasn't added, add it.

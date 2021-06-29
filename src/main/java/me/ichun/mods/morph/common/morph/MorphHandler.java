@@ -35,7 +35,7 @@ import java.util.Map;
 public final class MorphHandler implements IApi
 {
     public static final Splitter ON_SEMI_COLON = Splitter.on(";").trimResults().omitEmptyStrings();
-    public static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png");
+    private static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png"); //call the getter.
 
     public static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
     public static final HashMap<String, BiomassUpgradeInfo> BIOMASS_UPGRADES = new HashMap<>();
@@ -85,6 +85,12 @@ public final class MorphHandler implements IApi
     public MorphInfo getMorphInfo(PlayerEntity player)
     {
         return player.getCapability(MorphInfo.CAPABILITY_INSTANCE).orElseThrow(() -> new IllegalArgumentException("Player " + player.getName().getUnformattedComponentText() + " has no morph state capabilities"));
+    }
+
+    @Override
+    public boolean canMorph(PlayerEntity player)
+    {
+        return currentMode.canMorph(player);
     }
 
     @Override
@@ -156,6 +162,8 @@ public final class MorphHandler implements IApi
             MorphVariant parentVariant = playerMorphData.addVariant(variant);
 
             Morph.channel.sendTo(new PacketUpdateMorph(parentVariant.write(new CompoundNBT())), player);
+
+            saveData.markDirty();
         }
     }
 

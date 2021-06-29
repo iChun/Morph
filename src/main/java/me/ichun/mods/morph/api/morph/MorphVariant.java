@@ -14,6 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class MorphVariant implements Comparable<MorphVariant>
@@ -292,7 +293,7 @@ public class MorphVariant implements Comparable<MorphVariant>
     }
 
     @Nonnull
-    public LivingEntity createEntityInstance(World world)
+    public LivingEntity createEntityInstance(World world, @Nullable UUID playerId)
     {
         LivingEntity entInstance = null;
         EntityType<?> value = ForgeRegistries.ENTITIES.getValue(id);
@@ -323,7 +324,21 @@ public class MorphVariant implements Comparable<MorphVariant>
             entInstance = EntityType.PIG.create(world);
         }
 
+        if(playerId != null)
+        {
+            entInstance.getPersistentData().putUniqueId("Morph_Player_ID", playerId);
+        }
+
         return entInstance;
+    }
+
+    public MorphVariant getAsVariant(Variant variant)
+    {
+        MorphVariant morph = createFromNBT(write(new CompoundNBT()));
+        morph.variants.clear();
+        morph.thisVariant = variant;
+
+        return morph;
     }
 
     public CompoundNBT getCumulativeTags()

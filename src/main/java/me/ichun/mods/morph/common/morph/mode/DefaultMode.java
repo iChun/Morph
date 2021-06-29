@@ -1,25 +1,18 @@
 package me.ichun.mods.morph.common.morph.mode;
 
-import me.ichun.mods.morph.api.morph.MorphInfo;
-import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
-import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
-import me.ichun.mods.morph.common.packet.PacketMorphInfo;
-import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 public class DefaultMode implements MorphMode
 {
     @Override
     public void handleMurderEvent(ServerPlayerEntity player, LivingEntity living)
     {
-        if(canAcquireMorph(player, living))
+        if(canMorph(player) && canAcquireMorph(player, living))
         {
             MorphVariant variant = MorphHandler.INSTANCE.createVariant(living);
             if(variant != null) // we can morph to it
@@ -27,12 +20,18 @@ public class DefaultMode implements MorphMode
                 MorphHandler.INSTANCE.acquireMorph(player, variant);
 
                 boolean morphTo = true;
-                if(morphTo)
+                if(morphTo) //TODO make a config
                 {
                     MorphHandler.INSTANCE.morphTo(player, variant);
                 }
             }
         }
+    }
+
+    @Override
+    public boolean canMorph(PlayerEntity player)
+    {
+        return true; //TODO bind to upgrades
     }
 
     @Override

@@ -1,8 +1,10 @@
 package me.ichun.mods.morph.client.core;
 
+import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
+import me.ichun.mods.morph.client.render.HudRenderer;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
@@ -12,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -21,6 +24,7 @@ import java.util.HashMap;
 public class EventHandlerClient
 {
     public PlayerMorphData morphData;
+    public HudRenderer hudRenderer;
 
     @SubscribeEvent
     public void onRenderPlayerPre(RenderPlayerEvent.Pre event)
@@ -83,6 +87,22 @@ public class EventHandlerClient
     public void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event)
     {
         morphData = null;
+        if(hudRenderer != null)
+        {
+            MinecraftForge.EVENT_BUS.unregister(hudRenderer);
+            hudRenderer = null;
+        }
+    }
+
+    public void handleInput(KeyBind keyBind, boolean isReleased)
+    {
+        if(hudRenderer == null)
+        {
+            hudRenderer = new HudRenderer();
+            MinecraftForge.EVENT_BUS.register(hudRenderer);
+        }
+
+        hudRenderer.handleInput(keyBind, isReleased);
     }
 
     public void updateMorph(MorphVariant variant)
