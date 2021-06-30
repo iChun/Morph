@@ -19,6 +19,8 @@
 
   "morph.key.selectorUp": "Selector Up",
   "morph.key.selectorDown": "Selector Down",
+  "morph.key.selectorLeft": "Selector Left",
+  "morph.key.selectorRight": "Selector Right",
   "morph.key.favourite": "Favorites",
   "morph.key.ability": "Abilities",
   "morph.key.biomass": "Biomass Menu"

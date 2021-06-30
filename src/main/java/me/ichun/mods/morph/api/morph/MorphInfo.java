@@ -60,6 +60,8 @@ public class MorphInfo
             player.recalculateSize();
         }
 
+        //TODO check player resize on sleeping
+
         //TODO remember to set attributes
         float transitionProgress = getTransitionProgressLinear(1F);
         if(transitionProgress < 1.0F) // is morphing

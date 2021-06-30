@@ -8,7 +8,6 @@ import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
-import me.ichun.mods.morph.client.core.KeyBinds;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
@@ -35,14 +34,15 @@ import java.util.HashMap;
 
 public class HudHandler
 {
+    public static final ResourceLocation TEX_QS_FAVOURITE = new ResourceLocation("morph", "textures/gui/fav.png");
     public static final ResourceLocation TEX_QS_SELECTED = new ResourceLocation("morph", "textures/gui/gui_selected.png");
     public static final ResourceLocation TEX_QS_UNSELECTED = new ResourceLocation("morph", "textures/gui/gui_unselected.png");
     public static final ResourceLocation TEX_QS_UNSELECTED_SIDE = new ResourceLocation("morph", "textures/gui/gui_unselected_side.png");
 
     private static final MatrixStack LIGHT_STACK = Util.make(new MatrixStack(), stack -> stack.translate(1D, -1D, 0D));
 
-    private static int SHOW_SELECTOR_TIME = 8;
-    private static int INDEX_TIME = 5;
+    private static final int SHOW_SELECTOR_TIME = 8;
+    private static final int INDEX_TIME = 4;
 
     public boolean showSelector = false;
     public int showTime = 0;
@@ -61,12 +61,12 @@ public class HudHandler
 
     public void handleInput(KeyBind keyBind, boolean isReleased)
     {
-        if(Minecraft.getInstance().player == null) // ???
+        if(Minecraft.getInstance().player == null) // ???what
         {
             return;
         }
 
-        if(keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorDown) //TODO favourites?
+        if(keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight || keyBind == KeyBinds.keyFavourite)
         {
             handleMorphInput(keyBind, isReleased);
         }
@@ -76,18 +76,11 @@ public class HudHandler
     {
         if(MorphHandler.INSTANCE.canMorph(Minecraft.getInstance().player))
         {
-            if(keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorUp)
+            if(keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight)
             {
                 if(showSelector)
                 {
-                    if(keyBind == KeyBinds.keySelectorDown)
-                    {
-                        shiftIndexSelector(true);
-                    }
-                    else //selector up
-                    {
-                        shiftIndexSelector(false);
-                    }
+                    shiftIndexSelector(keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorRight, keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight);
                 }
                 else
                 {
@@ -100,6 +93,23 @@ public class HudHandler
                     keyEnterDown = false;
                 }
             }
+            else if(keyBind == KeyBinds.keyFavourite)
+            {
+                if(showSelector)
+                {
+                    toggleFavourite();
+                }
+                else if(!isReleased)
+                {
+                    //open radial menu
+                    //TODO
+                }
+                else
+                {
+                    //confirm radial menu selection
+                    //TODO
+                }
+            }
         }
         else
         {
@@ -107,7 +117,7 @@ public class HudHandler
         }
     }
 
-    private void setIndicesToCurrentMorph()
+    public void setIndicesToCurrentMorph()
     {
         PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
 
@@ -189,9 +199,15 @@ public class HudHandler
 
     private void confirmSelector()
     {
-        Morph.channel.sendToServer(new PacketMorphInput(Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori).identifier, false, false));
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(Minecraft.getInstance().player);
+        MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
 
-        closeSelector(); //TODO do not morph if you're already morphed as it
+        if(!(info.nextState != null && info.nextState.variant.thisVariant.identifier.equals(variant.identifier))) //if we're already morphed to this, don't morph to this.
+        {
+            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false));
+        }
+
+        closeSelector();
     }
 
     private void closeSelector()
@@ -199,12 +215,20 @@ public class HudHandler
         showSelector = false;
     }
 
-    private void shiftIndexSelector(boolean isDown)
+    private void toggleFavourite()
+    {
+        MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
+        variant.isFavourite = !variant.isFavourite;
+
+        Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, true, variant.isFavourite));
+    }
+
+    private void shiftIndexSelector(boolean isDown, boolean isHori)
     {
         PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
         if(isDown)
         {
-            if(Screen.hasShiftDown()) //adjust horizontally
+            if(isHori) //adjust horizontally
             {
                 lastIndexHori = (lastIndexHori + (indexHori - lastIndexHori) * (EntityHelper.sineifyProgress(MathHelper.clamp((float)indexChangeTime / INDEX_TIME, 0F, 1F))));
 
@@ -230,7 +254,7 @@ public class HudHandler
         }
         else
         {
-            if(Screen.hasShiftDown()) //adjust horizontally
+            if(isHori) //adjust horizontally
             {
                 lastIndexHori = (lastIndexHori + (indexHori - lastIndexHori) * (EntityHelper.sineifyProgress(MathHelper.clamp((float)indexChangeTime / INDEX_TIME, 0F, 1F))));
 
@@ -310,15 +334,7 @@ public class HudHandler
 
         PlayerEntity player = Minecraft.getInstance().player;
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthMask(true);
-
-        RenderSystem.enableRescaleNormal();
-
-        //TODO cache this
-        net.minecraft.client.renderer.RenderHelper.setupLevelDiffuseLighting(LIGHT_STACK.getLast().getMatrix());
-
-        for(int i = firstMorphIndex; i < lastMorphIndex; i++)
+        for(int i = firstMorphIndex; i < lastMorphIndex; i++) //TODO move the current selected forwards in z level
         {
             MorphVariant morph = morphData.morphs.get(i);
             double v1 = (top + size * 0.775D) + ((i - indexVertProg) * size);
@@ -329,14 +345,7 @@ public class HudHandler
                     MorphVariant variant = morph.getAsVariant(morph.variants.get(j));
                     MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
 
-                    LivingEntity livingEntity = state.getEntityInstance(player.world, player.getGameProfile().getId());
-
-                    RenderSystem.pushMatrix();
-                    RenderSystem.translated((int)(posX + (size / 2D) - 2) + ((j - indexHoriProg) * size), (int)v1, 0D);
-                    RenderSystem.rotatef(-10F, 1F, 0F, 0F);
-                    RenderSystem.scalef(0.5F, 0.5F, 0.5F);
-                    InventoryScreen.drawEntityOnScreen(0, 0, 35, -60, 0, livingEntity);
-                    RenderSystem.popMatrix();
+                    renderMorphEntity(state.getEntityInstance(player.world, player.getGameProfile().getId()), (posX + (size / 2D) - 2) + ((j - indexHoriProg) * size), v1, zLevel);
                 }
             }
             else
@@ -344,25 +353,35 @@ public class HudHandler
                 MorphVariant variant = morph.getAsVariant(morph.variants.get(0));
                 MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
 
-                LivingEntity livingEntity = state.getEntityInstance(player.world, player.getGameProfile().getId());
-
-                RenderSystem.pushMatrix();
-                RenderSystem.translated((int)(posX + (size / 2D) - 2), (int)v1, 0D);
-                RenderSystem.rotatef(-10F, 1F, 0F, 0F);
-                RenderSystem.scalef(0.5F, 0.5F, 0.5F);
-                InventoryScreen.drawEntityOnScreen(0, 0, 35, -60, 0, livingEntity);
-                RenderSystem.popMatrix();
+                renderMorphEntity(state.getEntityInstance(player.world, player.getGameProfile().getId()), (int)(posX + (size / 2D) - 2), v1, zLevel);
             }
         }
-
-        net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
-
-        RenderSystem.disableRescaleNormal();
 
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableAlphaTest();
+    }
+
+    private void renderMorphEntity(LivingEntity livingEntity, double x, double y, double z)
+    {
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthMask(true);
+
+        RenderSystem.enableRescaleNormal();
+
+        net.minecraft.client.renderer.RenderHelper.setupLevelDiffuseLighting(LIGHT_STACK.getLast().getMatrix());
+
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(x, y, z);
+        RenderSystem.rotatef(-10F, 1F, 0F, 0F);
+        RenderSystem.scalef(0.5F, 0.5F, 0.5F);
+        InventoryScreen.drawEntityOnScreen(0, 0, 35, -60, 0, livingEntity);
+        RenderSystem.popMatrix();
+
+        net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
+
+        RenderSystem.disableRescaleNormal();
 
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
@@ -414,7 +433,7 @@ public class HudHandler
             }
             else if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
             {
-                //TODO favourite
+                toggleFavourite();
             }
         }
     }
@@ -426,7 +445,7 @@ public class HudHandler
         {
             event.setCanceled(true);
 
-            shiftIndexSelector(event.getScrollDelta() < 0);
+            shiftIndexSelector(event.getScrollDelta() < 0, Screen.hasShiftDown());
         }
     }
 

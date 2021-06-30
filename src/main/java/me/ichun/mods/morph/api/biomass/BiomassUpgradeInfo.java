@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class BiomassUpgradeInfo
 {
     public String id;
-    public String parentId;
+    public String parentId; //todo specific level upgrade cost
 
     public Integer maxLevel; //null = infinite
 

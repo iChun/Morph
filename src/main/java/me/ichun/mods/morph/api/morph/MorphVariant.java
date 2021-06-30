@@ -152,7 +152,7 @@ public class MorphVariant implements Comparable<MorphVariant>
             }
         }
 
-        if(flag)
+        if(flag && !variants.isEmpty())
         {
             gatherNewCommons();
         }
@@ -438,6 +438,11 @@ public class MorphVariant implements Comparable<MorphVariant>
     @Override
     public int compareTo(MorphVariant o)
     {
+        if(id.equals(EntityType.PLAYER.getRegistryName()) && !id.equals(o.id)) //this is a player morph. always first
+        {
+            return 1; //we're greater... TODO test this, I'm not too sure how the values work when sorting.
+        }
+
         EntityType<?> type = ForgeRegistries.ENTITIES.getValue(id);
         EntityType<?> otherType = ForgeRegistries.ENTITIES.getValue(o.id);
         if(type != null)

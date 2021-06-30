@@ -48,7 +48,16 @@ public class PacketMorphInput extends AbstractPacket
                 MorphVariant.Variant variant = morph.getVariantById(identifier);
                 if(variant != null)
                 {
-                    MorphHandler.INSTANCE.morphTo(context.getSender(), morph.getAsVariant(variant));
+                    if(inputFavourite)
+                    {
+                        variant.isFavourite = isFavourite;
+
+                        MorphHandler.INSTANCE.getSaveData().markDirty();
+                    }
+                    else
+                    {
+                        MorphHandler.INSTANCE.morphTo(context.getSender(), morph.getAsVariant(variant));
+                    }
 
                     return;
                 }

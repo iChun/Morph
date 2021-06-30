@@ -22,10 +22,14 @@ public interface IApi
         return null;
     }
 
+    @Nullable
+    default LivingEntity getActiveMorphEntity(PlayerEntity player) { return null; }
+
     default boolean canMorph(PlayerEntity player) { return false; }
 
     default boolean canAcquireMorph(PlayerEntity player, LivingEntity living)
     {
+        //Checks if the situation is ideal to acquire the morph, not exclusively for if the player can morph to the entity. Cancel acquiring the AcquireMorphEvent, triggered in acquireMorph below
         return false;
     }
 
@@ -40,9 +44,6 @@ public interface IApi
     default boolean morphTo(ServerPlayerEntity player, MorphVariant variant) { return false; }
 
     default Map<ResourceLocation, Boolean> getSupportedAttributes() { return Collections.emptyMap(); }
-
-    @Nullable
-    default LivingEntity getActiveMorphEntity(PlayerEntity player) { return null; }
 
     @Nullable
     default ResourceLocation getMorphSkinTexture() { return null; }

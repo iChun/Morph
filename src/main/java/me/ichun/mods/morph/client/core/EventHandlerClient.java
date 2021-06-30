@@ -17,6 +17,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class EventHandlerClient
 {
@@ -102,7 +103,7 @@ public class EventHandlerClient
         hudHandler.handleInput(keyBind, isReleased);
     }
 
-    public void updateMorph(MorphVariant variant)
+    public void updateMorph(MorphVariant variant) //TODO if I ever remove morphs, ensure to update the selector.
     {
         if(morphData != null)
         {
@@ -126,7 +127,7 @@ public class EventHandlerClient
                 morphs.add(variant);
             }
 
-            //TODO update if the selector is open
+            Collections.sort(morphData.morphs); //sort in order of name.
         }
         else
         {
