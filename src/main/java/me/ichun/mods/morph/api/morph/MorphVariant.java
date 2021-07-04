@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.morph.api.MorphApi;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -440,7 +442,11 @@ public class MorphVariant implements Comparable<MorphVariant>
     {
         if(id.equals(EntityType.PLAYER.getRegistryName()) && !id.equals(o.id)) //this is a player morph. always first
         {
-            return 1; //we're greater... TODO test this, I'm not too sure how the values work when sorting.
+            return -1; //we're before...
+        }
+        else if(o.id.equals(EntityType.PLAYER.getRegistryName()) && !id.equals(o.id))
+        {
+            return 1;
         }
 
         EntityType<?> type = ForgeRegistries.ENTITIES.getValue(id);
@@ -449,9 +455,13 @@ public class MorphVariant implements Comparable<MorphVariant>
         {
             if(otherType != null)
             {
-                return type.getName().getUnformattedComponentText().compareTo(otherType.getName().getUnformattedComponentText());
+                if(EffectiveSide.get().isClient())
+                {
+                    return I18n.format(type.getTranslationKey()).compareTo(I18n.format(otherType.getTranslationKey()));
+                }
+                return type.getTranslationKey().compareTo(otherType.getTranslationKey());
             }
-            return 1; //we have a type, we're greater
+            return -1; //we have a type, we're before
         }
         else
         {
@@ -459,7 +469,7 @@ public class MorphVariant implements Comparable<MorphVariant>
             {
                 return 0; //they also don't have a type, no comparator
             }
-            return -1;//we don't have a type
+            return 1;//we don't have a type
         }
     }
 
@@ -485,6 +495,12 @@ public class MorphVariant implements Comparable<MorphVariant>
         }
 
         return variant;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return thisVariant != null ? thisVariant.hashCode() : super.hashCode();
     }
 
     public static class Variant
@@ -538,6 +554,12 @@ public class MorphVariant implements Comparable<MorphVariant>
                 return playerUUID != null ? playerUUID.equals(((Variant)obj).playerUUID) : nbtVariant.equals(((Variant)obj).nbtVariant);
             }
             return false;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return identifier.hashCode();
         }
     }
 }

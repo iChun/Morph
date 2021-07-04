@@ -3,7 +3,6 @@ package me.ichun.mods.morph.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
-import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.morph.api.morph.MorphInfo;
@@ -155,10 +154,9 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
 
                 currentCapture = null; //reset before we do anything else
-                RenderHelper.getDummyBuffer().finish();
 
                 prevModel.render(buffer, light, overlay, skinAlpha);
             }
@@ -174,10 +172,9 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
 
                 currentCapture = null; //reset before we do anything else
-                RenderHelper.getDummyBuffer().finish();
 
                 nextModel.render(buffer, light, overlay, skinAlpha);
             }
@@ -193,7 +190,7 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
 
                 if(nextModel == null)
                 {
@@ -205,10 +202,9 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
 
                 currentCapture = null; //reset before we do anything else
-                RenderHelper.getDummyBuffer().finish();
 
                 stack.push();
                 stack.translate(0F, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);

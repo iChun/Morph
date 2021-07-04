@@ -300,8 +300,10 @@ public class HudHandler
 
         PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
 
+        float indexChangeTimeProg = EntityHelper.sineifyProgress(MathHelper.clamp((indexChangeTime + partialTicks) / INDEX_TIME, 0F, 1F));
+
         //Draw the vertical stack
-        double indexVertProg = (lastIndexVert + (indexVert - lastIndexVert) * (EntityHelper.sineifyProgress(MathHelper.clamp((indexChangeTime + partialTicks) / INDEX_TIME, 0F, 1F))));
+        double indexVertProg = (lastIndexVert + (indexVert - lastIndexVert) * indexChangeTimeProg);
         double unSelY = indexVertProg * size;
         double height = size * morphData.morphs.size();
 
@@ -309,7 +311,7 @@ public class HudHandler
         RenderHelper.draw(stack, posX, top - unSelY, size, height, zLevel, 0D, 1D, 0D, morphData.morphs.size());
 
         //Draw the horizontal stack
-        double indexHoriProg = (lastIndexHori + (indexHori - lastIndexHori) * (EntityHelper.sineifyProgress(MathHelper.clamp((indexChangeTime + partialTicks) / INDEX_TIME, 0F, 1F))));
+        double indexHoriProg = (lastIndexHori + (indexHori - lastIndexHori) * indexChangeTimeProg);
         double unSelX = indexHoriProg * size;
         double width = size * (morphData.morphs.get(indexVert).variants.size() - 1);
 
@@ -334,18 +336,31 @@ public class HudHandler
 
         PlayerEntity player = Minecraft.getInstance().player;
 
-        for(int i = firstMorphIndex; i < lastMorphIndex; i++) //TODO move the current selected forwards in z level
+        for(int i = firstMorphIndex; i < lastMorphIndex; i++)
         {
             MorphVariant morph = morphData.morphs.get(i);
             double v1 = (top + size * 0.775D) + ((i - indexVertProg) * size);
-            if(i == indexVert)
+            if(i == indexVert) //is selected
             {
                 for(int j = Math.max(0, indexHori - 1); j < morph.variants.size(); j++)
                 {
                     MorphVariant variant = morph.getAsVariant(morph.variants.get(j));
                     MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
 
-                    renderMorphEntity(state.getEntityInstance(player.world, player.getGameProfile().getId()), (posX + (size / 2D) - 2) + ((j - indexHoriProg) * size), v1, zLevel);
+                    LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                    float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
+
+                    if(j == indexHori)
+                    {
+                        entSize *= (1F - indexChangeTimeProg);
+                    }
+
+                    float entScale = 0.5F * (1F / Math.max(1F, entSize));
+
+                    renderMorphEntity(living, (posX + (size / 2D) - 2) + ((j - indexHoriProg) * size), v1, zLevel + (j == indexHori ? 100F : 50F), entScale);
+
+                    zLevel += 30F;
                 }
             }
             else
@@ -353,7 +368,20 @@ public class HudHandler
                 MorphVariant variant = morph.getAsVariant(morph.variants.get(0));
                 MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
 
-                renderMorphEntity(state.getEntityInstance(player.world, player.getGameProfile().getId()), (int)(posX + (size / 2D) - 2), v1, zLevel);
+                LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
+
+                if(i == Math.round(lastIndexVert)) //last selected
+                {
+                    entSize *= indexChangeTimeProg;
+                }
+
+                float entScale = 0.5F * (1F / Math.max(1F, entSize));
+
+                renderMorphEntity(living, (int)(posX + (size / 2D) - 2), v1, zLevel, entScale);
+
+                zLevel += 30F;
             }
         }
 
@@ -363,7 +391,7 @@ public class HudHandler
         RenderSystem.enableAlphaTest();
     }
 
-    private void renderMorphEntity(LivingEntity livingEntity, double x, double y, double z)
+    private void renderMorphEntity(LivingEntity livingEntity, double x, double y, double z, float scale)
     {
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
@@ -375,7 +403,7 @@ public class HudHandler
         RenderSystem.pushMatrix();
         RenderSystem.translated(x, y, z);
         RenderSystem.rotatef(-10F, 1F, 0F, 0F);
-        RenderSystem.scalef(0.5F, 0.5F, 0.5F);
+        RenderSystem.scalef(scale, scale, scale);
         InventoryScreen.drawEntityOnScreen(0, 0, 35, -60, 0, livingEntity);
         RenderSystem.popMatrix();
 
