@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
@@ -16,6 +17,7 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
@@ -80,63 +82,26 @@ public class MorphRenderHandler
             float yaw = MathHelper.lerp(partialTick, livingInstance.prevRotationYaw, livingInstance.rotationYaw);
             stack.push();
             livingRenderer.render(livingInstance, yaw, partialTick, stack, buffer, light);
-            state.renderedShadowSize = livingRenderer.shadowSize;
+            if (livingInstance instanceof MobEntity && livingInstance.isChild()) //Checked in EntityRendererManager
+            {
+                state.renderedShadowSize = livingRenderer.shadowSize * 0.5F;
+            }
+            else
+            {
+                state.renderedShadowSize = livingRenderer.shadowSize;
+            }
             stack.pop();
         }
     }
 
-    //TODO fix the high memory use of this call
     public static void renderTransitionState(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float partialTick, float transitionProgress, float skinAlpha)
     {
-        if(transitionProgress <= 0F)
+        if(info.transitionState == null)
         {
-            currentCapture = new ModelRendererCapture();
-            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
-            ModelRendererCapture prevModel = currentCapture;
-
-            currentCapture = null; //reset before we do anything else accidentally.
-            RenderHelper.getDummyBuffer().finish();
-
-            prevModel.render(buffer, light, overlay, skinAlpha);
+            info.transitionState = new MorphTransitionState();
         }
-        else if(transitionProgress >= 1F)
-        {
-            currentCapture = new ModelRendererCapture();
-            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
-            ModelRendererCapture nextModel = currentCapture;
 
-            currentCapture = null; //reset before we do anything else accidentally.
-            RenderHelper.getDummyBuffer().finish();
-
-            nextModel.render(buffer, light, overlay, skinAlpha);
-        }
-        else
-        {
-            currentCapture = new ModelRendererCapture();
-            renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
-            ModelRendererCapture prevModel = currentCapture;
-
-            currentCapture = new ModelRendererCapture();
-            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
-            ModelRendererCapture nextModel = currentCapture;
-
-            currentCapture = null; //reset before we do anything else accidentally.
-            RenderHelper.getDummyBuffer().finish();
-
-            stack.push();
-            stack.translate(0F, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
-            MatrixStack.Entry prevMid = stack.getLast();
-            stack.pop();
-
-            stack.push();
-            stack.translate(0F, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
-            MatrixStack.Entry nextMid = stack.getLast();
-            stack.pop();
-
-            prevModel.combineTowards(prevMid, nextMid, nextModel, transitionProgress);
-
-            prevModel.render(buffer, light, overlay, skinAlpha);
-        }
+        info.transitionState.renderTransitionState(player, info, stack, buffer, light, overlay, partialTick, transitionProgress, skinAlpha);
     }
 
     public static void restoreShadowSize(PlayerRenderer renderer)
@@ -171,47 +136,157 @@ public class MorphRenderHandler
         changedShadowSize = true;
     }
 
+    public static class MorphTransitionState
+    {
+        protected ModelRendererCapture prevModel;
+        protected ModelRendererCapture nextModel;
+
+        public void renderTransitionState(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float partialTick, float transitionProgress, float skinAlpha)
+        {
+            if(transitionProgress <= 0F)
+            {
+                if(prevModel == null)
+                {
+                    currentCapture = prevModel = new ModelRendererCapture();
+                }
+                else
+                {
+                    currentCapture = prevModel;
+                    currentCapture.infos.clear();
+                }
+
+                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+
+                currentCapture = null; //reset before we do anything else
+                RenderHelper.getDummyBuffer().finish();
+
+                prevModel.render(buffer, light, overlay, skinAlpha);
+            }
+            else if(transitionProgress >= 1F)
+            {
+                if(nextModel == null)
+                {
+                    currentCapture = nextModel = new ModelRendererCapture();
+                }
+                else
+                {
+                    currentCapture = nextModel;
+                    currentCapture.infos.clear();
+                }
+
+                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+
+                currentCapture = null; //reset before we do anything else
+                RenderHelper.getDummyBuffer().finish();
+
+                nextModel.render(buffer, light, overlay, skinAlpha);
+            }
+            else
+            {
+                if(prevModel == null)
+                {
+                    currentCapture = prevModel = new ModelRendererCapture();
+                }
+                else
+                {
+                    currentCapture = prevModel;
+                    currentCapture.infos.clear();
+                }
+
+                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+
+                if(nextModel == null)
+                {
+                    currentCapture = nextModel = new ModelRendererCapture();
+                }
+                else
+                {
+                    currentCapture = nextModel;
+                    currentCapture.infos.clear();
+                }
+
+                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, RenderHelper.getDummyBuffer(), light, partialTick);
+
+                currentCapture = null; //reset before we do anything else
+                RenderHelper.getDummyBuffer().finish();
+
+                stack.push();
+                stack.translate(0F, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
+                MatrixStack.Entry prevMid = stack.getLast();
+                stack.pop();
+
+                stack.push();
+                stack.translate(0F, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
+                MatrixStack.Entry nextMid = stack.getLast();
+                stack.pop();
+
+                ModelRendererCapture transitionCapture = new ModelRendererCapture();
+                transitionCapture.infos = prevModel.combineTowards(prevMid, nextMid, nextModel, transitionProgress);
+
+                transitionCapture.render(buffer, light, overlay, skinAlpha);
+            }
+        }
+    }
+
     public static class ModelRendererCapture
     {
+        private final HashMap<ModelRenderer, CaptureInfo.ModelPart> modelToPart = new HashMap<>();
+
         public ArrayList<CaptureInfo> infos = new ArrayList<>();
 
         public void capture(ModelRenderer renderer, MatrixStack stack)
         {
-            HashMap<ModelRenderer, Identifiable<?>> store = new HashMap<>();
-            ModelHelper.createPartFor("", renderer, store, null, false);
-            Project.Part part = (Project.Part)store.get(renderer);
-            part.rotPX = part.rotPY = part.rotPZ = part.rotAX = part.rotAY = part.rotAZ = 0F;
-            part.children.clear();
-            infos.add(new CaptureInfo(stack.getLast(), part));
+            if(modelToPart.containsKey(renderer))
+            {
+                infos.add(new CaptureInfo(stack.getLast(), modelToPart.get(renderer)));
+            }
+            else
+            {
+                HashMap<ModelRenderer, Identifiable<?>> store = new HashMap<>();
+                ModelHelper.createPartFor("", renderer, store, null, false);
+                Project.Part part = (Project.Part)store.get(renderer);
+                part.rotPX = part.rotPY = part.rotPZ = part.rotAX = part.rotAY = part.rotAZ = 0F;
+                part.children.clear();
+                CaptureInfo.ModelPart modelPart = new CaptureInfo.ModelPart(part);
+                infos.add(new CaptureInfo(stack.getLast(), modelPart));
+                modelToPart.put(renderer, modelPart);
+
+                for(Project.Part.Box box : part.boxes) //to prevent z-fighting
+                {
+                    box.expandX += 0.001F;
+                    box.expandY += 0.001F;
+                    box.expandZ += 0.001F;
+                }
+            }
         }
 
-        public void combineTowards(MatrixStack.Entry prevMid, MatrixStack.Entry nextMid, ModelRendererCapture other, float transitionProgress)
+        public ArrayList<CaptureInfo> combineTowards(MatrixStack.Entry prevMid, MatrixStack.Entry nextMid, ModelRendererCapture other, float transitionProgress)
         {
-            ArrayList<CaptureInfo> prevInfo = new ArrayList<>(infos);
-            ArrayList<CaptureInfo> nextInfo = new ArrayList<>(other.infos);
+            ArrayList<CaptureInfo> prevInfo = infos;
+            ArrayList<CaptureInfo> nextInfo = other.infos;
 
             //Fill with empty parts first
             while(prevInfo.size() < nextInfo.size())
             {
                 Project.Part part = new Project.Part(null, 0);
                 part.boxes.clear();
-                prevInfo.add(new CaptureInfo(prevMid, part));
+                prevInfo.add(new CaptureInfo(prevMid, new CaptureInfo.ModelPart(part)));
             }
 
             while(nextInfo.size() < prevInfo.size())
             {
                 Project.Part part = new Project.Part(null, 0);
                 part.boxes.clear();
-                nextInfo.add(new CaptureInfo(nextMid, part));
+                nextInfo.add(new CaptureInfo(nextMid, new CaptureInfo.ModelPart(part)));
             }
 
-            infos = new ArrayList<>();
+            ArrayList<CaptureInfo> transitionInfos = new ArrayList<>();
 
             //sync up the box count
             for(int i = 0; i < prevInfo.size(); i++)
             {
-                Project.Part oldPart = prevInfo.get(i).part;
-                Project.Part newPart = nextInfo.get(i).part;
+                Project.Part oldPart = prevInfo.get(i).modelPart.part;
+                Project.Part newPart = nextInfo.get(i).modelPart.part;
 
                 while(oldPart.boxes.size() < newPart.boxes.size())
                 {
@@ -233,8 +308,10 @@ public class MorphRenderHandler
                     newPart.boxes.add(box);
                 }
 
-                infos.add(new CaptureInfo(createInterimStackEntry(prevInfo.get(i).e, nextInfo.get(i).e, transitionProgress), createInterimPart(oldPart, newPart, transitionProgress)));
+                transitionInfos.add(new CaptureInfo(createInterimStackEntry(prevInfo.get(i).e, nextInfo.get(i).e, transitionProgress), new CaptureInfo.ModelPart(createInterimPart(oldPart, newPart, transitionProgress))));
             }
+
+            return transitionInfos;
         }
 
         private MatrixStack.Entry createInterimStackEntry(MatrixStack.Entry prevEntry, MatrixStack.Entry nextEntry, float prog)
@@ -243,6 +320,7 @@ public class MorphRenderHandler
             MatrixStack stack = new MatrixStack();
             MatrixStack.Entry last = stack.getLast();
 
+            //set to the last entry
             last.getMatrix().mul(prevEntry.getMatrix());
             last.getNormal().mul(prevEntry.getNormal());
 
@@ -324,32 +402,51 @@ public class MorphRenderHandler
                 entLast.getMatrix().mul(correctorLast.getMatrix());
                 entLast.getNormal().mul(correctorLast.getNormal());
 
-                Project.Part part = info.part;
-                ModelRenderer modelPart = new ModelRenderer(part.texWidth, part.texHeight, part.texOffX, part.texOffY);
-
-                modelPart.mirror = part.mirror;
-                modelPart.showModel = part.showModel;
-
-                part.boxes.forEach(box -> {
-                    int texOffX = modelPart.textureOffsetX;
-                    int texOffY = modelPart.textureOffsetY;
-                    modelPart.setTextureOffset(modelPart.textureOffsetX + box.texOffX, modelPart.textureOffsetY + box.texOffY);
-                    modelPart.addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
-                    modelPart.setTextureOffset(texOffX, texOffY);
-                });
-
-                modelPart.render(newStack, buffer.getBuffer(RenderType.getEntityTranslucent(MorphHandler.INSTANCE.getMorphSkinTexture())), light, overlay, 1F, 1F, 1F, skinAlpha);
+                info.createAndRender(newStack, buffer.getBuffer(RenderType.getEntityTranslucent(MorphHandler.INSTANCE.getMorphSkinTexture())), light, overlay, 1F, 1F, 1F, skinAlpha);
             }
         }
 
-        public static class CaptureInfo
+        private static class CaptureInfo
         {
             public final MatrixStack.Entry e;
-            public final Project.Part part;
+            public final ModelPart modelPart;
 
-            public CaptureInfo(MatrixStack.Entry e, Project.Part part) {
+            private CaptureInfo(MatrixStack.Entry e, ModelPart modelPart) {
                 this.e = e;
-                this.part = part;
+                this.modelPart = modelPart;
+            }
+
+            private void createAndRender(MatrixStack stack, IVertexBuilder buffer, int light, int overlay, float red, float green, float blue, float alpha)
+            {
+                if(this.modelPart.model == null)
+                {
+                    Project.Part part = this.modelPart.part;
+                    ModelRenderer modelPart = this.modelPart.model = new ModelRenderer(part.texWidth, part.texHeight, part.texOffX, part.texOffY);
+
+                    modelPart.mirror = part.mirror;
+                    modelPart.showModel = part.showModel;
+
+                    part.boxes.forEach(box -> {
+                        int texOffX = modelPart.textureOffsetX;
+                        int texOffY = modelPart.textureOffsetY;
+                        modelPart.setTextureOffset(modelPart.textureOffsetX + box.texOffX, modelPart.textureOffsetY + box.texOffY);
+                        modelPart.addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
+                        modelPart.setTextureOffset(texOffX, texOffY);
+                    });
+                }
+
+                this.modelPart.model.render(stack, buffer, light, overlay, red, green, blue, alpha);
+            }
+
+            private static class ModelPart
+            {
+                public final Project.Part part;
+                public ModelRenderer model;
+
+                private ModelPart(Project.Part part)
+                {
+                    this.part = part;
+                }
             }
         }
     }

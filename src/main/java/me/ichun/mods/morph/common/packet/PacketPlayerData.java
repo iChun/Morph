@@ -7,6 +7,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Collections;
+
 public class PacketPlayerData extends AbstractPacket
 {
     public CompoundNBT nbt;
@@ -38,6 +40,9 @@ public class PacketPlayerData extends AbstractPacket
 
         context.enqueueWork(() -> {
             Morph.eventHandlerClient.morphData = playerMorphData;
+
+            Collections.sort(Morph.eventHandlerClient.morphData.morphs); //sort in order of name.
+
             if(Morph.eventHandlerClient.hudHandler != null)
             {
                 Morph.eventHandlerClient.hudHandler.clean();

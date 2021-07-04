@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.morph.api.mixin.LivingEntityInvokerMixin;
+import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -10,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -41,6 +44,9 @@ public class MorphInfo
     public int playSoundTime = -1;
 
     public boolean requested; //Never checked on server.
+
+    @OnlyIn(Dist.CLIENT)
+    public MorphRenderHandler.MorphTransitionState transitionState;
 
     public MorphInfo(PlayerEntity player)
     {
@@ -91,6 +97,14 @@ public class MorphInfo
         if(morphTime == morphingTime)
         {
             prevState = null; //bye bye last state. We don't need you anymore.
+
+            if(player.world.isRemote)
+            {
+                if(transitionState != null)
+                {
+                    transitionState = null;
+                }
+            }
 
             if(nextState.variant.id.equals(EntityType.PLAYER.getRegistryName()) && nextState.variant.thisVariant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE))
             {

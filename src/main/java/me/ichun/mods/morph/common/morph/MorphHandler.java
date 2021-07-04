@@ -177,7 +177,7 @@ public final class MorphHandler implements IApi
 
         if(MinecraftForge.EVENT_BUS.post(new MorphPlayerEvent(player, variant))) return false;
 
-        info.setNextState(new MorphState(variant), currentMode.getMorphingDuration(player));
+        info.setNextState(new MorphState(variant), Math.max(1, currentMode.getMorphingDuration(player)));
 
         Morph.channel.sendTo(new PacketMorphInfo(player.getEntityId(), info.write(new CompoundNBT())), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
 
