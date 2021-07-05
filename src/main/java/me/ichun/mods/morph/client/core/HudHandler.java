@@ -71,7 +71,7 @@ public class HudHandler
             return;
         }
 
-        if(keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight || keyBind == KeyBinds.keyFavourite)
+        if(keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight || keyBind == KeyBinds.keyFavourite && isReleased)
         {
             handleMorphInput(keyBind, isReleased);
         }
@@ -291,7 +291,7 @@ public class HudHandler
         indexChangeTime = 0;
     }
 
-    private void drawSelector(MatrixStack stack, float partialTicks, MainWindow window)
+    private void drawSelector(MatrixStack stack, float partialTicks, MainWindow window) //TODO fix the hats not synching when you are morphed.
     {
         Minecraft mc = Minecraft.getInstance();
 
@@ -364,14 +364,19 @@ public class HudHandler
         for(int i = firstMorphIndex; i < lastMorphIndex; i++)
         {
             MorphVariant morph = morphData.morphs.get(i);
-            double morphHeight = (top + size * 0.775D) + ((i - indexVertProg) * size);
-            double textHeight = (top + (size - mc.fontRenderer.FONT_HEIGHT) / 2) + ((i - indexVertProg) * size);
+            double indexSizeHeight = (i - indexVertProg) * size;
+            double morphHeight = (top + size * 0.775D) + indexSizeHeight;
+            double textHeight = (top + (size - mc.fontRenderer.FONT_HEIGHT) / 2) + indexSizeHeight;
+            double favHeight = top + (size * 0.13D) + indexSizeHeight;
             if(i == indexVert) //is selected
             {
                 for(int j = Math.max(0, indexHori - 1); j < morph.variants.size(); j++)
                 {
-                    MorphVariant variant = morph.getAsVariant(morph.variants.get(j));
+                    double indexHeightWidth = (j - indexHoriProg) * size;
+                    MorphVariant.Variant theVariant = morph.variants.get(j);
+                    MorphVariant variant = morph.getAsVariant(theVariant);
                     MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+                    state.variant.thisVariant.isFavourite = theVariant.isFavourite;
 
                     LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 
@@ -391,9 +396,25 @@ public class HudHandler
 
                     float entScale = 0.5F * (1F / Math.max(1F, entSize));
 
-                    renderMorphEntity(living, (posX + (size / 2D) - 2) + ((j - indexHoriProg) * size), morphHeight, zLevel + (j == indexHori ? 100F : 50F), entScale);
+                    renderMorphEntity(living, (posX + (size / 2D) - 2) + indexHeightWidth, morphHeight, zLevel + (j == indexHori ? 100F : 50F), entScale);
 
                     zLevel += 30F;
+
+                    if(j == 0 && morph.hasFavourite() || state.variant.thisVariant.isFavourite)
+                    {
+                        stack.push();
+                        stack.translate(0F, 0F, 300F);
+
+                        if(!state.variant.thisVariant.isFavourite)
+                        {
+                            RenderHelper.colour(0x00ffff);
+                        }
+
+                        RenderHelper.drawTexture(stack, TEX_QS_FAVOURITE, posX + 1 + indexHeightWidth, favHeight, size * 0.15D, size * 0.15D, zLevel);
+                        RenderHelper.colour(0xffffff); //reset the colour
+
+                        stack.pop();
+                    }
 
                     if(j == morph.variants.size() - 1)
                     {
@@ -434,15 +455,17 @@ public class HudHandler
 
                         stack.push();
                         stack.translate(0F, 0F, 300F);
-                        mc.fontRenderer.drawTextWithShadow(stack, text, (float)((posX + size + 5) + ((j - indexHoriProg) * size)), (float)textHeight, 0xFFFFFF);
+                        mc.fontRenderer.drawTextWithShadow(stack, text, (float)((posX + size + 5) + indexHeightWidth), (float)textHeight, 0xFFFFFF);
                         stack.pop();
                     }
                 }
             }
             else
             {
-                MorphVariant variant = morph.getAsVariant(morph.variants.get(0));
+                MorphVariant.Variant theVariant = morph.variants.get(0);
+                MorphVariant variant = morph.getAsVariant(theVariant);
                 MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+                state.variant.thisVariant.isFavourite = theVariant.isFavourite;
 
                 LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 
@@ -482,6 +505,17 @@ public class HudHandler
 
                 stack.push();
                 stack.translate(0F, 0F, 300F);
+                if(morph.hasFavourite())
+                {
+                    if(!state.variant.thisVariant.isFavourite)
+                    {
+                        RenderHelper.colour(0x00ffff);
+                    }
+
+                    RenderHelper.drawTexture(stack, TEX_QS_FAVOURITE, posX + 1, favHeight, size * 0.15D, size * 0.15D, zLevel);
+                    RenderHelper.colour(0xffffff); //reset the colour
+                }
+
                 mc.fontRenderer.drawTextWithShadow(stack, text, (float)(posX + size + 5), (float)textHeight, 0xFFFFFF);
                 stack.pop();
             }
@@ -515,6 +549,11 @@ public class HudHandler
 
         RenderSystem.depthMask(false);
         RenderSystem.disableDepthTest();
+
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableAlphaTest();
     }
 
     private boolean shouldRenderSelector()

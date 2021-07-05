@@ -294,6 +294,18 @@ public class MorphVariant implements Comparable<MorphVariant>
         return flag;
     }
 
+    public boolean hasFavourite()
+    {
+        for(Variant variant : variants)
+        {
+            if(variant.isFavourite)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Nonnull
     public LivingEntity createEntityInstance(World world, @Nullable UUID playerId)
     {
