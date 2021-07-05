@@ -1,16 +1,24 @@
 package me.ichun.mods.morph.api.morph;
 
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.MorphApi;
+import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -226,7 +234,7 @@ public class MorphVariant implements Comparable<MorphVariant>
                 }
             }
         }
-        else
+        else if(!variant.id.equals(EntityType.PLAYER.getRegistryName()))
         {
             CompoundNBT variantTags = variant.getCumulativeTags();
 
@@ -317,19 +325,17 @@ public class MorphVariant implements Comparable<MorphVariant>
             {
                 if(value.equals(EntityType.PLAYER))
                 {
-                    //TODO special handling for the player
+                    entInstance = world.isRemote ? createPlayer(world, thisVariant.playerUUID) : new FakePlayer((ServerWorld)world, EntityHelper.getGameProfile(thisVariant.playerUUID, null));
                 }
                 else
                 {
                     CompoundNBT tags = getCumulativeTags();
-
                     Entity ent = value.create(world);
                     if(ent instanceof LivingEntity)
                     {
                         ent.read(tags);
 
                         entInstance = (LivingEntity)ent;
-                        entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
                     }
                 }
             }
@@ -347,12 +353,20 @@ public class MorphVariant implements Comparable<MorphVariant>
             entInstance = EntityType.PIG.create(world);
         }
 
+        entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
+
         if(playerId != null)
         {
             entInstance.getPersistentData().putUniqueId("Morph_Player_ID", playerId);
         }
 
         return entInstance;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private PlayerEntity createPlayer(World world, UUID uuid)
+    {
+        return new RemoteClientPlayerEntity((ClientWorld)world, EntityHelper.getGameProfile(uuid, null));
     }
 
     public MorphVariant getAsVariant(Variant variant)

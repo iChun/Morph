@@ -2,9 +2,12 @@ package me.ichun.mods.morph.api.morph;
 
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.HandSide;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -49,8 +52,6 @@ public class MorphState implements Comparable<MorphState>
 
         return entInstance;
     }
-
-    //TODO handle the living isChild, force the left/right handedness
 
     public CompoundNBT write(CompoundNBT tag)
     {
@@ -120,6 +121,9 @@ public class MorphState implements Comparable<MorphState>
 
         living.setMotion(player.getMotion());
 
+        //Entity stuff
+        living.collidedHorizontally = player.collidedHorizontally;
+        living.collidedVertically = player.collidedVertically;
         living.setOnGround(player.isOnGround());
         living.setSneaking(player.isSneaking());
         living.setSwimming(player.isSwimming());
@@ -129,6 +133,13 @@ public class MorphState implements Comparable<MorphState>
         living.setHealth(living.getMaxHealth() * (player.getHealth() / player.getMaxHealth()));
         living.hurtTime = player.hurtTime;
         living.deathTime = player.deathTime;
+
+        //Inventory stuff
+        //player entity plays sound when equipping items.
+//        for(EquipmentSlotType value : EquipmentSlotType.values())
+//        {
+//            living.setItemStackToSlot(value, player.getItemStackFromSlot(value).copy());
+//        }
 
         //LivingRender related stuff
         living.swingProgress = player.swingProgress;
@@ -151,7 +162,6 @@ public class MorphState implements Comparable<MorphState>
         living.setGlowing(player.isGlowing());
 
         //EntityRendererManager stuff
-
         living.forceFireTicks(player.getFireTimer());
 
         specialEntityPlayerSync(living, player);
@@ -163,6 +173,17 @@ public class MorphState implements Comparable<MorphState>
         {
             ((AgeableEntity)living).setGrowingAge(living.isChild() ? -24000 : 0);
         }
+
+        if(living instanceof MobEntity)
+        {
+            ((MobEntity)living).setLeftHanded(player.getPrimaryHand() == HandSide.LEFT);
+        }
+
+        if(living instanceof PlayerEntity)
+        {
+            ((PlayerEntity)living).setPrimaryHand(player.getPrimaryHand());
+        }
+
         //TODO syncing of death of ender dragon
     }
 }

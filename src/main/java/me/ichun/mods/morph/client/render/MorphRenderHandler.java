@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.client.render;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
@@ -9,6 +10,8 @@ import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -18,14 +21,18 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.play.server.SPlayerListItemPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class MorphRenderHandler
@@ -74,7 +81,29 @@ public class MorphRenderHandler
 
     private static void renderLiving(MorphState state, LivingEntity livingInstance, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
     {
-        EntityRenderer livingRenderer = Minecraft.getInstance().getRenderManager().getRenderer(livingInstance);
+        Minecraft mc = Minecraft.getInstance();
+        if(livingInstance instanceof AbstractClientPlayerEntity)
+        {
+            AbstractClientPlayerEntity player = (AbstractClientPlayerEntity)livingInstance;
+            if(mc.getConnection().getPlayerInfo(player.getGameProfile().getId()) == null) //we have to assign a NetworkPlayerInfo for the player skin to render.
+            {
+                //Silly Mojang and their privates
+                SPlayerListItemPacket spoof = new SPlayerListItemPacket()
+                {
+                    @Override
+                    public List<AddPlayerData> getEntries()
+                    {
+                        return Lists.newArrayList(new AddPlayerData(player.getGameProfile(), -100, GameType.ADVENTURE, new StringTextComponent(player.getGameProfile().getName())));
+                    }
+                };
+
+                NetworkPlayerInfo info = new NetworkPlayerInfo(spoof.getEntries().get(0));
+
+                mc.getConnection().playerInfoMap.put(player.getGameProfile().getId(), info);
+            }
+        }
+
+        EntityRenderer livingRenderer = mc.getRenderManager().getRenderer(livingInstance);
 
         if(livingRenderer != null)
         {

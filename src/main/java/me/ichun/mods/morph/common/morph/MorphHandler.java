@@ -141,12 +141,21 @@ public final class MorphHandler implements IApi
             NbtModifier nbtModifier = getNbtModifierFor(living);
             nbtModifier.apply(tag);
 
+            //Clean empty tags
+            removeEmptyCompoundTags(tag);
+
             variant.setLiving(tag);
 
             variant.thisVariant = new MorphVariant.Variant();
         }
 
         return variant;
+    }
+
+    private void removeEmptyCompoundTags(CompoundNBT tag)
+    {
+        tag.tagMap.entrySet().removeIf(e -> e.getValue() instanceof CompoundNBT && ((CompoundNBT)e.getValue()).tagMap.isEmpty());
+        tag.tagMap.entrySet().stream().filter(e -> e.getValue() instanceof CompoundNBT).forEach(e -> removeEmptyCompoundTags((CompoundNBT)e.getValue()));
     }
 
     @Override

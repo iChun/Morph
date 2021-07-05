@@ -40,7 +40,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
-        if(!event.getEntityLiving().getEntityWorld().isRemote && event.getSource().getTrueSource() instanceof ServerPlayerEntity && !(event.getSource().getTrueSource() instanceof FakePlayer) && !event.getSource().getTrueSource().removed)
+        if(!event.getEntityLiving().getEntityWorld().isRemote && event.getSource().getTrueSource() instanceof ServerPlayerEntity && !(event.getSource().getTrueSource() instanceof FakePlayer) && !event.getSource().getTrueSource().removed && event.getEntity().getEntityId() > 0)
         {
             MorphHandler.INSTANCE.handleMurderEvent((ServerPlayerEntity)event.getSource().getTrueSource(), event.getEntityLiving());
         }
@@ -49,7 +49,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onEntitySize(EntityEvent.Size event)
     {
-        if(event.getEntity() instanceof PlayerEntity && !event.getEntity().removed && event.getEntity().ticksExisted > 0)
+        if(event.getEntity() instanceof PlayerEntity && !event.getEntity().removed && event.getEntity().getEntityId() > 0 && event.getEntity().ticksExisted > 0)
         {
             MorphInfo info = MorphHandler.INSTANCE.getMorphInfo((PlayerEntity)event.getEntity());
             if(info.isMorphed())
@@ -63,7 +63,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.END && !event.player.removed)
+        if(event.phase == TickEvent.Phase.END && !event.player.removed && event.player.getEntityId() > 0)
         {
             MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(event.player);
             info.tick();

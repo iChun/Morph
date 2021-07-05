@@ -207,7 +207,7 @@ public class HudHandler
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(Minecraft.getInstance().player);
         MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
 
-        if(!(info.nextState != null && info.nextState.variant.thisVariant.identifier.equals(variant.identifier))) //if we're already morphed to this, don't morph to this.
+        if(!(info.nextState != null && info.nextState.variant.thisVariant.identifier.equals(variant.identifier) || !info.isMorphed() && variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE))) //if we're already morphed to this, don't morph to this.
         {
             Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false));
         }
