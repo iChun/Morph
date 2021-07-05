@@ -17,16 +17,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -163,14 +168,6 @@ public class HudHandler
                 showTime = SHOW_SELECTOR_TIME;
             }
 
-            indexChangeTime++;
-            if(indexChangeTime > INDEX_TIME)
-            {
-                indexChangeTime = INDEX_TIME;
-                lastIndexVert = indexVert;
-                lastIndexHori = indexHori;
-            }
-
             Minecraft mc = Minecraft.getInstance();
 
             boolean isEnterDown = InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_ENTER) || InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_KP_ENTER);
@@ -195,6 +192,14 @@ public class HudHandler
                 showTime = 0;
             }
         }
+
+        indexChangeTime++;
+        if(indexChangeTime > INDEX_TIME)
+        {
+            indexChangeTime = INDEX_TIME;
+            lastIndexVert = indexVert;
+            lastIndexHori = indexHori;
+        }
     }
 
     private void confirmSelector()
@@ -213,6 +218,11 @@ public class HudHandler
     private void closeSelector()
     {
         showSelector = false;
+
+        //makes the horizontal slider slide back in
+        PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
+        indexHori = morphData.morphs.get(indexVert).variants.size() - 1;
+        indexChangeTime = 0;
     }
 
     private void toggleFavourite()
@@ -283,6 +293,8 @@ public class HudHandler
 
     private void drawSelector(MatrixStack stack, float partialTicks, MainWindow window)
     {
+        Minecraft mc = Minecraft.getInstance();
+
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -307,7 +319,7 @@ public class HudHandler
         double unSelY = indexVertProg * size;
         double height = size * morphData.morphs.size();
 
-        Minecraft.getInstance().getTextureManager().bindTexture(TEX_QS_UNSELECTED);
+        mc.getTextureManager().bindTexture(TEX_QS_UNSELECTED);
         RenderHelper.draw(stack, posX, top - unSelY, size, height, zLevel, 0D, 1D, 0D, morphData.morphs.size());
 
         //Draw the horizontal stack
@@ -317,12 +329,12 @@ public class HudHandler
 
         if(width > 0)
         {
-            Minecraft.getInstance().getTextureManager().bindTexture(TEX_QS_UNSELECTED_SIDE);
+            mc.getTextureManager().bindTexture(TEX_QS_UNSELECTED_SIDE);
             RenderHelper.draw(stack, posX - unSelX, top, width, size, zLevel, 0D, morphData.morphs.get(indexVert).variants.size() - 1, 0D, 1D);
         }
 
         //Draw the end of the horizontal stack
-        Minecraft.getInstance().getTextureManager().bindTexture(TEX_QS_UNSELECTED);
+        mc.getTextureManager().bindTexture(TEX_QS_UNSELECTED);
         RenderHelper.draw(stack, posX - unSelX + width, top, size, size, zLevel, 0D, 1D, 0D, 1D);
 
         //Draw the selected marker
@@ -334,12 +346,26 @@ public class HudHandler
         int firstMorphIndex = Math.max(0, indexVert - ((int)Math.ceil(top / size) + 1)); //first index to render, +1 because of the scrolling
         int lastMorphIndex = Math.min(morphData.morphs.size(), indexVert + ((int)Math.ceil((screenHeight - top) / size) + 1));
 
-        PlayerEntity player = Minecraft.getInstance().player;
+        PlayerEntity player = mc.player;
+
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
+
+        MorphVariant currentMorph;
+        if(info.isMorphed())
+        {
+            currentMorph = info.nextState.variant;
+        }
+        else
+        {
+            currentMorph = MorphVariant.createPlayerMorph(player.getGameProfile().getId(), true);
+
+        }
 
         for(int i = firstMorphIndex; i < lastMorphIndex; i++)
         {
             MorphVariant morph = morphData.morphs.get(i);
-            double v1 = (top + size * 0.775D) + ((i - indexVertProg) * size);
+            double morphHeight = (top + size * 0.775D) + ((i - indexVertProg) * size);
+            double textHeight = (top + (size - mc.fontRenderer.FONT_HEIGHT) / 2) + ((i - indexVertProg) * size);
             if(i == indexVert) //is selected
             {
                 for(int j = Math.max(0, indexHori - 1); j < morph.variants.size(); j++)
@@ -351,16 +377,66 @@ public class HudHandler
 
                     float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
 
-                    if(j == indexHori)
+                    if(j == indexHori) //if it is selected, prevent the downscale.
                     {
-                        entSize *= (1F - indexChangeTimeProg);
+                        if(showSelector)
+                        {
+                            entSize *= (1F - indexChangeTimeProg);
+                        }
+                        else if(j == Math.round(lastIndexHori) && indexChangeTimeProg < 1F || variant.equals(currentMorph))
+                        {
+                            entSize = 0F; //keep the morph big
+                        }
                     }
 
                     float entScale = 0.5F * (1F / Math.max(1F, entSize));
 
-                    renderMorphEntity(living, (posX + (size / 2D) - 2) + ((j - indexHoriProg) * size), v1, zLevel + (j == indexHori ? 100F : 50F), entScale);
+                    renderMorphEntity(living, (posX + (size / 2D) - 2) + ((j - indexHoriProg) * size), morphHeight, zLevel + (j == indexHori ? 100F : 50F), entScale);
 
                     zLevel += 30F;
+
+                    if(j == morph.variants.size() - 1)
+                    {
+                        MorphVariant selectedVariant = morph.getAsVariant(morph.variants.get(indexHori));
+                        MorphState selectedState = morphStates.computeIfAbsent(selectedVariant, v -> new MorphState(selectedVariant));
+
+                        LivingEntity selectedLiving = selectedState.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                        IFormattableTextComponent text;
+
+                        EntityType<?> value = ForgeRegistries.ENTITIES.getValue(variant.id);
+                        if(value != null)
+                        {
+                            if(!selectedLiving.getName().equals(value.getName())) //has a custom name
+                            {
+                                text = living.getName().deepCopy();
+                                text.setStyle(text.getStyle().setItalic(true));
+                            }
+                            else
+                            {
+                                text = new TranslationTextComponent(value.getTranslationKey());
+                            }
+                        }
+                        else
+                        {
+                            text = new TranslationTextComponent("morph.morph.type.unknown");
+                        }
+
+
+                        if(selectedVariant.equals(currentMorph))
+                        {
+                            text.setStyle(text.getStyle().setFormatting(TextFormatting.GOLD));
+                        }
+                        else
+                        {
+                            text.setStyle(text.getStyle().setFormatting(TextFormatting.YELLOW));
+                        }
+
+                        stack.push();
+                        stack.translate(0F, 0F, 300F);
+                        mc.fontRenderer.drawTextWithShadow(stack, text, (float)((posX + size + 5) + ((j - indexHoriProg) * size)), (float)textHeight, 0xFFFFFF);
+                        stack.pop();
+                    }
                 }
             }
             else
@@ -379,9 +455,35 @@ public class HudHandler
 
                 float entScale = 0.5F * (1F / Math.max(1F, entSize));
 
-                renderMorphEntity(living, (int)(posX + (size / 2D) - 2), v1, zLevel, entScale);
+                renderMorphEntity(living, (int)(posX + (size / 2D) - 2), morphHeight, zLevel, entScale);
 
                 zLevel += 30F;
+
+                IFormattableTextComponent text;
+
+                EntityType<?> value = ForgeRegistries.ENTITIES.getValue(variant.id);
+                if(value != null)
+                {
+                    text = new TranslationTextComponent(value.getTranslationKey());
+                }
+                else
+                {
+                    text = new TranslationTextComponent("morph.morph.type.unknown");
+                }
+
+                if(morph.containsVariant(currentMorph))
+                {
+                    text.setStyle(text.getStyle().setFormatting(TextFormatting.GOLD));
+                }
+                else
+                {
+                    text.setStyle(text.getStyle().setFormatting(TextFormatting.WHITE));
+                }
+
+                stack.push();
+                stack.translate(0F, 0F, 300F);
+                mc.fontRenderer.drawTextWithShadow(stack, text, (float)(posX + size + 5), (float)textHeight, 0xFFFFFF);
+                stack.pop();
             }
         }
 

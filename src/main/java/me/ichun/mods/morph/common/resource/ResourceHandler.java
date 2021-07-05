@@ -54,8 +54,7 @@ public class ResourceHandler
             }
             catch(IOException e)
             {
-                Morph.LOGGER.fatal("Error initialising Morph resources!");
-                e.printStackTrace();
+                Morph.LOGGER.fatal("Error initialising Morph resources!", e);
                 return false;
             }
         }
