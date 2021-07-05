@@ -101,6 +101,8 @@ public class MorphRenderHandler
 
                 mc.getConnection().playerInfoMap.put(player.getGameProfile().getId(), info);
             }
+
+            //TODO do I have to handle different gamemodes?
         }
 
         EntityRenderer livingRenderer = mc.getRenderManager().getRenderer(livingInstance);

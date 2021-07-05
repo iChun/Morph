@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.core;
 
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.command.CommandMorph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.api.morph.MorphInfo;
@@ -15,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -93,6 +95,12 @@ public class EventHandlerServer
         {
             MorphHandler.INSTANCE.setSaveData(((ServerWorld)event.getWorld()).getSavedData().getOrCreate(MorphSavedData::new, MorphSavedData.ID));
         }
+    }
+
+    @SubscribeEvent
+    public void onRegisterCommands(RegisterCommandsEvent event)
+    {
+        CommandMorph.register(event.getDispatcher());
     }
 
     @SubscribeEvent
