@@ -234,6 +234,11 @@ public class MorphInfo
         player.recalculateSize();
     }
 
+    public boolean isCurrentlyThisVariant(@Nonnull MorphVariant.Variant variant)
+    {
+        return (nextState != null && nextState.variant.thisVariant.identifier.equals(variant.identifier) || !isMorphed() && variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE));
+    }
+
     public CompoundNBT write(CompoundNBT tag)
     {
         if(prevState != null)

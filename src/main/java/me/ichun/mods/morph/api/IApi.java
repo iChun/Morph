@@ -15,6 +15,9 @@ import java.util.Map;
 
 public interface IApi
 {
+    //Shared stuff
+    default void spawnAnimation(PlayerEntity player, LivingEntity living, boolean isMorphAcquisition) {} //TODO this
+
     //Morph Stuff
     @Nullable
     default MorphInfo getMorphInfo(PlayerEntity player)
@@ -42,6 +45,8 @@ public interface IApi
     default void acquireMorph(ServerPlayerEntity player, MorphVariant variant){}
 
     default boolean morphTo(ServerPlayerEntity player, MorphVariant variant) { return false; }
+
+    default boolean demorph(ServerPlayerEntity player) { return true; } //TODO this
 
     default Map<ResourceLocation, Boolean> getSupportedAttributes() { return Collections.emptyMap(); }
 

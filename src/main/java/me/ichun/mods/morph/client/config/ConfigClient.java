@@ -20,6 +20,9 @@ public class ConfigClient extends ConfigBase
 
     public boolean selectorAllowMouseControl = true;
 
+    @Prop(min = 0D, max = 1D)
+    public double radialScale = 0.75D;
+
     public ConfigClient()
     {
         super(ModLoadingContext.get().getActiveContainer().getModId() + "-client.toml");

@@ -14,8 +14,13 @@ import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketMorphInput;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.IngameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.GraphicsFanciness;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -23,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -35,6 +41,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HudHandler
@@ -46,6 +53,7 @@ public class HudHandler
 
     private static final MatrixStack LIGHT_STACK = Util.make(new MatrixStack(), stack -> stack.translate(1D, -1D, 0D));
 
+    //selector stuff
     private static final int SHOW_SELECTOR_TIME = 8;
     private static final int INDEX_TIME = 4;
 
@@ -59,6 +67,17 @@ public class HudHandler
     public int indexVert = 0;
     public int indexHori = 0;
 
+    //radial stuff
+    private static final int RADIAL_TIME = 3;
+
+    public boolean showRadial = false;
+    public int radialTime = 0;
+
+    public RadialMode radialMode = null;
+
+    public ArrayList<MorphVariant> radialFavourites = null;
+
+    //key listeners
     public boolean keyEscDown;
     public boolean keyEnterDown;
 
@@ -71,7 +90,7 @@ public class HudHandler
             return;
         }
 
-        if(keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight || keyBind == KeyBinds.keyFavourite && isReleased)
+        if(keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight || keyBind == KeyBinds.keyFavourite)
         {
             handleMorphInput(keyBind, isReleased);
         }
@@ -102,17 +121,29 @@ public class HudHandler
             {
                 if(showSelector)
                 {
-                    toggleFavourite();
+                    if(isReleased)
+                    {
+                        toggleFavourite();
+                    }
                 }
                 else if(!isReleased)
                 {
                     //open radial menu
-                    //TODO
+                    if(!showRadial)
+                    {
+                        gatherFavourites();
+
+                        showRadial = true;
+                        radialTime = 0;
+                        radialMode = RadialMode.FAVOURITE;
+
+                        Minecraft.getInstance().mouseHelper.ungrabMouse();
+                    }
                 }
-                else
+                else if(radialMode == RadialMode.FAVOURITE)
                 {
                     //confirm radial menu selection
-                    //TODO
+                    confirmRadial();
                 }
             }
         }
@@ -160,6 +191,7 @@ public class HudHandler
 
     private void tick()
     {
+        //selector stuff
         if(showSelector)
         {
             showTime++;
@@ -167,22 +199,6 @@ public class HudHandler
             {
                 showTime = SHOW_SELECTOR_TIME;
             }
-
-            Minecraft mc = Minecraft.getInstance();
-
-            boolean isEnterDown = InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_ENTER) || InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_KP_ENTER);
-            if(!keyEnterDown && isEnterDown)
-            {
-                confirmSelector();
-            }
-            keyEnterDown = isEnterDown;
-
-            boolean isEscDown = InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_ESCAPE);
-            if(mc.currentScreen != null || !keyEscDown && isEscDown)
-            {
-                closeSelector();
-            }
-            keyEscDown = isEscDown;
         }
         else
         {
@@ -200,6 +216,56 @@ public class HudHandler
             lastIndexVert = indexVert;
             lastIndexHori = indexHori;
         }
+
+        //radial stuff
+        if(showRadial)
+        {
+            radialTime++;
+            if(radialTime > RADIAL_TIME)
+            {
+                radialTime = RADIAL_TIME;
+            }
+
+            //TODO can radial menus show during selector?
+        }
+
+        updateKeyListeners();
+    }
+
+    private void updateKeyListeners()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        boolean isEnterDown = InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_ENTER) || InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_KP_ENTER);
+        boolean isEscDown = InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_ESCAPE);
+
+        if(showSelector || showRadial)
+        {
+            if(!keyEnterDown && isEnterDown)
+            {
+                if(showSelector)
+                {
+                    confirmSelector();
+                }
+                else
+                {
+                    confirmRadial();
+                }
+            }
+
+            if(mc.currentScreen != null || !keyEscDown && isEscDown)
+            {
+                if(showSelector)
+                {
+                    closeSelector();
+                }
+                else
+                {
+                    closeRadial();
+                }
+            }
+        }
+        keyEnterDown = isEnterDown;
+        keyEscDown = isEscDown;
     }
 
     private void confirmSelector()
@@ -207,7 +273,7 @@ public class HudHandler
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(Minecraft.getInstance().player);
         MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
 
-        if(!(info.nextState != null && info.nextState.variant.thisVariant.identifier.equals(variant.identifier) || !info.isMorphed() && variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE))) //if we're already morphed to this, don't morph to this.
+        if(!info.isCurrentlyThisVariant(variant)) //if we're already morphed to this, don't morph to this.
         {
             Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false));
         }
@@ -225,12 +291,66 @@ public class HudHandler
         indexChangeTime = 0;
     }
 
+    private void confirmRadial()
+    {
+        if(isMouseOutsideRadialDeadZone(Minecraft.getInstance().getMainWindow()))
+        {
+            if(radialMode == RadialMode.FAVOURITE)
+            {
+                //morph to the selected Morph
+                MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(Minecraft.getInstance().player);
+                MorphVariant variant = radialFavourites.get(getSelectedIndex(radialFavourites.size()));
+
+                if(!info.isCurrentlyThisVariant(variant.thisVariant)) //if we're already morphed to this, don't morph to this.
+                {
+                    Morph.channel.sendToServer(new PacketMorphInput(variant.thisVariant.identifier, false, false));
+                }
+
+                radialFavourites = null; //enjoy, GC.
+            }
+        }
+        closeRadial();
+    }
+
+    private void closeRadial()
+    {
+        showRadial = false;
+        radialMode = null;
+
+        Minecraft.getInstance().mouseHelper.grabMouse();
+    }
+
     private void toggleFavourite()
     {
         MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
-        variant.isFavourite = !variant.isFavourite;
+        if(!variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE)) //you can't favourite your personal variant
+        {
+            variant.isFavourite = !variant.isFavourite;
 
-        Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, true, variant.isFavourite));
+            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, true, variant.isFavourite));
+        }
+    }
+
+    private void gatherFavourites()
+    {
+        radialFavourites = new ArrayList<>();
+        radialFavourites.add(MorphVariant.createPlayerMorph(Minecraft.getInstance().player.getGameProfile().getId(), true));
+        radialFavourites.get(0).thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
+
+        PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
+        for(MorphVariant morph : morphData.morphs)
+        {
+            if(morph.hasFavourite())
+            {
+                for(MorphVariant.Variant variant : morph.variants)
+                {
+                    if(variant.isFavourite)
+                    {
+                        radialFavourites.add(morph.getAsVariant(variant));
+                    }
+                }
+            }
+        }
     }
 
     private void shiftIndexSelector(boolean isDown, boolean isHori)
@@ -291,7 +411,7 @@ public class HudHandler
         indexChangeTime = 0;
     }
 
-    private void drawSelector(MatrixStack stack, float partialTicks, MainWindow window) //TODO fix the hats not synching when you are morphed.
+    private void drawSelector(MatrixStack stack, float partialTick, MainWindow window)
     {
         Minecraft mc = Minecraft.getInstance();
 
@@ -304,7 +424,7 @@ public class HudHandler
 
         double size = 50 * Morph.configClient.selectorScale;
 
-        float outProg = EntityHelper.sineifyProgress(MathHelper.clamp((showSelector ? ((showTime + partialTicks) / SHOW_SELECTOR_TIME) : (showTime - partialTicks) / SHOW_SELECTOR_TIME), 0F, 1F));
+        float outProg = EntityHelper.sineifyProgress(MathHelper.clamp((showSelector ? ((showTime + partialTick) / SHOW_SELECTOR_TIME) : (showTime - partialTick) / SHOW_SELECTOR_TIME), 0F, 1F));
 
         int top = Morph.configClient.selectorDistanceFromTop;
 
@@ -312,7 +432,7 @@ public class HudHandler
 
         PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
 
-        float indexChangeTimeProg = EntityHelper.sineifyProgress(MathHelper.clamp((indexChangeTime + partialTicks) / INDEX_TIME, 0F, 1F));
+        float indexChangeTimeProg = EntityHelper.sineifyProgress(MathHelper.clamp((indexChangeTime + partialTick) / INDEX_TIME, 0F, 1F));
 
         //Draw the vertical stack
         double indexVertProg = (lastIndexVert + (indexVert - lastIndexVert) * indexChangeTimeProg);
@@ -358,7 +478,7 @@ public class HudHandler
         else
         {
             currentMorph = MorphVariant.createPlayerMorph(player.getGameProfile().getId(), true);
-
+            currentMorph.thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
         }
 
         for(int i = firstMorphIndex; i < lastMorphIndex; i++)
@@ -527,6 +647,164 @@ public class HudHandler
         RenderSystem.enableAlphaTest();
     }
 
+    private void drawRadial(MatrixStack stack, float partialTick, MainWindow window)
+    {
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableAlphaTest();
+
+        Minecraft mc = Minecraft.getInstance();
+
+        double diameter = Math.min(window.getScaledWidth(), window.getScaledHeight()) * Morph.configClient.radialScale;
+        double radius = diameter / 2D;
+
+        double radialProg = EntityHelper.sineifyProgress(MathHelper.clamp((radialTime + partialTick) / RADIAL_TIME, 0F, 1F));
+        double radialDist = radius * radialProg;
+        float textScale = (float)radius / 96.375F;
+        float deadzoneScale = 0.55F;
+        float deadzoneSize = (float)radius * deadzoneScale;
+
+        double distanceFromDeadzone = getMouseDistanceFromCenter(window) - deadzoneSize;
+
+        float bonusScale = MathHelper.clamp((float)(distanceFromDeadzone / (radius * (1F - deadzoneScale) * 0.5F)), 0F, 1F);
+
+        double centerX = window.getScaledWidth() / 2D;
+        double centerY = window.getScaledHeight() / 2D;
+
+        float zLevel = 0F;
+
+        int slices = mc.gameSettings.graphicFanciness == GraphicsFanciness.FAST ? 30 : 100;
+
+        stack.push();
+        stack.translate(centerX, centerY, zLevel);
+        Matrix4f matrix = stack.getLast().getMatrix();
+        RenderSystem.disableTexture();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+        for(int i = 0; i <= slices; i++)
+        {
+            double angle = Math.PI * 2 * i / slices;
+            bufferbuilder.pos(matrix, (float)(Math.cos(angle) * radialDist), (float)(Math.sin(angle) * radialDist), 0).color(0, 0, 0, 150).endVertex();
+            bufferbuilder.pos(matrix, (float)(Math.cos(angle) * radialDist * deadzoneScale), (float)(Math.sin(angle) * radialDist * deadzoneScale), 0).color(0, 0, 0, 150).endVertex();
+        }
+        tessellator.draw();
+        RenderSystem.enableTexture();
+
+        TranslationTextComponent catText = new TranslationTextComponent(radialMode == RadialMode.FAVOURITE ? "morph.key.favourite" : "morph.key.ability");
+
+        stack.push();
+        stack.translate(0F, 0F, 300F);
+        stack.scale(textScale, textScale, 1F);
+        int textWidth = mc.fontRenderer.getStringPropertyWidth(catText);
+        mc.fontRenderer.drawTextWithShadow(stack, catText, -textWidth / 2F, -mc.fontRenderer.FONT_HEIGHT / 2F, 0xFFFFFF);
+        stack.pop();
+
+        if(radialMode == RadialMode.FAVOURITE)
+        {
+            PlayerEntity player = mc.player;
+
+            MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
+
+            MorphVariant currentMorph;
+            if(info.isMorphed())
+            {
+                currentMorph = info.nextState.variant;
+            }
+            else
+            {
+                currentMorph = MorphVariant.createPlayerMorph(player.getGameProfile().getId(), true);
+                currentMorph.thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
+            }
+
+            for(int i = 0; i < radialFavourites.size(); i++)
+            {
+                MorphVariant variant = radialFavourites.get(i);
+                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+
+                LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == getSelectedIndex(radialFavourites.size());
+
+                float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
+
+                float entScale = 0.4F * (1F / Math.max(1F, entSize)) * (float)(radialProg * textScale);
+
+                if(isSelectedIndex)
+                {
+                    entScale += 0.1F * bonusScale;
+                }
+
+                double angle = Math.toRadians(90F + (360F * i / radialFavourites.size()));
+
+                RenderSystem.pushMatrix();
+                RenderSystem.translated(0F, radialDist * 0.1F, 0F);
+                renderMorphEntity(living, centerX - (Math.cos(angle) * radialDist * 0.775F), centerY - (float)(Math.sin(angle) * radialDist * 0.775F), zLevel + 50F, entScale);
+                RenderSystem.popMatrix();
+            }
+
+            for(int i = 0; i < radialFavourites.size(); i++)
+            {
+                MorphVariant variant = radialFavourites.get(i);
+                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+
+                LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == getSelectedIndex(radialFavourites.size());
+
+                double angle = Math.toRadians(90F + (360F * i / radialFavourites.size()));
+
+                IFormattableTextComponent text;
+
+                EntityType<?> value = ForgeRegistries.ENTITIES.getValue(variant.id);
+                if(value != null)
+                {
+                    if(!living.getName().equals(value.getName())) //has a custom name
+                    {
+                        text = living.getName().deepCopy();
+                        text.setStyle(text.getStyle().setItalic(true));
+                    }
+                    else
+                    {
+                        text = new TranslationTextComponent(value.getTranslationKey());
+                    }
+                }
+                else
+                {
+                    text = new TranslationTextComponent("morph.morph.type.unknown");
+                }
+
+                if(variant.thisVariant.identifier.equals(currentMorph.thisVariant.identifier))
+                {
+                    text.setStyle(text.getStyle().setFormatting(TextFormatting.GOLD));
+                }
+                else if(isSelectedIndex)
+                {
+                    text.setStyle(text.getStyle().setFormatting(TextFormatting.YELLOW));
+                }
+                else
+                {
+                    text.setStyle(text.getStyle().setFormatting(TextFormatting.WHITE));
+                }
+
+                float scale = 0.5F * (float)(radialProg * textScale);
+                stack.push();
+                stack.translate(0F, radialDist * 0.1F + mc.fontRenderer.FONT_HEIGHT / 1.75F * textScale, 300F);
+                stack.scale(scale, scale, 1F);
+                mc.fontRenderer.drawTextWithShadow(stack, text, (float)(-(Math.cos(angle) * radialDist * 0.775F) / scale - mc.fontRenderer.getStringPropertyWidth(text) / 2F), (float)(-Math.sin(angle) * radialDist * 0.775F / scale), 0xFFFFFF);
+                stack.pop();
+            }
+        }
+
+        stack.pop();
+
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableAlphaTest();
+    }
+
     private void renderMorphEntity(LivingEntity livingEntity, double x, double y, double z, float scale)
     {
         RenderSystem.enableDepthTest();
@@ -556,9 +834,89 @@ public class HudHandler
         RenderSystem.enableAlphaTest();
     }
 
+    private double getMouseDistanceFromCenter(MainWindow window)
+    {
+        double centerX = window.getScaledWidth() / 2D;
+        double centerY = window.getScaledHeight() / 2D;
+
+        Minecraft mc = Minecraft.getInstance();
+
+        double posX = mc.mouseHelper.mouseX * window.getScaledWidth() / window.getWidth() - centerX;
+        double posY = mc.mouseHelper.mouseY * window.getScaledHeight() / window.getHeight() - centerY;
+
+        return Math.sqrt(posX * posX + posY * posY);
+    }
+
+    private boolean isMouseOutsideRadialDeadZone(MainWindow window)
+    {
+        double diameter = Math.min(window.getScaledWidth(), window.getScaledHeight()) * Morph.configClient.radialScale;
+        double deadZoneBorder = diameter / 2D * 0.55F;
+
+        return getMouseDistanceFromCenter(window) > deadZoneBorder;
+    }
+
+    private float getMouseAngleFromCenter(MainWindow window)
+    {
+        double centerX = window.getScaledWidth() / 2D;
+        double centerY = window.getScaledHeight() / 2D;
+
+        Minecraft mc = Minecraft.getInstance();
+
+        double posX = mc.mouseHelper.mouseX * window.getScaledWidth() / window.getWidth() - centerX;
+        double posY = mc.mouseHelper.mouseY * window.getScaledHeight() / window.getHeight() - centerY;
+
+        return (float)(Math.toDegrees(Math.atan2(posY, posX)) + 90F + 360F) % 360F;
+    }
+
+    private int getSelectedIndex(int count)
+    {
+        float angle = getMouseAngleFromCenter(Minecraft.getInstance().getMainWindow());
+
+        float segment = 360F / count;
+
+        float startSeg = segment / 2F;
+
+        for(int i = 0; i < count; i++)
+        {
+            if(angle < startSeg)
+            {
+                return i;
+            }
+            startSeg += segment;
+        }
+
+        return 0; //angle is larger than (360 - (segment / 2)), it's back to index of 0
+    }
+
     private boolean shouldRenderSelector()
     {
         return showSelector || showTime > 0;
+    }
+
+    public void clean()
+    {
+        morphStates.clear();
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.START)
+        {
+            if((showSelector || showRadial) && Minecraft.getInstance().currentScreen instanceof IngameMenuScreen)
+            {
+                Minecraft.getInstance().displayGuiScreen(null);
+
+                if(showSelector)
+                {
+                    closeSelector();
+                }
+                else
+                {
+                    closeRadial();
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -571,38 +929,73 @@ public class HudHandler
     }
 
     @SubscribeEvent
+    public void onIngameGuiPre(RenderGameOverlayEvent.Pre event)
+    {
+        if(event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && showRadial)
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void onIngameGuiPost(RenderGameOverlayEvent.Post event)
     {
-        if(event.getType() == RenderGameOverlayEvent.ElementType.ALL && shouldRenderSelector()) //we render our selector here
+        if(event.getType() == RenderGameOverlayEvent.ElementType.ALL) //we render our selector here
         {
-            drawSelector(event.getMatrixStack(), event.getPartialTicks(), event.getWindow());
+            if(shouldRenderSelector())
+            {
+                drawSelector(event.getMatrixStack(), event.getPartialTicks(), event.getWindow());
+            }
+            if(showRadial)
+            {
+                drawRadial(event.getMatrixStack(), event.getPartialTicks(), event.getWindow());
+            }
         }
     }
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event)
     {
-        clean();
+        if(event.getWorld().isRemote())
+        {
+            clean();
+        }
     }
 
     @SubscribeEvent
     public void onRawMouseInput(InputEvent.RawMouseEvent event)
     {
-        if(Morph.configClient.selectorAllowMouseControl && showSelector && event.getAction() == GLFW.GLFW_PRESS)
+        if(Morph.configClient.selectorAllowMouseControl && event.getAction() == GLFW.GLFW_PRESS)
         {
-            event.setCanceled(true);
+            if(showSelector)
+            {
+                event.setCanceled(true);
 
-            if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT)
-            {
-                confirmSelector();
+                if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+                {
+                    confirmSelector();
+                }
+                else if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+                {
+                    closeSelector();
+                }
+                else if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
+                {
+                    toggleFavourite();
+                }
             }
-            else if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+            else if(showRadial)
             {
-                closeSelector();
-            }
-            else if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
-            {
-                toggleFavourite();
+                event.setCanceled(true);
+
+                if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+                {
+                    confirmRadial();
+                }
+                else if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT || event.getButton() == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
+                {
+                    closeRadial();
+                }
             }
         }
     }
@@ -618,8 +1011,9 @@ public class HudHandler
         }
     }
 
-    public void clean()
+    public enum RadialMode
     {
-        morphStates.clear();
+        FAVOURITE,
+        ABILITY
     }
 }
