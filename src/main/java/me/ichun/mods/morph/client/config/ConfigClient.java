@@ -15,13 +15,22 @@ public class ConfigClient extends ConfigBase
     @Prop(min = 0)
     public int selectorDistanceFromTop = 30;
 
-    @Prop(min = 0, max = 20)
+    @Prop(min = 0, max = 30)
     public double selectorScale = 1D;
 
     public boolean selectorAllowMouseControl = true;
 
     @Prop(min = 0D, max = 1D)
     public double radialScale = 0.75D;
+
+    @Prop(min = 0, max = 3)
+    public int acquisitionPlayAnimation = 3; //0 = no, 1 = morph, 2 = biomass, 3 = all
+
+    @Prop(min = 3, max = 100)
+    public int acquisitionTendrilMaxChild = 10; //also estimated ticks to get to entity at max
+
+    @Prop(min = 0, max = 100)
+    public int acquisitionTendrilPartOpacity = 5;
 
     public ConfigClient()
     {

@@ -10,7 +10,7 @@ public class ClassicMode implements MorphMode
     @Override
     public void handleMurderEvent(ServerPlayerEntity player, LivingEntity living)
     {
-
+        //TODO
     }
 
     @Override

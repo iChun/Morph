@@ -31,6 +31,7 @@ public class MorphVariant implements Comparable<MorphVariant>
 {
     public static final int IDENTIFIER_LENGTH = 20;
     public static final String IDENTIFIER_DEFAULT_PLAYER_STATE = "default_player_state";
+    public static final String NBT_PLAYER_ID = "Morph_Player_ID";
 
     @Nonnull
     public ResourceLocation id; // the ID of the morph
@@ -357,7 +358,7 @@ public class MorphVariant implements Comparable<MorphVariant>
 
         if(playerId != null)
         {
-            entInstance.getPersistentData().putUniqueId("Morph_Player_ID", playerId);
+            entInstance.getPersistentData().putUniqueId(NBT_PLAYER_ID, playerId);
         }
 
         return entInstance;

@@ -24,6 +24,9 @@ public class ConfigServer extends ConfigBase
 
     private List<String> disabledMobs = new ArrayList<>();
 
+    public boolean aggressiveSizeRecalculation = false;
+
+    @CategoryDivider(name = "gameplay")
     private List<String> supportedAttributes = Util.make(new ArrayList<>(), list -> {
         list.add("minecraft:generic.max_health;more");
         list.add("minecraft:generic.knockback_resistance;more");
@@ -40,7 +43,7 @@ public class ConfigServer extends ConfigBase
 
     public boolean morphClassic = false;
 
-    public boolean aggressiveSizeRecalculation = false;
+    public boolean biomassSkinWhilstInvisible = true;
 
     //======================================================//
 

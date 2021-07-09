@@ -9,11 +9,14 @@ import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketRequestMorphInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -51,6 +54,15 @@ public class EventHandlerClient
 
                 MorphRenderHandler.setShadowSize(event.getRenderer(), info, event.getPartialRenderTick());
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderNameplate(RenderNameplateEvent event)
+    {
+        if(MorphRenderHandler.denyRenderNameplate || event.getEntity().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID) && !MorphRenderHandler.isRenderingMorph)
+        {
+            event.setResult(Event.Result.DENY);
         }
     }
 

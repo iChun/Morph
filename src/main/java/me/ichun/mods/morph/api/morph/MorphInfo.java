@@ -122,7 +122,7 @@ public class MorphInfo
 
     public float getMorphProgress(float partialTick)
     {
-        if(prevState == null || nextState == null || morphingTime == 0)
+        if(prevState == null || nextState == null || morphingTime <= 0)
         {
             return 1.0F;
         }
@@ -313,6 +313,31 @@ public class MorphInfo
         }
 
         return activeMorph;
+    }
+
+    public LivingEntity getActiveAppearanceEntity(float partialTick)
+    {
+        if(getMorphProgress(partialTick) < 1F) //morphing
+        {
+            float transitionProg = getTransitionProgressLinear(partialTick);
+            if(transitionProg <= 0F)
+            {
+                return prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+            }
+            else if(transitionProg >= 1F)
+            {
+                return nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+            }
+            return null; //mid transition, no active appearance.
+        }
+        else if(nextState != null) //is morphed
+        {
+            return nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+        }
+        else
+        {
+            return player;
+        }
     }
 
     @Nullable

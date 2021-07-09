@@ -8,6 +8,7 @@ import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
+import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -43,8 +44,11 @@ public class MorphRenderHandler
     public static ModelRendererCapture currentCapture = null; //Are we capturing ModelRenderer renders?
 
     public static boolean isRenderingMorph = false;
+    public static boolean denyRenderNameplate = false;
 
-    public static void renderMorphInfo(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
+    //TODO add stats eg total morphs/total biomass/biomass lost etc
+    //TODO config that forces nameplate rendering when morphed
+    public static void renderMorphInfo(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick) //TODO test the nameplate for named mods, maybe add a config to rename the mob
     {
         isRenderingMorph = true;
 
@@ -79,12 +83,29 @@ public class MorphRenderHandler
         isRenderingMorph = false;
     }
 
-    private static void renderLiving(MorphState state, LivingEntity livingInstance, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
+    private static void renderLiving(MorphState state, LivingEntity living, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick) //also captures the shadow size
+    {
+        EntityRenderer<? super LivingEntity> livingRenderer = Minecraft.getInstance().getRenderManager().getRenderer(living);
+        if(livingRenderer != null)
+        {
+            renderLiving(livingRenderer, living, stack, buffer, light, partialTick);
+            if (living instanceof MobEntity && living.isChild()) //Checked in EntityRendererManager
+            {
+                state.renderedShadowSize = livingRenderer.shadowSize * 0.5F;
+            }
+            else
+            {
+                state.renderedShadowSize = livingRenderer.shadowSize;
+            }
+        }
+    }
+
+    public static void renderLiving(EntityRenderer<? super LivingEntity> renderer, LivingEntity living, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(livingInstance instanceof AbstractClientPlayerEntity)
+        if(living instanceof AbstractClientPlayerEntity)
         {
-            AbstractClientPlayerEntity player = (AbstractClientPlayerEntity)livingInstance;
+            AbstractClientPlayerEntity player = (AbstractClientPlayerEntity)living;
             if(mc.getConnection().getPlayerInfo(player.getGameProfile().getId()) == null) //we have to assign a NetworkPlayerInfo for the player skin to render.
             {
                 //Silly Mojang and their privates
@@ -105,23 +126,10 @@ public class MorphRenderHandler
             //TODO do I have to handle different gamemodes?
         }
 
-        EntityRenderer livingRenderer = mc.getRenderManager().getRenderer(livingInstance);
-
-        if(livingRenderer != null)
-        {
-            float yaw = MathHelper.lerp(partialTick, livingInstance.prevRotationYaw, livingInstance.rotationYaw);
-            stack.push();
-            livingRenderer.render(livingInstance, yaw, partialTick, stack, buffer, light);
-            if (livingInstance instanceof MobEntity && livingInstance.isChild()) //Checked in EntityRendererManager
-            {
-                state.renderedShadowSize = livingRenderer.shadowSize * 0.5F;
-            }
-            else
-            {
-                state.renderedShadowSize = livingRenderer.shadowSize;
-            }
-            stack.pop();
-        }
+        float yaw = MathHelper.lerp(partialTick, living.prevRotationYaw, living.rotationYaw);
+        stack.push();
+        renderer.render(living, yaw, partialTick, stack, buffer, light);
+        stack.pop();
     }
 
     public static void renderTransitionState(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float partialTick, float transitionProgress, float skinAlpha)
@@ -185,11 +193,22 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
+                LivingEntity livingInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                boolean isInvisible = livingInstance.isInvisible();
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    livingInstance.setInvisible(false);
+                }
+                renderLiving(info.prevState, livingInstance, stack, buffer, light, partialTick);
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    livingInstance.setInvisible(true);
+                }
 
                 currentCapture = null; //reset before we do anything else
 
-                prevModel.render(buffer, light, overlay, skinAlpha);
+                prevModel.render(null, buffer, light, overlay, skinAlpha);
             }
             else if(transitionProgress >= 1F)
             {
@@ -203,11 +222,22 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
+                LivingEntity livingInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                boolean isInvisible = livingInstance.isInvisible();
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    livingInstance.setInvisible(false);
+                }
+                renderLiving(info.nextState, livingInstance, stack, buffer, light, partialTick);
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    livingInstance.setInvisible(true);
+                }
 
                 currentCapture = null; //reset before we do anything else
 
-                nextModel.render(buffer, light, overlay, skinAlpha);
+                nextModel.render(null, buffer, light, overlay, skinAlpha);
             }
             else
             {
@@ -221,7 +251,18 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
+                LivingEntity prevLivingInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                boolean isInvisible = prevLivingInstance.isInvisible();
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    prevLivingInstance.setInvisible(false);
+                }
+                renderLiving(info.prevState, prevLivingInstance, stack, buffer, light, partialTick);
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    prevLivingInstance.setInvisible(true);
+                }
 
                 if(nextModel == null)
                 {
@@ -233,24 +274,35 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
+                LivingEntity nextLivingInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+
+                isInvisible = nextLivingInstance.isInvisible();
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    nextLivingInstance.setInvisible(false);
+                }
+                renderLiving(info.nextState, nextLivingInstance, stack, buffer, light, partialTick);
+                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
+                {
+                    nextLivingInstance.setInvisible(true);
+                }
 
                 currentCapture = null; //reset before we do anything else
 
                 stack.push();
-                stack.translate(0F, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
+                stack.translate(0F, prevLivingInstance.getHeight() / 2F, 0F);
                 MatrixStack.Entry prevMid = stack.getLast();
                 stack.pop();
 
                 stack.push();
-                stack.translate(0F, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getHeight() / 2F, 0F);
+                stack.translate(0F, nextLivingInstance.getHeight() / 2F, 0F);
                 MatrixStack.Entry nextMid = stack.getLast();
                 stack.pop();
 
                 ModelRendererCapture transitionCapture = new ModelRendererCapture();
                 transitionCapture.infos = prevModel.combineTowards(prevMid, nextMid, nextModel, transitionProgress);
 
-                transitionCapture.render(buffer, light, overlay, skinAlpha);
+                transitionCapture.render(null, buffer, light, overlay, skinAlpha);
             }
         }
     }
@@ -280,9 +332,9 @@ public class MorphRenderHandler
 
                 for(Project.Part.Box box : part.boxes) //to prevent z-fighting
                 {
-                    box.expandX += 0.001F;
-                    box.expandY += 0.001F;
-                    box.expandZ += 0.001F;
+                    box.expandX += 0.0015F;
+                    box.expandY += 0.0015F;
+                    box.expandZ += 0.0015F;
                 }
             }
         }
@@ -418,18 +470,25 @@ public class MorphRenderHandler
             return part;
         }
 
-        public void render(IRenderTypeBuffer buffer, int light, int overlay, float skinAlpha)
+        public void render(MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float skinAlpha)
         {
+            render(stack, buffer.getBuffer(RenderType.getEntityTranslucent(MorphHandler.INSTANCE.getMorphSkinTexture())), light, overlay, skinAlpha);
+        }
+
+        public void render(MatrixStack stack, IVertexBuilder vertexBuilder, int light, int overlay, float skinAlpha)
+        {
+            MatrixStack newStack = stack != null ? stack : new MatrixStack();
             for(CaptureInfo info : infos)
             {
-                MatrixStack newStack = new MatrixStack();
+                newStack.push();
                 MatrixStack.Entry entLast = newStack.getLast();
                 MatrixStack.Entry correctorLast = info.e;
 
                 entLast.getMatrix().mul(correctorLast.getMatrix());
                 entLast.getNormal().mul(correctorLast.getNormal());
 
-                info.createAndRender(newStack, buffer.getBuffer(RenderType.getEntityTranslucent(MorphHandler.INSTANCE.getMorphSkinTexture())), light, overlay, 1F, 1F, 1F, skinAlpha);
+                info.createAndRender(newStack, vertexBuilder, light, overlay, 1F, 1F, 1F, skinAlpha);
+                newStack.pop();
             }
         }
 

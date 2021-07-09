@@ -285,6 +285,11 @@ public class HudHandler
     {
         showSelector = false;
 
+        if(Minecraft.getInstance().currentScreen instanceof IngameMenuScreen)
+        {
+            Minecraft.getInstance().displayGuiScreen(null);
+        }
+
         //makes the horizontal slider slide back in
         PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
         indexHori = morphData.morphs.get(indexVert).variants.size() - 1;
@@ -316,6 +321,11 @@ public class HudHandler
     {
         showRadial = false;
         radialMode = null;
+
+        if(Minecraft.getInstance().currentScreen instanceof IngameMenuScreen)
+        {
+            Minecraft.getInstance().displayGuiScreen(null);
+        }
 
         Minecraft.getInstance().mouseHelper.grabMouse();
     }

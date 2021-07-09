@@ -6,12 +6,31 @@
   "config.morph.prop.morphTime.desc": "Time (in ticks) for a morph to complete.",
   "config.morph.prop.disabledMobs.name": "Disabled Mobs",
   "config.morph.prop.disabledMobs.desc": "Resource Location name for Mob types you cannot acquire biomass or morphs from.",
+  "config.morph.prop.aggressiveSizeRecalculation.name": "Aggressive Size Recalculation",
+  "config.morph.prop.aggressiveSizeRecalculation.desc": "Morph normally only recalculates size when it has to. This makes Morph recalculate the player size every tick whilst morphed.",
+
   "config.morph.prop.supportedAttributes.name": "Supported Attributes",
   "config.morph.prop.supportedAttributes.desc": "Which attributes are supported by more, and how are values better. Format: <Resource Name of Attribute>;<more/less>. EG: \"minecraft:generic.max_health;more\".",
   "config.morph.prop.morphClassic.name": "Morph Classic",
   "config.morph.prop.morphClassic.desc": "Enable this for Morph Classic. No Biomass or Morph restrictions.",
-  "config.morph.prop.aggressiveSizeRecalculation.name": "Aggressive Size Recalculation",
-  "config.morph.prop.aggressiveSizeRecalculation.desc": "Morph normally only recalculates size when it has to. This makes Morph recalculate the player size every tick whilst morphed.",
+  "config.morph.prop.biomassSkinWhilstInvisible.name": "Biomass Skin Whilst Invisible",
+  "config.morph.prop.biomassSkinWhilstInvisible.desc": "The Biomass Skin is meant to be resistant to invisibility. Turning this off disables that.",
+
+  "config.morph.prop.selectorDistanceFromTop.name": "Selector - Distance From Top",
+  "config.morph.prop.selectorDistanceFromTop.desc": "The number of (scaled) pixels that the quick selector's selected option appears from the top of the screen.",
+  "config.morph.prop.selectorScale.name": "Selector - Scale",
+  "config.morph.prop.selectorScale.desc": "The scale of the selector (fractionally). Smaller numbers to scale down, larger numbers to scale up.",
+  "config.morph.prop.selectorAllowMouseControl.name": "Selector - Allow Mouse Control",
+  "config.morph.prop.selectorAllowMouseControl.desc": "Allow control of the selector using the mouse. Also affects the radial menus.",
+  "config.morph.prop.radialScale.name": "Radial Menu - Scale",
+  "config.morph.prop.radialScale.desc": "The scale of the radial menu, in ratio to the size of the game.",
+  "config.morph.prop.acquisitionPlayAnimation.name": "Acquisition - Play Animation",
+  "config.morph.prop.acquisitionPlayAnimation.desc": "Plays the \"acquisition\" animation. 0 = Disable, 1 = Morph only, 2 = Biomass only, 3 = Biomass and Morph",
+  "config.morph.prop.acquisitionTendrilMaxChild.name": "Acquisition - Max Tendril Parts",
+  "config.morph.prop.acquisitionTendrilMaxChild.desc": "The (approximate) maximum part count for a tendril. Also partially dictates the length (in ticks) of the animation. Higher = More parts, slower animation, Lower = Less parts, faster animation.",
+  "config.morph.prop.acquisitionTendrilPartOpacity.name": "Acquisition - Tendril Opacity",
+  "config.morph.prop.acquisitionTendrilPartOpacity.desc": "In first person, tendrils closer to you are partially opaque to reduce obscuring of your vision. Increase this number to keep tendrils partially transparent for longer distances.",
+
 
   "subtitles.morph.morph": "Entity morphing",
 
