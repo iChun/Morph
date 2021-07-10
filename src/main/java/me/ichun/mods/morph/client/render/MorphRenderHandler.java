@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.morph.api.morph.MorphInfo;
@@ -62,13 +63,13 @@ public class MorphRenderHandler
             {
                 MorphState.syncEntityWithPlayer(info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
                 renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
-                skinProg = MorphInfo.sineifyProgress(morphProgress / 0.125F);
+                skinProg = EntityHelper.sineifyProgress(morphProgress / 0.125F);
             }
             else if(transitionProgress >= 1F)
             {
                 MorphState.syncEntityWithPlayer(info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
                 renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
-                skinProg = 1F - MorphInfo.sineifyProgress((morphProgress - 0.875F) / 0.125F);
+                skinProg = 1F - EntityHelper.sineifyProgress((morphProgress - 0.875F) / 0.125F);
             }
 
             int overlay = LivingRenderer.getPackedOverlay(player, 0.0F); //player usually default to 0.0F;

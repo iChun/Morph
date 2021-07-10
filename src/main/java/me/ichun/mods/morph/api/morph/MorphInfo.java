@@ -1,6 +1,8 @@
 package me.ichun.mods.morph.api.morph;
 
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.mixin.LivingEntityInvokerMixin;
+import me.ichun.mods.morph.client.entity.EntityBiomassAbility;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntitySize;
@@ -47,6 +49,8 @@ public class MorphInfo
 
     @OnlyIn(Dist.CLIENT)
     public MorphRenderHandler.MorphTransitionState transitionState;
+    @OnlyIn(Dist.CLIENT)
+    public EntityBiomassAbility entityBiomassAbility;
 
     public MorphInfo(PlayerEntity player)
     {
@@ -109,6 +113,14 @@ public class MorphInfo
             if(nextState.variant.id.equals(EntityType.PLAYER.getRegistryName()) && nextState.variant.thisVariant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE))
             {
                 nextState = null;
+            }
+        }
+
+        if(player.world.isRemote)
+        {
+            if(entityBiomassAbility != null && entityBiomassAbility.removed)
+            {
+                entityBiomassAbility = null; //have it, GC
             }
         }
 
@@ -275,6 +287,10 @@ public class MorphInfo
                 }
             }
         }
+        else
+        {
+            prevState = null;
+        }
 
         if(tag.contains("nextState"))
         {
@@ -283,6 +299,10 @@ public class MorphInfo
             {
                 prevState = nextState = null;
             }
+        }
+        else
+        {
+            nextState = null;
         }
 
         morphTime = tag.getInt("morphTime");
@@ -338,6 +358,56 @@ public class MorphInfo
         {
             return player;
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getMorphSkinAlpha(float partialTick)
+    {
+        return Math.max(getMorphingSkinAlpha(partialTick), getAbilitySkinAlpha(partialTick));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private float getMorphingSkinAlpha(float partialTick) //similar code in MorphRenderHelper.renderMorphInfo
+    {
+        float morphProgress = getMorphProgress(partialTick);
+        if(morphProgress < 1F)
+        {
+            float transitionProgress = getTransitionProgressSine(partialTick);
+            if(transitionProgress <= 0F)
+            {
+                return sineifyProgress(morphProgress / 0.125F);
+            }
+            else if(transitionProgress >= 1F)
+            {
+                return 1F - sineifyProgress((morphProgress - 0.875F) / 0.125F);
+            }
+            return 1F;
+        }
+
+        return 0F;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private float getAbilitySkinAlpha(float partialTick)
+    {
+        if(entityBiomassAbility != null)
+        {
+            float alpha;
+            if(entityBiomassAbility.age < entityBiomassAbility.fadeTime)
+            {
+                alpha = EntityHelper.sineifyProgress(MathHelper.clamp((entityBiomassAbility.age + partialTick) / entityBiomassAbility.fadeTime, 0F, 1F));
+            }
+            else if(entityBiomassAbility.age >= entityBiomassAbility.fadeTime + entityBiomassAbility.solidTime)
+            {
+                alpha = EntityHelper.sineifyProgress(1F - MathHelper.clamp((entityBiomassAbility.age - (entityBiomassAbility.fadeTime + entityBiomassAbility.solidTime) + partialTick) / entityBiomassAbility.fadeTime, 0F, 1F));
+            }
+            else
+            {
+                alpha = 1F;
+            }
+            return alpha;
+        }
+        return 0F;
     }
 
     @Nullable

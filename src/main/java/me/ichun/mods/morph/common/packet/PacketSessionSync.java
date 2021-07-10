@@ -22,7 +22,7 @@ public class PacketSessionSync extends AbstractPacket
     }
 
     @Override
-    public void writeTo(PacketBuffer buf)
+    public void writeTo(PacketBuffer buf) //TODO switch to the biomass upgrade path
     {
         buf.writeInt(upgrades.size());
 
@@ -48,11 +48,11 @@ public class PacketSessionSync extends AbstractPacket
     public void process(NetworkEvent.Context context)
     {
         context.enqueueWork(() -> {
-            MorphHandler.BIOMASS_UPGRADES_SESSION.clear();
-            for(BiomassUpgradeInfo upgrade : upgrades)
-            {
-                MorphHandler.BIOMASS_UPGRADES_SESSION.put(upgrade.id, upgrade);
-            }
+//            MorphHandler.BIOMASS_UPGRADES_SESSION.clear();
+//            for(BiomassUpgradeInfo upgrade : upgrades)
+//            {
+//                MorphHandler.BIOMASS_UPGRADES_SESSION.put(upgrade.id, upgrade);
+//            }
         });
     }
 }

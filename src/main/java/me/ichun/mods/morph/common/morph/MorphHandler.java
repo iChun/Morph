@@ -38,8 +38,7 @@ public final class MorphHandler implements IApi
     private static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png"); //call the getter.
 
     public static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
-    public static final HashMap<String, BiomassUpgradeInfo> BIOMASS_UPGRADES = new HashMap<>();
-    public static final HashMap<String, BiomassUpgradeInfo> BIOMASS_UPGRADES_SESSION = new HashMap<>();
+    public static final HashMap<String, BiomassUpgradeInfo> BIOMASS_UPGRADES = new HashMap<>(); //TODO do I want to do it like this?
 
     private MorphMode currentMode;
     private MorphSavedData saveData;
@@ -224,7 +223,7 @@ public final class MorphHandler implements IApi
     @Override
     public BiomassUpgradeInfo getBiomassUpgradeInfo(String id)
     {
-        for(Map.Entry<String, BiomassUpgradeInfo> e : BIOMASS_UPGRADES_SESSION.entrySet())
+        for(Map.Entry<String, BiomassUpgradeInfo> e : BIOMASS_UPGRADES.entrySet())
         {
             if(e.getKey().equals(id))
             {

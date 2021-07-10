@@ -32,9 +32,15 @@ public class RenderEntityBiomassAbility extends EntityRenderer<EntityBiomassAbil
     @Override
     public void render(EntityBiomassAbility ability, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int light)
     {
-        boolean isFirstPerson = ability.player == Minecraft.getInstance().player && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON;
-        if(isFirstPerson || ability.player.removed)
+        if(ability.player.removed)
         {
+            return; //no render
+        }
+
+        boolean isFirstPerson = ability.player == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON;
+        if(isFirstPerson)
+        {
+            MorphHandler.INSTANCE.getMorphInfo(ability.player).entityBiomassAbility = ability; //will be removed by MorphInfo when the entity is invalid/removed
             return; //no render
         }
 

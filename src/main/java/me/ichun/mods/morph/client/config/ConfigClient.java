@@ -32,6 +32,8 @@ public class ConfigClient extends ConfigBase
     @Prop(min = 0, max = 100)
     public int acquisitionTendrilPartOpacity = 5;
 
+    public boolean morphAllowHandOverride = true;
+
     public ConfigClient()
     {
         super(ModLoadingContext.get().getActiveContainer().getModId() + "-client.toml");

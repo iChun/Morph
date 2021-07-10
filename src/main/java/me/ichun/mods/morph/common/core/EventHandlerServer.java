@@ -77,7 +77,8 @@ public class EventHandlerServer
     {
         if(!(event.getPlayer().getServer().isSinglePlayer() && event.getPlayer().getGameProfile().getName().equals(event.getPlayer().getServer().getServerOwner()))) //if the player is not the client in singleplayer
         {
-            Morph.channel.sendTo(new PacketSessionSync(MorphHandler.BIOMASS_UPGRADES_SESSION.values()), (ServerPlayerEntity)event.getPlayer());
+            //TODO update this
+//            Morph.channel.sendTo(new PacketSessionSync(MorphHandler.BIOMASS_UPGRADES_SESSION.values()), (ServerPlayerEntity)event.getPlayer());
         }
         Morph.channel.sendTo(new PacketPlayerData(MorphHandler.INSTANCE.getPlayerMorphData(event.getPlayer()).write(new CompoundNBT())), (ServerPlayerEntity)event.getPlayer());
     }
@@ -104,9 +105,9 @@ public class EventHandlerServer
     }
 
     @SubscribeEvent
-    public void onServerAboutToStart(FMLServerAboutToStartEvent event) //do this early so we do it before the server loads our world save.
+    public void onServerStarting(FMLServerStartingEvent event) //do this early so we do it before the server loads our world save.
     {
-        ResourceHandler.updateServerSession();
+        ResourceHandler.loadBiomassUpgrades();
     }
 
     @SubscribeEvent

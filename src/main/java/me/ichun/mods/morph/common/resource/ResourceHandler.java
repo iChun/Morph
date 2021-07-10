@@ -1,24 +1,23 @@
 package me.ichun.mods.morph.common.resource;
 
 import com.google.gson.*;
+import me.ichun.mods.ichunutil.common.util.IOUtil;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
+import me.ichun.mods.morph.client.render.hand.HandHandler;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
 import net.minecraft.entity.LivingEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class ResourceHandler
 {
@@ -41,16 +40,27 @@ public class ResourceHandler
                 Path extractedMarker = morphDir.resolve("files.extracted");
                 if(!Files.exists(extractedMarker)) //presume we haven't extracted anything yet
                 {
-                    Morph.LOGGER.info("Extracted {} Morph files.", extractFiles(true));
+                    InputStream in = Morph.class.getResourceAsStream("/mobsupport.zip");
+                    if(in != null)
+                    {
+                        Morph.LOGGER.info("Extracted {} Morph-related files.", IOUtil.extractFiles(morphDir, in, true));
+                    }
+                    else
+                    {
+                        Morph.LOGGER.error("Error loading mobsupport.zip. InputStream was null.");
+                    }
 
                     FileUtils.writeStringToFile(extractedMarker.toFile(), "", StandardCharsets.UTF_8);
                 }
 
                 loadNbtModifiers();
-                //TODO mob characteristics/upgrades?
-                loadBiomassUpgrades(); //TODO propagate the upgrades to the players if there are players connected
 
-                updateServerSession();
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> HandHandler::loadHandInfos); //load the hand infos. Only required on the client
+
+                //TODO mob traits/upgrades?
+//                loadBiomassUpgrades(); //TODO propagate the upgrades to the players if there are players connected
+                //TODO just load up the biomass upgrades when server starts. sync with client.
+
             }
             catch(IOException e)
             {
@@ -61,54 +71,9 @@ public class ResourceHandler
         return init;
     }
 
-    public static int extractFiles(boolean overwrite) throws IOException
+    public static Path getMorphDir()
     {
-        int i = 0;
-        InputStream in = Morph.class.getResourceAsStream("/mobsupport.zip");
-        if(in != null)
-        {
-            ZipInputStream zipStream = new ZipInputStream(in);
-            ZipEntry entry = null;
-
-            while((entry = zipStream.getNextEntry()) != null)
-            {
-                Path path = morphDir.resolve(entry.getName());
-                if(!overwrite && Files.exists(path) && Files.size(path) > 3L)
-                {
-                    continue;
-                }
-
-                if(entry.isDirectory())
-                {
-                    if(!Files.exists(path))
-                    {
-                        Files.createDirectories(path);
-                    }
-                }
-                else
-                {
-                    FileOutputStream out = new FileOutputStream(path.toFile());
-
-                    byte[] buffer = new byte[8192];
-                    int len;
-                    while((len = zipStream.read(buffer)) != -1)
-                    {
-                        out.write(buffer, 0, len);
-                    }
-                    out.close();
-
-                    i++;
-                }
-            }
-            zipStream.close();
-        }
-        return i;
-    }
-
-    public static void updateServerSession()
-    {
-        MorphHandler.BIOMASS_UPGRADES_SESSION.clear();
-        MorphHandler.BIOMASS_UPGRADES_SESSION.putAll(MorphHandler.BIOMASS_UPGRADES);
+        return morphDir;
     }
 
     public static void loadBiomassUpgrades()
@@ -177,34 +142,23 @@ public class ResourceHandler
 
         //        serialiseModifiers();
 
-        scourNbtDirectory(morphDir.resolve("nbt"));
-
-        Morph.LOGGER.info("Loaded {} NBT Modifier(s)", MorphHandler.NBT_MODIFIERS.size());
-    }
-
-    private static void scourNbtDirectory(Path path)
-    {
         try
         {
-            if(!Files.exists(path))
-            {
-                Files.createDirectories(path);
-            }
-
-            Files.list(path).forEach(p -> {
-                if(Files.isDirectory(p))
-                {
-                    scourNbtDirectory(p);
-                }
-                else if(p.getFileName().toString().endsWith(".json"))
+            IOUtil.scourDirectoryForFiles(morphDir.resolve("nbt"), p -> {
+                if(p.getFileName().toString().endsWith(".json"))
                 {
                     File file = p.toFile();
                     try
                     {
                         String json = FileUtils.readFileToString(file, "UTF-8");
-                        if(!readNbtJson(json))
+                        if(readNbtJson(json))
+                        {
+                            return true;
+                        }
+                        else
                         {
                             Morph.LOGGER.error("Error reading NBT Modifier file, no forClass: {}", file);
+                            return false;
                         }
                     }
                     catch(IOException | JsonSyntaxException e)
@@ -214,13 +168,15 @@ public class ResourceHandler
                     }
                     catch(ClassNotFoundException ignored){}
                 }
+                return false;
             });
         }
         catch(IOException e)
         {
-            Morph.LOGGER.error("Error reading directory for NBT Modifiers: {}", path);
             e.printStackTrace();
         }
+
+        Morph.LOGGER.info("Loaded {} NBT Modifier(s)", MorphHandler.NBT_MODIFIERS.size());
     }
 
     private static boolean readNbtJson(String json) throws ClassNotFoundException, JsonSyntaxException

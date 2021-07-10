@@ -16,6 +16,7 @@ import java.util.HashSet;
 public class NbtModifier
 {
     //Used for serialisation
+    public String author;
     @Nonnull
     public String forClass = "Class Name Here";
     public ArrayList<Modifier> modifiers = new ArrayList<>();
