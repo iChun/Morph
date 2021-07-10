@@ -9,7 +9,8 @@
     "PlayerEntityMixin"
   ],
   "client": [
-    "ModelRendererMixin"
+    "ModelRendererMixin",
+    "PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

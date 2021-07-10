@@ -3,6 +3,7 @@ package me.ichun.mods.morph.client.config;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
+import me.ichun.mods.morph.client.render.hand.HandHandler;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -37,6 +38,12 @@ public class ConfigClient extends ConfigBase
     public ConfigClient()
     {
         super(ModLoadingContext.get().getActiveContainer().getModId() + "-client.toml");
+    }
+
+    @Override
+    public void onConfigLoaded()
+    {
+        HandHandler.setState(morphAllowHandOverride);
     }
 
     @Nonnull
