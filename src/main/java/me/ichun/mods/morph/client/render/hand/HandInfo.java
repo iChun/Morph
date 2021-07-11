@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.HandSide;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 @OnlyIn(Dist.CLIENT)
 public class HandInfo
 {
-    public String author;
+    public String author; //Used for credit.
     public String forClass = "THIS SHOULD BE FILLED UP";
 
     public ModelRendererMarker[] leftHandParts;
@@ -72,16 +73,44 @@ public class HandInfo
         return true; //model class has been set, we've been set up.
     }
 
+    public ModelRenderer[] getHandParts(HandSide side, EntityModel model) //Objects in array should not be null but can be
+    {
+        ModelRendererMarker[] markers = side == HandSide.LEFT ? leftHandParts : rightHandParts;
+
+        ModelRenderer[] parts = new ModelRenderer[markers.length];
+
+        for(int i = 0; i < parts.length; i++)
+        {
+            parts[i] = markers[i].getModelRenderer(model);
+        }
+
+        return parts;
+    }
+
+    public MatrixStack[] getPlacementCorrectors(HandSide side) //Objects in array can be null
+    {
+        ModelRendererMarker[] markers = side == HandSide.LEFT ? leftHandParts : rightHandParts;
+
+        MatrixStack[] stacks = new MatrixStack[markers.length];
+
+        for(int i = 0; i < stacks.length; i++)
+        {
+            stacks[i] = markers[i].getPlacementCorrectorStack();
+        }
+
+        return stacks;
+    }
+
     @OnlyIn(Dist.CLIENT)
     public static class ModelRendererMarker
     {
-        public String fieldName = null;
-        public HeadInfo.PlacementCorrector[] placementCorrectors;
+        private String fieldName = null;
+        private HeadInfo.PlacementCorrector[] placementCorrectors;
 
-        public transient Field field;
-        public transient ArrayList<Integer> fieldIndices;
+        private transient Field field;
+        private transient ArrayList<Integer> fieldIndices;
 
-        public transient MatrixStack stackPlacementCorrector;
+        private transient MatrixStack stackPlacementCorrector;
 
         public boolean setupFields(Class<? extends EntityModel> clz)
         {
@@ -120,6 +149,7 @@ public class HandInfo
                 Field field = HeadInfo.findField(clz, ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName));
                 if(field != null)
                 {
+                    field.setAccessible(true);
                     this.field = field;
                     this.fieldIndices = indices;
                     return true;
@@ -131,7 +161,7 @@ public class HandInfo
             return true;
         }
 
-        public void correctPlacement(MatrixStack stack)
+        public void correctPlacement(MatrixStack stack) //TODO I don't think we using this
         {
             if(placementCorrectors != null && placementCorrectors.length > 0)
             {
@@ -147,6 +177,51 @@ public class HandInfo
 
                 RenderHelper.multiplyStackWithStack(stack, stackPlacementCorrector);
             }
+        }
+
+        public ModelRenderer getModelRenderer(EntityModel model)
+        {
+            try
+            {
+                Object o = field.get(model);
+
+                Object modelAtIndex = o;
+
+                for(Integer index : fieldIndices)
+                {
+                    modelAtIndex = HeadInfo.digForModelRendererWithIndex(modelAtIndex, index);
+                }
+
+                if(modelAtIndex instanceof ModelRenderer)
+                {
+                    return (ModelRenderer)modelAtIndex;
+                }
+            }
+            catch(NullPointerException | IllegalAccessException | ArrayIndexOutOfBoundsException e)
+            {
+                Morph.LOGGER.error("Error getting model renderer from field {} of class {} in model {}", field.getName(), field.getDeclaringClass().getSimpleName(), model);
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public MatrixStack getPlacementCorrectorStack()
+        {
+            if(placementCorrectors != null && placementCorrectors.length > 0)
+            {
+                if(stackPlacementCorrector == null)
+                {
+                    stackPlacementCorrector = new MatrixStack();
+
+                    for(HeadInfo.PlacementCorrector renderCorrector : placementCorrectors)
+                    {
+                        renderCorrector.apply(stackPlacementCorrector);
+                    }
+                }
+
+                return stackPlacementCorrector;
+            }
+            return null;
         }
 
         @Nullable

@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
+import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
-import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
@@ -25,8 +25,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.play.server.SPlayerListItemPacket;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -305,9 +303,7 @@ public class MorphRenderHandler
             }
             else
             {
-                HashMap<ModelRenderer, Identifiable<?>> store = new HashMap<>();
-                ModelHelper.createPartFor("", renderer, store, null, false);
-                Project.Part part = (Project.Part)store.get(renderer);
+                Project.Part part = ModelHelper.createPartFor(renderer, false);
                 part.rotPX = part.rotPY = part.rotPZ = part.rotAX = part.rotAY = part.rotAZ = 0F;
                 part.children.clear();
                 CaptureInfo.ModelPart modelPart = new CaptureInfo.ModelPart(part);
@@ -351,107 +347,13 @@ public class MorphRenderHandler
                 Project.Part oldPart = prevInfo.get(i).modelPart.part;
                 Project.Part newPart = nextInfo.get(i).modelPart.part;
 
-                while(oldPart.boxes.size() < newPart.boxes.size())
-                {
-                    Project.Part.Box box = new Project.Part.Box(oldPart);
-                    Project.Part.Box otherBox = newPart.boxes.get(oldPart.boxes.size());
-                    box.dimX = box.dimY = box.dimZ = 0F;
-                    box.texOffX = otherBox.texOffX;
-                    box.texOffY = otherBox.texOffY;
-                    oldPart.boxes.add(box);
-                }
+                ModelHelper.matchBoxesCount(oldPart, newPart);
+                ModelHelper.matchBoxesCount(newPart, oldPart);
 
-                while(newPart.boxes.size() < oldPart.boxes.size())
-                {
-                    Project.Part.Box box = new Project.Part.Box(newPart);
-                    Project.Part.Box otherBox = oldPart.boxes.get(newPart.boxes.size());
-                    box.dimX = box.dimY = box.dimZ = 0F;
-                    box.texOffX = otherBox.texOffX;
-                    box.texOffY = otherBox.texOffY;
-                    newPart.boxes.add(box);
-                }
-
-                transitionInfos.add(new CaptureInfo(createInterimStackEntry(prevInfo.get(i).e, nextInfo.get(i).e, transitionProgress), new CaptureInfo.ModelPart(createInterimPart(oldPart, newPart, transitionProgress))));
+                transitionInfos.add(new CaptureInfo(RenderHelper.createInterimStackEntry(prevInfo.get(i).e, nextInfo.get(i).e, transitionProgress), new CaptureInfo.ModelPart(ModelHelper.createInterimPart(oldPart, newPart, transitionProgress))));
             }
 
             return transitionInfos;
-        }
-
-        private MatrixStack.Entry createInterimStackEntry(MatrixStack.Entry prevEntry, MatrixStack.Entry nextEntry, float prog)
-        {
-            //create a copy of prevEntry
-            MatrixStack stack = new MatrixStack();
-            MatrixStack.Entry last = stack.getLast();
-
-            //set to the last entry
-            last.getMatrix().mul(prevEntry.getMatrix());
-            last.getNormal().mul(prevEntry.getNormal());
-
-            //get the difference
-            //matrix
-            Matrix4f subtractMatrix = prevEntry.getMatrix().copy();
-            subtractMatrix.mul(-1F);
-            Matrix4f diffMatrix = nextEntry.getMatrix().copy();
-            diffMatrix.add(subtractMatrix);
-            diffMatrix.mul(prog);
-            last.getMatrix().add(diffMatrix);
-
-            //normal... no add function
-            Matrix3f lastNormal = last.getNormal();
-            Matrix3f prevNormal = prevEntry.getNormal().copy();
-            Matrix3f nextNormal = nextEntry.getNormal().copy();
-            lastNormal.m00 = prevNormal.m00 + (nextNormal.m00 - prevNormal.m00) * prog;
-            lastNormal.m01 = prevNormal.m01 + (nextNormal.m01 - prevNormal.m01) * prog;
-            lastNormal.m02 = prevNormal.m02 + (nextNormal.m02 - prevNormal.m02) * prog;
-            lastNormal.m10 = prevNormal.m10 + (nextNormal.m10 - prevNormal.m10) * prog;
-            lastNormal.m11 = prevNormal.m11 + (nextNormal.m11 - prevNormal.m11) * prog;
-            lastNormal.m12 = prevNormal.m12 + (nextNormal.m12 - prevNormal.m12) * prog;
-            lastNormal.m20 = prevNormal.m20 + (nextNormal.m20 - prevNormal.m20) * prog;
-            lastNormal.m21 = prevNormal.m21 + (nextNormal.m21 - prevNormal.m21) * prog;
-            lastNormal.m22 = prevNormal.m22 + (nextNormal.m22 - prevNormal.m22) * prog;
-
-            return last;
-        }
-
-        private Project.Part createInterimPart(Project.Part prevPart, Project.Part nextPart, float prog)
-        {
-            Project.Part part = new Project.Part(null, 0);
-            part.boxes.clear();
-
-            part.texWidth = Math.round(prevPart.texWidth + (nextPart.texWidth - prevPart.texWidth) * prog);
-            part.texHeight = Math.round(prevPart.texHeight + (nextPart.texHeight - prevPart.texHeight) * prog);
-
-            part.texOffX = Math.round(prevPart.texOffX + (nextPart.texOffX - prevPart.texOffX) * prog);
-            part.texOffY = Math.round(prevPart.texOffY + (nextPart.texOffY - prevPart.texOffY) * prog);
-
-            part.mirror = nextPart.mirror;
-
-            for(int i = 0; i < prevPart.boxes.size(); i++)
-            {
-                Project.Part.Box box = new Project.Part.Box(part);
-
-                Project.Part.Box prevBox = prevPart.boxes.get(i);
-                Project.Part.Box nextBox = nextPart.boxes.get(i);
-
-                box.posX = prevBox.posX + (nextBox.posX - prevBox.posX) * prog;
-                box.posY = prevBox.posY + (nextBox.posY - prevBox.posY) * prog;
-                box.posZ = prevBox.posZ + (nextBox.posZ - prevBox.posZ) * prog;
-
-                box.dimX = prevBox.dimX + (nextBox.dimX - prevBox.dimX) * prog;
-                box.dimY = prevBox.dimY + (nextBox.dimY - prevBox.dimY) * prog;
-                box.dimZ = prevBox.dimZ + (nextBox.dimZ - prevBox.dimZ) * prog;
-
-                box.expandX = prevBox.expandX + (nextBox.expandX - prevBox.expandX) * prog;
-                box.expandY = prevBox.expandY + (nextBox.expandY - prevBox.expandY) * prog;
-                box.expandZ = prevBox.expandZ + (nextBox.expandZ - prevBox.expandZ) * prog;
-
-                box.texOffX = Math.round(prevBox.texOffX + (nextBox.texOffX - prevBox.texOffX) * prog);
-                box.texOffY = Math.round(prevBox.texOffY + (nextBox.texOffY - prevBox.texOffY) * prog);
-
-                part.boxes.add(box);
-            }
-
-            return part;
         }
 
         public void render(MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float skinAlpha)
@@ -490,19 +392,7 @@ public class MorphRenderHandler
             {
                 if(this.modelPart.model == null)
                 {
-                    Project.Part part = this.modelPart.part;
-                    ModelRenderer modelPart = this.modelPart.model = new ModelRenderer(part.texWidth, part.texHeight, part.texOffX, part.texOffY);
-
-                    modelPart.mirror = part.mirror;
-                    modelPart.showModel = part.showModel;
-
-                    part.boxes.forEach(box -> {
-                        int texOffX = modelPart.textureOffsetX;
-                        int texOffY = modelPart.textureOffsetY;
-                        modelPart.setTextureOffset(modelPart.textureOffsetX + box.texOffX, modelPart.textureOffsetY + box.texOffY);
-                        modelPart.addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
-                        modelPart.setTextureOffset(texOffX, texOffY);
-                    });
+                    this.modelPart.model = ModelHelper.createModelRenderer(this.modelPart.part);
                 }
 
                 this.modelPart.model.render(stack, buffer, light, overlay, red, green, blue, alpha);
