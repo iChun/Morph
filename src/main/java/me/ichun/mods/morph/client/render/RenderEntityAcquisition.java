@@ -55,16 +55,7 @@ public class RenderEntityAcquisition extends EntityRenderer<EntityAcquisition>
                 MorphRenderHandler.currentCapture = acquisition.acquiredCapture;
                 MorphRenderHandler.currentCapture.infos.clear();
 
-                boolean isInvisible = acquisition.livingAcquired.isInvisible();
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    acquisition.livingAcquired.setInvisible(false);
-                }
-                MorphRenderHandler.renderLiving(renderer, acquisition.livingAcquired, new MatrixStack(), buffer, renderManager.getPackedLight(acquisition.livingAcquired, partialTicks), partialTicks);
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    acquisition.livingAcquired.setInvisible(true);
-                }
+                MorphRenderHandler.renderLiving(renderer, acquisition.livingAcquired, new MatrixStack(), buffer, renderManager.getPackedLight(acquisition.livingAcquired, partialTicks), partialTicks, Morph.configServer.biomassSkinWhilstInvisible);
 
                 MorphRenderHandler.currentCapture = null;
             }

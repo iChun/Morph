@@ -68,7 +68,7 @@ public class EventHandlerClient
     }
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event)
+    public void onRenderTick(TickEvent.RenderTickEvent event) //TODO network player Infos during player list
     {
         if(event.phase == TickEvent.Phase.START && Minecraft.getInstance().player != null && !Minecraft.getInstance().player.removed)
         {

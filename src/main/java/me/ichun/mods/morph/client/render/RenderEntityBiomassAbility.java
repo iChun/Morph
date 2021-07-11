@@ -73,16 +73,7 @@ public class RenderEntityBiomassAbility extends EntityRenderer<EntityBiomassAbil
                 MorphRenderHandler.currentCapture = ability.capture;
                 MorphRenderHandler.currentCapture.infos.clear();
 
-                boolean isInvisible = activeLiving.isInvisible();
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    activeLiving.setInvisible(false);
-                }
-                MorphRenderHandler.renderLiving(renderer, activeLiving, new MatrixStack(), buffer, renderManager.getPackedLight(activeLiving, partialTicks), partialTicks);
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    activeLiving.setInvisible(true);
-                }
+                MorphRenderHandler.renderLiving(renderer, activeLiving, new MatrixStack(), buffer, renderManager.getPackedLight(activeLiving, partialTicks), partialTicks, Morph.configServer.biomassSkinWhilstInvisible);
 
                 MorphRenderHandler.currentCapture = null;
                 MorphRenderHandler.denyRenderNameplate = false;

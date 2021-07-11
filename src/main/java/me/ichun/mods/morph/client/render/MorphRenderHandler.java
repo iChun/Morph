@@ -86,10 +86,15 @@ public class MorphRenderHandler
 
     private static void renderLiving(MorphState state, LivingEntity living, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick) //also captures the shadow size
     {
+        renderLiving(state, living, stack, buffer, light, partialTick, false);
+    }
+
+    private static void renderLiving(MorphState state, LivingEntity living, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick, boolean forceDuringInvisibility) //also captures the shadow size
+    {
         EntityRenderer<? super LivingEntity> livingRenderer = Minecraft.getInstance().getRenderManager().getRenderer(living);
         if(livingRenderer != null)
         {
-            renderLiving(livingRenderer, living, stack, buffer, light, partialTick);
+            renderLiving(livingRenderer, living, stack, buffer, light, partialTick, forceDuringInvisibility);
             if (living instanceof MobEntity && living.isChild()) //Checked in EntityRendererManager
             {
                 state.renderedShadowSize = livingRenderer.shadowSize * 0.5F;
@@ -98,6 +103,20 @@ public class MorphRenderHandler
             {
                 state.renderedShadowSize = livingRenderer.shadowSize;
             }
+        }
+    }
+
+    public static void renderLiving(EntityRenderer<? super LivingEntity> renderer, LivingEntity living, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick, boolean forceDuringInvisibility)
+    {
+        boolean isInvisible = living.isInvisible();
+        if(forceDuringInvisibility && isInvisible)
+        {
+            living.setInvisible(false);
+        }
+        renderLiving(renderer, living, stack, buffer, light, partialTick);
+        if(forceDuringInvisibility && isInvisible)
+        {
+            living.setInvisible(true);
         }
     }
 
@@ -196,16 +215,7 @@ public class MorphRenderHandler
 
                 LivingEntity livingInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                boolean isInvisible = livingInstance.isInvisible();
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    livingInstance.setInvisible(false);
-                }
-                renderLiving(info.prevState, livingInstance, stack, buffer, light, partialTick);
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    livingInstance.setInvisible(true);
-                }
+                renderLiving(info.prevState, livingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
                 currentCapture = null; //reset before we do anything else
 
@@ -225,16 +235,7 @@ public class MorphRenderHandler
 
                 LivingEntity livingInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                boolean isInvisible = livingInstance.isInvisible();
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    livingInstance.setInvisible(false);
-                }
-                renderLiving(info.nextState, livingInstance, stack, buffer, light, partialTick);
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    livingInstance.setInvisible(true);
-                }
+                renderLiving(info.nextState, livingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
                 currentCapture = null; //reset before we do anything else
 
@@ -254,16 +255,7 @@ public class MorphRenderHandler
 
                 LivingEntity prevLivingInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                boolean isInvisible = prevLivingInstance.isInvisible();
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    prevLivingInstance.setInvisible(false);
-                }
-                renderLiving(info.prevState, prevLivingInstance, stack, buffer, light, partialTick);
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    prevLivingInstance.setInvisible(true);
-                }
+                renderLiving(info.prevState, prevLivingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
                 if(nextModel == null)
                 {
@@ -277,16 +269,7 @@ public class MorphRenderHandler
 
                 LivingEntity nextLivingInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                isInvisible = nextLivingInstance.isInvisible();
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    nextLivingInstance.setInvisible(false);
-                }
-                renderLiving(info.nextState, nextLivingInstance, stack, buffer, light, partialTick);
-                if(Morph.configServer.biomassSkinWhilstInvisible && isInvisible)
-                {
-                    nextLivingInstance.setInvisible(true);
-                }
+                renderLiving(info.nextState, nextLivingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
                 currentCapture = null; //reset before we do anything else
 
