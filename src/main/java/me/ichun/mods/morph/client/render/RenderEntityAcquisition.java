@@ -58,6 +58,8 @@ public class RenderEntityAcquisition extends EntityRenderer<EntityAcquisition>
                 MorphRenderHandler.renderLiving(renderer, acquisition.livingAcquired, new MatrixStack(), buffer, renderManager.getPackedLight(acquisition.livingAcquired, partialTicks), partialTicks, Morph.configServer.biomassSkinWhilstInvisible);
 
                 MorphRenderHandler.currentCapture = null;
+
+                acquisition.maxRequiredTendrils = acquisition.acquiredCapture.infos.size();
             }
 
             float skinAlpha = MathHelper.clamp((acquisition.age + partialTicks) / 10, 0F, 1F);

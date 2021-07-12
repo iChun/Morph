@@ -36,4 +36,10 @@ public class ClassicMode implements MorphMode
     {
         return false; // no biomass capabilities in classic.
     }
+
+    @Override
+    public double getBiomassAmount(PlayerEntity player, LivingEntity living)
+    {
+        return 0D; // no biomass capabilities in classic.
+    }
 }

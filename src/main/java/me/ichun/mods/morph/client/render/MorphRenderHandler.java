@@ -314,9 +314,9 @@ public class MorphRenderHandler
 
                 for(Project.Part.Box box : part.boxes) //to prevent z-fighting
                 {
-                    box.expandX += 0.0015F;
-                    box.expandY += 0.0015F;
-                    box.expandZ += 0.0015F;
+                    box.expandX += 0.002F;
+                    box.expandY += 0.002F;
+                    box.expandZ += 0.002F;
                 }
             }
         }
@@ -380,17 +380,17 @@ public class MorphRenderHandler
             }
         }
 
-        private static class CaptureInfo
+        public static class CaptureInfo
         {
             public final MatrixStack.Entry e;
             public final ModelPart modelPart;
 
-            private CaptureInfo(MatrixStack.Entry e, ModelPart modelPart) {
+            public CaptureInfo(MatrixStack.Entry e, ModelPart modelPart) {
                 this.e = e;
                 this.modelPart = modelPart;
             }
 
-            private void createAndRender(MatrixStack stack, IVertexBuilder buffer, int light, int overlay, float red, float green, float blue, float alpha)
+            public void createAndRender(MatrixStack stack, IVertexBuilder buffer, int light, int overlay, float red, float green, float blue, float alpha)
             {
                 if(this.modelPart.model == null)
                 {

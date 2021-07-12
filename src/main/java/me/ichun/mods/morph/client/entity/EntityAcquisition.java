@@ -2,9 +2,9 @@ package me.ichun.mods.morph.client.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.client.tracker.ClientEntityTracker;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
-import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
@@ -42,11 +42,10 @@ public class EntityAcquisition extends Entity
 
     public ArrayList<Tendril> tendrils = new ArrayList<>();
 
+    public int maxRequiredTendrils;
     public int age;
 
     public MorphRenderHandler.ModelRendererCapture acquiredCapture = new MorphRenderHandler.ModelRendererCapture();
-
-    public ArrayList<Project.Part> acquiredParts = null;
 
     public EntityAcquisition(EntityType<?> entityTypeIn, World worldIn)
     {
@@ -85,16 +84,22 @@ public class EntityAcquisition extends Entity
                 remove();
             }
         }
-        else if(age > Morph.configClient.acquisitionTendrilMaxChild * 4 + 100) //probably too long, kill it off
+        else if(age > Morph.configClient.acquisitionTendrilMaxChild * 10 + 100) //probably too long, kill it off
         {
             remove();
+
+            if(livingOrigin instanceof PlayerEntity)
+            {
+                EntityBiomassAbility ability = Morph.EntityTypes.BIOMASS_ABILITY.create(world).setInfo((PlayerEntity)livingOrigin, 10, 0);
+                ((ClientWorld)world).addEntity(ability.getEntityId(), ability);
+            }
         }
         else //parent is "alive" and safe
         {
             this.setPosition(livingOrigin.getPosX(), livingOrigin.getPosY() + (livingOrigin.getHeight() / 2D), livingOrigin.getPosZ());
             this.setRotation(livingOrigin.rotationYaw, livingOrigin.rotationPitch);
 
-            boolean allDone = true;
+            boolean allDone = !tendrils.isEmpty();
             boolean anyRetracting = false;
             boolean anyNonRetracting = false;
             for(Tendril tendril : tendrils)
@@ -124,6 +129,7 @@ public class EntityAcquisition extends Entity
                 if(tendrils.size() < 5 && age % 2 == 0)
                 {
                     tendrils.add(new Tendril(null).headTowards(getTargetPos(), false));
+                    allDone = false;//do not remove, we're not done yet
                 }
                 if(anyRetracting && anyNonRetracting)
                 {
@@ -131,6 +137,14 @@ public class EntityAcquisition extends Entity
                     {
                         tendril.propagateRetractToChild();
                     }
+                }
+            }
+            else
+            {
+                if(tendrils.size() < maxRequiredTendrils && !acquiredCapture.infos.isEmpty() && age % 3 == 0)
+                {
+                    tendrils.add(new Tendril(null).headTowards(getTargetPos(), true));
+                    allDone = false;//do not remove, we're not done yet
                 }
             }
 
@@ -252,7 +266,7 @@ public class EntityAcquisition extends Entity
                 double d1 = pos.getY() - origin.getY();
                 double d2 = pos.getZ() - origin.getZ();
 
-                float maxChange = 30F;
+                float maxChange = isMorphAcquisition ? 30F : 60F;
 
                 double dist = MathHelper.sqrt(d0 * d0 + d2 * d2);
                 float newYaw = (float)(MathHelper.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
@@ -265,7 +279,12 @@ public class EntityAcquisition extends Entity
                 yaw = (rev ? (livingOrigin.renderYawOffset + 180F) : livingOrigin.renderYawOffset) % 360F;
                 pitch = 0;
 
-                yaw += (float)rand.nextGaussian() * randGaus;
+                if(!isMorphAcquisition)
+                {
+                    randGaus = 30F;
+                }
+
+                yaw += (5F + 25F * rand.nextFloat()) * (rand.nextBoolean() ? 1F : -1F);
                 pitch += (float)rand.nextGaussian() * randGaus;
             }
 
@@ -289,14 +308,25 @@ public class EntityAcquisition extends Entity
             }
             else
             {
+                float distToEnt = livingOrigin.getDistance(livingAcquired);
+                if(!isMorphAcquisition)
+                {
+                    distToEnt *= 2F;
+                }
                 if(!retract)
                 {
                     if(height < maxGrowth)
                     {
-                        float maxTendrilGrowth = Math.max(0.0625F, livingOrigin.getDistance(livingAcquired) / Morph.configClient.acquisitionTendrilMaxChild + (float)rand.nextGaussian() * 0.125F); //in blocks
+                        float maxTendrilGrowth = Math.max(0.0625F, distToEnt / Morph.configClient.acquisitionTendrilMaxChild + (float)rand.nextGaussian() * 0.125F); //in blocks
                         height += maxTendrilGrowth * 16F;
                         if(getReachCoord().distanceTo(getTargetPos()) < Math.max(0.3F, maxTendrilGrowth)) //close enough?
                         {
+                            if(!isMorphAcquisition && age <= 10)
+                            {
+                                height -= maxTendrilGrowth * 16F; //wait for age to finish
+                                return;
+                            }
+
                             child = new Tendril(this);
 
                             Vector3d pos = getTargetPos();
@@ -310,10 +340,33 @@ public class EntityAcquisition extends Entity
                             child.pitch = (float)(-(MathHelper.atan2(d1, dist) * (double)(180F / (float)Math.PI)));
                             child.lastHeight = child.height = (float)MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2) / 16F;
 
-                            child.capture = acquiredCapture;
-                            acquiredCapture = null;
+                            if(isMorphAcquisition)
+                            {
+                                child.capture = acquiredCapture;
+                                acquiredCapture = null;
+                            }
+                            else if(!acquiredCapture.infos.isEmpty())
+                            {
+                                child.capture = new MorphRenderHandler.ModelRendererCapture();
+                                int count = (int)Math.ceil(Math.max(acquiredCapture.infos.size() / 10F, 1));
+                                for(int x = 0; x < count && !acquiredCapture.infos.isEmpty(); x++)
+                                {
+                                    int i = rand.nextInt(acquiredCapture.infos.size());
+                                    child.capture.infos.add(acquiredCapture.infos.get(i));
+                                    acquiredCapture.infos.remove(i);
+                                    if(x > 0)
+                                    {
+                                        maxRequiredTendrils--;
+                                    }
+                                }
+                            }
 
                             child.propagateRetractToParent();
+                        }
+
+                        if(!isMorphAcquisition && acquiredCapture.infos.isEmpty()) //oops we're out of blocks. retract
+                        {
+                            propagateRetractToParent();
                         }
                     }
                     else
@@ -323,7 +376,7 @@ public class EntityAcquisition extends Entity
                 }
                 else if(retractTime <= 3)
                 {
-                    float maxTendrilGrowth = Math.max(0.0625F, livingOrigin.getDistance(livingAcquired) / Morph.configClient.acquisitionTendrilMaxChild + (float)rand.nextGaussian() * 0.125F); //in blocks
+                    float maxTendrilGrowth = Math.max(0.0625F, distToEnt / Morph.configClient.acquisitionTendrilMaxChild + (float)rand.nextGaussian() * 0.125F); //in blocks
                     if(getReachCoord().distanceTo(getTargetPos()) > Math.max(0.5F, maxTendrilGrowth))
                     {
                         Vector3d pos = getTargetPos();
@@ -347,7 +400,7 @@ public class EntityAcquisition extends Entity
                         rotateSpin += spinFactor;
                     }
 
-                    float maxTendrilGrowth = Math.max(0.0625F, livingOrigin.getDistance(livingAcquired) / (Morph.configClient.acquisitionTendrilMaxChild * 2F) + (float)rand.nextGaussian() * 0.125F); //in blocks
+                    float maxTendrilGrowth = Math.max(0.0625F, distToEnt / (Morph.configClient.acquisitionTendrilMaxChild * 2F) + (float)rand.nextGaussian() * 0.125F); //in blocks
                     height -= maxTendrilGrowth * 16F;
                     if(height <= 0)
                     {
@@ -362,11 +415,6 @@ public class EntityAcquisition extends Entity
                                 parent.prevRotateSpin = prevRotateSpin;
                                 parent.rotateSpin = rotateSpin;
                             }
-                        }
-                        else
-                        {
-                            //TODO finish the animation
-                            //TODO is there anything left to do here???
                         }
                     }
                 }
@@ -493,7 +541,24 @@ public class EntityAcquisition extends Entity
                     stack.rotate(Vector3f.ZP.rotationDegrees(rot));
                     stack.rotate(Vector3f.YP.rotationDegrees(rot));
                     stack.translate(0D, -(acquisition.livingAcquired.getHeight() / 2D), 0D);
-                    capture.render(stack, vertexBuilder, light, overlay, alpha);
+                    if(isMorphAcquisition)
+                    {
+                        capture.render(stack, vertexBuilder, light, overlay, alpha);
+                    }
+                    else
+                    {
+                        for(MorphRenderHandler.ModelRendererCapture.CaptureInfo info : capture.infos)
+                        {
+                            MatrixStack identityStack = new MatrixStack();
+                            stack.push();
+                            MatrixStack.Entry e = RenderHelper.createInterimStackEntry(identityStack.getLast(), info.e, MathHelper.clamp(scale * 3F, 0F, 1F));
+                            MatrixStack.Entry last = stack.getLast();
+                            last.getMatrix().mul(e.getMatrix());
+                            last.getNormal().mul(e.getNormal());
+                            info.createAndRender(stack, vertexBuilder, light, overlay, 1F, 1F, 1F, alpha);
+                            stack.pop();
+                        }
+                    }
                     stack.pop();
                 }
             }

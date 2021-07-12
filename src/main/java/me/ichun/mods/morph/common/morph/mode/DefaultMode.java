@@ -23,7 +23,7 @@ public class DefaultMode implements MorphMode
                 MorphHandler.INSTANCE.acquireMorph(player, variant);
 
                 //TODO if player is invisible?
-                Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), true), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
+                Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), false), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
 
 //                boolean morphTo = true;
 //                if(morphTo) //TODO make a config
@@ -44,6 +44,22 @@ public class DefaultMode implements MorphMode
     public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
         return true;
+    }
+
+    @Override
+    public double getBiomassAmount(PlayerEntity player, LivingEntity living)
+    {
+        //Values of densities of meat tend to average around 1000 kg/m^3. This also makes things easier for calculation, I guess
+        //Yes, if you're reading this, I did look this up. https://twitter.com/ohaiiChun/status/1408516172228616195
+
+        //Calculate the volume of the entity
+        double volume = living.getWidth() * living.getWidth() * living.getHeight();
+
+        //TODO biomass efficiency upgrades
+
+        double finalBiomass = volume * Morph.configServer.biomassValue;
+
+        return finalBiomass;
     }
 
     @Override

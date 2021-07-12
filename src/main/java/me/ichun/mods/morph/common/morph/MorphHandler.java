@@ -219,6 +219,12 @@ public final class MorphHandler implements IApi
         return currentMode != null ? currentMode.canAcquireBiomass(player, living) : IApi.super.canAcquireBiomass(player, living);
     }
 
+    @Override
+    public double getBiomassAmount(PlayerEntity player, LivingEntity living)
+    {
+        return currentMode != null ? currentMode.getBiomassAmount(player, living) :  IApi.super.getBiomassAmount(player, living);
+    }
+
     @Nullable
     @Override
     public BiomassUpgradeInfo getBiomassUpgradeInfo(String id)

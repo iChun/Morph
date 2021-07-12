@@ -45,6 +45,9 @@ public class ConfigServer extends ConfigBase
 
     public boolean biomassSkinWhilstInvisible = true;
 
+    @Prop(min = 0)
+    public double biomassValue = 0.3D; //how much of the space the entity takes up to actually consider as biomass. Also essentially a configurable ratio
+
     //======================================================//
 
     public transient ArrayList<ResourceLocation> disabledMobsRL = new ArrayList<>();

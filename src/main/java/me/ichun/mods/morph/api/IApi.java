@@ -60,6 +60,10 @@ public interface IApi
         return false;
     }
 
+    default double getBiomassAmount(PlayerEntity player, LivingEntity living) { return 0D; }
+
+
+    //Biomass Upgrade Info
     @Nullable
     default BiomassUpgradeInfo getBiomassUpgradeInfo(String id) { return null; }
 

@@ -81,6 +81,8 @@ public class PacketAcquisition extends AbstractPacket
                 livingAcquired.prevSwingProgress = livingAcquired.swingProgress;
                 livingAcquired.prevLimbSwingAmount = livingAcquired.limbSwingAmount;
                 livingAcquired.prevRotationYawHead = livingAcquired.rotationYawHead;
+                livingAcquired.prevRotationYaw = livingAcquired.rotationYaw;
+                livingAcquired.prevRotationPitch = livingAcquired.rotationPitch;
                 livingAcquired.deathTime = 0;
                 livingAcquired.hurtTime = 0;
             }

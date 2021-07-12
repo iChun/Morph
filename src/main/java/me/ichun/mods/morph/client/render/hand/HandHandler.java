@@ -65,7 +65,7 @@ public final class HandHandler
     public boolean renderHand(PlayerRenderer playerRenderer, MatrixStack stack, IRenderTypeBuffer buffer, int light, AbstractClientPlayerEntity player, ModelRenderer arm, ModelRenderer armwear)
     {
         //Check if this is the player, and we have the player's morph info.
-        if(player == Minecraft.getInstance().getRenderViewEntity() && lastMorphInfo != null)
+        if(player == Minecraft.getInstance().getRenderViewEntity() && lastMorphInfo != null && !MorphRenderHandler.isRenderingMorph)
         {
             MorphInfo info = lastMorphInfo;
             float partialTick = lastPartialTick;
@@ -236,7 +236,7 @@ public final class HandHandler
                 }
                 else //morph completed, just use nextState's entity instance
                 {
-                    LivingEntity livingInstance = info.nextState.getEntityInstance(mc.player.world, mc.player.getGameProfile().getId());
+                    LivingEntity livingInstance = info.isMorphed() ? info.nextState.getEntityInstance(mc.player.world, mc.player.getGameProfile().getId()) : mc.player;
                     EntityRenderer entRenderer = playerRenderer.getRenderManager().getRenderer(livingInstance);
                     if(entRenderer instanceof LivingRenderer)
                     {
@@ -268,6 +268,7 @@ public final class HandHandler
 
                     if(entRenderer instanceof PlayerRenderer && livingInstance instanceof AbstractClientPlayerEntity)//this must be a player
                     {
+                        MorphRenderHandler.isRenderingMorph = true;
                         PlayerRenderer morphPlayerRenderer = (PlayerRenderer)entRenderer;
                         if(handSide == HandSide.LEFT)
                         {
@@ -277,6 +278,7 @@ public final class HandHandler
                         {
                             morphPlayerRenderer.renderRightArm(stack, buffer, light, (AbstractClientPlayerEntity)livingInstance);
                         }
+                        MorphRenderHandler.isRenderingMorph = false;
 
                         if(handParts != null && skinAlpha > 0F) //let's check the handParts just in case BipedModel.json is missing
                         {
