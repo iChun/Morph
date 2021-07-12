@@ -5,7 +5,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
-import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
 import me.ichun.mods.morph.api.morph.MorphInfo;
@@ -25,8 +24,6 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -81,7 +78,7 @@ public final class HandHandler
                 MatrixStack[] stacks = null;
                 ResourceLocation texture = null;
 
-                HandSide handSide = playerRenderer.entityModel.bipedRightArm == arm ? HandSide.RIGHT : HandSide.LEFT;
+                HandSide handSide = playerRenderer.entityModel.bipedRightArm != arm ? HandSide.LEFT : HandSide.RIGHT; //default to right arm instead any mods override the player model
 
                 float morphProg = info.getMorphProgress(partialTick);
                 float transitionProg = info.getTransitionProgressSine(partialTick);
@@ -362,10 +359,10 @@ public final class HandHandler
         if(clzz != EntityModel.class)
         {
             helper = getHandInfo(clzz);
-//            if(helper != null)
-//            {
-//                helper = GSON.fromJson(GSON.toJson(helper), helper.getClass());
-//            }
+            //            if(helper != null)
+            //            {
+            //                helper = GSON.fromJson(GSON.toJson(helper), helper.getClass());
+            //            }
         }
         MODEL_HAND_INFO.put(clz, helper);
         return helper;

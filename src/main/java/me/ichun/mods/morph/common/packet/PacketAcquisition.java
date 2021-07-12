@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.packet;
 
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.morph.client.entity.EntityAcquisition;
 import me.ichun.mods.morph.common.Morph;
@@ -65,7 +66,14 @@ public class PacketAcquisition extends AbstractPacket
                 LivingEntity livingAcquired = (LivingEntity)acquired;
                 EntityAcquisition ent = Morph.EntityTypes.ACQUISITION.create(mc.world).setTargets((LivingEntity)origin, livingAcquired, isMorphAcquisition);
                 mc.world.addEntity(ent.getEntityId(), ent);
-                livingAcquired.remove(false);
+                if(livingAcquired != mc.player)
+                {
+                    livingAcquired.remove(false);
+                }
+                else
+                {
+                    EntityHelper.faceEntity(livingAcquired, origin, 360F, 360F);
+                }
 
                 //block the hurt overlay/death rotation
                 acquired.setLocationAndAngles(acquired.getPosX(), acquired.getPosY(), acquired.getPosZ(), acquired.rotationYaw, acquired.rotationPitch);

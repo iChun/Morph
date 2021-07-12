@@ -109,14 +109,14 @@ public final class MorphHandler implements IApi
             }
         }
 
-        if(!living.getType().isSerializable())
+        if(!living.getType().isSerializable() && !(living instanceof PlayerEntity))
         {
             return null;
         }
 
         MorphVariant variant = new MorphVariant(living.getType().getRegistryName());
 
-        if(living instanceof PlayerEntity)
+        if(living instanceof PlayerEntity) //TODO test all MC mobs in Multiplayer
         {
             variant.thisVariant = new MorphVariant.Variant();
             variant.thisVariant.playerUUID = ((PlayerEntity)living).getGameProfile().getId();

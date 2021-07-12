@@ -241,6 +241,7 @@ public class MorphRenderHandler
             }
             else
             {
+                denyRenderNameplate = true;
                 if(prevModel == null)
                 {
                     currentCapture = prevModel = new ModelRendererCapture();
@@ -270,6 +271,7 @@ public class MorphRenderHandler
                 renderLiving(info.nextState, nextLivingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
                 currentCapture = null; //reset before we do anything else
+                denyRenderNameplate = false;
 
                 stack.push();
                 stack.translate(0F, prevLivingInstance.getHeight() / 2F, 0F);
