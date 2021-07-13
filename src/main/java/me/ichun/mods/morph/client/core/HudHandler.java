@@ -2,6 +2,7 @@ package me.ichun.mods.morph.client.core;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.ichun.mods.ichunutil.client.gui.mouse.MouseHelper;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
@@ -32,6 +33,8 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
@@ -44,6 +47,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@OnlyIn(Dist.CLIENT)
 public class HudHandler
 {
     public static final ResourceLocation TEX_QS_FAVOURITE = new ResourceLocation("morph", "textures/gui/fav.png");
@@ -52,6 +56,8 @@ public class HudHandler
     public static final ResourceLocation TEX_QS_UNSELECTED_SIDE = new ResourceLocation("morph", "textures/gui/gui_unselected_side.png");
 
     private static final MatrixStack LIGHT_STACK = Util.make(new MatrixStack(), stack -> stack.translate(1D, -1D, 0D));
+
+    private final Minecraft mc;
 
     //selector stuff
     private static final int SHOW_SELECTOR_TIME = 8;
@@ -77,15 +83,22 @@ public class HudHandler
 
     public ArrayList<MorphVariant> radialFavourites = null;
 
+    //biomass bar stuff
+    private static final int BAR_TIME = 8;
+
+    public int barShowTime = 0;
+
     //key listeners
     public boolean keyEscDown;
     public boolean keyEnterDown;
 
     public HashMap<MorphVariant, MorphState> morphStates = new HashMap<>();
 
+    public HudHandler(Minecraft mc) {this.mc = mc;}
+
     public void handleInput(KeyBind keyBind, boolean isReleased)
     {
-        if(Minecraft.getInstance().player == null) // ???what
+        if(mc.player == null) // ???what
         {
             return;
         }
@@ -98,7 +111,7 @@ public class HudHandler
 
     private void handleMorphInput(KeyBind keyBind, boolean isReleased)
     {
-        if(MorphHandler.INSTANCE.canMorph(Minecraft.getInstance().player))
+        if(MorphHandler.INSTANCE.canMorph(mc.player))
         {
             if(keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight)
             {
@@ -137,7 +150,7 @@ public class HudHandler
                         radialTime = 0;
                         radialMode = RadialMode.FAVOURITE;
 
-                        Minecraft.getInstance().mouseHelper.ungrabMouse();
+                        mc.mouseHelper.ungrabMouse();
                     }
                 }
                 else if(radialMode == RadialMode.FAVOURITE)
@@ -159,7 +172,7 @@ public class HudHandler
 
         indexVert = indexHori = 0; //the player default morph should always be first.
 
-        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(Minecraft.getInstance().player);
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(mc.player);
         if(info.isMorphed())
         {
             MorphVariant currentMorph = info.nextState.variant;
@@ -234,9 +247,8 @@ public class HudHandler
 
     private void updateKeyListeners()
     {
-        Minecraft mc = Minecraft.getInstance();
-        boolean isEnterDown = InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_ENTER) || InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_KP_ENTER);
-        boolean isEscDown = InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_ESCAPE);
+        boolean isEnterDown = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_ENTER) || InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_KP_ENTER);
+        boolean isEscDown = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_ESCAPE);
 
         if(showSelector || showRadial)
         {
@@ -270,7 +282,7 @@ public class HudHandler
 
     private void confirmSelector()
     {
-        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(Minecraft.getInstance().player);
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(mc.player);
         MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
 
         if(!info.isCurrentlyThisVariant(variant)) //if we're already morphed to this, don't morph to this.
@@ -285,9 +297,9 @@ public class HudHandler
     {
         showSelector = false;
 
-        if(Minecraft.getInstance().currentScreen instanceof IngameMenuScreen)
+        if(mc.currentScreen instanceof IngameMenuScreen)
         {
-            Minecraft.getInstance().displayGuiScreen(null);
+            mc.displayGuiScreen(null);
         }
 
         //makes the horizontal slider slide back in
@@ -298,13 +310,13 @@ public class HudHandler
 
     private void confirmRadial()
     {
-        if(isMouseOutsideRadialDeadZone(Minecraft.getInstance().getMainWindow()))
+        if(isMouseOutsideRadialDeadZone(mc.getMainWindow()))
         {
             if(radialMode == RadialMode.FAVOURITE)
             {
                 //morph to the selected Morph
-                MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(Minecraft.getInstance().player);
-                MorphVariant variant = radialFavourites.get(getSelectedIndex(radialFavourites.size()));
+                MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(mc.player);
+                MorphVariant variant = radialFavourites.get(MouseHelper.getSelectedIndex(radialFavourites.size()));
 
                 if(!info.isCurrentlyThisVariant(variant.thisVariant)) //if we're already morphed to this, don't morph to this.
                 {
@@ -322,12 +334,12 @@ public class HudHandler
         showRadial = false;
         radialMode = null;
 
-        if(Minecraft.getInstance().currentScreen instanceof IngameMenuScreen)
+        if(mc.currentScreen instanceof IngameMenuScreen)
         {
-            Minecraft.getInstance().displayGuiScreen(null);
+            mc.displayGuiScreen(null);
         }
 
-        Minecraft.getInstance().mouseHelper.grabMouse();
+        mc.mouseHelper.grabMouse();
     }
 
     private void toggleFavourite()
@@ -344,7 +356,7 @@ public class HudHandler
     private void gatherFavourites()
     {
         radialFavourites = new ArrayList<>();
-        radialFavourites.add(MorphVariant.createPlayerMorph(Minecraft.getInstance().player.getGameProfile().getId(), true));
+        radialFavourites.add(MorphVariant.createPlayerMorph(mc.player.getGameProfile().getId(), true));
         radialFavourites.get(0).thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
 
         PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
@@ -423,8 +435,6 @@ public class HudHandler
 
     private void drawSelector(MatrixStack stack, float partialTick, MainWindow window)
     {
-        Minecraft mc = Minecraft.getInstance();
-
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -664,8 +674,6 @@ public class HudHandler
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableAlphaTest();
 
-        Minecraft mc = Minecraft.getInstance();
-
         double diameter = Math.min(window.getScaledWidth(), window.getScaledHeight()) * Morph.configClient.radialScale;
         double radius = diameter / 2D;
 
@@ -675,7 +683,7 @@ public class HudHandler
         float deadzoneScale = 0.55F;
         float deadzoneSize = (float)radius * deadzoneScale;
 
-        double distanceFromDeadzone = getMouseDistanceFromCenter(window) - deadzoneSize;
+        double distanceFromDeadzone = MouseHelper.getMouseDistanceFromCenter(window) - deadzoneSize;
 
         float bonusScale = MathHelper.clamp((float)(distanceFromDeadzone / (radius * (1F - deadzoneScale) * 0.5F)), 0F, 1F);
 
@@ -735,7 +743,7 @@ public class HudHandler
 
                 LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == getSelectedIndex(radialFavourites.size());
+                boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == MouseHelper.getSelectedIndex(radialFavourites.size());
 
                 float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
 
@@ -761,7 +769,7 @@ public class HudHandler
 
                 LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == getSelectedIndex(radialFavourites.size());
+                boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == MouseHelper.getSelectedIndex(radialFavourites.size());
 
                 double angle = Math.toRadians(90F + (360F * i / radialFavourites.size()));
 
@@ -844,58 +852,12 @@ public class HudHandler
         RenderSystem.enableAlphaTest();
     }
 
-    private double getMouseDistanceFromCenter(MainWindow window)
-    {
-        double centerX = window.getScaledWidth() / 2D;
-        double centerY = window.getScaledHeight() / 2D;
-
-        Minecraft mc = Minecraft.getInstance();
-
-        double posX = mc.mouseHelper.mouseX * window.getScaledWidth() / window.getWidth() - centerX;
-        double posY = mc.mouseHelper.mouseY * window.getScaledHeight() / window.getHeight() - centerY;
-
-        return Math.sqrt(posX * posX + posY * posY);
-    }
-
     private boolean isMouseOutsideRadialDeadZone(MainWindow window)
     {
         double diameter = Math.min(window.getScaledWidth(), window.getScaledHeight()) * Morph.configClient.radialScale;
         double deadZoneBorder = diameter / 2D * 0.55F;
 
-        return getMouseDistanceFromCenter(window) > deadZoneBorder;
-    }
-
-    private float getMouseAngleFromCenter(MainWindow window)
-    {
-        double centerX = window.getScaledWidth() / 2D;
-        double centerY = window.getScaledHeight() / 2D;
-
-        Minecraft mc = Minecraft.getInstance();
-
-        double posX = mc.mouseHelper.mouseX * window.getScaledWidth() / window.getWidth() - centerX;
-        double posY = mc.mouseHelper.mouseY * window.getScaledHeight() / window.getHeight() - centerY;
-
-        return (float)(Math.toDegrees(Math.atan2(posY, posX)) + 90F + 360F) % 360F;
-    }
-
-    private int getSelectedIndex(int count)
-    {
-        float angle = getMouseAngleFromCenter(Minecraft.getInstance().getMainWindow());
-
-        float segment = 360F / count;
-
-        float startSeg = segment / 2F;
-
-        for(int i = 0; i < count; i++)
-        {
-            if(angle < startSeg)
-            {
-                return i;
-            }
-            startSeg += segment;
-        }
-
-        return 0; //angle is larger than (360 - (segment / 2)), it's back to index of 0
+        return MouseHelper.getMouseDistanceFromCenter(window) > deadZoneBorder;
     }
 
     private boolean shouldRenderSelector()
@@ -913,9 +875,9 @@ public class HudHandler
     {
         if(event.phase == TickEvent.Phase.START)
         {
-            if((showSelector || showRadial) && Minecraft.getInstance().currentScreen instanceof IngameMenuScreen)
+            if((showSelector || showRadial) && mc.currentScreen instanceof IngameMenuScreen)
             {
-                Minecraft.getInstance().displayGuiScreen(null);
+                mc.displayGuiScreen(null);
 
                 if(showSelector)
                 {
@@ -932,7 +894,7 @@ public class HudHandler
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.END && Minecraft.getInstance().player != null)
+        if(event.phase == TickEvent.Phase.END && mc.player != null)
         {
             tick();
         }

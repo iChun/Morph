@@ -35,6 +35,9 @@ public class ConfigClient extends ConfigBase
 
     public boolean morphAllowHandOverride = true;
 
+    @Prop(min = 0, max = 2)
+    public int biomassBarMode = 1;
+
     public ConfigClient()
     {
         super(ModLoadingContext.get().getActiveContainer().getModId() + "-client.toml");
