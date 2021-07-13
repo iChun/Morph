@@ -109,21 +109,22 @@ public final class MorphHandler implements IApi
             }
         }
 
-        if(!living.getType().isSerializable() && !(living instanceof PlayerEntity))
+        boolean isPlayer = living instanceof PlayerEntity;
+        if(!living.getType().isSerializable() && !isPlayer)
         {
             return null;
         }
 
         MorphVariant variant = new MorphVariant(living.getType().getRegistryName());
 
-        if(living instanceof PlayerEntity) //TODO test all MC mobs in Multiplayer
+        if(isPlayer) //TODO test all MC mobs in Multiplayer
         {
             variant.thisVariant = new MorphVariant.Variant();
             variant.thisVariant.playerUUID = ((PlayerEntity)living).getGameProfile().getId();
         }
         else
         {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundNBT tag = new CompoundNBT(); //TODO glint effect for ability??
 
             //Write the supported attributes to our Morph NBT
             variant.writeSupportedAttributes(living);
