@@ -9,6 +9,7 @@
     "PlayerEntityMixin"
   ],
   "client": [
+    "ForgeIngameGuiMixin",
     "ModelRendererMixin",
     "PlayerRendererMixin"
   ],

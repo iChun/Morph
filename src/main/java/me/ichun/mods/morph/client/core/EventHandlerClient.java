@@ -95,22 +95,11 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event)
     {
-        morphData = null;
-        if(hudHandler != null)
-        {
-            MinecraftForge.EVENT_BUS.unregister(hudHandler);
-            hudHandler = null;
-        }
+        setPlayerMorphData(null);
     }
 
     public void handleInput(KeyBind keyBind, boolean isReleased)
     {
-        if(hudHandler == null)
-        {
-            hudHandler = new HudHandler(Minecraft.getInstance());
-            MinecraftForge.EVENT_BUS.register(hudHandler);
-        }
-
         hudHandler.handleInput(keyBind, isReleased);
     }
 
@@ -143,6 +132,36 @@ public class EventHandlerClient
         else
         {
             Morph.LOGGER.error("We got morph data but we don't have the save data! Variant: {}", variant.id);
+        }
+    }
+
+    public void setPlayerMorphData(PlayerMorphData playerMorphData)
+    {
+        morphData = playerMorphData;
+
+        if(morphData == null) //disconnected, do cleanup
+        {
+            if(hudHandler != null)
+            {
+                hudHandler.destroy();
+
+                MinecraftForge.EVENT_BUS.unregister(hudHandler);
+                hudHandler = null;
+            }
+        }
+        else
+        {
+            Collections.sort(morphData.morphs); //sort in order of name.
+
+            if(hudHandler == null)
+            {
+                hudHandler = new HudHandler(Minecraft.getInstance(), morphData);
+                MinecraftForge.EVENT_BUS.register(hudHandler);
+            }
+            else
+            {
+                hudHandler.update(morphData);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.mouse.MouseHelper;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
+import me.ichun.mods.ichunutil.client.render.NativeImageTexture;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.morph.MorphInfo;
@@ -15,11 +16,14 @@ import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketMorphInput;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.IngameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.NativeImage;
+import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GraphicsFanciness;
 import net.minecraft.client.util.InputMappings;
@@ -44,6 +48,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -86,7 +93,20 @@ public class HudHandler
     //biomass bar stuff
     private static final int BAR_TIME = 8;
 
+    public boolean barRequiresReset;
+
     public int barShowTime = 0;
+
+    private NativeImageTexture barTexture = null;
+    private boolean barTextureGenerated = false;
+
+    private BiomassValue barCapacity;
+    private BiomassValue barCriticalCapacity;
+    private BiomassValue barCurrentBiomass;
+    @Nullable
+    private BiomassValue barAbilityCost = null;
+
+    private int barInsufficientFlash;
 
     //key listeners
     public boolean keyEscDown;
@@ -94,7 +114,14 @@ public class HudHandler
 
     public HashMap<MorphVariant, MorphState> morphStates = new HashMap<>();
 
-    public HudHandler(Minecraft mc) {this.mc = mc;}
+    public HudHandler(Minecraft mc, PlayerMorphData morphData)
+    {
+        this.mc = mc;
+
+        barCapacity = new BiomassValue(1000); //TODO update
+        barCriticalCapacity = new BiomassValue(200);
+        barCurrentBiomass = new BiomassValue(morphData.biomass);
+    }
 
     public void handleInput(KeyBind keyBind, boolean isReleased)
     {
@@ -160,9 +187,9 @@ public class HudHandler
                 }
             }
         }
-        else
+        else if(!(keyBind == KeyBinds.keyFavourite && isReleased)) //favourite triggers twice
         {
-            //TODO flash the biomass bar
+            barInsufficientFlash = 20;
         }
     }
 
@@ -204,6 +231,27 @@ public class HudHandler
 
     private void tick()
     {
+        //biomass bar stuff
+        if(shouldShowBiomassBar())
+        {
+            barShowTime++;
+            if(barShowTime > BAR_TIME)
+            {
+                barShowTime = BAR_TIME;
+
+                updateBiomassBar();
+            }
+        }
+        else
+        {
+            barShowTime--;
+            if(barShowTime < 0)
+            {
+                barShowTime = 0;
+            }
+        }
+
+
         //selector stuff
         if(showSelector)
         {
@@ -239,7 +287,7 @@ public class HudHandler
                 radialTime = RADIAL_TIME;
             }
 
-            //TODO can radial menus show during selector?
+            //TODO can radial menus show during selector? (later edit: yes, to select abilities)
         }
 
         updateKeyListeners();
@@ -278,6 +326,20 @@ public class HudHandler
         }
         keyEnterDown = isEnterDown;
         keyEscDown = isEscDown;
+    }
+
+    private void updateBiomassBar()
+    {
+        //if we have to flash the bar update the timer
+        if(barInsufficientFlash > 0)
+        {
+            barInsufficientFlash--;
+        }
+
+        //Update the bar info
+        barCapacity.tick();
+        barCriticalCapacity.tick();
+        barCurrentBiomass.tick();
     }
 
     private void confirmSelector()
@@ -570,7 +632,7 @@ public class HudHandler
                         {
                             if(!selectedLiving.getName().equals(value.getName())) //has a custom name
                             {
-                                text = living.getName().deepCopy();
+                                text = selectedLiving.getName().deepCopy();
                                 text.setStyle(text.getStyle().setItalic(true));
                             }
                             else
@@ -594,8 +656,13 @@ public class HudHandler
                         }
 
                         stack.push();
-                        stack.translate(0F, 0F, 300F);
-                        mc.fontRenderer.drawTextWithShadow(stack, text, (float)((posX + size + 5) + indexHeightWidth), (float)textHeight, 0xFFFFFF);
+                        stack.translate(0F, 0F, 500F);
+                        float textPosX = (float)((posX + size + 5) + indexHeightWidth);
+                        if(textPosX > window.getScaledWidth() - mc.fontRenderer.getStringPropertyWidth(text) - 2)
+                        {
+                            textPosX = window.getScaledWidth() - mc.fontRenderer.getStringPropertyWidth(text) - 2;
+                        }
+                        mc.fontRenderer.drawTextWithShadow(stack, text, textPosX, (float)textHeight, 0xFFFFFF);
                         stack.pop();
                     }
                 }
@@ -852,6 +919,202 @@ public class HudHandler
         RenderSystem.enableAlphaTest();
     }
 
+    public void preDrawBiomassBar(MatrixStack stack, float partialTick)
+    {
+        if(!barRequiresReset && (barShowTime > 0 || shouldShowBiomassBar()))
+        {
+            barRequiresReset = true;
+            stack.push();
+            drawBiomassBar(stack, partialTick, mc.getMainWindow());
+        }
+    }
+
+    public void postDrawBiomassBar(MatrixStack stack, float partialTick)
+    {
+        if(barRequiresReset)
+        {
+            barRequiresReset = false;
+            stack.pop();
+        }
+    }
+
+    private void drawBiomassBar(MatrixStack stack, float partialTick, MainWindow window)
+    {
+        if(bindBiomassBarTexture()) //our desat texture could be created
+        {
+            float prog = EntityHelper.sineifyProgress(MathHelper.clamp((barShowTime + (shouldShowBiomassBar() ? partialTick : -partialTick)) / BAR_TIME, 0F, 1F));
+
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.enableAlphaTest();
+
+            int scaledWidth = window.getScaledWidth();
+            int scaledHeight = window.getScaledHeight();
+
+            //Taken from renderExpBar
+            int x = scaledWidth / 2 - 91;
+            int y = scaledHeight - 32 + 3;
+
+            Matrix4f matrix = stack.getLast().getMatrix();
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR_TEX);
+
+            if(barInsufficientFlash > 0)
+            {
+                float flash = Math.abs((float)Math.cos(Math.toRadians(((barInsufficientFlash - partialTick) / 5F) * 90F)));
+                addBiomassBarVertex(bufferbuilder, matrix, x, y, 0, 0F, 1F, 1F, flash, flash, prog);
+            }
+            else
+            {
+                double capacity = barCapacity.getDisplayValue(partialTick);
+                double criticalCapacity = barCriticalCapacity.getDisplayValue(partialTick);
+                double cost = barAbilityCost != null ? barAbilityCost.getDisplayValue(partialTick) : 0D;
+                double current = barCurrentBiomass.getDisplayValue(partialTick) - cost;
+                double totalCapacity = capacity + criticalCapacity;
+
+                float criticalRatio = criticalCapacity > 0D ? (float)(capacity / (totalCapacity)) : 1F; //if critical > 0, we should probably draw the crit
+                float currentRatio = current <= 0 ? 0F : (float)(current > totalCapacity ? 1F : current / totalCapacity); //capped at 0 minimum
+
+                float r = 1F;
+                float g = 1F;
+                float b = 1F;
+
+                if(currentRatio < criticalRatio) //does not exceed critical mass
+                {
+                    //draw the current biomass
+                    if(currentRatio > 0F)
+                    {
+                        addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, 0F, currentRatio, r, g, b, prog);
+                    }
+
+                    //draw the background biomass
+                    addBiomassBarVertex(bufferbuilder, matrix, x, y, 0, currentRatio, criticalRatio, r, g, b, prog);
+
+                    //draw the critical background... if we have any
+                    if(criticalRatio < 1F)
+                    {
+                        addBiomassBarVertex(bufferbuilder, matrix, x, y, 0, criticalRatio, 1F, r, 0F, 0F, prog);
+                    }
+
+                    if(cost > 0D) //show the cost of the ability
+                    {
+                        float costWidth = totalCapacity <= 0 ? 0F : (float)(cost / totalCapacity);
+                        if(current < 0) //cannot afford
+                        {
+                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((mc.player.ticksExisted + partialTick) / 10F) * 90F))));
+                        }
+                        else
+                        {
+                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, g, b, (float)Math.abs(Math.sin(Math.toRadians(((mc.player.ticksExisted + partialTick) / 10F) * 90F))));
+                        }
+                    }
+                }
+                else
+                {
+                    //draw the normal biomass
+                    addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, 0F, criticalRatio, r, g, b, prog);
+
+                    //draw the biomass in critical mass
+                    addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, criticalRatio, currentRatio, r, 0F, 0F, prog);
+
+                    //draw the critical background
+                    addBiomassBarVertex(bufferbuilder, matrix, x, y, 0, currentRatio, 1F, r, 0F, 0F, prog);
+
+                    if(cost > 0D) //show the cost of the ability
+                    {
+                        float costWidth = totalCapacity <= 0 ? 0F : (float)(cost / totalCapacity);
+                        //current ratio is already over critical ratio, we can definitely afford it, and we'll stay in critical mass, so flash it red
+                        addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((mc.player.ticksExisted + partialTick) / 10F) * 90F))));
+                    }
+                }
+            }
+            tessellator.draw();
+
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.enableAlphaTest();
+
+            stack.translate(0F, -6F * prog, 0F);
+        }
+    }
+
+    private void addBiomassBarVertex(BufferBuilder bufferbuilder, Matrix4f matrix, int x, int y, int heightOffset, float start, float end, float r, float g, float b, float a)
+    {
+        int z = -90; //set by ingamegui, it's at our inject point.
+
+        int barWidth = 182;
+        int barHeight = 5;
+
+        float x1 = x + barWidth * start;
+        float x2 = x + barWidth * end;
+
+        int y2 = y + barHeight;
+
+        float uWidth = barWidth / 256F;
+
+        float u1 = uWidth * start;
+        float u2 = uWidth * end;
+
+        float v1 = (64 + heightOffset) / 256F;
+        float v2 = (64 + heightOffset + barHeight) / 256F;
+
+        bufferbuilder.pos(matrix, x1, (float)y2, (float)z).color(r, g, b, a).tex(u1, v2).endVertex();
+        bufferbuilder.pos(matrix, x2, (float)y2, (float)z).color(r, g, b, a).tex(u2, v2).endVertex();
+        bufferbuilder.pos(matrix, x2, (float)y , (float)z).color(r, g, b, a).tex(u2, v1).endVertex();
+        bufferbuilder.pos(matrix, x1, (float)y , (float)z).color(r, g, b, a).tex(u1, v1).endVertex();
+    }
+
+    private boolean bindBiomassBarTexture()
+    {
+        if(barTexture == null && !barTextureGenerated)
+        {
+            barTextureGenerated = true;
+
+            //Copied from SimpleTexture
+            try(SimpleTexture.TextureData textureData = SimpleTexture.TextureData.getTextureData(mc.getResourceManager(), AbstractGui.GUI_ICONS_LOCATION))
+            {
+                textureData.checkException();
+
+                NativeImage image = textureData.getNativeImage();
+
+                for(int x = 0; x < image.getWidth(); x++)
+                {
+                    for(int y = 0; y < image.getHeight(); y++)
+                    {
+                        int clr = image.getPixelRGBA(x, y); //Actually ARGB
+                        if((clr >> 24 & 0xff) > 0) //not invisible
+                        {
+                            float[] hsb = Color.RGBtoHSB(clr >> 16 & 0xff, clr >> 8 & 0xff, clr & 0xff, null);
+                            hsb[1] = 0F; //set the saturation to 0
+                            image.setPixelRGBA(x, y, ((clr >> 24 & 0xff) << 24) | (Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]) & 0xffffff));
+                        }
+                    }
+                }
+
+                barTexture = new NativeImageTexture(image);
+
+                mc.getTextureManager().loadTexture(barTexture.getResourceLocation(), barTexture);
+            }
+            catch(IOException e)
+            {
+                Morph.LOGGER.error("Error creating Icon texture data!");
+                e.printStackTrace();
+            }
+        }
+
+        if(barTexture != null)
+        {
+            mc.getTextureManager().bindTexture(barTexture.getResourceLocation());
+
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean isMouseOutsideRadialDeadZone(MainWindow window)
     {
         double diameter = Math.min(window.getScaledWidth(), window.getScaledHeight()) * Morph.configClient.radialScale;
@@ -865,9 +1128,35 @@ public class HudHandler
         return showSelector || showTime > 0;
     }
 
+    private boolean shouldShowBiomassBar()
+    {
+        return Morph.configClient.biomassBarMode == 1 && biomassBarRequiresUpdate() || Morph.configClient.biomassBarMode == 2;
+    }
+
+    private boolean biomassBarRequiresUpdate()
+    {
+        return barCapacity.requiresUpdate() || barCriticalCapacity.requiresUpdate() || barCurrentBiomass.requiresUpdate() || barAbilityCost != null || barInsufficientFlash > 0;
+    }
+
+    public void update(PlayerMorphData playerData)
+    {
+        //TODO get the new biomass capacity
+        barCapacity.updateTarget(1000);
+        barCriticalCapacity.updateTarget(200);
+        barCurrentBiomass.updateTarget(playerData.biomass);
+    }
+
     public void clean()
     {
         morphStates.clear();
+    }
+
+    public void destroy()
+    {
+        if(barTexture != null)
+        {
+            barTexture.deleteGlTexture();
+        }
     }
 
     @SubscribeEvent
@@ -987,5 +1276,55 @@ public class HudHandler
     {
         FAVOURITE,
         ABILITY
+    }
+
+    private static class BiomassValue
+    {
+        private double target;
+        private double current;
+        private double last;
+
+        private BiomassValue(double value)
+        {
+            set(value);
+        }
+
+        private void set(double value)
+        {
+            target = current = last = value;
+        }
+
+        private void updateTarget(double value)
+        {
+            target = value;
+        }
+
+        private void tick()
+        {
+            last = current;
+
+            if(current != target)
+            {
+                if(Math.abs(current - target) < 0.01F)
+                {
+                    current = target;
+                }
+                else
+                {
+                    current += (target - current) * 0.3F;
+                }
+            }
+        }
+
+        private boolean requiresUpdate()
+        {
+            return current != target;
+        }
+
+        private double getDisplayValue(float partialTick)
+        {
+            return last + (current - last) * partialTick;
+        }
+        //TODO requires update
     }
 }

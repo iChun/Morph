@@ -17,6 +17,7 @@ import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketMorphInfo;
+import me.ichun.mods.morph.common.packet.PacketUpdateBiomass;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -255,6 +256,25 @@ public final class MorphHandler implements IApi
         return null;
     }
 
+
+    public void setBiomassAmount(ServerPlayerEntity player, double value)
+    {
+        PlayerMorphData playerMorphData = getPlayerMorphData(player);
+        playerMorphData.biomass = value;
+        saveData.markDirty();
+
+        Morph.channel.sendTo(new PacketUpdateBiomass(playerMorphData.biomass), player);
+    }
+
+    public void addBiomassAmount(ServerPlayerEntity player, double value)
+    {
+        PlayerMorphData playerMorphData = getPlayerMorphData(player);
+        playerMorphData.biomass += value;
+        //TODO cap based on capacity
+        saveData.markDirty();
+
+        Morph.channel.sendTo(new PacketUpdateBiomass(playerMorphData.biomass), player);
+    }
 
     //NBT Modifier stuff
     public static NbtModifier getNbtModifierFor(LivingEntity living)

@@ -2,7 +2,9 @@ package me.ichun.mods.morph.common.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -11,6 +13,7 @@ import net.minecraft.command.arguments.SuggestionProviders;
 import net.minecraft.command.arguments.UUIDArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.UUID;
@@ -71,33 +74,45 @@ public class CommandMorph
                                 //TODO remove or clear args??
                         )
                         .then(Commands.literal("biomass")
+                                .then(Commands.literal("set")
+                                        .then(Commands.argument("value", DoubleArgumentType.doubleArg(0))
+                                                .executes(context -> setBiomass(context.getSource(), EntityArgument.getPlayer(context, "player"), DoubleArgumentType.getDouble(context, "value")))
+                                        )
+                                )
                         )
                 )
         );
         //TODO reextract
     }
 
-    private static int createMorph(CommandSource source, PlayerEntity player, Entity entity, boolean isAcquire)
+    private static int setBiomass(CommandSource source, ServerPlayerEntity player, double value)
+    {
+        MorphHandler.INSTANCE.setBiomassAmount(player, value);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    //TODO these
+    private static int createMorph(CommandSource source, ServerPlayerEntity player, Entity entity, boolean isAcquire)
     {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int createMorph(CommandSource source, PlayerEntity player, ResourceLocation type, boolean isAcquire)
+    private static int createMorph(CommandSource source, ServerPlayerEntity player, ResourceLocation type, boolean isAcquire)
     {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int createMorph(CommandSource source, PlayerEntity player, String name, boolean isAcquire)
+    private static int createMorph(CommandSource source, ServerPlayerEntity player, String name, boolean isAcquire)
     {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int createMorph(CommandSource source, PlayerEntity player, UUID uuid, boolean isAcquire)
+    private static int createMorph(CommandSource source, ServerPlayerEntity player, UUID uuid, boolean isAcquire)
     {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int demorphPlayer(CommandSource source, PlayerEntity player)
+    private static int demorphPlayer(CommandSource source, ServerPlayerEntity player)
     {
         return Command.SINGLE_SUCCESS;
     }
