@@ -32,6 +32,12 @@ public class ClassicMode implements MorphMode
     }
 
     @Override
+    public boolean hasUnlockedBiomass(PlayerEntity player)
+    {
+        return false;
+    }
+
+    @Override
     public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
         return false; // no biomass capabilities in classic.

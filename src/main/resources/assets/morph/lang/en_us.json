@@ -46,6 +46,12 @@
 
   "morph.morph.type.unknown": "Unknown",
 
+  "morph.gui.workspace.title": "Biomass Menu",
+  "morph.gui.window.header": "Biomass Menu Header",
+  "morph.gui.scene.biomassUpgrades.title": "Upgrades",
+  "morph.gui.scene.biomassAbilities.title": "Abilities",
+  "morph.gui.scene.morphs.title": "Morphs",
+
   "morph.advancement.unlock_biomass.title": "A Mutation Complication",
   "morph.advancement.unlock_biomass.description": "Rapid cellular death combined with rapid cellular regeneration increases the risk for random mutations.\n\nUnlocks the ability to absorb Biomass."
 }

@@ -14,6 +14,8 @@ public interface MorphMode
 
     int getMorphingDuration(PlayerEntity player);
 
+    boolean hasUnlockedBiomass(PlayerEntity player);
+
     boolean canAcquireBiomass(PlayerEntity player, LivingEntity living);
 
     double getBiomassAmount(PlayerEntity player, LivingEntity living);

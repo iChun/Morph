@@ -55,6 +55,11 @@ public interface IApi
 
 
     //Biomass Stuff
+    default boolean hasUnlockedBiomass(PlayerEntity player)
+    {
+        return false;
+    }
+
     default boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
         return false;
@@ -65,7 +70,7 @@ public interface IApi
 
     //Biomass Upgrade Info
     @Nullable
-    default BiomassUpgradeInfo getBiomassUpgradeInfo(String id) { return null; }
+    default BiomassUpgradeInfo getBiomassUpgradeInfo(String entityId, String id) { return null; }
 
     @Nullable
     default BiomassUpgrade getBiomassUpgrade(PlayerEntity player, String id) { return null; } //null means no upgrade.

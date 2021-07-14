@@ -1,7 +1,6 @@
 package me.ichun.mods.morph.common.morph.mode;
 
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
-import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.Upgrades;
@@ -39,13 +38,20 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean canMorph(PlayerEntity player)
     {
-        return true; //TODO bind to upgrades, be SIDE sensitive
+        return MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_MORPH_ABILITY) != null;
+    }
+
+    @Override
+    public boolean hasUnlockedBiomass(PlayerEntity player)
+    {
+        return Morph.configServer.biomassBypassAdvancement || EntityHelper.hasCompletedAdvancement(Morph.Advancements.UNLOCK_BIOMASS, player);
     }
 
     @Override
     public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
-        return Morph.configServer.biomassBypassAdvancement || EntityHelper.hasCompletedAdvancement(Morph.Advancements.UNLOCK_BIOMASS, player);
+        //TODO blacklist! (Should I just use the amount?? maybe that might cut down our functions/calls??
+        return true;
     }
 
     @Override
@@ -58,19 +64,13 @@ public class DefaultMode implements MorphMode
         //Weight: 648 kg
         //Biomass: 194.4 kg (* 0.3, default config)
 
-        //Calculate the volume of the entity
+        //Calculate the volume & weight of the entity
         double volume = living.getWidth() * living.getWidth() * living.getHeight();
-
         double weight = 1000D * volume;
 
         //TODO mob modifier
         //Get the player's efficiency level
-        double playerEfficiency = 0D;
-        BiomassUpgrade biomassUpgrade = MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_BIOMASS_EFFICIENCY);
-        if(biomassUpgrade != null)
-        {
-            playerEfficiency = biomassUpgrade.getValue();
-        }
+        double playerEfficiency = MorphHandler.INSTANCE.getBiomassUpgradeValue(player, Upgrades.ID_BIOMASS_EFFICIENCY);
 
         double finalBiomass = weight * playerEfficiency * Morph.configServer.biomassValue;
 

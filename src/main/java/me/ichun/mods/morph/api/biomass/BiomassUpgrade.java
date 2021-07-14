@@ -7,19 +7,26 @@ import javax.annotation.Nullable;
 
 public class BiomassUpgrade
 {
-    private String id;
+    private String mobId;
+    private String id; //TODO should mob traits start with mob_etc??
     private int level;
 
     @Nullable
     public BiomassUpgradeInfo upgradeInfo;
 
-    public BiomassUpgrade(String id)
+    public BiomassUpgrade(@Nullable String mobId, String id)
     {
+        this.mobId = mobId;
         this.id = id;
         this.level = 0;
     }
 
     private BiomassUpgrade(){}
+
+    public String getMobId()
+    {
+        return mobId;
+    }
 
     public String getId()
     {
@@ -48,11 +55,15 @@ public class BiomassUpgrade
 
     public void updateUpgradeInfo()
     {
-        upgradeInfo = MorphApi.getApiImpl().getBiomassUpgradeInfo(id);
+        upgradeInfo = MorphApi.getApiImpl().getBiomassUpgradeInfo(mobId, id);
     }
 
     public CompoundNBT write(CompoundNBT tag)
     {
+        if(mobId != null)
+        {
+            tag.putString("mobId", mobId);
+        }
         tag.putString("id", id);
         tag.putInt("level", level);
 
@@ -61,6 +72,10 @@ public class BiomassUpgrade
 
     public void read(CompoundNBT tag)
     {
+        if(tag.contains("mobId"))
+        {
+            mobId = tag.getString("mobId");
+        }
         id = tag.getString("id");
         level = tag.getInt("level");
 

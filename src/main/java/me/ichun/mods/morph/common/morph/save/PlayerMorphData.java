@@ -4,6 +4,7 @@ import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import net.minecraft.nbt.CompoundNBT;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class PlayerMorphData
         String[] defaultUpgrades = new String[] { "biomass_capacity", "biomass_efficiency", "biomass_reach" };
         for(String id : defaultUpgrades)
         {
-            BiomassUpgrade upgrade = new BiomassUpgrade(id);
+            BiomassUpgrade upgrade = new BiomassUpgrade(null, id);
             upgrade.setLevel(1);
             this.upgrades.add(upgrade);
         }
@@ -72,6 +73,29 @@ public class PlayerMorphData
 
         morphs.add(varClone);
         return varClone;
+    }
+
+    @Nullable
+    public BiomassUpgrade getBiomassUpgrade(String id)
+    {
+        for(BiomassUpgrade upgrade : upgrades)
+        {
+            if(upgrade.getId().equals(id))
+            {
+                return upgrade;
+            }
+        }
+        return null;
+    }
+
+    public double getBiomassUpgradeValue(String id)
+    {
+        BiomassUpgrade biomassUpgrade = getBiomassUpgrade(id);
+        if(biomassUpgrade != null)
+        {
+            return biomassUpgrade.getValue();
+        }
+        return 0D;
     }
 
     public CompoundNBT write(CompoundNBT tag)

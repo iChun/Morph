@@ -38,6 +38,9 @@ public class ConfigClient extends ConfigBase
     @Prop(min = 0, max = 2)
     public int biomassBarMode = 1;
 
+    @Prop(min = 0, max = 2)
+    public int guiMinecraftStyle = 2;
+
     public ConfigClient()
     {
         super(ModLoadingContext.get().getActiveContainer().getModId() + "-client.toml");

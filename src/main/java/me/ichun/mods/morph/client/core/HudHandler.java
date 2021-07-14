@@ -7,10 +7,13 @@ import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.client.render.NativeImageTexture;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
+import me.ichun.mods.morph.client.gui.WorkspaceMorph;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketMorphInput;
@@ -48,7 +51,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,8 +118,8 @@ public class HudHandler
     {
         this.mc = mc;
 
-        barCapacity = new BiomassValue(1000); //TODO update
-        barCriticalCapacity = new BiomassValue(200);
+        barCapacity = new BiomassValue(morphData.getBiomassUpgradeValue(Upgrades.ID_BIOMASS_CAPACITY));
+        barCriticalCapacity = new BiomassValue(morphData.getBiomassUpgradeValue(Upgrades.ID_BIOMASS_CRITICAL_CAPACITY));
         barCurrentBiomass = new BiomassValue(morphData.biomass);
     }
 
@@ -131,6 +133,17 @@ public class HudHandler
         if(keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight || keyBind == KeyBinds.keyFavourite)
         {
             handleMorphInput(keyBind, isReleased);
+        }
+        else if(keyBind == KeyBinds.keyBiomass)
+        {
+            if(MorphHandler.INSTANCE.hasUnlockedBiomass(mc.player))
+            {
+                mc.displayGuiScreen(new WorkspaceMorph(mc.currentScreen));
+            }
+            else
+            {
+                barInsufficientFlash = 20;
+            }
         }
     }
 
@@ -924,7 +937,10 @@ public class HudHandler
         {
             barRequiresReset = true;
             stack.push();
-            drawBiomassBar(stack, partialTick, mc.getMainWindow());
+            int scaledWidth = mc.getMainWindow().getScaledWidth();
+            int scaledHeight = mc.getMainWindow().getScaledHeight();
+            //Coords taken from renderExpBar
+            drawBiomassBar(stack, scaledWidth / 2 - 91, scaledHeight - 32 + 3, partialTick);
         }
     }
 
@@ -937,7 +953,7 @@ public class HudHandler
         }
     }
 
-    private void drawBiomassBar(MatrixStack stack, float partialTick, MainWindow window)
+    public void drawBiomassBar(MatrixStack stack, int x, int y, float partialTick)
     {
         if(bindBiomassBarTexture()) //our desat texture could be created
         {
@@ -947,13 +963,6 @@ public class HudHandler
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.enableAlphaTest();
-
-            int scaledWidth = window.getScaledWidth();
-            int scaledHeight = window.getScaledHeight();
-
-            //Taken from renderExpBar
-            int x = scaledWidth / 2 - 91;
-            int y = scaledHeight - 32 + 3;
 
             Matrix4f matrix = stack.getLast().getMatrix();
             Tessellator tessellator = Tessellator.getInstance();
@@ -1002,11 +1011,11 @@ public class HudHandler
                         float costWidth = totalCapacity <= 0 ? 0F : (float)(cost / totalCapacity);
                         if(current < 0) //cannot afford
                         {
-                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((mc.player.ticksExisted + partialTick) / 10F) * 90F))));
+                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
                         }
                         else
                         {
-                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, g, b, (float)Math.abs(Math.sin(Math.toRadians(((mc.player.ticksExisted + partialTick) / 10F) * 90F))));
+                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, g, b, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
                         }
                     }
                 }
@@ -1025,7 +1034,7 @@ public class HudHandler
                     {
                         float costWidth = totalCapacity <= 0 ? 0F : (float)(cost / totalCapacity);
                         //current ratio is already over critical ratio, we can definitely afford it, and we'll stay in critical mass, so flash it red
-                        addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((mc.player.ticksExisted + partialTick) / 10F) * 90F))));
+                        addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
                     }
                 }
             }
@@ -1137,12 +1146,11 @@ public class HudHandler
         return barCapacity.requiresUpdate() || barCriticalCapacity.requiresUpdate() || barCurrentBiomass.requiresUpdate() || barAbilityCost > 0D || barInsufficientFlash > 0;
     }
 
-    public void update(PlayerMorphData playerData)
+    public void update(PlayerMorphData morphData)
     {
-        //TODO get the new biomass capacity
-        barCapacity.updateTarget(1000);
-        barCriticalCapacity.updateTarget(200);
-        barCurrentBiomass.updateTarget(playerData.biomass);
+        barCapacity.updateTarget(morphData.getBiomassUpgradeValue(Upgrades.ID_BIOMASS_CAPACITY));
+        barCriticalCapacity.updateTarget(morphData.getBiomassUpgradeValue(Upgrades.ID_BIOMASS_CRITICAL_CAPACITY));
+        barCurrentBiomass.updateTarget(morphData.biomass);
     }
 
     public void clean()

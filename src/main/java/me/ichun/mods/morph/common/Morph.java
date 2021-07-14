@@ -104,7 +104,8 @@ public class Morph
                 PacketSessionSync.class,
                 PacketMorphInput.class,
                 PacketAcquisition.class,
-                PacketUpdateBiomass.class
+                PacketUpdateBiomassValue.class,
+                PacketUpdateBiomassUpgrades.class
         );
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

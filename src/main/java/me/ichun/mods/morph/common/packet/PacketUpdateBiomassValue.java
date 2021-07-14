@@ -5,13 +5,13 @@ import me.ichun.mods.morph.common.Morph;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketUpdateBiomass extends AbstractPacket
+public class PacketUpdateBiomassValue extends AbstractPacket
 {
     public double value;
 
-    public PacketUpdateBiomass(){}
+    public PacketUpdateBiomassValue(){}
 
-    public PacketUpdateBiomass(double value)
+    public PacketUpdateBiomassValue(double value)
     {
         this.value = value;
     }

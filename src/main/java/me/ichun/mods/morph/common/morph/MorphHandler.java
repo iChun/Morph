@@ -10,6 +10,7 @@ import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.morph.mode.ClassicMode;
 import me.ichun.mods.morph.common.morph.mode.DefaultMode;
 import me.ichun.mods.morph.common.morph.mode.MorphMode;
@@ -17,7 +18,7 @@ import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketMorphInfo;
-import me.ichun.mods.morph.common.packet.PacketUpdateBiomass;
+import me.ichun.mods.morph.common.packet.PacketUpdateBiomassValue;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -73,6 +74,10 @@ public final class MorphHandler implements IApi
 
     public PlayerMorphData getPlayerMorphData(PlayerEntity player)
     {
+        if(player.world.isRemote)
+        {
+            return Morph.eventHandlerClient.morphData;
+        }
         return saveData.playerMorphs.computeIfAbsent(player.getGameProfile().getId(), k -> new PlayerMorphData(player.getGameProfile().getId()));
     }
 
@@ -216,6 +221,12 @@ public final class MorphHandler implements IApi
 
     //Biomass overrides
     @Override
+    public boolean hasUnlockedBiomass(PlayerEntity player)
+    {
+        return currentMode != null ? currentMode.hasUnlockedBiomass(player) : IApi.super.hasUnlockedBiomass(player);
+    }
+
+    @Override
     public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
         return currentMode != null ? currentMode.canAcquireBiomass(player, living) : IApi.super.canAcquireBiomass(player, living);
@@ -229,26 +240,31 @@ public final class MorphHandler implements IApi
 
     @Nullable
     @Override
-    public BiomassUpgradeInfo getBiomassUpgradeInfo(String id)
+    public BiomassUpgradeInfo getBiomassUpgradeInfo(@Nullable String entityId, String id)
     {
-        return BIOMASS_UPGRADES.get(id);
+        if(entityId == null)
+        {
+            return BIOMASS_UPGRADES.get(id);
+        }
+        return null;
     }
 
     @Nullable
     @Override
     public BiomassUpgrade getBiomassUpgrade(PlayerEntity player, String id)
     {
-        PlayerMorphData playerMorphData = getPlayerMorphData(player);
-        for(BiomassUpgrade upgrade : playerMorphData.upgrades)
-        {
-            if(upgrade.getId().equals(id))
-            {
-                return upgrade;
-            }
-        }
-        return null;
+        return getPlayerMorphData(player).getBiomassUpgrade(id);
     }
 
+    public double getBiomassUpgradeValue(PlayerEntity player, String id)
+    {
+        BiomassUpgrade biomassUpgrade = getBiomassUpgrade(player, id);
+        if(biomassUpgrade != null)
+        {
+            return biomassUpgrade.getValue();
+        }
+        return 0D;
+    }
 
     public void setBiomassAmount(ServerPlayerEntity player, double value)
     {
@@ -256,17 +272,23 @@ public final class MorphHandler implements IApi
         playerMorphData.biomass = value;
         saveData.markDirty();
 
-        Morph.channel.sendTo(new PacketUpdateBiomass(playerMorphData.biomass), player);
+        Morph.channel.sendTo(new PacketUpdateBiomassValue(playerMorphData.biomass), player);
     }
 
     public void addBiomassAmount(ServerPlayerEntity player, double value)
     {
         PlayerMorphData playerMorphData = getPlayerMorphData(player);
+        double cap = getBiomassUpgradeValue(player, Upgrades.ID_BIOMASS_CAPACITY) + getBiomassUpgradeValue(player, Upgrades.ID_BIOMASS_CRITICAL_CAPACITY);
+        if(playerMorphData.biomass + value > cap)
+        {
+            value = cap - playerMorphData.biomass;
+        }
+
         playerMorphData.biomass += value;
-        //TODO cap based on capacity
+
         saveData.markDirty();
 
-        Morph.channel.sendTo(new PacketUpdateBiomass(playerMorphData.biomass), player);
+        Morph.channel.sendTo(new PacketUpdateBiomassValue(playerMorphData.biomass), player);
     }
 
     //NBT Modifier stuff
