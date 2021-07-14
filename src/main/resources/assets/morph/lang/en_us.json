@@ -44,5 +44,8 @@
   "morph.key.ability": "Abilities",
   "morph.key.biomass": "Biomass Menu",
 
-  "morph.morph.type.unknown": "Unknown"
+  "morph.morph.type.unknown": "Unknown",
+
+  "morph.advancement.unlock_biomass.title": "A Mutation Complication",
+  "morph.advancement.unlock_biomass.description": "Rapid cellular death combined with rapid cellular regeneration increases the risk for random mutations.\n\nUnlocks the ability to absorb Biomass."
 }

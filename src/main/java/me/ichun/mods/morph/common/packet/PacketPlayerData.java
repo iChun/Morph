@@ -7,8 +7,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.Collections;
-
 public class PacketPlayerData extends AbstractPacket
 {
     public CompoundNBT nbt;

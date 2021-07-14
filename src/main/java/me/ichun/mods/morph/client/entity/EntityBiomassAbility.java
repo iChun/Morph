@@ -1,32 +1,21 @@
 package me.ichun.mods.morph.client.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.client.tracker.ClientEntityTracker;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
-import me.ichun.mods.morph.common.Morph;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 @OnlyIn(Dist.CLIENT)
 public class EntityBiomassAbility extends Entity
@@ -118,9 +107,26 @@ public class EntityBiomassAbility extends Entity
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
+    public float getSkinAlpha(float partialTick)
+    {
+        float alpha;
+        if(age < fadeTime)
+        {
+            alpha = EntityHelper.sineifyProgress(MathHelper.clamp((age + partialTick) / fadeTime, 0F, 1F));
+        }
+        else if(age >= fadeTime + solidTime)
+        {
+            alpha = EntityHelper.sineifyProgress(1F - MathHelper.clamp((age - (fadeTime + solidTime) + partialTick) / fadeTime, 0F, 1F));
+        }
+        else
+        {
+            alpha = 1F;
+        }
+        return alpha;
+    }
+
     public void syncWithOriginPosition()
     {
-        double height = (player.getHeight() / 2D);
         this.setLocationAndAngles(player.getPosX(), player.getPosY(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
         this.lastTickPosX = player.lastTickPosX;
         this.lastTickPosY = player.lastTickPosY;

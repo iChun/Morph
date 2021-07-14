@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:nether/find_fortress",
+  "display": {
+    "icon": {
+      "item": "minecraft:wither_rose"
+    },
+    "title": {
+      "translate": "morph.advancement.unlock_biomass.title"
+    },
+    "description": {
+      "translate": "morph.advancement.unlock_biomass.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "wither_and_regen": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "minecraft:wither": {},
+          "minecraft:regeneration": {}
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "wither_and_regen"
+    ]
+  ]
+}

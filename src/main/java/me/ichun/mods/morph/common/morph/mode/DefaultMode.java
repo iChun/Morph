@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph.mode;
 
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
@@ -7,7 +8,6 @@ import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class DefaultMode implements MorphMode
@@ -45,7 +45,7 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
-        return true;
+        return Morph.configServer.biomassBypassAdvancement || EntityHelper.hasCompletedAdvancement(Morph.Advancements.UNLOCK_BIOMASS, player);
     }
 
     @Override

@@ -1,40 +1,44 @@
 package me.ichun.mods.morph.api.biomass;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class BiomassUpgradeInfo
 {
     public String id;
-    public String parentId; //todo specific level upgrade cost
+    public String parentId;
 
+    @Nullable
     public Integer maxLevel; //null = infinite
 
-    public double baseCost;
-    public Multiplier costMultiplier; //TODO start unlocked level?
-    
-    public double baseValue;
-    public Multiplier valueMultiplier;
+    @Nullable
+    public Multiplier value; //null = 1 time upgrade
+
+    @Nullable
+    public Multiplier cost; //null = unlocked at start
 
     public ArrayList<Requirement> requirements;
 
     //Display
-    public String nameKey; //TODO Change the to overrides
-    public String descriptionKey;
+    public String nameKeyOverride; //TODO Change the to overrides
+    public String descriptionKeyOverride;
 
     public static class Multiplier
     {
+        public double baseValue;
         public double multiplier = 1D;
         public boolean isExponential;
 
-        public double apply(double amount, int currentLevel)
+        public double get(int level)
         {
             if(isExponential)
             {
-                return amount * Math.pow(multiplier, currentLevel);
+                //level 0 starts with base value
+                return baseValue * Math.pow(multiplier, level);
             }
             else
             {
-                return amount + (amount * multiplier * currentLevel); //TODO how do I head towards a value eg from 0.4 to gradually 0.8? maybe a base existing value?
+                return baseValue + (baseValue * multiplier * level);
             }
         }
     }

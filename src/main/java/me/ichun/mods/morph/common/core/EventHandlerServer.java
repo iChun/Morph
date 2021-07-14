@@ -1,12 +1,11 @@
 package me.ichun.mods.morph.common.core;
 
+import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.command.CommandMorph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
-import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.common.packet.PacketPlayerData;
-import me.ichun.mods.morph.common.packet.PacketSessionSync;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,7 +22,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 
@@ -78,7 +76,7 @@ public class EventHandlerServer
         if(!(event.getPlayer().getServer().isSinglePlayer() && event.getPlayer().getGameProfile().getName().equals(event.getPlayer().getServer().getServerOwner()))) //if the player is not the client in singleplayer
         {
             //TODO update this
-//            Morph.channel.sendTo(new PacketSessionSync(MorphHandler.BIOMASS_UPGRADES_SESSION.values()), (ServerPlayerEntity)event.getPlayer());
+            //            Morph.channel.sendTo(new PacketSessionSync(MorphHandler.BIOMASS_UPGRADES_SESSION.values()), (ServerPlayerEntity)event.getPlayer());
         }
         Morph.channel.sendTo(new PacketPlayerData(MorphHandler.INSTANCE.getPlayerMorphData(event.getPlayer()).write(new CompoundNBT())), (ServerPlayerEntity)event.getPlayer());
     }

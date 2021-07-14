@@ -1,7 +1,6 @@
 package me.ichun.mods.morph.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.client.entity.EntityBiomassAbility;
 import me.ichun.mods.morph.common.Morph;
@@ -15,7 +14,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -30,50 +28,41 @@ public class RenderEntityBiomassAbility extends EntityRenderer<EntityBiomassAbil
     }
 
     @Override
-    public void render(EntityBiomassAbility ability, float entityYaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int light)
+    public void render(EntityBiomassAbility ability, float entityYaw, float partialTick, MatrixStack stack, IRenderTypeBuffer buffer, int light)
     {
         if(ability.player.removed)
         {
             return; //no render
         }
 
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(ability.player);
         boolean isFirstPerson = ability.player == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON;
         if(isFirstPerson)
         {
-            MorphHandler.INSTANCE.getMorphInfo(ability.player).entityBiomassAbility = ability; //will be removed by MorphInfo when the entity is invalid/removed
+            if(info.entityBiomassAbility == null || info.entityBiomassAbility.getSkinAlpha(partialTick) < ability.getSkinAlpha(partialTick))
+            {
+                info.entityBiomassAbility = ability; //will be removed by MorphInfo when the entity is invalid/removed
+            }
             return; //no render
         }
 
-        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(ability.player);
-        LivingEntity activeLiving = info.getActiveAppearanceEntity(partialTicks);
+        LivingEntity activeLiving = info.getActiveAppearanceEntity(partialTick);
         if(activeLiving != null)
         {
             EntityRenderer<? super LivingEntity> renderer = renderManager.getRenderer(activeLiving);
             if(renderer != null)
             {
-                float alpha;
-                if(ability.age < ability.fadeTime)
-                {
-                    alpha = EntityHelper.sineifyProgress(MathHelper.clamp((ability.age + partialTicks) / ability.fadeTime, 0F, 1F));
-                }
-                else if(ability.age >= ability.fadeTime + ability.solidTime)
-                {
-                    alpha = EntityHelper.sineifyProgress(1F - MathHelper.clamp((ability.age - (ability.fadeTime + ability.solidTime) + partialTicks) / ability.fadeTime, 0F, 1F));
-                }
-                else
-                {
-                    alpha = 1F;
-                }
+                float alpha = ability.getSkinAlpha(partialTick);
 
                 MorphRenderHandler.denyRenderNameplate = true;
                 stack.push();
-                MorphRenderHandler.renderLiving(renderer, activeLiving, stack, buffer, renderManager.getPackedLight(activeLiving, partialTicks), partialTicks);
+                MorphRenderHandler.renderLiving(renderer, activeLiving, stack, buffer, renderManager.getPackedLight(activeLiving, partialTick), partialTick);
                 stack.pop();
 
                 MorphRenderHandler.currentCapture = ability.capture;
                 MorphRenderHandler.currentCapture.infos.clear();
 
-                MorphRenderHandler.renderLiving(renderer, activeLiving, new MatrixStack(), buffer, renderManager.getPackedLight(activeLiving, partialTicks), partialTicks, Morph.configServer.biomassSkinWhilstInvisible);
+                MorphRenderHandler.renderLiving(renderer, activeLiving, new MatrixStack(), buffer, renderManager.getPackedLight(activeLiving, partialTick), partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
                 MorphRenderHandler.currentCapture = null;
                 MorphRenderHandler.denyRenderNameplate = false;

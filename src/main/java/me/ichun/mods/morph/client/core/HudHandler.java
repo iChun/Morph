@@ -92,19 +92,17 @@ public class HudHandler
 
     //biomass bar stuff
     private static final int BAR_TIME = 8;
+    private static NativeImageTexture barTexture = null;
+    private static boolean barTextureGenerated = false;
 
     public boolean barRequiresReset;
 
     public int barShowTime = 0;
 
-    private NativeImageTexture barTexture = null;
-    private boolean barTextureGenerated = false;
-
     private BiomassValue barCapacity;
     private BiomassValue barCriticalCapacity;
     private BiomassValue barCurrentBiomass;
-    @Nullable
-    private BiomassValue barAbilityCost = null;
+    private double barAbilityCost = 0D;
 
     private int barInsufficientFlash;
 
@@ -216,6 +214,7 @@ public class HudHandler
                         if(morphVariant.identifier.equals(currentMorph.thisVariant.identifier))
                         {
                             indexHori = i1;
+                            lastIndexHori = variant.variants.size() - 1;
                             break;
                         }
                     }
@@ -226,7 +225,7 @@ public class HudHandler
         }
 
         lastIndexVert = indexVert;
-        lastIndexHori = indexHori;
+        indexChangeTime = 0;
     }
 
     private void tick()
@@ -970,7 +969,7 @@ public class HudHandler
             {
                 double capacity = barCapacity.getDisplayValue(partialTick);
                 double criticalCapacity = barCriticalCapacity.getDisplayValue(partialTick);
-                double cost = barAbilityCost != null ? barAbilityCost.getDisplayValue(partialTick) : 0D;
+                double cost = barAbilityCost;
                 double current = barCurrentBiomass.getDisplayValue(partialTick) - cost;
                 double totalCapacity = capacity + criticalCapacity;
 
@@ -1135,7 +1134,7 @@ public class HudHandler
 
     private boolean biomassBarRequiresUpdate()
     {
-        return barCapacity.requiresUpdate() || barCriticalCapacity.requiresUpdate() || barCurrentBiomass.requiresUpdate() || barAbilityCost != null || barInsufficientFlash > 0;
+        return barCapacity.requiresUpdate() || barCriticalCapacity.requiresUpdate() || barCurrentBiomass.requiresUpdate() || barAbilityCost > 0D || barInsufficientFlash > 0;
     }
 
     public void update(PlayerMorphData playerData)
@@ -1153,10 +1152,7 @@ public class HudHandler
 
     public void destroy()
     {
-        if(barTexture != null)
-        {
-            barTexture.deleteGlTexture();
-        }
+        //TODO required??
     }
 
     @SubscribeEvent

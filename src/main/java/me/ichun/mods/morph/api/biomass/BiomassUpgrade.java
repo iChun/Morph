@@ -25,12 +25,12 @@ public class BiomassUpgrade
     {
         if(upgradeInfo != null)
         {
-            if(upgradeInfo.valueMultiplier != null)
-            {
-                return upgradeInfo.valueMultiplier.apply(upgradeInfo.baseValue, level);
-            }
-
-            return upgradeInfo.baseValue;
+//            if(upgradeInfo.valueMultiplier != null)
+//            {
+//                return upgradeInfo.valueMultiplier.apply(upgradeInfo.baseValue, level);
+//            }
+//
+//            return upgradeInfo.baseValue;
         }
         return 0;
     }

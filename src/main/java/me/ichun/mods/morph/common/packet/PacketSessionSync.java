@@ -2,7 +2,6 @@ package me.ichun.mods.morph.common.packet;
 
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
-import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
