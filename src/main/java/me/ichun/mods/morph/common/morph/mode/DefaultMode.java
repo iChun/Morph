@@ -1,8 +1,10 @@
 package me.ichun.mods.morph.common.morph.mode;
 
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
+import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import net.minecraft.entity.LivingEntity;
@@ -22,8 +24,6 @@ public class DefaultMode implements MorphMode
             {
                 MorphHandler.INSTANCE.acquireMorph(player, variant);
 
-                //TODO if player is invisible?
-
                 MorphHandler.INSTANCE.addBiomassAmount(player, getBiomassAmount(player, living));
                 Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), false), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
 
@@ -39,7 +39,7 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean canMorph(PlayerEntity player)
     {
-        return true; //TODO bind to upgrades
+        return true; //TODO bind to upgrades, be SIDE sensitive
     }
 
     @Override
@@ -63,8 +63,16 @@ public class DefaultMode implements MorphMode
 
         double weight = 1000D * volume;
 
-        //TODO biomass efficiency upgrades
-        double finalBiomass = weight * Morph.configServer.biomassValue;
+        //TODO mob modifier
+        //Get the player's efficiency level
+        double playerEfficiency = 0D;
+        BiomassUpgrade biomassUpgrade = MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_BIOMASS_EFFICIENCY);
+        if(biomassUpgrade != null)
+        {
+            playerEfficiency = biomassUpgrade.getValue();
+        }
+
+        double finalBiomass = weight * playerEfficiency * Morph.configServer.biomassValue;
 
         return finalBiomass;
     }

@@ -23,12 +23,22 @@ public class PlayerMorphData
     public PlayerMorphData(UUID owner)
     {
         this.owner = owner;
+
+        //Add the player's default morph
         this.morphs = new ArrayList<>();
         MorphVariant variant = MorphVariant.createPlayerMorph(owner, false);
         variant.variants.get(0).identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
         this.morphs.add(variant); //add the player as a morph, this should never be deleted.
 
-        this.upgrades = new ArrayList<>(); //no upgrades by default
+        //add the first level of the capacity upgrade
+        this.upgrades = new ArrayList<>();
+        String[] defaultUpgrades = new String[] { "biomass_capacity", "biomass_efficiency", "biomass_reach" };
+        for(String id : defaultUpgrades)
+        {
+            BiomassUpgrade upgrade = new BiomassUpgrade(id);
+            upgrade.setLevel(1);
+            this.upgrades.add(upgrade);
+        }
     }
 
     public boolean containsVariant(MorphVariant variant)

@@ -2,6 +2,7 @@ package me.ichun.mods.morph.common.packet;
 
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
+import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -21,7 +22,7 @@ public class PacketSessionSync extends AbstractPacket
     }
 
     @Override
-    public void writeTo(PacketBuffer buf) //TODO switch to the biomass upgrade path
+    public void writeTo(PacketBuffer buf)
     {
         buf.writeInt(upgrades.size());
 
@@ -47,11 +48,11 @@ public class PacketSessionSync extends AbstractPacket
     public void process(NetworkEvent.Context context)
     {
         context.enqueueWork(() -> {
-//            MorphHandler.BIOMASS_UPGRADES_SESSION.clear();
-//            for(BiomassUpgradeInfo upgrade : upgrades)
-//            {
-//                MorphHandler.BIOMASS_UPGRADES_SESSION.put(upgrade.id, upgrade);
-//            }
+            MorphHandler.BIOMASS_UPGRADES.clear();
+            for(BiomassUpgradeInfo upgrade : upgrades)
+            {
+                MorphHandler.BIOMASS_UPGRADES.put(upgrade.id, upgrade);
+            }
         });
     }
 }

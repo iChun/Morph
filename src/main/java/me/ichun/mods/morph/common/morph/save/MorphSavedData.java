@@ -26,7 +26,7 @@ public class MorphSavedData extends WorldSavedData
         for(int i = 0; i < count; i++)
         {
             PlayerMorphData playerData = new PlayerMorphData();
-            playerData.read(tag.getCompound("hats_" + i));
+            playerData.read(tag.getCompound("morph_" + i));
 
             playerMorphs.put(playerData.owner, playerData);
         }
@@ -40,7 +40,7 @@ public class MorphSavedData extends WorldSavedData
         int i = 0;
         for(Map.Entry<UUID, PlayerMorphData> entry : playerMorphs.entrySet())
         {
-            tag.put("hats_" + i, entry.getValue().write(new CompoundNBT()));
+            tag.put("morph_" + i, entry.getValue().write(new CompoundNBT()));
             i++;
         }
 

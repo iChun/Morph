@@ -7,8 +7,8 @@ import javax.annotation.Nullable;
 
 public class BiomassUpgrade
 {
-    public String id;
-    public int level;
+    private String id;
+    private int level;
 
     @Nullable
     public BiomassUpgradeInfo upgradeInfo;
@@ -21,18 +21,34 @@ public class BiomassUpgrade
 
     private BiomassUpgrade(){}
 
+    public String getId()
+    {
+        return id;
+    }
+
+    public int getLevel()
+    {
+        return level;
+    }
+
+    public void setLevel(int i)
+    {
+        level = i;
+    }
+
     public double getValue()
     {
-        if(upgradeInfo != null)
+        updateUpgradeInfo();
+        if(upgradeInfo != null && upgradeInfo.value != null)
         {
-//            if(upgradeInfo.valueMultiplier != null)
-//            {
-//                return upgradeInfo.valueMultiplier.apply(upgradeInfo.baseValue, level);
-//            }
-//
-//            return upgradeInfo.baseValue;
+            return upgradeInfo.value.get(level);
         }
         return 0;
+    }
+
+    public void updateUpgradeInfo()
+    {
+        upgradeInfo = MorphApi.getApiImpl().getBiomassUpgradeInfo(id);
     }
 
     public CompoundNBT write(CompoundNBT tag)
@@ -48,7 +64,7 @@ public class BiomassUpgrade
         id = tag.getString("id");
         level = tag.getInt("level");
 
-        upgradeInfo = MorphApi.getApiImpl().getBiomassUpgradeInfo(id);
+        updateUpgradeInfo();
     }
 
     public static BiomassUpgrade createFromNBT(CompoundNBT tag)

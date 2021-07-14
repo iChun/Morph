@@ -231,14 +231,7 @@ public final class MorphHandler implements IApi
     @Override
     public BiomassUpgradeInfo getBiomassUpgradeInfo(String id)
     {
-        for(Map.Entry<String, BiomassUpgradeInfo> e : BIOMASS_UPGRADES.entrySet())
-        {
-            if(e.getKey().equals(id))
-            {
-                return e.getValue();
-            }
-        }
-        return null;
+        return BIOMASS_UPGRADES.get(id);
     }
 
     @Nullable
@@ -248,7 +241,7 @@ public final class MorphHandler implements IApi
         PlayerMorphData playerMorphData = getPlayerMorphData(player);
         for(BiomassUpgrade upgrade : playerMorphData.upgrades)
         {
-            if(upgrade.id.equals(id))
+            if(upgrade.getId().equals(id))
             {
                 return upgrade;
             }

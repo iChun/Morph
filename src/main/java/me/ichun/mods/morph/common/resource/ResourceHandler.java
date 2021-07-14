@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ResourceHandler
 {
@@ -62,7 +63,6 @@ public class ResourceHandler
                 //TODO mob traits/upgrades?
 //                loadBiomassUpgrades(); //TODO propagate the upgrades to the players if there are players connected
                 //TODO just load up the biomass upgrades when server starts. sync with client.
-
             }
             catch(IOException e)
             {
@@ -82,61 +82,57 @@ public class ResourceHandler
     {
         MorphHandler.BIOMASS_UPGRADES.clear();
 
-        readBiomassUpgrades(morphDir.resolve("biomass"));
+        HashMap<String, BiomassUpgradeInfo> upgradeMap = new HashMap<>();
+        try
+        {
+            IOUtil.scourDirectoryForFiles(morphDir.resolve("biomass"), p -> {
+                if(p.getFileName().toString().endsWith(".json"))
+                {
+                    File file = p.toFile();
+                    try
+                    {
+                        BiomassUpgradeInfo upgradeInfo = GSON.fromJson(FileUtils.readFileToString(file, "UTF-8"), BiomassUpgradeInfo.class);
+                        if(upgradeInfo.id == null)
+                        {
+                            Morph.LOGGER.error("Biomass Upgrade has no id: {}", file);
+                        }
+                        else if(upgradeInfo.parentId == null)
+                        {
+                            Morph.LOGGER.error("Biomass Upgrade has no parent id: {}", file);
+                        }
+                        else
+                        {
+                            upgradeMap.put(upgradeInfo.id, upgradeInfo);
+                        }
+                        return true;
+                    }
+                    catch(IOException | JsonSyntaxException e)
+                    {
+                        Morph.LOGGER.error("Error reading Biomass Upgrade file: {}", file);
+                        e.printStackTrace();
+                    }
+                }
+                return false;
+            });
+        }
+        catch(IOException e)
+        {
+            Morph.LOGGER.error("Error loading Biomass files.", e);
+        }
+
+        upgradeMap.entrySet().removeIf(e -> {
+            if(!e.getValue().parentId.equals("root") && !upgradeMap.containsKey(e.getValue().parentId))
+            {
+                Morph.LOGGER.error("Removing biomass upgrade with ID {} as we cannot find their parent with ID {}", e.getValue().id, e.getValue().parentId);
+                return true;
+            }
+            return false;
+        });
+
+        MorphHandler.BIOMASS_UPGRADES.putAll(upgradeMap);
 
         Morph.LOGGER.info("Loaded {} Biomass Upgrade(s)", MorphHandler.BIOMASS_UPGRADES.size());
     }
-
-    private static void readBiomassUpgrades(Path path)
-    {
-        try
-        {
-            if(!Files.exists(path))
-            {
-                Files.createDirectories(path);
-            }
-
-            String json = FileUtils.readFileToString(path.resolve("upgrades.json").toFile(), "UTF-8");
-            readBiomassUpgradesJson(json);
-        }
-        catch(IOException | JsonSyntaxException e)
-        {
-            Morph.LOGGER.error("Error reading directory for Biomass Upgrades: {}", path);
-            e.printStackTrace();
-        }
-    }
-
-    private static void readBiomassUpgradesJson(String json) throws JsonSyntaxException
-    {
-        BiomassUpgradeInfos upgradeInfo = GSON.fromJson(json, BiomassUpgradeInfos.class);
-        if(upgradeInfo.upgrades == null)
-        {
-            Morph.LOGGER.warn("No Biomass Upgrades defined!");
-            return;
-        }
-
-        for(BiomassUpgradeInfo upgrade : upgradeInfo.upgrades)
-        {
-            if(upgrade.id == null)
-            {
-                Morph.LOGGER.warn("Biomass Upgrade with no ID!");
-                continue;
-            }
-
-            MorphHandler.BIOMASS_UPGRADES.put(upgrade.id, upgrade);
-        }
-
-        int count = MorphHandler.BIOMASS_UPGRADES.size();
-
-        MorphHandler.BIOMASS_UPGRADES.entrySet().removeIf(e -> e.getValue().parentId == null && !e.getValue().id.equals("biomass_capacity") || !MorphHandler.BIOMASS_UPGRADES.containsKey(e.getValue().parentId));
-
-        if(count != MorphHandler.BIOMASS_UPGRADES.size())
-        {
-            Morph.LOGGER.warn("Biomass Upgrades with no parent ID removed!");
-        }
-    }
-    private static class BiomassUpgradeInfos{ public BiomassUpgradeInfo[] upgrades; }
-
 
     public static void loadNbtModifiers()
     {
@@ -175,7 +171,7 @@ public class ResourceHandler
         }
         catch(IOException e)
         {
-            e.printStackTrace();
+            Morph.LOGGER.error("Error loading NBT Modifier files.", e);
         }
 
         Morph.LOGGER.info("Loaded {} NBT Modifier(s)", MorphHandler.NBT_MODIFIERS.size());
