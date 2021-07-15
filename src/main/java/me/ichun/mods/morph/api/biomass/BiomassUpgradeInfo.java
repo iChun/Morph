@@ -1,5 +1,7 @@
 package me.ichun.mods.morph.api.biomass;
 
+import net.minecraft.util.ResourceLocation;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
@@ -23,8 +25,27 @@ public class BiomassUpgradeInfo
     public ArrayList<Requirement> requirements; //TODO handle requirements
 
     //Display
-    public String keyNameOverride;
-    public String keyDescOverride;
+    private String textureLocationOverride;
+    private String keyNameOverride;
+    private String keyDescOverride;
+
+    public transient ResourceLocation textureLocation;
+
+    public ResourceLocation getTextureLocation()
+    {
+        if(textureLocation == null)
+        {
+            if(textureLocationOverride != null)
+            {
+                textureLocation = new ResourceLocation(textureLocationOverride);
+            }
+            else
+            {
+                textureLocation = new ResourceLocation("morph", "textures/biomass/upgrade/" + id + ".png");
+            }
+        }
+        return textureLocation;
+    }
 
     public static class Multiplier
     {
@@ -50,7 +71,7 @@ public class BiomassUpgradeInfo
                 case 1: return baseValue + (incValue * multiplier * level); //linear gain
                 case 2: return baseValue + (incValue * Math.pow(level - 1, multiplier)); //exponential gain
                 case 3: return baseValue + (incValue * Math.pow(multiplier, level - 1)); //exponential gain ver 2
-                case 4: return baseValue + (incValue * Math.log(level * multiplier)); //log gain
+                case 4: return baseValue + (incValue * Math.log10(level * multiplier)); //log10 gain
                 case 5: return baseValue + (incValue * Math.sqrt((level - 1) * multiplier)); //sqrt
             }
         }

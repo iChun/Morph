@@ -22,7 +22,7 @@ public class ElementBiomassBar extends Element<WindowHeader.ViewHeader>
         int y = getTop() + (int)((getHeight() - 5) / 2D);
 
         stack.push();
-        Morph.eventHandlerClient.hudHandler.drawBiomassBar(stack, x, y, partialTick);
+        Morph.eventHandlerClient.hudHandler.drawBiomassBar(stack, x, y, partialTick, 1F);
         stack.pop();
     }
 

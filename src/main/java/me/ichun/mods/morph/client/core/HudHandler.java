@@ -940,7 +940,8 @@ public class HudHandler
             int scaledWidth = mc.getMainWindow().getScaledWidth();
             int scaledHeight = mc.getMainWindow().getScaledHeight();
             //Coords taken from renderExpBar
-            drawBiomassBar(stack, scaledWidth / 2 - 91, scaledHeight - 32 + 3, partialTick);
+            float prog = EntityHelper.sineifyProgress(MathHelper.clamp((barShowTime + (shouldShowBiomassBar() ? partialTick : -partialTick)) / BAR_TIME, 0F, 1F));
+            drawBiomassBar(stack, scaledWidth / 2 - 91, scaledHeight - 32 + 3, partialTick, prog);
         }
     }
 
@@ -953,12 +954,10 @@ public class HudHandler
         }
     }
 
-    public void drawBiomassBar(MatrixStack stack, int x, int y, float partialTick)
+    public void drawBiomassBar(MatrixStack stack, int x, int y, float partialTick, float prog)
     {
         if(bindBiomassBarTexture()) //our desat texture could be created
         {
-            float prog = EntityHelper.sineifyProgress(MathHelper.clamp((barShowTime + (shouldShowBiomassBar() ? partialTick : -partialTick)) / BAR_TIME, 0F, 1F));
-
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -1011,11 +1010,11 @@ public class HudHandler
                         float costWidth = totalCapacity <= 0 ? 0F : (float)(cost / totalCapacity);
                         if(current < 0) //cannot afford
                         {
-                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
+                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, Math.min(currentRatio + costWidth, 1.0F), r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
                         }
                         else
                         {
-                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, g, b, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
+                            addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, Math.min(currentRatio + costWidth, 1.0F), r, g, b, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
                         }
                     }
                 }
@@ -1034,7 +1033,7 @@ public class HudHandler
                     {
                         float costWidth = totalCapacity <= 0 ? 0F : (float)(cost / totalCapacity);
                         //current ratio is already over critical ratio, we can definitely afford it, and we'll stay in critical mass, so flash it red
-                        addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, currentRatio + costWidth, r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
+                        addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, currentRatio, Math.min(currentRatio + costWidth, 1.0F), r, 0F, 0F, (float)Math.abs(Math.sin(Math.toRadians(((iChunUtil.eventHandlerClient.ticks + partialTick) / 10F) * 90F))));
                     }
                 }
             }
