@@ -6,6 +6,7 @@ import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.event.AcquireMorphEvent;
 import me.ichun.mods.morph.api.event.MorphPlayerEvent;
+import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
@@ -101,10 +102,11 @@ public final class MorphHandler implements IApi
     @Override
     public boolean canAcquireMorph(PlayerEntity player, LivingEntity living)
     {
-        return currentMode != null ? currentMode.canAcquireMorph(player, living) : IApi.super.canAcquireMorph(player, living);
+        return currentMode != null ? currentMode.canAcquireMorph(player, living, createVariant(living)) : IApi.super.canAcquireMorph(player, living);
     }
 
     @Override
+    @Nullable
     public MorphVariant createVariant(LivingEntity living)
     {
         for(ResourceLocation rl : Morph.configServer.disabledMobsRL)
@@ -200,7 +202,7 @@ public final class MorphHandler implements IApi
     }
 
     @Override
-    public Map<ResourceLocation, Boolean> getSupportedAttributes()
+    public Map<ResourceLocation, AttributeConfig> getSupportedAttributes()
     {
         return Morph.configServer.supportedAttributesMap;
     }
@@ -217,6 +219,12 @@ public final class MorphHandler implements IApi
     public ResourceLocation getMorphSkinTexture()
     {
         return TEX_MORPH_SKIN;
+    }
+
+    @Override
+    public boolean isClassicMode()
+    {
+        return currentMode != null ? currentMode.isClassicMode() : IApi.super.isClassicMode();
     }
 
     //Biomass overrides
@@ -277,7 +285,7 @@ public final class MorphHandler implements IApi
 
     public void addBiomassAmount(ServerPlayerEntity player, double value)
     {
-        //TODO convert to BigDecimal
+        //TODO convert to BigDecimal (look into BigDecimal)
         PlayerMorphData playerMorphData = getPlayerMorphData(player);
         double cap = getBiomassUpgradeValue(player, Upgrades.ID_BIOMASS_CAPACITY) + getBiomassUpgradeValue(player, Upgrades.ID_BIOMASS_CRITICAL_CAPACITY);
         if(playerMorphData.biomass + value > cap)

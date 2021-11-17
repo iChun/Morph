@@ -96,6 +96,7 @@ public class ElementBiomassUpgrades extends ElementFertile<WindowBiomassUpgrades
             }
         }
         getEventListeners().forEach(Fragment::init);
+        //TODO float the view towards the upgrade you click on?
     }
 
     @Override

@@ -2,6 +2,7 @@ package me.ichun.mods.morph.api;
 
 import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
+import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import net.minecraft.entity.LivingEntity;
@@ -48,11 +49,12 @@ public interface IApi
 
     default boolean demorph(ServerPlayerEntity player) { return true; } //TODO this
 
-    default Map<ResourceLocation, Boolean> getSupportedAttributes() { return Collections.emptyMap(); }
+    default Map<ResourceLocation, AttributeConfig> getSupportedAttributes() { return Collections.emptyMap(); }
 
     @Nullable
     default ResourceLocation getMorphSkinTexture() { return null; }
 
+    default boolean isClassicMode() { return false; }
 
     //Biomass Stuff
     default boolean hasUnlockedBiomass(PlayerEntity player)

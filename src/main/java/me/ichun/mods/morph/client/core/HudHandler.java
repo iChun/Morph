@@ -140,7 +140,7 @@ public class HudHandler
             {
                 mc.displayGuiScreen(new WorkspaceMorph(mc.currentScreen));
             }
-            else
+            else if(!MorphHandler.INSTANCE.isClassicMode())
             {
                 barInsufficientFlash = 20;
             }
@@ -1024,7 +1024,7 @@ public class HudHandler
                     addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, 0F, criticalRatio, r, g, b, prog);
 
                     //draw the biomass in critical mass
-                    addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, criticalRatio, currentRatio, r, 0F, 0F, prog);
+                    addBiomassBarVertex(bufferbuilder, matrix, x, y, 5, criticalRatio, currentRatio, r, 0F, 0F, prog);  //TODO critical mass pulsation??
 
                     //draw the critical background
                     addBiomassBarVertex(bufferbuilder, matrix, x, y, 0, currentRatio, 1F, r, 0F, 0F, prog);

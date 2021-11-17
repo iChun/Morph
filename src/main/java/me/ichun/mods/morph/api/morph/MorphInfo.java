@@ -8,9 +8,13 @@ import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -22,9 +26,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MorphInfo
@@ -35,6 +41,8 @@ public class MorphInfo
     private static final AtomicInteger NEXT_ENTITY_ID = new AtomicInteger(-70000000);// -70 million. We reduce even further as we use this more, negative ent IDs prevent collision with real entities (with positive IDs starting with 0)
 
     public final PlayerEntity player; //TODO do I need to set a new one when change dimension?
+
+    private final Random rand = new Random();
 
     @Nullable
     public MorphState prevState;
@@ -67,16 +75,17 @@ public class MorphInfo
             return;
         }
 
+        float transitionProgress = getTransitionProgressLinear(1F);
+
         if(firstTick)
         {
             firstTick = false;
             player.recalculateSize();
+            applyAttributeModifiers(transitionProgress);
         }
 
         //TODO check player resize on sleeping
 
-        //TODO remember to set attributes
-        float transitionProgress = getTransitionProgressLinear(1F);
         if(transitionProgress < 1.0F) // is morphing
         {
             if(!player.world.isRemote)
@@ -91,18 +100,20 @@ public class MorphInfo
                     player.world.playMovingSound(null, player, Morph.Sounds.MORPH.get(), player.getSoundCategory(), 1.0F, 1.0F);
                 }
             }
-            prevState.tick(player);
+            prevState.tick(player, transitionProgress > 0F);
         }
-        nextState.tick(player);
+        nextState.tick(player, transitionProgress < 1.0F);
 
         morphTime++;
         if(morphTime <= morphingTime || Morph.configServer.aggressiveSizeRecalculation) //still morphing
         {
             player.recalculateSize();
+            applyAttributeModifiers(transitionProgress);
         }
 
         if(morphTime == morphingTime)
         {
+            removeAttributeModifiersFromPrevState();
             prevState = null; //bye bye last state. We don't need you anymore.
 
             if(player.world.isRemote)
@@ -252,6 +263,147 @@ public class MorphInfo
     public boolean isCurrentlyThisVariant(@Nonnull MorphVariant.Variant variant)
     {
         return (nextState != null && nextState.variant.thisVariant.identifier.equals(variant.identifier) || !isMorphed() && variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE));
+    }
+
+    public void applyAttributeModifiers(float transitionProgress)
+    {
+        if(player.world.isRemote) //we don't touch the attributes on the client
+        {
+            return;
+        }
+
+        HashMap<Attribute, Double> attributeModifierAmount = new HashMap<>();
+
+        //Add the next state's attribute modifier amounts
+        for(Map.Entry<String, INBT> e : nextState.variant.nbtMorph.tagMap.entrySet())
+        {
+            String key = e.getKey();
+            if(key.startsWith("attr_")) //it's an attribute key
+            {
+                ResourceLocation id = new ResourceLocation(key.substring(5));
+                Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(id);
+                if(attribute != null)
+                {
+                    final ModifiableAttributeInstance playerAttribute = player.getAttribute(attribute);
+                    if(playerAttribute != null)
+                    {
+                        double baseValue = player.getBaseAttributeValue(attribute);
+                        double modifierValue = nextState.variant.nbtMorph.getDouble(key) - baseValue;
+                        attributeModifierAmount.put(attribute, modifierValue);
+                    }
+                }
+            }
+        }
+
+        if(transitionProgress < 1.0F) //we still have a prev state
+        {
+            HashSet<Attribute> prevStateAttrs = new HashSet<>();
+            for(Map.Entry<String, INBT> e : prevState.variant.nbtMorph.tagMap.entrySet())
+            {
+                String key = e.getKey();
+                if(key.startsWith("attr_")) //it's an attribute key
+                {
+                    ResourceLocation id = new ResourceLocation(key.substring(5));
+                    Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(id);
+                    if(attribute != null)
+                    {
+                        final ModifiableAttributeInstance playerAttribute = player.getAttribute(attribute);
+                        if(playerAttribute != null)
+                        {
+                            double baseValue = player.getBaseAttributeValue(attribute);
+                            double modifierValue = prevState.variant.nbtMorph.getDouble(key) - baseValue;
+
+                            if(attributeModifierAmount.containsKey(attribute)) //the nextState also has this attribute
+                            {
+                                double val = modifierValue + (attributeModifierAmount.get(attribute) - modifierValue) * transitionProgress;
+                                attributeModifierAmount.put(attribute, val);
+                            }
+                            else
+                            {
+                                attributeModifierAmount.put(attribute, modifierValue * (1F - transitionProgress)); //the strength of the attribute approaches 0
+                            }
+                            prevStateAttrs.add(attribute);
+                        }
+                    }
+                }
+            }
+
+            for(Map.Entry<Attribute, Double> e : attributeModifierAmount.entrySet())
+            {
+                if(!prevStateAttrs.contains(e.getKey())) //this is added by nextState, we need to decrease the modifier since we're still transitioning
+                {
+                    e.setValue(e.getValue() * transitionProgress);
+                }
+            }
+        }
+
+        //add these modifiers to the player
+        for(Map.Entry<Attribute, Double> e : attributeModifierAmount.entrySet())
+        {
+            final ModifiableAttributeInstance playerAttribute = player.getAttribute(e.getKey());
+            if(playerAttribute != null)
+            {
+                rand.setSeed(Math.abs("MorphAttr".hashCode() * 1231543 + e.getKey().getRegistryName().toString().hashCode() * 268));
+                UUID uuid = MathHelper.getRandomUUID(rand);
+
+                //you can't reapply the same modifier, so lets remove it
+                playerAttribute.removePersistentModifier(uuid);
+
+                if(e.getValue() != 0) //if the modifier is non-zero, add it
+                {
+                    playerAttribute.applyPersistentModifier(new AttributeModifier(uuid, "MorphAttributeModifier:" + e.getKey().getRegistryName().toString(), e.getValue(), AttributeModifier.Operation.ADDITION));
+                }
+            }
+        }
+    }
+
+    public void removeAttributeModifiersFromPrevState()
+    {
+        if(prevState != null) //just in case?
+        {
+            HashSet<Attribute> attributesToRemove = new HashSet<>();
+
+            //Add the prev state's attributes
+            for(Map.Entry<String, INBT> e : prevState.variant.nbtMorph.tagMap.entrySet())
+            {
+                String key = e.getKey();
+                if(key.startsWith("attr_")) //it's an attribute key
+                {
+                    ResourceLocation id = new ResourceLocation(key.substring(5));
+                    Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(id);
+                    if(attribute != null)
+                    {
+                        attributesToRemove.add(attribute);
+                    }
+                }
+            }
+
+            //Add the prev state's attributes
+            for(Map.Entry<String, INBT> e : nextState.variant.nbtMorph.tagMap.entrySet())
+            {
+                String key = e.getKey();
+                if(key.startsWith("attr_")) //it's an attribute key
+                {
+                    ResourceLocation id = new ResourceLocation(key.substring(5));
+                    Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(id);
+                    if(attribute != null)
+                    {
+                        attributesToRemove.remove(attribute);
+                    }
+                }
+            }
+
+            for(Attribute attribute : attributesToRemove)
+            {
+                final ModifiableAttributeInstance playerAttribute = player.getAttribute(attribute);
+                if(playerAttribute != null)
+                {
+                    rand.setSeed(Math.abs("MorphAttr".hashCode() * 1231543 + attribute.getRegistryName().toString().hashCode() * 268));
+                    UUID uuid = MathHelper.getRandomUUID(rand);
+                    playerAttribute.removePersistentModifier(uuid);
+                }
+            }
+        }
     }
 
     public CompoundNBT write(CompoundNBT tag)

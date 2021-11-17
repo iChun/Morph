@@ -105,7 +105,7 @@ public class ElementUpgradeNode extends ElementToggleTextured<ElementUpgradeNode
             posY = (int)Math.round(lastY);
         }
 
-        if(shouldShow())
+        if(shouldShow()) //TODO shoTime only when parentNode has shown completely
         {
             showTime++;
 
@@ -132,7 +132,7 @@ public class ElementUpgradeNode extends ElementToggleTextured<ElementUpgradeNode
                 diff = new Vector3d(parent.rand.nextGaussian() * 3D, parent.rand.nextGaussian() * 3D, 0D); //add some difference
             }
             double dist = diff.length();
-            if(dist < TOLERANCE_MIN)
+            if(dist < TOLERANCE_MIN) //TODO adapt to number of children per node?? more children = higher tolerance?
             {
                 Vector3d normal = diff.normalize();
                 double mag = (TOLERANCE_MIN - dist) / TOLERANCE_MIN * 0.1D;

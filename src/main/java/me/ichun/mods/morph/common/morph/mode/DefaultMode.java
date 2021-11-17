@@ -5,21 +5,24 @@ import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import javax.annotation.Nullable;
+
 public class DefaultMode implements MorphMode
 {
     @Override
     public void handleMurderEvent(ServerPlayerEntity player, LivingEntity living)
     {
-        if(canMorph(player) && canAcquireMorph(player, living))
+        if(canMorph(player))
         {
             MorphVariant variant = MorphHandler.INSTANCE.createVariant(living);
-            if(variant != null) // we can morph to it
+            if(canAcquireMorph(player, living, variant)) // we can morph to it
             {
                 MorphHandler.INSTANCE.acquireMorph(player, variant);
 
@@ -78,9 +81,23 @@ public class DefaultMode implements MorphMode
     }
 
     @Override
-    public boolean canAcquireMorph(PlayerEntity player, LivingEntity living)
+    public boolean isClassicMode()
     {
-        return true;
+        return false;
+    }
+
+    @Override
+    public boolean canAcquireMorph(PlayerEntity player, LivingEntity living, @Nullable MorphVariant variant)
+    {
+        if(variant == null)
+        {
+            return false;
+        }
+
+        PlayerMorphData playerMorphData = MorphHandler.INSTANCE.getPlayerMorphData(player);
+
+        return !playerMorphData.containsVariant(variant);
+        //TODO an upgrade that allows you to acquire larger and larger mobs?? same with biomass
     }
 
     @Override

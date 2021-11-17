@@ -14,7 +14,7 @@
   "config.morph.prop.morphClassic.name": "Morph Classic",
   "config.morph.prop.morphClassic.desc": "Enable this for Morph Classic. No Biomass or Morph restrictions.",
   "config.morph.prop.biomassSkinWhilstInvisible.name": "Biomass Skin Whilst Invisible",
-  "config.morph.prop.biomassSkinWhilstInvisible.desc": "The Biomass Skin is meant to be resistant to invisibility. Turning this off disables that.",
+  "config.morph.prop.biomassSkinWhilstInvisible.desc": "The Biomass Skin is meant to show during invisibility. Turning this off disables that.",
 
   "config.morph.prop.selectorDistanceFromTop.name": "Selector - Distance From Top",
   "config.morph.prop.selectorDistanceFromTop.desc": "The number of (scaled) pixels that the quick selector's selected option appears from the top of the screen.",

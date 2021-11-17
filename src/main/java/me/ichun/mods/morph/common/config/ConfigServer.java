@@ -3,6 +3,7 @@ package me.ichun.mods.morph.common.config;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
+import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.util.ResourceLocation;
@@ -22,15 +23,13 @@ public class ConfigServer extends ConfigBase
     @Prop(min = 1) //1 second so that morphs can complete
     public int morphTime = 100; // 5 seconds
 
-    private List<String> disabledMobs = new ArrayList<>();
-
     public boolean aggressiveSizeRecalculation = false;
 
     @CategoryDivider(name = "gameplay")
     private List<String> supportedAttributes = Util.make(new ArrayList<>(), list -> {
-        list.add("minecraft:generic.max_health;more");
+        list.add("minecraft:generic.max_health;more;20");
         list.add("minecraft:generic.knockback_resistance;more");
-        list.add("minecraft:generic.movement_speed;more");
+        list.add("minecraft:generic.movement_speed;more;0.1");
         list.add("minecraft:generic.attack_damage;more");
         list.add("minecraft:generic.attack_knockback;more");
         list.add("minecraft:generic.attack_speed;more");
@@ -39,13 +38,17 @@ public class ConfigServer extends ConfigBase
         list.add("minecraft:horse.jump_strength;more"); //TODO test this
         list.add("forge:swim_speed;more");
         list.add("forge:reach_distance;more");
+        //TODO test Forge gravity attribute, each mob has their own?
+        //TODO forge:generic.reachDistance ?? Check the ForgeMod class
     });
+
+    private List<String> disabledMobs = new ArrayList<>();
 
     public boolean morphClassic = false;
 
     public boolean biomassSkinWhilstInvisible = true;
 
-    @Prop(min = 0)
+    @Prop(min = 0) //TODO put this under the biomass category
     public double biomassValue = 0.3D; //how much of the space the entity takes up to actually consider as biomass. Also essentially a configurable ratio
 
     public boolean biomassBypassAdvancement = false;
@@ -53,8 +56,7 @@ public class ConfigServer extends ConfigBase
     //======================================================//
 
     public transient ArrayList<ResourceLocation> disabledMobsRL = new ArrayList<>();
-    public transient HashMap<ResourceLocation, Boolean> supportedAttributesMap = new HashMap<>();
-
+    public transient HashMap<ResourceLocation, AttributeConfig> supportedAttributesMap = new HashMap<>();
 
     @Override
     public void onConfigLoaded()
@@ -64,7 +66,7 @@ public class ConfigServer extends ConfigBase
             return;
         }
 
-        MorphHandler.INSTANCE.setMorphMode(morphClassic);
+        MorphHandler.INSTANCE.setMorphMode(morphClassic); //TODO force true if I want to lock to classic mode
 
         parseDisabledMobs();
 
@@ -88,13 +90,29 @@ public class ConfigServer extends ConfigBase
         for(String supportedAttribute : supportedAttributes)
         {
             List<String> split = MorphHandler.ON_SEMI_COLON.splitToList(supportedAttribute);
-            if(split.size() != 2)
+            if(split.size() < 2)
             {
                 Morph.LOGGER.error("Error parsing supported attribute config: {}", supportedAttribute);
                 continue;
             }
 
-            supportedAttributesMap.put(new ResourceLocation(split.get(0)), split.get(1).equalsIgnoreCase("more"));
+            ResourceLocation rl = new ResourceLocation(split.get(0));
+            boolean more = split.get(1).equalsIgnoreCase("more");
+            Double cap = null;
+
+            if(split.size() == 3)
+            {
+                try
+                {
+                    cap = Double.parseDouble(split.get(2));
+                }
+                catch(NumberFormatException e)
+                {
+                    Morph.LOGGER.error("Error parsing supported attribute config, invalid cap: {}", supportedAttribute);
+                }
+            }
+
+            supportedAttributesMap.put(rl, new AttributeConfig(more, cap));
         }
     }
 

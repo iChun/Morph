@@ -11,4 +11,8 @@ public final class Upgrades
     public static final String ID_BIOMASS_CRITICAL_CAPACITY = "biomass_critical_capacity";
 
     public static final String ID_MORPH_ABILITY = "morph_ability";
+    public static final String ID_MORPH_CAPACITY = "morph_capacity";
+    public static final String ID_MORPH_VARIANT_CAPACITY = "morph_variant_capacity";
+
+    public static final String ID_MORPH_ABILITIES = "morph_abilities";
 }

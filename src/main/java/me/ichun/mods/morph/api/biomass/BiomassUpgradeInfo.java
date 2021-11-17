@@ -10,8 +10,6 @@ public class BiomassUpgradeInfo
     public String id;
     public String parentId; //For morph traits, having a parent id makes this a direct upgrade over the parent, eliminating the parent.
 
-    public Boolean unlockedWhenRequirementsMet; //when the requirements are met, the player is automatically given one level of this
-
     @Nullable
     public Integer maxLevel; //null = infinite
 

@@ -61,7 +61,7 @@ public class MorphVariant implements Comparable<MorphVariant>
 
     public void writeSupportedAttributes(LivingEntity living)
     {
-        for(Map.Entry<ResourceLocation, Boolean> e : MorphApi.getApiImpl().getSupportedAttributes().entrySet())
+        for(Map.Entry<ResourceLocation, AttributeConfig> e : MorphApi.getApiImpl().getSupportedAttributes().entrySet())
         {
             Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(e.getKey());
             if(attribute != null && living.getAttributeManager().hasAttributeInstance(attribute))
@@ -262,7 +262,7 @@ public class MorphVariant implements Comparable<MorphVariant>
     {
         boolean flag = false;
 
-        Map<ResourceLocation, Boolean> supportedAttributes = MorphApi.getApiImpl().getSupportedAttributes();
+        Map<ResourceLocation, AttributeConfig> supportedAttributes = MorphApi.getApiImpl().getSupportedAttributes();
 
         for(Map.Entry<String, INBT> e : nbtMorph.tagMap.entrySet())
         {
@@ -272,19 +272,31 @@ public class MorphVariant implements Comparable<MorphVariant>
                 ResourceLocation id = new ResourceLocation(key.substring(5));
                 if(supportedAttributes.containsKey(id))
                 {
-                    if(supportedAttributes.get(id)) //more is better
+                    AttributeConfig attributeConfig = supportedAttributes.get(id);
+                    final double value = tag.getDouble(key);
+                    if(attributeConfig.moreIsBetter) //more is better
                     {
-                        if(nbtMorph.getDouble(key) < tag.getDouble(key))
+                        if(nbtMorph.getDouble(key) < value)
                         {
-                            nbtMorph.putDouble(key, tag.getDouble(key));
+                            nbtMorph.putDouble(key, value);
+
+                            if(attributeConfig.cap != null && value > attributeConfig.cap)
+                            {
+                                nbtMorph.putDouble(key, attributeConfig.cap);
+                            }
                             flag = true;
                         }
                     }
                     else //less is better
                     {
-                        if(nbtMorph.getDouble(key) > tag.getDouble(key))
+                        if(nbtMorph.getDouble(key) > value)
                         {
-                            nbtMorph.putDouble(key, tag.getDouble(key));
+                            nbtMorph.putDouble(key, value);
+
+                            if(attributeConfig.cap != null && value < attributeConfig.cap)
+                            {
+                                nbtMorph.putDouble(key, attributeConfig.cap);
+                            }
                             flag = true;
                         }
                     }

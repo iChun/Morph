@@ -5,7 +5,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.world.World;
 
@@ -27,7 +30,7 @@ public class MorphState implements Comparable<MorphState>
         this.variant = variant;
     }
 
-    public void tick(PlayerEntity player)
+    public void tick(PlayerEntity player, boolean resetInventory)
     {
         LivingEntity livingInstance = getEntityInstance(player.world, player.getGameProfile().getId());
 
@@ -39,6 +42,8 @@ public class MorphState implements Comparable<MorphState>
         }
 
         syncEntityWithPlayer(livingInstance, player);
+
+        syncInventory(livingInstance, player, resetInventory);
     }
 
     @Nonnull
@@ -133,13 +138,6 @@ public class MorphState implements Comparable<MorphState>
         living.hurtTime = player.hurtTime;
         living.deathTime = player.deathTime;
 
-        //Inventory stuff
-        //player entity plays sound when equipping items.
-//        for(EquipmentSlotType value : EquipmentSlotType.values())
-//        {
-//            living.setItemStackToSlot(value, player.getItemStackFromSlot(value).copy());
-//        }
-
         //LivingRender related stuff
         living.swingProgress = player.swingProgress;
         living.prevSwingProgress = player.prevSwingProgress;
@@ -175,14 +173,70 @@ public class MorphState implements Comparable<MorphState>
 
         if(living instanceof MobEntity)
         {
-            ((MobEntity)living).setLeftHanded(player.getPrimaryHand() == HandSide.LEFT);
+            MobEntity mob = (MobEntity)living;
+            mob.setLeftHanded(player.getPrimaryHand() == HandSide.LEFT);
+            mob.setAggroed(player.isHandActive());
         }
 
         if(living instanceof PlayerEntity)
         {
-            ((PlayerEntity)living).setPrimaryHand(player.getPrimaryHand());
+            PlayerEntity playerEntity = (PlayerEntity)living;
+            playerEntity.setPrimaryHand(player.getPrimaryHand());
         }
 
+        //TODO synching of the pillager swing
         //TODO syncing of death of ender dragon
+    }
+
+    public static void syncInventory(LivingEntity living, PlayerEntity player, boolean reset)
+    {
+        if(living instanceof PlayerEntity)
+        {
+            PlayerEntity playerEntity = (PlayerEntity)living;
+
+            //player entity plays sound when equipping items.
+            for(EquipmentSlotType value : EquipmentSlotType.values())
+            {
+                boolean shouldReset = reset && (value == EquipmentSlotType.MAINHAND || value == EquipmentSlotType.OFFHAND);
+                if(!ItemStack.areItemStacksEqual(living.getItemStackFromSlot(value), shouldReset ? ItemStack.EMPTY : player.getItemStackFromSlot(value)))
+                {
+                    ItemStack copy = shouldReset ? ItemStack.EMPTY : player.getItemStackFromSlot(value).copy();
+                    if (value == EquipmentSlotType.MAINHAND) {
+                        playerEntity.inventory.mainInventory.set(playerEntity.inventory.currentItem, copy);
+                    } else if (value == EquipmentSlotType.OFFHAND) {
+                        playerEntity.inventory.offHandInventory.set(0, copy);
+                    } else if (value.getSlotType() == EquipmentSlotType.Group.ARMOR) {
+                        playerEntity.inventory.armorInventory.set(value.getIndex(), copy);
+                    }
+                }
+            }
+        }
+        else
+        {
+            for(EquipmentSlotType value : EquipmentSlotType.values())
+            {
+                boolean shouldReset = reset && (value == EquipmentSlotType.MAINHAND || value == EquipmentSlotType.OFFHAND);
+                if(!ItemStack.areItemStacksEqual(living.getItemStackFromSlot(value), shouldReset ? ItemStack.EMPTY : player.getItemStackFromSlot(value)))
+                {
+                    living.setItemStackToSlot(value, shouldReset ? ItemStack.EMPTY : player.getItemStackFromSlot(value).copy());
+                }
+            }
+        }
+
+        if(player.isHandActive())
+        {
+            if(player.getItemInUseMaxCount() == 1)
+            {
+                Hand hand = player.getActiveHand();
+                living.setActiveHand(hand);
+                living.setLivingFlag(1, true);
+                living.setLivingFlag(2, hand == Hand.OFF_HAND);
+            }
+        }
+        else
+        {
+            living.setLivingFlag(1, false);
+            living.resetActiveHand();
+        }
     }
 }
