@@ -1,6 +1,6 @@
 package me.ichun.mods.morph.api.mob.trait;
 
-public class FallNegateTrait extends Trait
+public class FallNegateTrait extends Trait<FallNegateTrait>
 {
     public FallNegateTrait()
     {

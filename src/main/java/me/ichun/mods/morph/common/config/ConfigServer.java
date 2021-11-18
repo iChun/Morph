@@ -44,6 +44,8 @@ public class ConfigServer extends ConfigBase
 
     private List<String> disabledMobs = new ArrayList<>();
 
+    public List<String> disabledTraits = new ArrayList<>();
+
     public boolean morphClassic = false;
 
     public boolean biomassSkinWhilstInvisible = true;

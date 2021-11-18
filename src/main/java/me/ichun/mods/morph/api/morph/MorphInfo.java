@@ -419,11 +419,11 @@ public class MorphInfo
                 rand.setSeed(Math.abs("MorphAttr".hashCode() * 1231543 + e.getKey().getRegistryName().toString().hashCode() * 268));
                 UUID uuid = MathHelper.getRandomUUID(rand);
 
-                double healthChange = 0D;
+                double lastRatio = 0D;
 
-                if(playerAttribute.getAttribute().equals(Attributes.MAX_HEALTH)) //special casing for the max health
+                if(!player.world.isRemote && playerAttribute.getAttribute().equals(Attributes.MAX_HEALTH)) //special casing for the max health
                 {
-                    //TODO HEALTH
+                    lastRatio = player.getHealth() / player.getMaxHealth();
                 }
 
                 //you can't reapply the same modifier, so lets remove it
@@ -432,6 +432,22 @@ public class MorphInfo
                 if(e.getValue() != 0) //if the modifier is non-zero, add it
                 {
                     playerAttribute.applyPersistentModifier(new AttributeModifier(uuid, "MorphAttributeModifier:" + e.getKey().getRegistryName().toString(), e.getValue(), AttributeModifier.Operation.ADDITION));
+
+                    if(lastRatio > 0D) //we're doing the max health
+                    {
+                        double currentRatio = player.getHealth() / player.getMaxHealth();
+
+                        if(currentRatio < lastRatio) //if ratio is lower, top up with some health
+                        {
+                            double targetHealth = lastRatio * player.getMaxHealth();
+                            double extraHealth = targetHealth - player.getHealth();
+
+                            if(extraHealth > 0D)
+                            {
+                                player.setHealth(player.getHealth() + (float)extraHealth); //I think this would work?
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package me.ichun.mods.morph.api.mob.trait;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
 
@@ -12,8 +13,22 @@ public abstract class Trait<T extends Trait>
 
     public transient PlayerEntity player;
 
-    public void addHooks(){} //also used to set default values if not set in the JSON
-    public void removeHooks() {}
+    //also used to set default values if not set in the JSON
+    public void addHooks()
+    {
+        if(this instanceof IEventBusRequired)
+        {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+    }
+
+    public void removeHooks()
+    {
+        if(this instanceof IEventBusRequired)
+        {
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
+    }
 
     public abstract void tick(float strength); //Strength ranges 0 - 1F
 
