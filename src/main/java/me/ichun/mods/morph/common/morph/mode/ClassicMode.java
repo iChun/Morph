@@ -1,7 +1,10 @@
 package me.ichun.mods.morph.common.morph.mode;
 
+import me.ichun.mods.morph.api.mob.MobData;
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.mob.MobDataHandler;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketAcquisition;
@@ -11,6 +14,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 public class ClassicMode implements MorphMode
 {
@@ -52,6 +56,29 @@ public class ClassicMode implements MorphMode
     public int getMorphingDuration(PlayerEntity player)
     {
         return Morph.configServer.morphTime;
+    }
+
+    @Override
+    public ArrayList<Trait> getTraitsForVariant(PlayerEntity player, MorphVariant variant)
+    {
+        ArrayList<Trait> traits = new ArrayList<>();
+
+        MobData mobData = MobDataHandler.getMobData(variant.id);
+
+        if(mobData != null && mobData.traits != null)
+        {
+            for(Trait trait : mobData.traits)
+            {
+                traits.add(trait.copy());
+            }
+
+            for(Trait trait : traits)
+            {
+                trait.player = player;
+            }
+        }
+
+        return traits;
     }
 
     @Override

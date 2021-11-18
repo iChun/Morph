@@ -6,15 +6,20 @@ import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.event.AcquireMorphEvent;
 import me.ichun.mods.morph.api.event.MorphPlayerEvent;
+import me.ichun.mods.morph.api.mob.MobData;
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 import me.ichun.mods.morph.common.biomass.Upgrades;
+import me.ichun.mods.morph.common.mob.MobDataHandler;
 import me.ichun.mods.morph.common.morph.mode.ClassicMode;
 import me.ichun.mods.morph.common.morph.mode.DefaultMode;
 import me.ichun.mods.morph.common.morph.mode.MorphMode;
+import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
@@ -31,17 +36,13 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Map;
 
 public final class MorphHandler implements IApi
 {
     public static final Splitter ON_SEMI_COLON = Splitter.on(";").trimResults().omitEmptyStrings();
     private static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png"); //call the getter.
-
-    public static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
-    public static final HashMap<String, BiomassUpgradeInfo> BIOMASS_UPGRADES = new HashMap<>(); //TODO do I want to do it like this?
 
     private MorphMode currentMode;
     private MorphSavedData saveData;
@@ -84,6 +85,12 @@ public final class MorphHandler implements IApi
 
     //API overrides
     public static final MorphHandler INSTANCE = new MorphHandler();
+
+    @Override
+    public boolean isClassicMode()
+    {
+        return currentMode != null ? currentMode.isClassicMode() : IApi.super.isClassicMode();
+    }
 
     //Morph overrides
     @Override
@@ -146,11 +153,11 @@ public final class MorphHandler implements IApi
             variant.writeSpecialTags(living, tag);
 
             //time to apply the NBT modifiers
-            NbtModifier nbtModifier = getNbtModifierFor(living);
+            NbtModifier nbtModifier = NbtHandler.getModifierFor(living);
             nbtModifier.apply(tag);
 
             //Clean empty tags
-            removeEmptyCompoundTags(tag);
+            NbtHandler.removeEmptyCompoundTags(tag);
 
             variant.setLiving(tag);
 
@@ -158,12 +165,6 @@ public final class MorphHandler implements IApi
         }
 
         return variant;
-    }
-
-    private void removeEmptyCompoundTags(CompoundNBT tag)
-    {
-        tag.tagMap.entrySet().removeIf(e -> e.getValue() instanceof CompoundNBT && ((CompoundNBT)e.getValue()).tagMap.isEmpty());
-        tag.tagMap.entrySet().stream().filter(e -> e.getValue() instanceof CompoundNBT).forEach(e -> removeEmptyCompoundTags((CompoundNBT)e.getValue()));
     }
 
     @Override
@@ -194,7 +195,7 @@ public final class MorphHandler implements IApi
 
         if(MinecraftForge.EVENT_BUS.post(new MorphPlayerEvent(player, variant))) return false;
 
-        info.setNextState(new MorphState(variant), Math.max(1, currentMode.getMorphingDuration(player)));
+        info.setNextState(new MorphState(variant, player), Math.max(1, currentMode.getMorphingDuration(player)));
 
         Morph.channel.sendTo(new PacketMorphInfo(player.getEntityId(), info.write(new CompoundNBT())), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
 
@@ -222,9 +223,21 @@ public final class MorphHandler implements IApi
     }
 
     @Override
-    public boolean isClassicMode()
+    public void registerMobData(@Nonnull ResourceLocation rl, @Nonnull MobData data)
     {
-        return currentMode != null ? currentMode.isClassicMode() : IApi.super.isClassicMode();
+        MobDataHandler.registerMobData(rl, data);
+    }
+
+    @Override
+    public void registerTrait(@Nonnull String type, @Nonnull Class<? extends Trait> clz)
+    {
+        Trait.registerTrait(type, clz);
+    }
+
+    @Override
+    public ArrayList<Trait> getTraitsForVariant(MorphVariant variant, PlayerEntity player)
+    {
+        return currentMode != null ? currentMode.getTraitsForVariant(player, variant) : IApi.super.getTraitsForVariant(variant, player);
     }
 
     //Biomass overrides
@@ -252,7 +265,7 @@ public final class MorphHandler implements IApi
     {
         if(entityId == null)
         {
-            return BIOMASS_UPGRADES.get(id);
+            return BiomassUpgradeHandler.BIOMASS_UPGRADES.get(id);
         }
         return null;
     }
@@ -300,49 +313,4 @@ public final class MorphHandler implements IApi
         Morph.channel.sendTo(new PacketUpdateBiomassValue(playerMorphData.biomass), player);
     }
 
-    //NBT Modifier stuff
-    public static NbtModifier getNbtModifierFor(LivingEntity living)
-    {
-        NbtModifier modifier = getNbtModifierFor(living.getClass());
-
-        //we're about to use this modifier. Set up the modifier values
-        modifier.setupValues();
-
-        return modifier;
-    }
-
-    private static NbtModifier getNbtModifierFor(Class clz)
-    {
-        NbtModifier modifier;
-        if(NBT_MODIFIERS.containsKey(clz))
-        {
-            modifier = NBT_MODIFIERS.get(clz);
-            if(modifier.toStrip != null) // it's been set up;
-            {
-                return modifier;
-            }
-        }
-        else
-        {
-            modifier = new NbtModifier();
-            NBT_MODIFIERS.put(clz, modifier);
-        }
-
-        modifier.toStrip = new HashSet<>();
-        modifier.keyToModifier = new HashMap<>();
-
-        if(clz != LivingEntity.class)
-        {
-            //get the parent class's modifier and add their modifiers
-            NbtModifier parentModifier = getNbtModifierFor(clz.getSuperclass());
-
-            modifier.toStrip.addAll(parentModifier.toStrip);
-            modifier.keyToModifier.putAll(parentModifier.keyToModifier);
-        }
-
-        //setup adds this class' own modifiers.
-        modifier.setup();
-
-        return modifier;
-    }
 }

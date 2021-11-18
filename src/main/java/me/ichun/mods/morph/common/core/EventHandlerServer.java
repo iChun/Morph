@@ -2,12 +2,12 @@ package me.ichun.mods.morph.common.core;
 
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 import me.ichun.mods.morph.common.command.CommandMorph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.packet.PacketPlayerData;
 import me.ichun.mods.morph.common.packet.PacketSessionSync;
-import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -76,7 +76,7 @@ public class EventHandlerServer
     {
         if(!(event.getPlayer().getServer().isSinglePlayer() && event.getPlayer().getGameProfile().getName().equals(event.getPlayer().getServer().getServerOwner()))) //if the player is not the client in singleplayer
         {
-            Morph.channel.sendTo(new PacketSessionSync(MorphHandler.BIOMASS_UPGRADES.values()), (ServerPlayerEntity)event.getPlayer());
+            Morph.channel.sendTo(new PacketSessionSync(BiomassUpgradeHandler.BIOMASS_UPGRADES.values()), (ServerPlayerEntity)event.getPlayer());
         }
         Morph.channel.sendTo(new PacketPlayerData(MorphHandler.INSTANCE.getPlayerMorphData(event.getPlayer()).write(new CompoundNBT())), (ServerPlayerEntity)event.getPlayer());
     }
@@ -105,7 +105,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) //do this early so we do it before the server loads our world save.
     {
-        ResourceHandler.loadBiomassUpgrades();
+        BiomassUpgradeHandler.loadBiomassUpgrades();
     }
 
     @SubscribeEvent

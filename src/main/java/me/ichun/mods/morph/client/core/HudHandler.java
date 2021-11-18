@@ -589,7 +589,7 @@ public class HudHandler
                     double indexHeightWidth = (j - indexHoriProg) * size;
                     MorphVariant.Variant theVariant = morph.variants.get(j);
                     MorphVariant variant = morph.getAsVariant(theVariant);
-                    MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+                    MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
                     state.variant.thisVariant.isFavourite = theVariant.isFavourite;
 
                     LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
@@ -633,7 +633,7 @@ public class HudHandler
                     if(j == morph.variants.size() - 1)
                     {
                         MorphVariant selectedVariant = morph.getAsVariant(morph.variants.get(indexHori));
-                        MorphState selectedState = morphStates.computeIfAbsent(selectedVariant, v -> new MorphState(selectedVariant));
+                        MorphState selectedState = morphStates.computeIfAbsent(selectedVariant, v -> new MorphState(selectedVariant, player));
 
                         LivingEntity selectedLiving = selectedState.getEntityInstance(player.world, player.getGameProfile().getId());
 
@@ -683,7 +683,7 @@ public class HudHandler
             {
                 MorphVariant.Variant theVariant = morph.variants.get(0);
                 MorphVariant variant = morph.getAsVariant(theVariant);
-                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
                 state.variant.thisVariant.isFavourite = theVariant.isFavourite;
 
                 LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
@@ -818,7 +818,7 @@ public class HudHandler
             for(int i = 0; i < radialFavourites.size(); i++)
             {
                 MorphVariant variant = radialFavourites.get(i);
-                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
 
                 LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 
@@ -844,7 +844,7 @@ public class HudHandler
             for(int i = 0; i < radialFavourites.size(); i++)
             {
                 MorphVariant variant = radialFavourites.get(i);
-                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant));
+                MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
 
                 LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 

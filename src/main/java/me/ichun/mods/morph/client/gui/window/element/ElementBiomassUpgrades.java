@@ -10,7 +10,7 @@ import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.client.gui.window.WindowBiomassUpgrades;
 import me.ichun.mods.morph.common.Morph;
-import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class ElementBiomassUpgrades extends ElementFertile<WindowBiomassUpgrades
 
             ArrayList<ElementUpgradeNode> nodes = new ArrayList<>();
 
-            for(BiomassUpgradeInfo value : MorphHandler.BIOMASS_UPGRADES.values())
+            for(BiomassUpgradeInfo value : BiomassUpgradeHandler.BIOMASS_UPGRADES.values())
             {
                 BiomassUpgrade upgrade = Morph.eventHandlerClient.morphData.getBiomassUpgrade(value.id);
                 ElementUpgradeNode node = new ElementUpgradeNode(this, value, upgrade, e -> {

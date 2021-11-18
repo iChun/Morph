@@ -3,6 +3,8 @@ package me.ichun.mods.morph.common;
 import me.ichun.mods.ichunutil.common.data.AdvancementGen;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
 import me.ichun.mods.morph.api.MorphApi;
+import me.ichun.mods.morph.api.mob.MobData;
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.client.config.ConfigClient;
 import me.ichun.mods.morph.client.core.EventHandlerClient;
@@ -13,6 +15,7 @@ import me.ichun.mods.morph.client.render.RenderEntityAcquisition;
 import me.ichun.mods.morph.client.render.RenderEntityBiomassAbility;
 import me.ichun.mods.morph.common.config.ConfigServer;
 import me.ichun.mods.morph.common.core.EventHandlerServer;
+import me.ichun.mods.morph.common.mob.MobDataHandler;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.packet.*;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
@@ -46,9 +49,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -77,11 +78,13 @@ public class Morph
 
     public Morph()
     {
-        if(!ResourceHandler.init())
+        if(!ResourceHandler.setupEnv())
         {
             LOGGER.fatal("Error initialising Morph Resource Handler! Terminating init.");
             return;
         }
+        ResourceHandler.loadConstResources();
+
         configServer = new ConfigServer().init();
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -89,6 +92,8 @@ public class Morph
         Sounds.REGISTRY.register(bus);
 
         bus.addListener(this::onCommonSetup);
+        bus.addListener(this::processIMC);
+        bus.addListener(this::finishLoading);
 
         MinecraftForge.EVENT_BUS.register(eventHandlerServer = new EventHandlerServer());
 
@@ -146,6 +151,77 @@ public class Morph
         RenderingRegistry.registerEntityRenderingHandler(EntityTypes.BIOMASS_ABILITY, new RenderEntityBiomassAbility.RenderFactory());
 
         KeyBinds.init();
+    }
+
+    private void processIMC(InterModProcessEvent event)
+    {
+        //Register mod trait.
+        event.getIMCStream(m -> m.equalsIgnoreCase("trait")).forEach(msg -> {
+            Object o = msg.getMessageSupplier().get();
+            if(o instanceof Class)
+            {
+                Class clz = (Class)o;
+                if(Trait.class.isAssignableFrom(clz))
+                {
+                    try
+                    {
+                        Trait t = (Trait)clz.newInstance();
+                        if(t.type != null && !t.type.isEmpty())
+                        {
+                            Trait.registerTrait(t.type, clz);
+                            LOGGER.info("IMC: Registering trait type {} from mod {}", t.type, msg.getSenderModId());
+                        }
+                        else
+                        {
+                            LOGGER.warn("IMC: Invalid trait type from {}", msg.getSenderModId());
+                        }
+                    }
+                    catch(InstantiationException | IllegalAccessException e)
+                    {
+                        LOGGER.error("IMC: Error retrieving trait type from {}", msg.getSenderModId());
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    LOGGER.warn("IMC: Non-Trait class type trait from {}", msg.getSenderModId());
+                }
+            }
+            else
+            {
+                LOGGER.warn("IMC: Non-class type trait from {}", msg.getSenderModId());
+            }
+        });
+
+        //Register mod mob data
+        event.getIMCStream(m -> m.equalsIgnoreCase("mob")).forEach(msg -> {
+            Object o = msg.getMessageSupplier().get();
+            if(o instanceof MobData)
+            {
+                MobData data = (MobData)o;
+                if(data.forEntity != null && !data.forEntity.isEmpty())
+                {
+                    ResourceLocation rl = new ResourceLocation(data.forEntity);
+
+                    MobDataHandler.registerMobData(rl, data);
+
+                    LOGGER.info("IMC: Registering MobData for {} from mod {}", rl.toString(), msg.getSenderModId());
+                }
+                else
+                {
+                    LOGGER.warn("IMC: Invalid MobData forEntity from {}", msg.getSenderModId());
+                }
+            }
+            else
+            {
+                LOGGER.warn("IMC: Non-MobData object from {}", msg.getSenderModId());
+            }
+        });
+    }
+
+    private void finishLoading(FMLLoadCompleteEvent event)
+    {
+        ResourceHandler.loadPostInitResources();
     }
 
     public static class Advancements implements Consumer<Consumer<Advancement>>

@@ -100,9 +100,9 @@ public class MorphInfo
                     player.world.playMovingSound(null, player, Morph.Sounds.MORPH.get(), player.getSoundCategory(), 1.0F, 1.0F);
                 }
             }
-            prevState.tick(player, transitionProgress > 0F);
+            prevState.tick(player, transitionProgress > 0F, 1F - MathHelper.clamp(transitionProgress / 0.5F, 0F, 1F));
         }
-        nextState.tick(player, transitionProgress < 1.0F);
+        nextState.tick(player, transitionProgress < 1.0F, MathHelper.clamp((transitionProgress - 0.5F) / 0.5F, 0F, 1F));
 
         morphTime++;
         if(morphTime <= morphingTime || Morph.configServer.aggressiveSizeRecalculation) //still morphing
@@ -114,7 +114,7 @@ public class MorphInfo
         if(morphTime == morphingTime)
         {
             removeAttributeModifiersFromPrevState();
-            prevState = null; //bye bye last state. We don't need you anymore.
+            setPrevState(null); //bye bye last state. We don't need you anymore.
 
             if(player.world.isRemote)
             {
@@ -126,7 +126,7 @@ public class MorphInfo
 
             if(nextState.variant.id.equals(EntityType.PLAYER.getRegistryName()) && nextState.variant.thisVariant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE))
             {
-                nextState = null;
+                setNextState(null);
             }
         }
 
@@ -137,8 +137,6 @@ public class MorphInfo
                 entityBiomassAbility = null; //have it, GC
             }
         }
-
-        //TODO do stuff
     }
 
     public boolean isMorphed()
@@ -231,19 +229,49 @@ public class MorphInfo
         }
     }
 
+    private void setPrevState(@Nullable MorphState state)
+    {
+        if(prevState != null)
+        {
+            prevState.deactivateHooks();
+        }
+
+        prevState = state;
+
+        if(prevState != null)
+        {
+            prevState.activateHooks();
+        }
+    }
+
+    private void setNextState(@Nullable MorphState state)
+    {
+        if(nextState != null && nextState != prevState) //check to make sure prevState was not set to our current nextState
+        {
+            nextState.deactivateHooks();
+        }
+
+        nextState = state;
+
+        if(nextState != null)
+        {
+            nextState.activateHooks();
+        }
+    }
+
     public void setNextState(MorphState state, int morphingTime) //sets the morph. If null, sets to no morph.
     {
         if(state != null)
         {
             if(nextState != null) //morphing from one morph to another
             {
-                prevState = nextState;
+                setPrevState(nextState);
             }
             else //just started morphing
             {
                 MorphVariant variant = MorphVariant.createPlayerMorph(player.getGameProfile().getId(), true);
                 variant.thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
-                prevState = new MorphState(variant);
+                setPrevState(new MorphState(variant, player));
             }
 
             this.morphTime = 0;
@@ -251,11 +279,11 @@ public class MorphInfo
         }
         else
         {
-            this.prevState = null;
+            setPrevState(null);
             this.morphTime = 0;
             this.morphingTime = 0;
         }
-        nextState = state;
+        setNextState(state);
         playSoundTime = -1; //default
         player.recalculateSize();
     }
@@ -434,30 +462,31 @@ public class MorphInfo
             {
                 if(nextState != null && nextState.equals(state) && tag.contains("nextState"))
                 {
-                    prevState = nextState;
+                    setPrevState(nextState);
                 }
                 else
                 {
-                    prevState = state;
+                    setPrevState(state);
                 }
             }
         }
         else
         {
-            prevState = null;
+            setPrevState(null);
         }
 
         if(tag.contains("nextState"))
         {
-            nextState = MorphState.createFromNbt(tag.getCompound("nextState"));
+            setNextState(MorphState.createFromNbt(tag.getCompound("nextState")));
             if(nextState.variant.thisVariant == null) //MorphState variants should ALWAYS have a thisVariant.
             {
-                prevState = nextState = null;
+                setPrevState(null);
+                setNextState(null);
             }
         }
         else
         {
-            nextState = null;
+            setNextState(null);
         }
 
         morphTime = tag.getInt("morphTime");

@@ -2,6 +2,8 @@ package me.ichun.mods.morph.api;
 
 import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
+import me.ichun.mods.morph.api.mob.MobData;
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
@@ -10,12 +12,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
 public interface IApi
 {
+    //Mod GameMode
+    default boolean isClassicMode() { return false; }
+
     //Shared stuff
     default void spawnAnimation(PlayerEntity player, LivingEntity living, boolean isMorphAcquisition) {} //TODO this
 
@@ -54,7 +61,12 @@ public interface IApi
     @Nullable
     default ResourceLocation getMorphSkinTexture() { return null; }
 
-    default boolean isClassicMode() { return false; }
+    //Mob Data Stuff
+    default void registerMobData(@Nonnull ResourceLocation rl, @Nonnull MobData data) {}
+
+    default void registerTrait(@Nonnull String type, @Nonnull Class<? extends Trait> clz) {}
+
+    default ArrayList<Trait> getTraitsForVariant(MorphVariant variant, PlayerEntity player) { return new ArrayList<>(); }
 
     //Biomass Stuff
     default boolean hasUnlockedBiomass(PlayerEntity player)

@@ -1,5 +1,7 @@
 package me.ichun.mods.morph.api.morph;
 
+import me.ichun.mods.morph.api.MorphApi;
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -14,6 +16,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,15 +25,33 @@ public class MorphState implements Comparable<MorphState>
     public MorphVariant variant;
     private LivingEntity entInstance;
     public float renderedShadowSize;
+    public ArrayList<Trait> traits = new ArrayList<>();
 
     private MorphState(){}
 
-    public MorphState(MorphVariant variant)
+    public MorphState(MorphVariant variant, PlayerEntity player)
     {
         this.variant = variant;
+        this.traits = MorphApi.getApiImpl().getTraitsForVariant(variant, player);
     }
 
-    public void tick(PlayerEntity player, boolean resetInventory)
+    //For Traits
+    public void activateHooks()
+    {
+        for(Trait trait : traits)
+        {
+            trait.addHooks();
+        }
+    }
+    public void deactivateHooks()
+    {
+        for(Trait trait : traits)
+        {
+            trait.removeHooks();
+        }
+    }
+
+    public void tick(PlayerEntity player, boolean resetInventory, float traitStrength)
     {
         LivingEntity livingInstance = getEntityInstance(player.world, player.getGameProfile().getId());
 
@@ -44,6 +65,11 @@ public class MorphState implements Comparable<MorphState>
         syncEntityWithPlayer(livingInstance, player);
 
         syncInventory(livingInstance, player, resetInventory);
+
+        for(Trait trait : traits)
+        {
+            trait.tick(traitStrength);
+        }
     }
 
     @Nonnull

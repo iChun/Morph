@@ -7,7 +7,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementToggle;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementToggleRotatable;
 import me.ichun.mods.morph.client.gui.WorkspaceMorph;
-import me.ichun.mods.morph.client.gui.window.element.ElementBiomassBar;
 import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.client.Minecraft;
