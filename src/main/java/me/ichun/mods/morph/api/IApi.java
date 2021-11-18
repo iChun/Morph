@@ -4,6 +4,7 @@ import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
+import me.ichun.mods.morph.api.mob.trait.ability.Ability;
 import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
@@ -66,7 +67,9 @@ public interface IApi
 
     default void registerTrait(@Nonnull String type, @Nonnull Class<? extends Trait> clz) {}
 
-    default ArrayList<Trait> getTraitsForVariant(MorphVariant variant, PlayerEntity player) { return new ArrayList<>(); }
+    default ArrayList<Trait<?>> getTraitsForVariant(MorphVariant variant, PlayerEntity player) { return new ArrayList<>(); }
+
+    default boolean canUseAbility(PlayerEntity player, Ability<?> ability) { return false; }
 
     //Biomass Stuff
     default boolean hasUnlockedBiomass(PlayerEntity player)

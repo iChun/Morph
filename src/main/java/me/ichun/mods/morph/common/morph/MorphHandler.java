@@ -8,6 +8,7 @@ import me.ichun.mods.morph.api.event.AcquireMorphEvent;
 import me.ichun.mods.morph.api.event.MorphPlayerEvent;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
+import me.ichun.mods.morph.api.mob.trait.ability.Ability;
 import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
@@ -16,6 +17,7 @@ import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
+import me.ichun.mods.morph.common.mob.TraitHandler;
 import me.ichun.mods.morph.common.morph.mode.ClassicMode;
 import me.ichun.mods.morph.common.morph.mode.DefaultMode;
 import me.ichun.mods.morph.common.morph.mode.MorphMode;
@@ -231,13 +233,19 @@ public final class MorphHandler implements IApi
     @Override
     public void registerTrait(@Nonnull String type, @Nonnull Class<? extends Trait> clz)
     {
-        Trait.registerTrait(type, clz);
+        TraitHandler.registerTrait(type, clz);
     }
 
     @Override
-    public ArrayList<Trait> getTraitsForVariant(MorphVariant variant, PlayerEntity player)
+    public ArrayList<Trait<?>> getTraitsForVariant(MorphVariant variant, PlayerEntity player)
     {
         return currentMode != null ? currentMode.getTraitsForVariant(player, variant) : IApi.super.getTraitsForVariant(variant, player);
+    }
+
+    @Override
+    public boolean canUseAbility(PlayerEntity player, Ability<?> ability)
+    {
+        return currentMode != null ? currentMode.canUseAbility(player, ability) : IApi.super.canUseAbility(player, ability);
     }
 
     //Biomass overrides
@@ -313,4 +321,5 @@ public final class MorphHandler implements IApi
         Morph.channel.sendTo(new PacketUpdateBiomassValue(playerMorphData.biomass), player);
     }
 
+    //TODO a use biomass function
 }

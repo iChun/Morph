@@ -2,6 +2,7 @@ package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.mixin.LivingEntityInvokerMixin;
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.client.entity.EntityBiomassAbility;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
@@ -10,6 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -86,6 +88,7 @@ public class MorphInfo
 
         //TODO check player resize on sleeping
 
+
         if(transitionProgress < 1.0F) // is morphing
         {
             if(!player.world.isRemote)
@@ -100,15 +103,57 @@ public class MorphInfo
                     player.world.playMovingSound(null, player, Morph.Sounds.MORPH.get(), player.getSoundCategory(), 1.0F, 1.0F);
                 }
             }
-            prevState.tick(player, transitionProgress > 0F, 1F - MathHelper.clamp(transitionProgress / 0.5F, 0F, 1F));
+            prevState.tick(player, transitionProgress > 0F);
+            nextState.tick(player, true);
+
+            float prevStateTraitStrength = 1F - MathHelper.clamp(transitionProgress / 0.5F, 0F, 1F);
+            float nextStateTraitStrength = MathHelper.clamp((transitionProgress - 0.5F) / 0.5F, 0F, 1F);
+
+            ArrayList<Trait<?>> prevTraits = new ArrayList<>(prevState.traits);
+            for(Trait trait : nextState.traits)
+            {
+                boolean foundTranslatableTrait = false;
+                for(int i = prevTraits.size() - 1; i >= 0; i--)
+                {
+                    Trait<?> prevTrait = prevTraits.get(i);
+                    if(prevTrait.canTransitionTo(trait))
+                    {
+                        prevTraits.remove(i); //remove it
+
+                        foundTranslatableTrait = true;
+
+                        trait.doTransitionalTick(prevTrait, transitionProgress);
+
+                        break;
+                    }
+                }
+
+                if(!foundTranslatableTrait) //only nextState has this trait
+                {
+                    trait.doTick(nextStateTraitStrength);
+                }
+            }
+
+            for(Trait<?> value : prevTraits)
+            {
+                value.doTick(prevStateTraitStrength);
+            }
         }
-        nextState.tick(player, transitionProgress < 1.0F, MathHelper.clamp((transitionProgress - 0.5F) / 0.5F, 0F, 1F));
+        else
+        {
+            nextState.tick(player, false);
+            nextState.tickTraits();
+        }
 
         morphTime++;
-        if(morphTime <= morphingTime || Morph.configServer.aggressiveSizeRecalculation) //still morphing
+        if(morphTime <= morphingTime) //still morphing
         {
             player.recalculateSize();
             applyAttributeModifiers(transitionProgress);
+        }
+        else if(Morph.configServer.aggressiveSizeRecalculation)
+        {
+            player.recalculateSize();
         }
 
         if(morphTime == morphingTime)
@@ -323,7 +368,7 @@ public class MorphInfo
             }
         }
 
-        if(transitionProgress < 1.0F) //we still have a prev state
+        if(transitionProgress < 1.0F) //we still have a prev state, aka still morphing
         {
             HashSet<Attribute> prevStateAttrs = new HashSet<>();
             for(Map.Entry<String, INBT> e : prevState.variant.nbtMorph.tagMap.entrySet())
@@ -373,6 +418,13 @@ public class MorphInfo
             {
                 rand.setSeed(Math.abs("MorphAttr".hashCode() * 1231543 + e.getKey().getRegistryName().toString().hashCode() * 268));
                 UUID uuid = MathHelper.getRandomUUID(rand);
+
+                double healthChange = 0D;
+
+                if(playerAttribute.getAttribute().equals(Attributes.MAX_HEALTH)) //special casing for the max health
+                {
+                    //TODO HEALTH
+                }
 
                 //you can't reapply the same modifier, so lets remove it
                 playerAttribute.removePersistentModifier(uuid);

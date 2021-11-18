@@ -2,6 +2,7 @@ package me.ichun.mods.morph.common.morph.mode;
 
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
+import me.ichun.mods.morph.api.mob.trait.ability.Ability;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
@@ -59,26 +60,32 @@ public class ClassicMode implements MorphMode
     }
 
     @Override
-    public ArrayList<Trait> getTraitsForVariant(PlayerEntity player, MorphVariant variant)
+    public ArrayList<Trait<?>> getTraitsForVariant(PlayerEntity player, MorphVariant variant)
     {
-        ArrayList<Trait> traits = new ArrayList<>();
+        ArrayList<Trait<?>> traits = new ArrayList<>();
 
         MobData mobData = MobDataHandler.getMobData(variant.id);
 
         if(mobData != null && mobData.traits != null)
         {
-            for(Trait trait : mobData.traits)
+            for(Trait<?> trait : mobData.traits)
             {
                 traits.add(trait.copy());
             }
 
-            for(Trait trait : traits)
+            for(Trait<?> trait : traits)
             {
                 trait.player = player;
             }
         }
 
         return traits;
+    }
+
+    @Override
+    public boolean canUseAbility(PlayerEntity player, Ability<?> ability)
+    {
+        return true;
     }
 
     @Override

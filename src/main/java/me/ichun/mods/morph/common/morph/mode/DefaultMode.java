@@ -3,6 +3,7 @@ package me.ichun.mods.morph.common.morph.mode;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
+import me.ichun.mods.morph.api.mob.trait.ability.Ability;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.Upgrades;
@@ -93,10 +94,16 @@ public class DefaultMode implements MorphMode
     }
 
     @Override
-    public ArrayList<Trait> getTraitsForVariant(PlayerEntity player, MorphVariant variant)
+    public ArrayList<Trait<?>> getTraitsForVariant(PlayerEntity player, MorphVariant variant)
     {
         //TODO this
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean canUseAbility(PlayerEntity player, Ability<?> ability)
+    {
+        return true; //TODO calculate the biomass cost
     }
 
     //BIOMASS STUFF BELOW THIS LINE
@@ -144,9 +151,17 @@ public class DefaultMode implements MorphMode
         double weight = 1000D * volume;
 
         MobData data = MobDataHandler.getMobData(living);
-        if(data != null && data.biomassMultiplier != null)
+        if(data != null)
         {
-            weight *= data.biomassMultiplier;
+            if(data.biomassMultiplier != null)
+            {
+                weight *= data.biomassMultiplier;
+            }
+
+            if(data.biomassValueOverride != null)
+            {
+                weight = data.biomassValueOverride;
+            }
         }
 
         return weight * Morph.configServer.biomassValue;

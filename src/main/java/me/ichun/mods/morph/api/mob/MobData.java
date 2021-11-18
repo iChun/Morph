@@ -8,10 +8,8 @@ public class MobData
 {
     public String forEntity;
 
-    //TODO biomass amount override
-    //TODO biomass ratio.
     public Double biomassValueOverride;
     public Double biomassMultiplier;
 
-    public ArrayList<Trait> traits = new ArrayList<>();
+    public ArrayList<Trait<?>> traits = new ArrayList<>();
 }

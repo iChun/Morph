@@ -25,7 +25,7 @@ public class MorphState implements Comparable<MorphState>
     public MorphVariant variant;
     private LivingEntity entInstance;
     public float renderedShadowSize;
-    public ArrayList<Trait> traits = new ArrayList<>();
+    public ArrayList<Trait<?>> traits = new ArrayList<>();
 
     private MorphState(){}
 
@@ -38,20 +38,20 @@ public class MorphState implements Comparable<MorphState>
     //For Traits
     public void activateHooks()
     {
-        for(Trait trait : traits)
+        for(Trait<?> trait : traits)
         {
             trait.addHooks();
         }
     }
     public void deactivateHooks()
     {
-        for(Trait trait : traits)
+        for(Trait<?> trait : traits)
         {
             trait.removeHooks();
         }
     }
 
-    public void tick(PlayerEntity player, boolean resetInventory, float traitStrength)
+    public void tick(PlayerEntity player, boolean resetInventory)
     {
         LivingEntity livingInstance = getEntityInstance(player.world, player.getGameProfile().getId());
 
@@ -65,10 +65,13 @@ public class MorphState implements Comparable<MorphState>
         syncEntityWithPlayer(livingInstance, player);
 
         syncInventory(livingInstance, player, resetInventory);
+    }
 
-        for(Trait trait : traits)
+    public void tickTraits()
+    {
+        for(Trait<?> trait : traits)
         {
-            trait.tick(traitStrength);
+            trait.doTick(1F);
         }
     }
 

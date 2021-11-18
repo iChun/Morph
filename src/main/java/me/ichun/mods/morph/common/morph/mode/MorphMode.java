@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.morph.mode;
 
 import me.ichun.mods.morph.api.mob.trait.Trait;
+import me.ichun.mods.morph.api.mob.trait.ability.Ability;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +20,9 @@ public interface MorphMode
 
     int getMorphingDuration(PlayerEntity player);
 
-    ArrayList<Trait> getTraitsForVariant(PlayerEntity player, MorphVariant variant); //create a copy of all the applicable traits and sets the player to the provided arg
+    ArrayList<Trait<?>> getTraitsForVariant(PlayerEntity player, MorphVariant variant); //create a copy of all the applicable traits and sets the player to the provided arg
+
+    boolean canUseAbility(PlayerEntity player, Ability<?> ability);
 
     boolean hasUnlockedBiomass(PlayerEntity player);
 
