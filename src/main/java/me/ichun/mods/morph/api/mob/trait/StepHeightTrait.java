@@ -37,7 +37,7 @@ public class StepHeightTrait extends Trait<StepHeightTrait>
 
     private void setStepHeight(double amount)
     {
-        player.stepHeight = (float)amount;
+        player.stepHeight = (float)amount; //Step heights below the default of 0.6 are allowed
     }
 
     @Override

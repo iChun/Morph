@@ -5,7 +5,6 @@ import me.ichun.mods.morph.api.mob.trait.Trait;
 
 public abstract class Ability<T extends Ability> extends Trait<T>
 {
-    public Double purchaseCost;
     public Double useCost;
 
     @Override

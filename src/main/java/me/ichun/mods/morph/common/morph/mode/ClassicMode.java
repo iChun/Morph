@@ -79,6 +79,7 @@ public class ClassicMode implements MorphMode
             for(Trait<?> trait : traits)
             {
                 trait.player = player;
+                trait.stateTraits = traits;
             }
         }
 

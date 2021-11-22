@@ -5,13 +5,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 
 public abstract class Trait<T extends Trait>
 {
     @Nonnull
     public String type;
+    public Double purchaseCost;
 
     public transient PlayerEntity player;
+    public transient ArrayList<Trait<?>> stateTraits;
 
     //also used to set default values if not set in the JSON
     public void addHooks()

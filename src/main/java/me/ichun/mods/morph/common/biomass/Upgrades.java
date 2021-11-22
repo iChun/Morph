@@ -14,6 +14,7 @@ public final class Upgrades
     public static final String ID_MORPH_ABILITY = "morph_ability"; //TODO this
     public static final String ID_MORPH_CAPACITY = "morph_capacity"; //TODO this
     public static final String ID_MORPH_VARIANT_CAPACITY = "morph_variant_capacity"; //TODO this
+    public static final String ID_MORPH_EFFICIENCY = "morph_efficiency"; //TODO this
 
     public static final String ID_MORPH_ABILITIES = "morph_abilities"; //TODO this
 }

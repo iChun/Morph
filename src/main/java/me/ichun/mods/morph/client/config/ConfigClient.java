@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 
 public class ConfigClient extends ConfigBase
 {
-    @CategoryDivider(name = "clientOnly")
+    @CategoryDivider(name = "clientOnly") //TODO fire the Morph specific events
     @Prop(min = 0)
     public int selectorDistanceFromTop = 30;
 
