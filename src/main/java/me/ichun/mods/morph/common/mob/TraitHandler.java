@@ -1,10 +1,13 @@
 package me.ichun.mods.morph.common.mob;
 
+import com.google.gson.*;
 import me.ichun.mods.morph.api.mob.trait.*;
 import me.ichun.mods.morph.api.mob.trait.ability.*;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.util.Util;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 public class TraitHandler
@@ -21,7 +24,6 @@ public class TraitHandler
         m.put("traitSunburn", SunburnTrait.class);
         m.put("traitWaterBreather", WaterBreatherTrait.class);
         m.put("traitWaterSensitivity", WaterSensitivityTrait.class);
-        //TODO float - slimes
 
         //Damage immunity traits
         m.put("traitImmunityExplosive", ExplosiveImmunityTrait.class);
@@ -45,5 +47,43 @@ public class TraitHandler
         }
 
         TRAITS.put(type, clz);
+    }
+
+    public static class TraitDeserialiser implements JsonDeserializer<Trait>, JsonSerializer<Trait>
+    {
+        @Override
+        public Trait deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
+            return _deserialize(json, typeOfT, context);
+        }
+
+        public static Trait _deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        {
+            JsonObject jsonObject = (JsonObject)json;
+            String type = jsonObject.get("type").getAsString();
+            if(TRAITS.containsKey(type))
+            {
+                Trait trait = ResourceHandler.GSON.fromJson(jsonObject.toString(), TRAITS.get(type));
+                if(trait != null)
+                {
+                    return trait;
+                }
+                else
+                {
+                    Morph.LOGGER.error("Invalid trait: " + jsonObject.toString());
+                }
+            }
+            else
+            {
+                Morph.LOGGER.error("Unknown trait type: " + type);
+            }
+            return null;
+        }
+
+        @Override
+        public JsonElement serialize(Trait src, Type typeOfSrc, JsonSerializationContext context)
+        {
+            return context.serialize(src);
+        }
     }
 }

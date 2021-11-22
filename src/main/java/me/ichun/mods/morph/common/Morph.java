@@ -111,7 +111,8 @@ public class Morph
                 PacketMorphInput.class,
                 PacketAcquisition.class,
                 PacketUpdateBiomassValue.class,
-                PacketUpdateBiomassUpgrades.class
+                PacketUpdateBiomassUpgrades.class,
+                PacketInvalidateClientHealth.class
         );
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

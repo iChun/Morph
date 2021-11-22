@@ -70,7 +70,7 @@ public class ClassicMode implements MorphMode
         {
             for(Trait<?> trait : mobData.traits)
             {
-                if(!Morph.configServer.disabledTraits.contains(trait.type))
+                if(trait != null && !Morph.configServer.disabledTraits.contains(trait.type))
                 {
                     traits.add(trait.copy());
                 }

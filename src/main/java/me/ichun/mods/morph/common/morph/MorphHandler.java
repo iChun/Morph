@@ -99,7 +99,7 @@ public final class MorphHandler implements IApi
     @Nonnull
     public MorphInfo getMorphInfo(PlayerEntity player)
     {
-        return player.getCapability(MorphInfo.CAPABILITY_INSTANCE).orElseThrow(() -> new IllegalArgumentException("Player " + player.getName().getUnformattedComponentText() + " has no morph state capabilities"));
+        return player.getCapability(MorphInfo.CAPABILITY_INSTANCE).orElse(new MorphInfo(player)); //if the player entity has no morph capabilities, just send a dummy morph info
     }
 
     @Override

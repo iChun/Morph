@@ -3,9 +3,11 @@ package me.ichun.mods.morph.common.resource;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.client.render.hand.HandHandler;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
+import me.ichun.mods.morph.common.mob.TraitHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -20,7 +22,9 @@ import java.nio.file.Path;
 
 public class ResourceHandler
 {
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    public static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(Trait.class, new TraitHandler.TraitDeserialiser())
+            .setPrettyPrinting().disableHtmlEscaping().create();
     public static final Gson GSON_MINIFY = new GsonBuilder().disableHtmlEscaping().create();
     public static final int MOB_SUPPORT_VERSION = 1;
 

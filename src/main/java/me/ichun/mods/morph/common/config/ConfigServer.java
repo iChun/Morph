@@ -42,7 +42,9 @@ public class ConfigServer extends ConfigBase
         //TODO forge:generic.reachDistance ?? Check the ForgeMod class
     });
 
-    private List<String> disabledMobs = new ArrayList<>();
+    private List<String> disabledMobs = Util.make(new ArrayList<>(), list -> {
+        list.add("minecraft:armor_stand");
+    });
 
     public List<String> disabledTraits = new ArrayList<>();
 
@@ -68,7 +70,7 @@ public class ConfigServer extends ConfigBase
             return;
         }
 
-        MorphHandler.INSTANCE.setMorphMode(morphClassic); //TODO force true if I want to lock to classic mode
+        MorphHandler.INSTANCE.setMorphMode(true || morphClassic); //TODO force true if I want to lock to classic mode
 
         parseDisabledMobs();
 

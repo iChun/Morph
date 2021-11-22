@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.api.mob.trait.ability;
 
 import me.ichun.mods.morph.api.mob.trait.Trait;
+import net.minecraft.tags.FluidTags;
 
 public class FlyAbility extends Ability<FlyAbility>
 {
@@ -35,7 +36,7 @@ public class FlyAbility extends Ability<FlyAbility>
             player.sendPlayerAbilities();
         }
 
-        if(slowdownInWater != null && slowdownInWater && player.abilities.isFlying && !player.abilities.isCreativeMode && player.isInWaterRainOrBubbleColumn())
+        if(slowdownInWater != null && slowdownInWater && player.abilities.isFlying && !player.abilities.isCreativeMode && player.areEyesInFluid(FluidTags.WATER))
         {
             boolean hasSwim = false;
 
@@ -50,7 +51,7 @@ public class FlyAbility extends Ability<FlyAbility>
 
             if(!hasSwim)
             {
-                player.setMotion(player.getMotion().mul(0.65D, 0.2D, 0.65D));
+                player.setMotion(player.getMotion().mul(1D + (0.65D - 1D) * strength, 1D + (0.2D - 1D) * strength, 1D + (0.65D - 1D) * strength));
             }
         }
 

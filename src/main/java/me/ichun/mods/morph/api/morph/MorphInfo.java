@@ -1,11 +1,13 @@
 package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
+import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.mixin.LivingEntityInvokerMixin;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.client.entity.EntityBiomassAbility;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.packet.PacketInvalidateClientHealth;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -14,6 +16,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -70,7 +73,7 @@ public class MorphInfo
         this.player = player;
     }
 
-    public void tick() //returns true if the player is considered "morphed"
+    public void tick()
     {
         if(!isMorphed())
         {
@@ -87,7 +90,6 @@ public class MorphInfo
         }
 
         //TODO check player resize on sleeping
-
 
         if(transitionProgress < 1.0F) // is morphing
         {
@@ -163,10 +165,7 @@ public class MorphInfo
 
             if(player.world.isRemote)
             {
-                if(transitionState != null)
-                {
-                    transitionState = null;
-                }
+                endMorphOnClient();
             }
 
             if(nextState.variant.id.equals(EntityType.PLAYER.getRegistryName()) && nextState.variant.thisVariant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE))
@@ -183,7 +182,6 @@ public class MorphInfo
             }
         }
     }
-
     public boolean isMorphed()
     {
         return nextState != null;
@@ -338,6 +336,15 @@ public class MorphInfo
         return (nextState != null && nextState.variant.thisVariant.identifier.equals(variant.identifier) || !isMorphed() && variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE));
     }
 
+    @OnlyIn(Dist.CLIENT)
+    private void endMorphOnClient()
+    {
+        if(transitionState != null)
+        {
+            transitionState = null;
+        }
+    }
+
     public void applyAttributeModifiers(float transitionProgress)
     {
         if(player.world.isRemote) //we don't touch the attributes on the client
@@ -437,15 +444,13 @@ public class MorphInfo
                     {
                         double currentRatio = player.getHealth() / player.getMaxHealth();
 
-                        if(currentRatio < lastRatio) //if ratio is lower, top up with some health
+                        if(currentRatio != lastRatio) //if ratio is different, change the health
                         {
                             double targetHealth = lastRatio * player.getMaxHealth();
                             double extraHealth = targetHealth - player.getHealth();
 
-                            if(extraHealth > 0D)
-                            {
-                                player.setHealth(player.getHealth() + (float)extraHealth); //I think this would work?
-                            }
+                            Morph.channel.sendTo(new PacketInvalidateClientHealth(), (ServerPlayerEntity)player);
+                            player.setHealth(player.getHealth() + (float)extraHealth); //I think this would work?
                         }
                     }
                 }
@@ -526,6 +531,7 @@ public class MorphInfo
         if(tag.contains("prevState"))
         {
             MorphState state = MorphState.createFromNbt(tag.getCompound("prevState"));
+            state.traits = MorphApi.getApiImpl().getTraitsForVariant(state.variant, player);
             if(state.variant.thisVariant != null)
             {
                 if(nextState != null && nextState.equals(state) && tag.contains("nextState"))
@@ -545,7 +551,9 @@ public class MorphInfo
 
         if(tag.contains("nextState"))
         {
-            setNextState(MorphState.createFromNbt(tag.getCompound("nextState")));
+            MorphState state = MorphState.createFromNbt(tag.getCompound("nextState"));
+            state.traits = MorphApi.getApiImpl().getTraitsForVariant(state.variant, player);
+            setNextState(state);
             if(nextState.variant.thisVariant == null) //MorphState variants should ALWAYS have a thisVariant.
             {
                 setPrevState(null);

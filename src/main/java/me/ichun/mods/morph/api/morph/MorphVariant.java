@@ -66,7 +66,24 @@ public class MorphVariant implements Comparable<MorphVariant>
             Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(e.getKey());
             if(attribute != null && living.getAttributeManager().hasAttributeInstance(attribute))
             {
-                nbtMorph.putDouble("attr_" + e.getKey().toString(), living.getAttributeValue(attribute));
+                AttributeConfig attributeConfig = e.getValue();
+                double value = living.getAttributeValue(attribute);
+                if(attributeConfig.moreIsBetter) //more is better
+                {
+                    if(attributeConfig.cap != null && value > attributeConfig.cap)
+                    {
+                        value = attributeConfig.cap;
+                    }
+                }
+                else //less is better
+                {
+                    if(attributeConfig.cap != null && value < attributeConfig.cap)
+                    {
+                        value = attributeConfig.cap;
+                    }
+                }
+
+                nbtMorph.putDouble("attr_" + e.getKey().toString(), value);
             }
         }
     }

@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.api.mob.trait.ability;
 
+import me.ichun.mods.morph.api.mob.trait.Trait;
 import net.minecraft.client.Minecraft;
 import net.minecraft.potion.Effects;
 import net.minecraft.tags.FluidTags;
@@ -14,9 +15,11 @@ public class FlightFlapAbility extends Ability<FlightFlapAbility>
     public Boolean resetVerticalVelocity;
     public Double velocityAdded;
     public Integer flapLimit;
+    public Boolean slowdownInWater;
 
     public transient double flaps;
     public transient boolean keyHeld;
+    public transient boolean wasOnGround; //we tick after the entity ticks so the ent tick already sets jump when we're on the ground
 
     public FlightFlapAbility()
     {
@@ -53,6 +56,25 @@ public class FlightFlapAbility extends Ability<FlightFlapAbility>
             clientTick(strength, velocityToAdd);
         }
 
+        if(slowdownInWater != null && slowdownInWater && player.areEyesInFluid(FluidTags.WATER))
+        {
+            boolean hasSwim = false;
+
+            for(Trait<?> trait : stateTraits)
+            {
+                if("traitSwim".equals(trait.type))
+                {
+                    hasSwim = true;
+                    break;
+                }
+            }
+
+            if(!hasSwim)
+            {
+                player.setMotion(player.getMotion().mul(1D + (0.65D - 1D) * strength, 1D + (0.2D - 1D) * strength, 1D + (0.65D - 1D) * strength));
+            }
+        }
+
         player.fallDistance -= player.fallDistance * strength;
     }
 
@@ -61,10 +83,10 @@ public class FlightFlapAbility extends Ability<FlightFlapAbility>
     {
         if(!keyHeld && Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown()) //hit jump key
         {
-            boolean canFlap = (flapLimit == null || flaps < flapLimit) && !player.isOnGround();
+            boolean canFlap = (flapLimit == null || flaps < flapLimit) && !wasOnGround;
 
             //taken from LivingEntity.livingTick, onGround replaced with canFlap
-            if(!player.abilities.isFlying)
+            if(!player.abilities.isFlying && canFlap)
             {
                 double d7;
                 if (player.isInLava()) {
@@ -75,14 +97,11 @@ public class FlightFlapAbility extends Ability<FlightFlapAbility>
 
                 boolean flag = player.isInWater() && d7 > 0.0D;
                 double d8 = player.getFluidJumpHeight();
-                if (!flag || canFlap && !(d7 > d8))
+                if (!flag || !(d7 > d8))
                 {
-                    if (!player.isInLava() || canFlap && !(d7 > d8))
+                    if (!player.isInLava() || !(d7 > d8))
                     {
-                        if (canFlap)
-                        {
-                            jump(strength, velocityToAdd);
-                        }
+                        jump(strength, velocityToAdd);
                     }
                     else
                     {
@@ -96,6 +115,7 @@ public class FlightFlapAbility extends Ability<FlightFlapAbility>
             }
         }
         keyHeld = Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown();
+        wasOnGround = player.isOnGround();
 
         //reset the flap count if the player is on the ground.
         if(player.isOnGround())
@@ -140,6 +160,7 @@ public class FlightFlapAbility extends Ability<FlightFlapAbility>
         ability.resetVerticalVelocity = this.resetVerticalVelocity;
         ability.velocityAdded = this.velocityAdded;
         ability.flapLimit = this.flapLimit;
+        ability.slowdownInWater = this.slowdownInWater;
         return ability;
     }
 }
