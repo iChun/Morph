@@ -1,0 +1,13 @@
+{
+  "forClass": "net.minecraft.client.renderer.entity.model.BipedModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_178724_i"
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_178723_h"
+    }
+  ]
+}

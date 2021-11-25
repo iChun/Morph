@@ -1,0 +1,11 @@
+{
+  "forEntity": "minecraft:zombie_villager",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSunburn"
+    }
+  ]
+}

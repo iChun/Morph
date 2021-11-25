@@ -1,0 +1,15 @@
+{
+  "forEntity": "minecraft:pufferfish",
+  "traits": [
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    },
+    {
+      "type": "abilityEffectAttack",
+      "effectId": "minecraft:poison",
+      "duration": 60,
+      "amplifier": 0
+    }
+  ]
+}

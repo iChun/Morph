@@ -13,29 +13,46 @@ import java.util.HashMap;
 public class TraitHandler
 {
     private static final HashMap<String, Class<? extends Trait>> TRAITS = Util.make(new HashMap<>(), m -> {
-        //Register the default traits
-        m.put("traitEffectResistance", EffectResistanceTrait.class);
+        //Register the default traits (no fields)
         m.put("traitFallNegate", FallNegateTrait.class);
         m.put("traitFloat", FloatTrait.class);
         m.put("traitHostile", HostileTrait.class);
-        m.put("traitIntimidate", IntimidateTrait.class);
-        m.put("traitSink", SinkTrait.class);
-        m.put("traitStepHeight", StepHeightTrait.class);
-        m.put("traitSunburn", SunburnTrait.class);
-        m.put("traitWaterBreather", WaterBreatherTrait.class);
-        m.put("traitWaterSensitivity", WaterSensitivityTrait.class);
-
-        //Damage immunity traits
         m.put("traitImmunityExplosive", ExplosiveImmunityTrait.class);
         m.put("traitImmunityFire", FireImmunityTrait.class);
         m.put("traitImmunityMagic", MagicImmunityTrait.class);
+        m.put("traitSink", SinkTrait.class);
+        m.put("traitWaterSensitivity", WaterSensitivityTrait.class);
+
+        //These have fields
+        m.put("traitEffectResistance", EffectResistanceTrait.class);
         m.put("traitImmunityDamageSource", DamageSourceImmunityTrait.class);
+        m.put("traitIntimidate", IntimidateTrait.class);
+        m.put("traitMoistSkin", MoistSkinTrait.class);
+        m.put("traitStepHeight", StepHeightTrait.class);
+        m.put("traitSunburn", SunburnTrait.class);
+        m.put("traitWaterBreather", WaterBreatherTrait.class);
+
+        //TODO traitRidable? IRideable - see striders
+        //TODO swim trait (and add to mobs)
+        //TODO AOE effects: eg dolphins/guardians
+        //TODO map potion resistance for undead
+        //TODO test strays underwater applying slowness and/or drowning
+        //TODO wandering villager avoidaance
+        //TODO the Z-letter mobdata.
+        //TODO VillagerHostilesSensor
+        //TODO test zombified piglins burning in daylight
+        //TODO Moist Trait (dolphins)
+        //TODO handle panda genes (dominant vs recessive)
+        //TODO test villager skins
+        //TODO do I have to sync IAngerable??
 
         //Register the default abilities
         m.put("abilityClimb", ClimbAbility.class);
+
+        //These have fields
         m.put("abilityEffectAttack", EffectAttackAbility.class);
         m.put("abilityFlight", FlyAbility.class);
-        m.put("abilityFlightFlap", FlightFlapAbility.class);
+        m.put("abilityFlightFlap", FlightFlapAbility.class); //TESTED
         m.put("abilitySlowFall", SlowFallAbility.class);
     });
 

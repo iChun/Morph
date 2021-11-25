@@ -1,0 +1,21 @@
+{
+  "forClass": "net.minecraft.entity.passive.FoxEntity",
+  "modifiers": [
+    {
+      "key": "Trusted",
+      "strip": true
+    },
+    {
+      "key": "Sleeping",
+      "strip": true
+    },
+    {
+      "key": "Sitting",
+      "strip": true
+    },
+    {
+      "key": "Crouching",
+      "strip": true
+    }
+  ]
+}

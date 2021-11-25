@@ -1,0 +1,11 @@
+{
+  "forEntity": "minecraft:slime",
+  "traits": [
+    {
+      "type": "traitFloat"
+    },
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

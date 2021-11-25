@@ -1,0 +1,14 @@
+{
+  "forEntity": "minecraft:iron_golem",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

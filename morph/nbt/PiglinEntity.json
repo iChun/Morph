@@ -1,0 +1,17 @@
+{
+  "forClass": "net.minecraft.entity.passive.BeeEntity",
+  "modifiers": [
+    {
+      "key": "HivePos",
+      "strip": true
+    },
+    {
+      "key": "CannotHunt",
+      "strip": true
+    },
+    {
+      "key": "Inventory",
+      "strip": true
+    }
+  ]
+}

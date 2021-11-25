@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:creeper",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

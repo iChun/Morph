@@ -1,0 +1,33 @@
+{
+  "forClass": "net.minecraft.entity.merchant.villager.VillagerEntity",
+  "modifiers": [
+    {
+      "key": "FoodLevel",
+      "strip": true
+    },
+    {
+      "key": "Gossips",
+      "strip": true
+    },
+    {
+      "key": "Xp",
+      "strip": true
+    },
+    {
+      "key": "LastRestock",
+      "strip": true
+    },
+    {
+      "key": "LastGossipDecay",
+      "strip": true
+    },
+    {
+      "key": "RestocksToday",
+      "strip": true
+    },
+    {
+      "key": "AssignProfessionWhenSpawned",
+      "strip": true
+    }
+  ]
+}

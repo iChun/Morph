@@ -4,8 +4,7 @@ import com.google.common.base.Splitter;
 import me.ichun.mods.morph.api.IApi;
 import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
-import me.ichun.mods.morph.api.event.AcquireMorphEvent;
-import me.ichun.mods.morph.api.event.MorphPlayerEvent;
+import me.ichun.mods.morph.api.event.MorphEvent;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
@@ -177,7 +176,7 @@ public final class MorphHandler implements IApi
         {
             if(Morph.configServer.disabledMobsRL.contains(variant.id)) return;
 
-            if(MinecraftForge.EVENT_BUS.post(new AcquireMorphEvent(player, variant))) return;
+            MinecraftForge.EVENT_BUS.post(new MorphEvent.Acquire(player, variant));
 
             MorphVariant parentVariant = playerMorphData.addVariant(variant);
 
@@ -185,6 +184,7 @@ public final class MorphHandler implements IApi
 
             saveData.markDirty();
         }
+        return;
     }
 
     @Override
@@ -195,7 +195,7 @@ public final class MorphHandler implements IApi
         //mid morph
         if(info.getMorphProgress(1F) < 1F) return false;
 
-        if(MinecraftForge.EVENT_BUS.post(new MorphPlayerEvent(player, variant))) return false;
+        if(MinecraftForge.EVENT_BUS.post(new MorphEvent.Morph(player, variant))) return false;
 
         info.setNextState(new MorphState(variant, player), Math.max(1, currentMode.getMorphingDuration(player)));
 

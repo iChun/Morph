@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:cod",
+  "traits": [
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

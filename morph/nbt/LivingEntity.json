@@ -1,0 +1,62 @@
+{
+  "forClass": "net.minecraft.entity.LivingEntity",
+  "modifiers": [
+    {
+      "key": "Health",
+      "strip": true
+    },
+    {
+      "key": "HurtTime",
+      "strip": true
+    },
+    {
+      "key": "HurtByTimestamp",
+      "strip": true
+    },
+    {
+      "key": "DeathTime",
+      "strip": true
+    },
+    {
+      "key": "AbsorptionAmount",
+      "strip": true
+    },
+    {
+      "key": "Attributes",
+      "strip": true
+    },
+    {
+      "key": "FallFlying",
+      "strip": true
+    },
+    {
+      "key": "SleepingX",
+      "strip": true
+    },
+    {
+      "key": "SleepingY",
+      "strip": true
+    },
+    {
+      "key": "SleepingZ",
+      "strip": true
+    },
+    {
+      "key": "Brain",
+      "strip": true
+    }
+  ],
+  "modSpecificModifiers": {
+    "hats": [
+      {
+        "key": "ForgeCaps",
+        "nestedModifiers": [
+          {
+            "key": "hats:capability_hat",
+            "strip": true
+          }
+        ]
+      }
+    ]
+  }
+}

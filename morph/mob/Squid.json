@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:squid",
+  "traits": [
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

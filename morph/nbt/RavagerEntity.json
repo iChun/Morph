@@ -1,0 +1,17 @@
+{
+  "forClass": "net.minecraft.entity.monster.RavagerEntity",
+  "modifiers": [
+    {
+      "key": "AttackTick",
+      "strip": true
+    },
+    {
+      "key": "StunTick",
+      "strip": true
+    },
+    {
+      "key": "RoarTick",
+      "strip": true
+    }
+  ]
+}

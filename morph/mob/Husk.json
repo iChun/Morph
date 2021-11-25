@@ -1,0 +1,14 @@
+{
+  "forEntity": "minecraft:husk",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "abilityEffectAttack",
+      "effectId": "minecraft:hunger",
+      "duration": 140,
+      "amplifier": 0
+    }
+  ]
+}

@@ -12,6 +12,7 @@ import java.util.List;
 
 public class IntimidateTrait extends Trait<IntimidateTrait>
 {
+    //TODO classToIntimidate (and apply to aall current idToIntimidates)
     public String idToIntimidate;
     public Float distance;
     public Double farRunSpeed;
@@ -33,8 +34,14 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
             if(distance == null)
             {
                 distance = 6F;
+            }
+            if(farRunSpeed == null)
+            {
                 farRunSpeed = 1.0D;
-                nearRunSpeed = 1.2D;
+            }
+            if(nearRunSpeed == null)
+            {
+                nearRunSpeed = 1.0D;
             }
         }
     }

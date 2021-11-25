@@ -1,0 +1,12 @@
+{
+  "forEntity": "minecraft:polar_bear",
+  "traits": [
+    {
+      "type": "traitIntimidate",
+      "idToIntimidate": "minecraft:fox",
+      "distance": 8.0,
+      "farRunSpeed": 1.6,
+      "nearRunSpeed": 1.4
+    }
+  ]
+}

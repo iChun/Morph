@@ -1,0 +1,29 @@
+{
+  "forClass": "net.minecraft.entity.passive.TurtleEntity",
+  "modifiers": [
+    {
+      "key": "HomePosX",
+      "strip": true
+    },
+    {
+      "key": "HomePosY",
+      "strip": true
+    },
+    {
+      "key": "HomePosZ",
+      "strip": true
+    },
+    {
+      "key": "TravelPosX",
+      "strip": true
+    },
+    {
+      "key": "TravelPosY",
+      "strip": true
+    },
+    {
+      "key": "TravelPosZ",
+      "strip": true
+    }
+  ]
+}

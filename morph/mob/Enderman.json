@@ -1,0 +1,11 @@
+{
+  "forEntity": "minecraft:enderman",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitWaterSensitivity"
+    }
+  ]
+}

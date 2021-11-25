@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:shulker",
+  "traits": [
+    {
+      "type": "traitImmunityFire"
+    }
+  ]
+}

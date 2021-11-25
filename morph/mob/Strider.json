@@ -1,0 +1,11 @@
+{
+  "forEntity": "minecraft:strider",
+  "traits": [
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "type": "traitWaterSensitivity"
+    }
+  ]
+}

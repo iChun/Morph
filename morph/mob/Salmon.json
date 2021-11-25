@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:salmon",
+  "traits": [
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

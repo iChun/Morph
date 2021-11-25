@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:silverfish",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

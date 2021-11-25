@@ -1,0 +1,14 @@
+{
+  "id": "biomass_capacity",
+  "parentId": "root",
+  "value": {
+    "baseValue": 50,
+    "multiplier": 1.5,
+    "equation": 2
+  },
+  "cost": {
+    "baseValue": 40,
+    "multiplier": 1.2,
+    "equation": 2
+  }
+}

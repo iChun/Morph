@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:hoglin",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

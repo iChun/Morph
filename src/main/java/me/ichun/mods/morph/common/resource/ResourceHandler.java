@@ -2,6 +2,7 @@ package me.ichun.mods.morph.common.resource;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.brigadier.Command;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.client.render.hand.HandHandler;
@@ -9,6 +10,9 @@ import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
 import me.ichun.mods.morph.common.mob.TraitHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -91,4 +95,12 @@ public class ResourceHandler
         return morphDir;
     }
 
+    public static int reloadAllResources()
+    {
+        loadConstResources();
+
+        loadPostInitResources();
+
+        return Command.SINGLE_SUCCESS;
+    }
 }

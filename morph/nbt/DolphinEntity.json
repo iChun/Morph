@@ -1,0 +1,25 @@
+{
+  "forClass": "net.minecraft.entity.passive.BeeEntity",
+  "modifiers": [
+    {
+      "key": "TreasurePosX",
+      "strip": true
+    },
+    {
+      "key": "TreasurePosY",
+      "strip": true
+    },
+    {
+      "key": "TreasurePosZ",
+      "strip": true
+    },
+    {
+      "key": "GotFish",
+      "strip": true
+    },
+    {
+      "key": "Moistness",
+      "strip": true
+    }
+  ]
+}

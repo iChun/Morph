@@ -11,6 +11,7 @@ public abstract class Trait<T extends Trait>
 {
     @Nonnull
     public String type;
+    public String upgradeFor; //TODO make upgrades
     public Double purchaseCost;
 
     public transient PlayerEntity player;

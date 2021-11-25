@@ -1,0 +1,14 @@
+{
+  "forEntity": "minecraft:bat",
+  "traits": [
+    {
+      "type": "abilityFlightFlap",
+      "slowdownInWater": true
+    },
+    {
+      "type": "abilityFlight",
+      "upgradeFor": "abilityFlightFlap",
+      "slowdownInWater": true
+    }
+  ]
+}

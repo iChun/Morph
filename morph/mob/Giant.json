@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:giant",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

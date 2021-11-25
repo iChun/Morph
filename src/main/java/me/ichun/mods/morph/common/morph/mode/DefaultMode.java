@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.morph.mode;
 
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
+import me.ichun.mods.morph.api.event.MorphEvent;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
@@ -14,6 +15,7 @@ import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -30,9 +32,10 @@ public class DefaultMode implements MorphMode
             MorphVariant variant = MorphHandler.INSTANCE.createVariant(living);
             if(canAcquireMorph(player, living, variant)) // we can morph to it
             {
+                MorphHandler.INSTANCE.addBiomassAmount(player, getBiomassAmount(player, living));
+
                 MorphHandler.INSTANCE.acquireMorph(player, variant);
 
-                MorphHandler.INSTANCE.addBiomassAmount(player, getBiomassAmount(player, living));
                 Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), false), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
 
 //                boolean morphTo = true;
@@ -77,7 +80,7 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean canAcquireMorph(PlayerEntity player, LivingEntity living, @Nullable MorphVariant variant)
     {
-        if(variant == null)
+        if(variant == null || MinecraftForge.EVENT_BUS.post(new MorphEvent.CanAcquire(player, variant)))
         {
             return false;
         }

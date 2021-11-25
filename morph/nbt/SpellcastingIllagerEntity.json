@@ -1,0 +1,9 @@
+{
+  "forClass": "net.minecraft.entity.monster.SpellcastingIllagerEntity",
+  "modifiers": [
+    {
+      "key": "SpellTicks",
+      "strip": true
+    }
+  ]
+}

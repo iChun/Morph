@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -21,7 +22,13 @@ public class CommandMorph
 {
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
-        dispatcher.register(Commands.literal("morph").requires(p -> p.hasPermissionLevel(2))
+        dispatcher.register(Commands.literal("morph")
+                .then(Commands.literal("resources")
+                        .then(Commands.literal("reload")
+                                .executes(context -> ResourceHandler.reloadAllResources())
+                        )
+                )
+                .requires(p -> p.hasPermissionLevel(2))
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.literal("morph")
                                 .then(Commands.literal("acquire")

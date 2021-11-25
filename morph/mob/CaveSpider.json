@@ -1,0 +1,17 @@
+{
+  "forEntity": "minecraft:cave_spider",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "abilityClimb"
+    },
+    {
+      "type": "abilityEffectAttack",
+      "effectId": "minecraft:poison",
+      "duration": 140,
+      "amplifier": 0
+    }
+  ]
+}

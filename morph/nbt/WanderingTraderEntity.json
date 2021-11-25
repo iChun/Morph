@@ -1,0 +1,13 @@
+{
+  "forClass": "net.minecraft.entity.merchant.villager.WanderingTraderEntity",
+  "modifiers": [
+    {
+      "key": "DespawnDelay",
+      "strip": true
+    },
+    {
+      "key": "WanderTarget",
+      "strip": true
+    }
+  ]
+}

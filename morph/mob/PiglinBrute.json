@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:piglin_brute",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

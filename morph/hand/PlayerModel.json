@@ -1,0 +1,19 @@
+{
+  "forClass": "net.minecraft.client.renderer.entity.model.PlayerModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_178724_i"
+    },
+    {
+      "fieldName": "field_178734_a"
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_178723_h"
+    },
+    {
+      "fieldName": "field_178732_b"
+    }
+  ]
+}

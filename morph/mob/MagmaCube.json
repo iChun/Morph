@@ -1,0 +1,17 @@
+{
+  "forEntity": "minecraft:magma_cube",
+  "traits": [
+    {
+      "type": "traitFloat"
+    },
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    }
+  ]
+}

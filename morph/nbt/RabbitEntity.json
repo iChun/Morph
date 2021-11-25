@@ -1,0 +1,9 @@
+{
+  "forClass": "net.minecraft.entity.passive.RabbitEntity",
+  "modifiers": [
+    {
+      "key": "MoreCarrotTicks",
+      "strip": true
+    }
+  ]
+}

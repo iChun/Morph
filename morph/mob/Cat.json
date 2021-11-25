@@ -1,0 +1,15 @@
+{
+  "forEntity": "minecraft:cat",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitIntimidate",
+      "idToIntimidate": "minecraft:creeper",
+      "distance": 6.0,
+      "farRunSpeed": 1.0,
+      "nearRunSpeed": 1.2
+    }
+  ]
+}

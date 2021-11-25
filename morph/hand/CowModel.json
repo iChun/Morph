@@ -1,0 +1,13 @@
+{
+  "forClass": "net.minecraft.client.renderer.entity.model.CowModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78144_f"
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78147_e"
+    }
+  ]
+}

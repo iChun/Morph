@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:horse",
+  "traits": [
+    {
+      "type": "traitStepHeight",
+      "amount": 1.0
+    }
+  ]
+}

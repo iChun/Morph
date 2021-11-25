@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.common.morph.mode;
 
+import me.ichun.mods.morph.api.event.MorphEvent;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
@@ -12,6 +13,7 @@ import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -43,7 +45,7 @@ public class ClassicMode implements MorphMode
     @Override
     public boolean canAcquireMorph(PlayerEntity player, LivingEntity living, @Nullable MorphVariant variant) //variant should be the MorphVariant of the EntityLiving we're trying to acquire
     {
-        if(variant == null)
+        if(variant == null || MinecraftForge.EVENT_BUS.post(new MorphEvent.CanAcquire(player, variant)))
         {
             return false;
         }
@@ -70,7 +72,7 @@ public class ClassicMode implements MorphMode
         {
             for(Trait<?> trait : mobData.traits)
             {
-                if(trait != null && !Morph.configServer.disabledTraits.contains(trait.type))
+                if(trait != null && !Morph.configServer.disabledTraits.contains(trait.type) && trait.upgradeFor == null) //no trait upgrades in classic
                 {
                     traits.add(trait.copy());
                 }

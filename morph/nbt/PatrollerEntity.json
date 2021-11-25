@@ -1,0 +1,17 @@
+{
+  "forClass": "net.minecraft.entity.monster.PatrollerEntity",
+  "modifiers": [
+    {
+      "key": "PatrolTarget",
+      "strip": true
+    },
+    {
+      "key": "PatrolLeader",
+      "strip": true
+    },
+    {
+      "key": "Patrolling",
+      "strip": true
+    }
+  ]
+}

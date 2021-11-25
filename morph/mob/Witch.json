@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:witch",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

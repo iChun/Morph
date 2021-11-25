@@ -1,0 +1,19 @@
+{
+  "forEntity": "minecraft:guardian",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitIntimidate",
+      "idToIntimidate": "minecraft:dolphin",
+      "distance": 8.0,
+      "farRunSpeed": 1.0,
+      "nearRunSpeed": 1.0
+    },
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:mule",
+  "traits": [
+    {
+      "type": "traitStepHeight",
+      "amount": 1.0
+    }
+  ]
+}

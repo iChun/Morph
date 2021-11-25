@@ -25,12 +25,19 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
     {
         if(effectId != null)
         {
-            ResourceLocation effectRL = new ResourceLocation(effectId);
-            Effect theEffect = ForgeRegistries.POTIONS.getValue(effectRL);
-            if(theEffect != null)
+            if(effectId.equals("*")) //immune to all effects
             {
-                effectObj = theEffect;
                 super.addHooks();
+            }
+            else
+            {
+                ResourceLocation effectRL = new ResourceLocation(effectId);
+                Effect theEffect = ForgeRegistries.POTIONS.getValue(effectRL);
+                if(theEffect != null)
+                {
+                    effectObj = theEffect;
+                    super.addHooks();
+                }
             }
         }
     }
@@ -40,10 +47,20 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
     {
         if(effectObj != null)
         {
-            EffectInstance potion = player.getActivePotionEffect(effectObj);
-            if(potion != null)
+            if(effectId.equals("*")) //immune to all effects
             {
-                player.removePotionEffect(effectObj);
+                for(EffectInstance effect : player.getActivePotionEffects())
+                {
+                    player.removePotionEffect(effect.getPotion());
+                }
+            }
+            else
+            {
+                EffectInstance potion = player.getActivePotionEffect(effectObj);
+                if(potion != null)
+                {
+                    player.removePotionEffect(effectObj);
+                }
             }
         }
     }
@@ -75,7 +92,7 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
     @SubscribeEvent
     public void onPotionApplicable(PotionEvent.PotionApplicableEvent event)
     {
-        if(event.getEntityLiving() == player && event.getPotionEffect().getPotion() == effectObj)
+        if(event.getEntityLiving() == player && (effectId != null && effectId.equals("*") || event.getPotionEffect().getPotion() == effectObj))
         {
             event.setResult(Event.Result.DENY);
         }

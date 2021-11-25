@@ -1,0 +1,17 @@
+{
+  "forClass": "net.minecraft.entity.monster.ZombieEntity",
+  "modifiers": [
+    {
+      "key": "CanBreakDoors",
+      "strip": true
+    },
+    {
+      "key": "InWaterTime",
+      "strip": true
+    },
+    {
+      "key": "DrownedConversionTime",
+      "strip": true
+    }
+  ]
+}

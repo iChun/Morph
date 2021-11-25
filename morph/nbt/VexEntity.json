@@ -1,0 +1,21 @@
+{
+  "forClass": "net.minecraft.entity.monster.VexEntity",
+  "modifiers": [
+    {
+      "key": "BoundX",
+      "strip": true
+    },
+    {
+      "key": "BoundY",
+      "strip": true
+    },
+    {
+      "key": "BoundZ",
+      "strip": true
+    },
+    {
+      "key": "LifeTicks",
+      "strip": true
+    }
+  ]
+}

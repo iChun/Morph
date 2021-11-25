@@ -1,0 +1,11 @@
+{
+  "forEntity": "minecraft:zoglin",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    }
+  ]
+}

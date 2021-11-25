@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:snow_golem",
+  "traits": [
+    {
+      "type": "traitWaterSensitivity"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "forEntity": "minecraft:ravager",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitStepHeight",
+      "amount": 1.0
+    }
+  ]
+}

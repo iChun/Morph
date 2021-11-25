@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:donkey",
+  "traits": [
+    {
+      "type": "traitStepHeight",
+      "amount": 1.0
+    }
+  ]
+}

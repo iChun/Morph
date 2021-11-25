@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:turtle",
+  "traits": [
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

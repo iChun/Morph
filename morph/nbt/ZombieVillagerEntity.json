@@ -1,0 +1,25 @@
+{
+  "forClass": "net.minecraft.entity.monster.ZombieVillagerEntity",
+  "modifiers": [
+    {
+      "key": "Offers",
+      "strip": true
+    },
+    {
+      "key": "Gossips",
+      "strip": true
+    },
+    {
+      "key": "ConversionTime",
+      "strip": true
+    },
+    {
+      "key": "ConversionPlayer",
+      "strip": true
+    },
+    {
+      "key": "Xp",
+      "strip": true
+    }
+  ]
+}

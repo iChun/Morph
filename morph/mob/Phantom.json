@@ -1,0 +1,21 @@
+{
+  "forEntity": "minecraft:phantom",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSunburn"
+    },
+    {
+      "type": "abilityFlightFlap",
+      "velocityAdded": 0.52,
+      "slowdownInWater": true
+    },
+    {
+      "type": "abilityFlight",
+      "upgradeFor": "abilityFlightFlap",
+      "slowdownInWater": true
+    }
+  ]
+}

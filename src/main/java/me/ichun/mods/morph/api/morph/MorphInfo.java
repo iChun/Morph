@@ -670,6 +670,8 @@ public class MorphInfo
         return 0F;
     }
 
+    //TODO get flop sound for fish??
+
     @Nullable
     public SoundEvent getHurtSound(DamageSource source) {
         return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetHurtSound(source);

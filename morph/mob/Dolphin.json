@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:dolphin",
+  "traits": [
+    {
+      "type": "traitMoistSkin"
+    }
+  ]
+}

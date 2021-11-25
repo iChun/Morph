@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:tropical_fish",
+  "traits": [
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

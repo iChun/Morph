@@ -16,14 +16,17 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class NbtHandler
 {
     private static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
+    private static final HashMap<Class<?>, NbtModifier> NBT_MODIFIERS_INTERFACES = new HashMap<>();
 
     public static void loadNbtModifiers()
     {
         NBT_MODIFIERS.clear();
+        NBT_MODIFIERS_INTERFACES.clear();
 
         //        serialiseModifiers();
 
@@ -61,7 +64,9 @@ public class NbtHandler
             Morph.LOGGER.error("Error loading NBT Modifier files.", e);
         }
 
-        Morph.LOGGER.info("Loaded {} NBT Modifier(s)", NBT_MODIFIERS.size());
+        Morph.LOGGER.info("Loaded {} NBT Modifier(s)", NBT_MODIFIERS.size() + NBT_MODIFIERS_INTERFACES.size());
+
+        setupInterfaceModifiers();
     }
 
     private static boolean readNbtJson(String json) throws ClassNotFoundException, JsonSyntaxException
@@ -74,7 +79,9 @@ public class NbtHandler
 
             Class clz = Class.forName(className);
 
-            if(NBT_MODIFIERS.containsKey(clz))
+            boolean forInterface = jsonObject.has("isInterface") && jsonObject.get("isInterface").getAsBoolean();
+
+            if(!forInterface && NBT_MODIFIERS.containsKey(clz) || forInterface && NBT_MODIFIERS_INTERFACES.containsKey(clz))
             {
                 Morph.LOGGER.warn("We already have another NBT Modifier for {}", clz.getName());
             }
@@ -82,7 +89,14 @@ public class NbtHandler
             try
             {
                 NbtModifier nbtModifier = ResourceHandler.GSON.fromJson(json, NbtModifier.class);
-                NBT_MODIFIERS.put(clz, nbtModifier);
+                if(forInterface)
+                {
+                    NBT_MODIFIERS_INTERFACES.put(clz, nbtModifier);
+                }
+                else
+                {
+                    NBT_MODIFIERS.put(clz, nbtModifier);
+                }
             }
             catch(Throwable t)
             {
@@ -175,10 +189,31 @@ public class NbtHandler
             modifier.keyToModifier.putAll(parentModifier.keyToModifier);
         }
 
+        //Check the class' interfaces
+        for(Map.Entry<Class<?>, NbtModifier> e : NBT_MODIFIERS_INTERFACES.entrySet())
+        {
+            if(e.getKey().isAssignableFrom(clz))
+            {
+                modifier.toStrip.addAll(e.getValue().toStrip);
+                modifier.keyToModifier.putAll(e.getValue().keyToModifier);
+            }
+        }
+
         //setup adds this class' own modifiers.
         modifier.setup();
 
         return modifier;
+    }
+
+    private static void setupInterfaceModifiers()
+    {
+        for(Map.Entry<Class<?>, NbtModifier> e : NBT_MODIFIERS_INTERFACES.entrySet())
+        {
+            e.getValue().toStrip = new HashSet<>();
+            e.getValue().keyToModifier = new HashMap<>();
+
+            e.getValue().setup();
+        }
     }
 
     public static void removeEmptyCompoundTags(CompoundNBT tag)

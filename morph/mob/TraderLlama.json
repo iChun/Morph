@@ -1,0 +1,9 @@
+{
+  "forEntity": "minecraft:trader_llama",
+  "traits": [
+    {
+      "type": "traitStepHeight",
+      "amount": 1.0
+    }
+  ]
+}

@@ -51,7 +51,7 @@ public interface IApi
         return null;
     }
 
-    default void acquireMorph(ServerPlayerEntity player, MorphVariant variant){}
+    default void acquireMorph(ServerPlayerEntity player, MorphVariant variant) {}
 
     default boolean morphTo(ServerPlayerEntity player, MorphVariant variant) { return false; }
 

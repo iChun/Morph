@@ -1,0 +1,18 @@
+{
+  "forEntity": "minecraft:drowned",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitStepHeight",
+      "amount": 1.0
+    },
+    {
+      "type": "traitSunburn"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

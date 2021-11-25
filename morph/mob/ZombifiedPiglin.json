@@ -1,0 +1,11 @@
+{
+  "forEntity": "minecraft:zombie",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    }
+  ]
+}

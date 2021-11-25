@@ -19,6 +19,7 @@ public class NbtModifier
     public String author;
     @Nonnull
     public String forClass = "Class Name Here";
+    public Boolean isInterface;
     public ArrayList<Modifier> modifiers = new ArrayList<>();
     public HashMap<String, ArrayList<Modifier>> modSpecificModifiers = new HashMap<>();
 

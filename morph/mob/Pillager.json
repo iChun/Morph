@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:pillager",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

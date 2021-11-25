@@ -1,0 +1,21 @@
+{
+  "forEntity": "minecraft:wither_skeleton",
+  "traits": [
+    {
+      "type": "traitEffectResistance",
+      "effectId": "minecraft:wither"
+    },
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "type": "abilityEffectAttack",
+      "effectId": "minecraft:wither",
+      "duration": 200,
+      "amplifier": 0
+    }
+  ]
+}

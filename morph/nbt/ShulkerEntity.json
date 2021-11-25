@@ -1,0 +1,17 @@
+{
+  "forClass": "net.minecraft.entity.monster.ShulkerEntity",
+  "modifiers": [
+    {
+      "key": "APX",
+      "strip": true
+    },
+    {
+      "key": "APY",
+      "strip": true
+    },
+    {
+      "key": "APZ",
+      "strip": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:illusioner",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "forEntity": "minecraft:blaze",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "type": "traitWaterSensitivity"
+    },
+    {
+      "type": "abilityFlight"
+    }
+  ]
+}

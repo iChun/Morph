@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:endermite",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

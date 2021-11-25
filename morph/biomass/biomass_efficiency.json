@@ -1,0 +1,15 @@
+{
+  "id": "biomass_efficiency",
+  "parentId": "biomass_capacity",
+  "maxLevel": 20,
+  "value": {
+    "baseValue": 5,
+    "multiplier": 1,
+    "equation": 1
+  },
+  "cost": {
+    "baseValue": 100,
+    "multiplier": 1.5,
+    "equation": 2
+  }
+}

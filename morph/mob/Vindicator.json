@@ -1,0 +1,8 @@
+{
+  "forEntity": "minecraft:vindicator",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}
