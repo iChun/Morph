@@ -14,7 +14,7 @@ public class FireImmunityTrait extends Trait<FireImmunityTrait>
     }
 
     @Override
-    public void tick(float strength) //TODO be strength based
+    public void tick(float strength)
     {
         lastStrength = strength;
 

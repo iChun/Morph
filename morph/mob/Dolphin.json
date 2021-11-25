@@ -2,6 +2,11 @@
   "forEntity": "minecraft:dolphin",
   "traits": [
     {
+      "type": "traitSwimmer",
+      "swimMultiplier": 5.0,
+      "landMultiplier": 0.1
+    },
+    {
       "type": "traitMoistSkin"
     }
   ]

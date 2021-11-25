@@ -1,10 +1,6 @@
 {
-  "forClass": "net.minecraft.entity.passive.BeeEntity",
+  "forClass": "net.minecraft.entity.monster.piglin.PiglinEntity",
   "modifiers": [
-    {
-      "key": "HivePos",
-      "strip": true
-    },
     {
       "key": "CannotHunt",
       "strip": true

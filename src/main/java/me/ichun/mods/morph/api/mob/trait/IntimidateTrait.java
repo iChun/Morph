@@ -1,7 +1,9 @@
 package me.ichun.mods.morph.api.mob.trait;
 
+import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.ResourceLocation;
@@ -12,13 +14,14 @@ import java.util.List;
 
 public class IntimidateTrait extends Trait<IntimidateTrait>
 {
-    //TODO classToIntimidate (and apply to aall current idToIntimidates)
     public String idToIntimidate;
+    public String classToIntimidate;
     public Float distance;
     public Double farRunSpeed;
     public Double nearRunSpeed;
 
     public transient EntityType<?> idIntimidate;
+    public transient Class<? extends LivingEntity> classIntimidate;
 
     public IntimidateTrait()
     {
@@ -31,6 +34,29 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
         if(idToIntimidate != null)
         {
             idIntimidate = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(idToIntimidate));
+        }
+        else if(classToIntimidate != null)
+        {
+            try
+            {
+                Class clz = Class.forName(classToIntimidate);
+                if(LivingEntity.class.isAssignableFrom(clz))
+                {
+                    classIntimidate = clz;
+                }
+                else
+                {
+                    Morph.LOGGER.warn("Found class to intimidate that is not a LivingEntity class: {}", classToIntimidate);
+                }
+            }
+            catch(ClassNotFoundException e)
+            {
+                Morph.LOGGER.warn("Could not find class to intimidate: {}", classToIntimidate);
+            }
+        }
+
+        if(idIntimidate != null || classIntimidate != null)
+        {
             if(distance == null)
             {
                 distance = 6F;
@@ -49,9 +75,9 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
     @Override
     public void tick(float strength)
     {
-        if(strength == 1F && idIntimidate != null)
+        if(strength == 1F && (idIntimidate != null || classIntimidate != null))
         {
-            List<?> entitiesIntimidated = player.world.getEntitiesWithinAABB(idIntimidate, player.getBoundingBox().expand(distance, 3D, distance), p -> p instanceof CreatureEntity);
+            List<?> entitiesIntimidated = idIntimidate != null ? player.world.getEntitiesWithinAABB(idIntimidate, player.getBoundingBox().expand(distance, 3D, distance), p -> p instanceof CreatureEntity) : player.world.getEntitiesWithinAABB(classIntimidate, player.getBoundingBox().expand(distance, 3D, distance), p -> p instanceof CreatureEntity);
             for(Object o : entitiesIntimidated)
             {
                 CreatureEntity creature = (CreatureEntity)o;
@@ -86,6 +112,7 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
     {
         IntimidateTrait trait = new IntimidateTrait();
         trait.idToIntimidate = this.idToIntimidate;
+        trait.classToIntimidate = this.classToIntimidate;
         trait.distance = this.distance;
         trait.farRunSpeed = this.farRunSpeed;
         trait.nearRunSpeed = this.nearRunSpeed;

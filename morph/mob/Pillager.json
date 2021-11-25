@@ -3,6 +3,13 @@
   "traits": [
     {
       "type": "traitHostile"
+    },
+    {
+      "type": "traitIntimidate",
+      "classToIntimidate": "net.minecraft.entity.merchant.villager.AbstractVillagerEntity",
+      "distance": 15.0,
+      "farRunSpeed": 0.5,
+      "nearRunSpeed": 0.5
     }
   ]
 }

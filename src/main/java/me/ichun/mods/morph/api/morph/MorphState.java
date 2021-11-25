@@ -2,10 +2,7 @@ package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.mob.trait.Trait;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -170,6 +167,9 @@ public class MorphState implements Comparable<MorphState>
         living.deathTime = player.deathTime;
 
         //LivingRender related stuff
+        living.swingProgressInt = player.swingProgressInt;
+        living.isSwingInProgress = player.isSwingInProgress;
+        living.swingingHand = player.swingingHand;
         living.swingProgress = player.swingProgress;
         living.prevSwingProgress = player.prevSwingProgress;
 
@@ -213,6 +213,11 @@ public class MorphState implements Comparable<MorphState>
         {
             PlayerEntity playerEntity = (PlayerEntity)living;
             playerEntity.setPrimaryHand(player.getPrimaryHand());
+        }
+
+        if(living instanceof IAngerable)
+        {
+            ((IAngerable)living).setAngerTime(((IAngerable)living).isAngry() ? 1000 : 0);
         }
 
         //TODO synching of the pillager swing

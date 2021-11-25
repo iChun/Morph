@@ -2,6 +2,11 @@
   "forEntity": "minecraft:pufferfish",
   "traits": [
     {
+      "type": "traitSwimmer",
+      "swimMultiplier": 3.0,
+      "landMultiplier": 0.05
+    },
+    {
       "type": "traitWaterBreather",
       "suffocatesOnLand": true
     },

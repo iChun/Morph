@@ -12,6 +12,9 @@
       "type": "traitImmunityFire"
     },
     {
+      "type": "traitUndead"
+    },
+    {
       "type": "abilityEffectAttack",
       "effectId": "minecraft:wither",
       "duration": 200,

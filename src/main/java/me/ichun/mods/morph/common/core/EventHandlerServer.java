@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.core;
 
 import me.ichun.mods.morph.api.morph.MorphInfo;
+import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 import me.ichun.mods.morph.common.command.CommandMorph;
@@ -41,6 +42,13 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
+        //The entity dying is a morph. Cancel the event.
+        if(event.getEntityLiving().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID))
+        {
+            event.setCanceled(true);
+            return;
+        }
+
         if(!event.getEntityLiving().getEntityWorld().isRemote && event.getSource().getTrueSource() instanceof ServerPlayerEntity && !(event.getSource().getTrueSource() instanceof FakePlayer) && !event.getSource().getTrueSource().removed && event.getEntity().getEntityId() > 0)
         {
             MorphHandler.INSTANCE.handleMurderEvent((ServerPlayerEntity)event.getSource().getTrueSource(), event.getEntityLiving());

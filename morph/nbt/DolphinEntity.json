@@ -1,5 +1,5 @@
 {
-  "forClass": "net.minecraft.entity.passive.BeeEntity",
+  "forClass": "net.minecraft.entity.passive.DolphinEntity",
   "modifiers": [
     {
       "key": "TreasurePosX",

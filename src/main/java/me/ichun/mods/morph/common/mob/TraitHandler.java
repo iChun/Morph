@@ -21,7 +21,9 @@ public class TraitHandler
         m.put("traitImmunityFire", FireImmunityTrait.class);
         m.put("traitImmunityMagic", MagicImmunityTrait.class);
         m.put("traitSink", SinkTrait.class);
+        m.put("traitSwimmer", SwimmerTrait.class);
         m.put("traitWaterSensitivity", WaterSensitivityTrait.class);
+        m.put("traitUndead", UndeadTrait.class);
 
         //These have fields
         m.put("traitEffectResistance", EffectResistanceTrait.class);
@@ -33,16 +35,6 @@ public class TraitHandler
         m.put("traitWaterBreather", WaterBreatherTrait.class);
 
         //TODO traitRidable? IRideable - see striders
-        //TODO swim trait (and add to mobs)
-        //TODO AOE effects: eg dolphins/guardians
-        //TODO map potion resistance for undead
-        //TODO test strays underwater applying slowness and/or drowning
-        //TODO wandering villager avoidaance
-        //TODO VillagerHostilesSensor
-        //TODO test zombified piglins burning in daylight
-        //TODO handle panda genes (dominant vs recessive)
-        //TODO test villager skins
-        //TODO do I have to sync IAngerable??
         //TODO left handed endermen?
 
         //Register the default abilities

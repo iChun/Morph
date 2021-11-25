@@ -4,6 +4,9 @@
     {
       "type": "traitStepHeight",
       "amount": 1.0
+    },
+    {
+      "type": "traitUndead"
     }
   ]
 }

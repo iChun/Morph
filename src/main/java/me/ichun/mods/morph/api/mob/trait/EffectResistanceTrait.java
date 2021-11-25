@@ -44,7 +44,7 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
     }
 
     @Override
-    public void tick(float strength) //TODO change to strength = 1F
+    public void tick(float strength)
     {
         lastStrength = strength;
 

@@ -6,7 +6,7 @@
     },
     {
       "type": "traitIntimidate",
-      "idToIntimidate": "minecraft:creeper",
+      "classToIntimidate": "net.minecraft.entity.monster.CreeperEntity",
       "distance": 6.0,
       "farRunSpeed": 1.0,
       "nearRunSpeed": 1.2

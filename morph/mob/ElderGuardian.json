@@ -6,10 +6,15 @@
     },
     {
       "type": "traitIntimidate",
-      "idToIntimidate": "minecraft:dolphin",
+      "classToIntimidate": "net.minecraft.entity.passive.DolphinEntity",
       "distance": 8.0,
       "farRunSpeed": 1.0,
       "nearRunSpeed": 1.0
+    },
+    {
+      "type": "traitSwimmer",
+      "swimMultiplier": 4.0,
+      "landMultiplier": 0.1
     },
     {
       "type": "traitWaterBreather",

@@ -12,6 +12,9 @@
       "type": "traitImmunityFire"
     },
     {
+      "type": "traitUndead"
+    },
+    {
       "type": "abilityFlight"
     }
   ]

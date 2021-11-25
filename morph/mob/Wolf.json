@@ -3,21 +3,21 @@
   "traits": [
     {
       "type": "traitIntimidate",
-      "idToIntimidate": "minecraft:skeleton",
+      "classToIntimidate": "net.minecraft.entity.monster.AbstractSkeletonEntity",
       "distance": 6.0,
       "farRunSpeed": 1.0,
       "nearRunSpeed": 1.2
     },
     {
       "type": "traitIntimidate",
-      "idToIntimidate": "minecraft:fox",
+      "classToIntimidate": "net.minecraft.entity.passive.FoxEntity",
       "distance": 8.0,
       "farRunSpeed": 1.6,
       "nearRunSpeed": 1.4
     },
     {
       "type": "traitIntimidate",
-      "idToIntimidate": "minecraft:rabbit",
+      "classToIntimidate": "net.minecraft.entity.passive.RabbitEntity",
       "distance": 10.0,
       "farRunSpeed": 2.2,
       "nearRunSpeed": 2.2

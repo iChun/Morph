@@ -3,7 +3,7 @@
   "traits": [
     {
       "type": "traitIntimidate",
-      "idToIntimidate": "minecraft:fox",
+      "classToIntimidate": "net.minecraft.entity.passive.FoxEntity",
       "distance": 8.0,
       "farRunSpeed": 1.6,
       "nearRunSpeed": 1.4

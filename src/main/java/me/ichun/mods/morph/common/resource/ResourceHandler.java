@@ -75,10 +75,8 @@ public class ResourceHandler
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> HandHandler::loadHandInfos); //load the hand infos. Only required on the client
 
-        //TODO mob traits/upgrades?
         //                loadBiomassUpgrades(); //TODO propagate the upgrades to the players if there are players connected
         //TODO just load up the biomass upgrades when server starts. sync with client.
-        //TODO delay loading up abilities till after init stage to allow IMC registries of abilities from other mods
     }
 
     public static synchronized void loadPostInitResources()

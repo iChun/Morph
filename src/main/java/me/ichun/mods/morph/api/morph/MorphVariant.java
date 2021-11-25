@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.passive.PandaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -110,6 +111,21 @@ public class MorphVariant implements Comparable<MorphVariant>
         if(living instanceof AgeableEntity) //ForcedAge is only called when eating, useless for keeping a mob a baby.
         {
             tag.putInt("Age", living.isChild() ? -24000 : 0);
+        }
+
+        if(living instanceof PandaEntity)
+        {
+            PandaEntity panda = (PandaEntity)living;
+
+            if(!panda.getMainGene().func_221107_c()) //if main gene not recessive
+            {
+                tag.putString("HiddenGene", "normal");
+            }
+            else if(panda.getMainGene() != panda.getHiddenGene())//main gene is recessive, check hidden gene, if not equal, panda is normal
+            {
+                tag.putString("MainGene", "normal");
+                tag.putString("HiddenGene", "normal");
+            }
         }
     }
 
