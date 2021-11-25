@@ -7,7 +7,7 @@ public class FlyAbility extends Ability<FlyAbility>
 {
     public Boolean slowdownInWater;
 
-    public transient boolean doNotDisableOnHookRemoval = false;
+    public transient float lastStrength = 0F;
 
     public FlyAbility()
     {
@@ -15,54 +15,60 @@ public class FlyAbility extends Ability<FlyAbility>
     }
 
     @Override
-    public void removeHooks()
-    {
-        if(player.abilities.allowFlying && !doNotDisableOnHookRemoval)
-        {
-            player.abilities.allowFlying = false;
-            player.abilities.isFlying = false;
-
-            player.sendPlayerAbilities();
-        }
-    }
-
-    @Override
     public void tick(float strength)
     {
-        if(!player.abilities.allowFlying)
+        if(strength == 1F)
         {
-            player.abilities.allowFlying = true;
-
-            player.sendPlayerAbilities();
-        }
-
-        if(slowdownInWater != null && slowdownInWater && player.abilities.isFlying && !player.abilities.isCreativeMode && player.areEyesInFluid(FluidTags.WATER))
-        {
-            boolean hasSwim = false;
-
-            for(Trait<?> trait : stateTraits)
+            if(lastStrength != 1F)
             {
-                if("traitSwim".equals(trait.type))
+                if(!player.abilities.allowFlying)
                 {
-                    hasSwim = true;
-                    break;
+                    player.abilities.allowFlying = true;
+
+                    player.sendPlayerAbilities();
                 }
             }
 
-            if(!hasSwim)
+            if(slowdownInWater != null && slowdownInWater && player.abilities.isFlying && !player.abilities.isCreativeMode && player.areEyesInFluid(FluidTags.WATER))
             {
-                player.setMotion(player.getMotion().mul(1D + (0.65D - 1D) * strength, 1D + (0.2D - 1D) * strength, 1D + (0.65D - 1D) * strength));
+                boolean hasSwim = false;
+
+                for(Trait<?> trait : stateTraits)
+                {
+                    if("traitSwim".equals(trait.type))
+                    {
+                        hasSwim = true;
+                        break;
+                    }
+                }
+
+                if(!hasSwim)
+                {
+                    player.setMotion(player.getMotion().mul(1D + (0.65D - 1D) * strength, 1D + (0.2D - 1D) * strength, 1D + (0.65D - 1D) * strength));
+                }
+            }
+
+            player.fallDistance -= player.fallDistance * strength;
+        }
+        else if(lastStrength == 1F) //strength != 1F, but lastStrength == 1F. We're morphing out, disable flight.
+        {
+            if(player.abilities.allowFlying)
+            {
+                player.abilities.allowFlying = false;
+                player.abilities.isFlying = false;
+
+                player.sendPlayerAbilities();
             }
         }
 
-        player.fallDistance -= player.fallDistance * strength;
+        lastStrength = strength;
     }
 
     @Override
     public void transitionalTick(FlyAbility prevTrait, float transitionProgress)
     {
+        lastStrength = 1F;
         super.transitionalTick(prevTrait, transitionProgress);
-        prevTrait.doNotDisableOnHookRemoval = true;
     }
 
     @Override

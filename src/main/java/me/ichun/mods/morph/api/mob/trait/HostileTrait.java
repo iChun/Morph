@@ -7,6 +7,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class HostileTrait extends Trait<HostileTrait>
     implements IEventBusRequired
 {
+    public transient float lastStrength = 0F;
+
     public HostileTrait()
     {
         type = "traitHostile";
@@ -15,6 +17,7 @@ public class HostileTrait extends Trait<HostileTrait>
     @Override
     public void tick(float strength)
     {
+        lastStrength = strength;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class HostileTrait extends Trait<HostileTrait>
     public void onLivingSetTarget(LivingSetAttackTargetEvent event)
     {
         //if the target is the player and it's not the revenge target/entity attacking it, cancel
-        if(event.getTarget() == player && event.getEntityLiving() instanceof MobEntity && !(event.getEntityLiving().getRevengeTarget() == player || event.getEntityLiving().getAttackingEntity() == player))
+        if(lastStrength == 1F && event.getTarget() == player && event.getEntityLiving() instanceof MobEntity && !(event.getEntityLiving().getRevengeTarget() == player || event.getEntityLiving().getAttackingEntity() == player))
         {
             ((MobEntity)event.getEntityLiving()).setAttackTarget(null);
         }

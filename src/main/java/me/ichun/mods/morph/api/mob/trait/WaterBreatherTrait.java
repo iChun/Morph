@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.api.mob.trait;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
@@ -67,7 +68,7 @@ public class WaterBreatherTrait extends Trait<WaterBreatherTrait>
     @SubscribeEvent
     public void onRenderGameOverlayPre(RenderGameOverlayEvent.Pre event)
     {
-        if(event.getType() == RenderGameOverlayEvent.ElementType.AIR)
+        if(event.getType() == RenderGameOverlayEvent.ElementType.AIR && Minecraft.getInstance().getRenderViewEntity() == player)
         {
             //No need to draw the air bubbles if air < 300, default GUI already does that.
             if(player.areEyesInFluid(FluidTags.WATER) && air >= 300) //player's in water but also max air.

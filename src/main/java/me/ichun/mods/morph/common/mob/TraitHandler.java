@@ -38,13 +38,12 @@ public class TraitHandler
         //TODO map potion resistance for undead
         //TODO test strays underwater applying slowness and/or drowning
         //TODO wandering villager avoidaance
-        //TODO the Z-letter mobdata.
         //TODO VillagerHostilesSensor
         //TODO test zombified piglins burning in daylight
-        //TODO Moist Trait (dolphins)
         //TODO handle panda genes (dominant vs recessive)
         //TODO test villager skins
         //TODO do I have to sync IAngerable??
+        //TODO left handed endermen?
 
         //Register the default abilities
         m.put("abilityClimb", ClimbAbility.class);
@@ -52,7 +51,7 @@ public class TraitHandler
         //These have fields
         m.put("abilityEffectAttack", EffectAttackAbility.class);
         m.put("abilityFlight", FlyAbility.class);
-        m.put("abilityFlightFlap", FlightFlapAbility.class); //TESTED
+        m.put("abilityFlightFlap", FlightFlapAbility.class);
         m.put("abilitySlowFall", SlowFallAbility.class);
     });
 

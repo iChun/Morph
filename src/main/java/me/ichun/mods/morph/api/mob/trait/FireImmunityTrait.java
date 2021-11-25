@@ -6,15 +6,22 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class FireImmunityTrait extends Trait<FireImmunityTrait>
         implements IEventBusRequired
 {
+    public transient float lastStrength = 0F;
+
     public FireImmunityTrait()
     {
         type = "traitImmunityFire";
     }
 
     @Override
-    public void tick(float strength)
+    public void tick(float strength) //TODO be strength based
     {
-        player.extinguish();
+        lastStrength = strength;
+
+        if(lastStrength == 1F)
+        {
+            player.extinguish();
+        }
     }
 
     @Override
@@ -26,7 +33,7 @@ public class FireImmunityTrait extends Trait<FireImmunityTrait>
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if(event.getEntityLiving() == player && event.getSource().isFireDamage())
+        if(lastStrength == 1F && event.getEntityLiving() == player && event.getSource().isFireDamage())
         {
             event.setCanceled(true);
         }

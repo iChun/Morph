@@ -18,6 +18,7 @@ public class EffectAttackAbility extends Ability<EffectAttackAbility>
     public Integer amplifier;
 
     public transient Effect effectObj;
+    public transient float lastStrength = 0F;
 
     public EffectAttackAbility()
     {
@@ -42,6 +43,7 @@ public class EffectAttackAbility extends Ability<EffectAttackAbility>
     @Override
     public void tick(float strength)
     {
+        lastStrength = strength;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class EffectAttackAbility extends Ability<EffectAttackAbility>
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if(event.getSource().getImmediateSource() == player && MorphApi.getApiImpl().canUseAbility(player, this))
+        if(lastStrength == 1F && event.getSource().getImmediateSource() == player && MorphApi.getApiImpl().canUseAbility(player, this))
         {
             event.getEntityLiving().addPotionEffect(new EffectInstance(effectObj, duration != null ? duration : 200, amplifier != null ? amplifier: 0));
         }

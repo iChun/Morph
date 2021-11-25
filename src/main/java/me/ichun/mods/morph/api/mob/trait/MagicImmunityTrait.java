@@ -6,6 +6,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class MagicImmunityTrait extends Trait<MagicImmunityTrait>
         implements IEventBusRequired
 {
+    public transient float lastStrength = 0F;
+
     public MagicImmunityTrait()
     {
         type = "traitImmunityMagic";
@@ -14,6 +16,7 @@ public class MagicImmunityTrait extends Trait<MagicImmunityTrait>
     @Override
     public void tick(float strength)
     {
+        lastStrength = strength;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class MagicImmunityTrait extends Trait<MagicImmunityTrait>
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if(event.getEntityLiving() == player && event.getSource().isMagicDamage())
+        if(lastStrength == 1F && event.getEntityLiving() == player && event.getSource().isMagicDamage())
         {
             event.setCanceled(true);
         }

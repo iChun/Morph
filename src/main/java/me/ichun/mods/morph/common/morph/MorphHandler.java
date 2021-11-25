@@ -306,7 +306,6 @@ public final class MorphHandler implements IApi
 
     public void addBiomassAmount(ServerPlayerEntity player, double value)
     {
-        //TODO convert to BigDecimal (look into BigDecimal)
         PlayerMorphData playerMorphData = getPlayerMorphData(player);
         double cap = getBiomassUpgradeValue(player, Upgrades.ID_BIOMASS_CAPACITY) + getBiomassUpgradeValue(player, Upgrades.ID_BIOMASS_CRITICAL_CAPACITY);
         if(playerMorphData.biomass + value > cap)

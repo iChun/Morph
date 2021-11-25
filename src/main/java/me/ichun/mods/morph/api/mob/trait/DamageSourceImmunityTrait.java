@@ -8,6 +8,8 @@ public class DamageSourceImmunityTrait extends Trait<DamageSourceImmunityTrait>
 {
     public String damageType;
 
+    public transient float lastStrength = 0F;
+
     public DamageSourceImmunityTrait()
     {
         type = "traitImmunityDamageSource";
@@ -16,6 +18,7 @@ public class DamageSourceImmunityTrait extends Trait<DamageSourceImmunityTrait>
     @Override
     public void tick(float strength)
     {
+        lastStrength = strength;
     }
 
     @Override
@@ -26,10 +29,20 @@ public class DamageSourceImmunityTrait extends Trait<DamageSourceImmunityTrait>
         return ds;
     }
 
+    @Override
+    public boolean canTransitionTo(Trait<?> trait)
+    {
+        if(trait instanceof DamageSourceImmunityTrait)
+        {
+            return damageType != null && damageType.equals(((DamageSourceImmunityTrait)trait).damageType);
+        }
+        return false;
+    }
+
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if(event.getEntityLiving() == player && event.getSource().damageType.equals(damageType))
+        if(lastStrength == 1F && event.getEntityLiving() == player && event.getSource().damageType.equals(damageType))
         {
             event.setCanceled(true);
         }

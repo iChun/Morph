@@ -12,7 +12,7 @@ public class FloatTrait extends Trait<FloatTrait>
     {
         if((player.isInWater() || player.isInLava()) && !player.abilities.isFlying)
         {
-            player.setMotion(player.getMotion().add(0D, 0.07D, 0D));
+            player.setMotion(player.getMotion().add(0D, 0.07D * strength, 0D));
         }
     }
 

@@ -12,7 +12,7 @@ public class WaterSensitivityTrait extends Trait<WaterSensitivityTrait>
     @Override
     public void tick(float strength)
     {
-        if(!player.world.isRemote && player.isInWaterRainOrBubbleColumn())
+        if(!player.world.isRemote && strength == 1F && player.isInWaterRainOrBubbleColumn())
         {
             player.attackEntityFrom(DamageSource.DROWN, strength);
         }

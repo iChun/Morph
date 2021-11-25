@@ -14,6 +14,7 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
     public String effectId;
 
     public transient Effect effectObj;
+    public transient float lastStrength = 0F;
 
     public EffectResistanceTrait()
     {
@@ -43,9 +44,11 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
     }
 
     @Override
-    public void tick(float strength)
+    public void tick(float strength) //TODO change to strength = 1F
     {
-        if(effectObj != null)
+        lastStrength = strength;
+
+        if(effectObj != null && lastStrength == 1F)
         {
             if(effectId.equals("*")) //immune to all effects
             {
@@ -63,12 +66,6 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
                 }
             }
         }
-    }
-
-    @Override
-    public void transitionalTick(EffectResistanceTrait prevTrait, float transitionProgress)
-    {
-        //Do nothing in transitional Tick. Effect resistance only works when you are fully in the morph.
     }
 
     @Override
@@ -92,7 +89,7 @@ public class EffectResistanceTrait extends Trait<EffectResistanceTrait>
     @SubscribeEvent
     public void onPotionApplicable(PotionEvent.PotionApplicableEvent event)
     {
-        if(event.getEntityLiving() == player && (effectId != null && effectId.equals("*") || event.getPotionEffect().getPotion() == effectObj))
+        if(lastStrength == 1F && event.getEntityLiving() == player && (effectId != null && effectId.equals("*") || event.getPotionEffect().getPotion() == effectObj))
         {
             event.setResult(Event.Result.DENY);
         }

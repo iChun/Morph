@@ -713,7 +713,7 @@ public class HudHandler
                     text = new TranslationTextComponent("morph.morph.type.unknown");
                 }
 
-                if(morph.containsVariant(currentMorph))
+                if(morph.id.equals(currentMorph.id) && morph.containsVariant(currentMorph))
                 {
                     text.setStyle(text.getStyle().setFormatting(TextFormatting.GOLD));
                 }

@@ -6,6 +6,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ExplosiveImmunityTrait extends Trait<ExplosiveImmunityTrait>
         implements IEventBusRequired
 {
+    public transient float lastStrength = 0F;
+
     public ExplosiveImmunityTrait()
     {
         type = "traitImmunityExplosive";
@@ -14,6 +16,7 @@ public class ExplosiveImmunityTrait extends Trait<ExplosiveImmunityTrait>
     @Override
     public void tick(float strength)
     {
+        lastStrength = strength;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class ExplosiveImmunityTrait extends Trait<ExplosiveImmunityTrait>
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if(event.getEntityLiving() == player && event.getSource().isExplosion())
+        if(lastStrength == 1F && event.getEntityLiving() == player && event.getSource().isExplosion())
         {
             event.setCanceled(true);
         }

@@ -25,29 +25,35 @@ public class SlowFallAbility extends Ability<SlowFallAbility>
     @Override
     public void tick(float strength)
     {
-        setMotion(velocityMultiplier, strength);
-        if(resetFallDistance != null && resetFallDistance)
+        if(!player.isSneaking())
         {
-            setFallDistance(strength);
+            setMotion(velocityMultiplier, strength);
+            if(resetFallDistance != null && resetFallDistance)
+            {
+                setFallDistance(strength);
+            }
         }
     }
 
     @Override
     public void transitionalTick(SlowFallAbility prevTrait, float transitionProgress)
     {
-        double velo = MathHelper.lerp(transitionProgress, prevTrait.velocityMultiplier != null ? prevTrait.velocityMultiplier : 0.6D, velocityMultiplier);
-        setMotion(velo, 1F);
-        if(!(prevTrait.resetFallDistance != null && prevTrait.resetFallDistance) && resetFallDistance != null && resetFallDistance)
+        if(!player.isSneaking())
         {
-            setFallDistance(transitionProgress);
-        }
-        else if(prevTrait.resetFallDistance != null && prevTrait.resetFallDistance && !(resetFallDistance != null && resetFallDistance))
-        {
-            setFallDistance(1F - transitionProgress);
-        }
-        else if(prevTrait.resetFallDistance != null && prevTrait.resetFallDistance && resetFallDistance != null && resetFallDistance)
-        {
-            setFallDistance(1F);
+            double velo = MathHelper.lerp(transitionProgress, prevTrait.velocityMultiplier != null ? prevTrait.velocityMultiplier : 0.6D, velocityMultiplier);
+            setMotion(velo, 1F);
+            if(!(prevTrait.resetFallDistance != null && prevTrait.resetFallDistance) && resetFallDistance != null && resetFallDistance)
+            {
+                setFallDistance(transitionProgress);
+            }
+            else if(prevTrait.resetFallDistance != null && prevTrait.resetFallDistance && !(resetFallDistance != null && resetFallDistance))
+            {
+                setFallDistance(1F - transitionProgress);
+            }
+            else if(prevTrait.resetFallDistance != null && prevTrait.resetFallDistance && resetFallDistance != null && resetFallDistance)
+            {
+                setFallDistance(1F);
+            }
         }
     }
 

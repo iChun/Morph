@@ -20,7 +20,7 @@ public class SunburnTrait extends Trait<SunburnTrait>
     @Override
     public void tick(float strength)
     {
-        if(player.isAlive() && shouldPlayerBurn() && isPlayerInDaylight())
+        if(player.isAlive() && strength == 1F && shouldPlayerBurn() && isPlayerInDaylight())
         {
             boolean shouldBurn = true;
 
@@ -71,6 +71,8 @@ public class SunburnTrait extends Trait<SunburnTrait>
     @Override
     public SunburnTrait copy()
     {
-        return null;
+        SunburnTrait trait = new SunburnTrait();
+        trait.childrenAreImmune = this.childrenAreImmune;
+        return trait;
     }
 }

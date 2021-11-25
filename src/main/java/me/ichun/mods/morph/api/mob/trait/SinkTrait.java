@@ -19,16 +19,16 @@ public class SinkTrait extends Trait<SinkTrait>
             Vector3d motion = player.getMotion();
             if(player.collidedHorizontally)
             {
-                player.setMotion(motion.x, 0.07D, motion.z);
+                player.setMotion(motion.x, 0.07D * strength, motion.z);
             }
             else if(motion.y > -0.07D && !player.abilities.isFlying)
             {
-                player.setMotion(motion.add(0D, -0.07D, 0D));
+                player.setMotion(motion.add(0D, -0.07D * strength, 0D));
             }
         }
         else if(isInWater && !player.abilities.isFlying)
         {
-            player.setMotion(player.getMotion().add(0D, 0.32D, 0D));
+            player.setMotion(player.getMotion().add(0D, 0.32D * strength, 0D));
         }
         isInWater = player.isInWater();
     }
