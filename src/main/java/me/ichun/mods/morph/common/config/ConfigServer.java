@@ -25,7 +25,6 @@ public class ConfigServer extends ConfigBase
 
     public boolean aggressiveSizeRecalculation = false;
 
-    @CategoryDivider(name = "gameplay")
     private List<String> supportedAttributes = Util.make(new ArrayList<>(), list -> {
         list.add("minecraft:generic.max_health;more;20");
         list.add("minecraft:generic.knockback_resistance;more");
@@ -35,27 +34,29 @@ public class ConfigServer extends ConfigBase
         list.add("minecraft:generic.attack_speed;more");
         list.add("minecraft:generic.armor;more");
         list.add("minecraft:generic.luck;more");
-        list.add("minecraft:horse.jump_strength;more"); //TODO test this
+        list.add("minecraft:horse.jump_strength;more");
+
+        //Taken from ForgeMod
         list.add("forge:swim_speed;more");
         list.add("forge:reach_distance;more");
-        //TODO test Forge gravity attribute, each mob has their own?
-        //TODO forge:generic.reachDistance ?? Check the ForgeMod class
-    });
-
-    private List<String> disabledMobs = Util.make(new ArrayList<>(), list -> {
-        list.add("minecraft:armor_stand");
     });
 
     public List<String> disabledTraits = new ArrayList<>();
 
-    public boolean morphClassic = false;
-
-    public boolean biomassSkinWhilstInvisible = true;
-
-    @Prop(min = 0) //TODO put this under the biomass category
+    @CategoryDivider(name = "biomass")
+    @Prop(min = 0)
     public double biomassValue = 0.3D; //how much of the space the entity takes up to actually consider as biomass. Also essentially a configurable ratio
 
     public boolean biomassBypassAdvancement = false;
+
+    @CategoryDivider(name = "gameplay")
+    private List<String> disabledMobs = Util.make(new ArrayList<>(), list -> {
+        list.add("minecraft:armor_stand");
+    });
+
+    public boolean morphClassic = false;
+
+    public boolean biomassSkinWhilstInvisible = true;
 
     //======================================================//
 

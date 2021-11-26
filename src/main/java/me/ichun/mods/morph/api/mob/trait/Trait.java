@@ -1,10 +1,12 @@
 package me.ichun.mods.morph.api.mob.trait;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public abstract class Trait<T extends Trait>
@@ -16,6 +18,8 @@ public abstract class Trait<T extends Trait>
 
     public transient PlayerEntity player;
     public transient ArrayList<Trait<?>> stateTraits;
+    @Nullable
+    public transient LivingEntity livingInstance;
 
     //also used to set default values if not set in the JSON
     public void addHooks()

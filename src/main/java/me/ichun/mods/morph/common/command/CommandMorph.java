@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.command.CommandSource;
@@ -13,8 +14,12 @@ import net.minecraft.command.arguments.EntitySummonArgument;
 import net.minecraft.command.arguments.SuggestionProviders;
 import net.minecraft.command.arguments.UUIDArgument;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.UUID;
 
@@ -100,11 +105,30 @@ public class CommandMorph
     //TODO these
     private static int createMorph(CommandSource source, ServerPlayerEntity player, Entity entity, boolean isAcquire)
     {
+        //TODO handle erroring properly
+        if(entity instanceof LivingEntity)
+        {
+            MorphVariant variant = MorphHandler.INSTANCE.createVariant((LivingEntity)entity);
+            if(createMorph(source, player, variant, isAcquire))
+            {
+                return Command.SINGLE_SUCCESS;
+            }
+            //TODO throw error
+        }
         return Command.SINGLE_SUCCESS;
     }
 
     private static int createMorph(CommandSource source, ServerPlayerEntity player, ResourceLocation type, boolean isAcquire)
     {
+        //TODO take from summon
+        CompoundNBT compoundnbt = new CompoundNBT();
+        compoundnbt.putString("id", type.toString());
+        ServerWorld serverworld = source.getWorld();
+        Entity entity = EntityType.loadEntityAndExecute(compoundnbt, serverworld, (p_218914_1_) -> {
+//            p_218914_1_.setLocationAndAngles(pos.x, pos.y, pos.z, p_218914_1_.rotationYaw, p_218914_1_.rotationPitch);
+            return p_218914_1_;
+        });
+
         return Command.SINGLE_SUCCESS;
     }
 
@@ -118,9 +142,27 @@ public class CommandMorph
         return Command.SINGLE_SUCCESS;
     }
 
+    private static boolean createMorph(CommandSource source, ServerPlayerEntity player, MorphVariant variant, boolean isAcquire)
+    {
+        if(isAcquire)
+        {
+            return MorphHandler.INSTANCE.acquireMorph(player, variant);
+        }
+        else
+        {
+            return MorphHandler.INSTANCE.morphTo(player, variant);
+        }
+    }
+
     private static int demorphPlayer(CommandSource source, ServerPlayerEntity player)
     {
-        return Command.SINGLE_SUCCESS;
+        if(MorphHandler.INSTANCE.demorph(player))
+        {
+            return Command.SINGLE_SUCCESS;
+        }
+        //TODO throw error
+
+        return 0;
     }
 
 }

@@ -31,7 +31,7 @@ public class ClassicMode implements MorphMode
             {
                 MorphHandler.INSTANCE.acquireMorph(player, variant);
 
-                Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), true), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
+                MorphHandler.INSTANCE.spawnAnimation(player, living, true);
             }
         }
     }

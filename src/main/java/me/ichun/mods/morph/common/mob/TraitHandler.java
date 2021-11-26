@@ -34,8 +34,7 @@ public class TraitHandler
         m.put("traitSunburn", SunburnTrait.class);
         m.put("traitWaterBreather", WaterBreatherTrait.class);
 
-        //TODO traitRidable? IRideable - see striders
-        //TODO left handed endermen?
+        //TODO test all MC mobs in Multiplayer
 
         //Register the default abilities
         m.put("abilityClimb", ClimbAbility.class);
@@ -44,6 +43,7 @@ public class TraitHandler
         m.put("abilityEffectAttack", EffectAttackAbility.class);
         m.put("abilityFlight", FlyAbility.class);
         m.put("abilityFlightFlap", FlightFlapAbility.class);
+        m.put("abilityRideable", RideableAbility.class); //TODO test
         m.put("abilitySlowFall", SlowFallAbility.class);
     });
 

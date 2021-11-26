@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 public class MorphEvent extends PlayerEvent
 {
     private final MorphVariant variant;
-    public MorphEvent(PlayerEntity player, MorphVariant variant)
+    private MorphEvent(PlayerEntity player, MorphVariant variant)
     {
         super(player);
         this.variant = variant;
@@ -28,6 +28,7 @@ public class MorphEvent extends PlayerEvent
         }
     }
 
+    @Cancelable
     public static class Acquire extends MorphEvent
     {
         public Acquire(PlayerEntity player, MorphVariant variant)

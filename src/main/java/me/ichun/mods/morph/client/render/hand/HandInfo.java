@@ -161,7 +161,7 @@ public class HandInfo
             return true;
         }
 
-        public void correctPlacement(MatrixStack stack) //TODO I don't think we using this
+        public void correctPlacement(MatrixStack stack)
         {
             if(placementCorrectors != null && placementCorrectors.length > 0)
             {

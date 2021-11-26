@@ -4,15 +4,19 @@ import me.ichun.mods.morph.common.Morph;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
 public class IntimidateTrait extends Trait<IntimidateTrait>
+    implements IEventBusRequired
 {
     public String idToIntimidate;
     public String classToIntimidate;
@@ -22,6 +26,7 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
 
     public transient EntityType<?> idIntimidate;
     public transient Class<? extends LivingEntity> classIntimidate;
+    public transient float lastStrength = 0F;
 
     public IntimidateTrait()
     {
@@ -57,6 +62,7 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
 
         if(idIntimidate != null || classIntimidate != null)
         {
+            super.addHooks();
             if(distance == null)
             {
                 distance = 6F;
@@ -75,15 +81,17 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
     @Override
     public void tick(float strength)
     {
-        if(strength == 1F && (idIntimidate != null || classIntimidate != null))
+        lastStrength = strength;
+
+        if(!player.world.isRemote && strength == 1F && (idIntimidate != null || classIntimidate != null))
         {
-            List<?> entitiesIntimidated = idIntimidate != null ? player.world.getEntitiesWithinAABB(idIntimidate, player.getBoundingBox().expand(distance, 3D, distance), p -> p instanceof CreatureEntity) : player.world.getEntitiesWithinAABB(classIntimidate, player.getBoundingBox().expand(distance, 3D, distance), p -> p instanceof CreatureEntity);
+            List<?> entitiesIntimidated = idIntimidate != null ? player.world.getEntitiesWithinAABB(idIntimidate, player.getBoundingBox().grow(distance, 3D, distance), p -> p instanceof CreatureEntity) : player.world.getEntitiesWithinAABB(classIntimidate, player.getBoundingBox().grow(distance, 3D, distance), p -> p instanceof CreatureEntity);
             for(Object o : entitiesIntimidated)
             {
                 CreatureEntity creature = (CreatureEntity)o;
 
                 //if the creature has no path, or the target path is < distance, make the creature run.
-                if(!creature.getNavigator().noPath() || player.getDistanceSq(creature.getNavigator().getTargetPos().getX(), creature.getNavigator().getTargetPos().getY(), creature.getNavigator().getTargetPos().getZ()) < distance * distance)
+                if(creature.getNavigator().noPath() || player.getDistanceSq(creature.getNavigator().getTargetPos().getX(), creature.getNavigator().getTargetPos().getY(), creature.getNavigator().getTargetPos().getZ()) < distance * distance)
                 {
                     Vector3d vector3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(creature, 16, 7, player.getPositionVec());
 
@@ -117,5 +125,16 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
         trait.farRunSpeed = this.farRunSpeed;
         trait.nearRunSpeed = this.nearRunSpeed;
         return trait;
+    }
+
+
+    @SubscribeEvent
+    public void onLivingSetTarget(LivingSetAttackTargetEvent event)
+    {
+        //if the target is the player and it's not the revenge target/entity attacking it, cancel
+        if(lastStrength == 1F && event.getTarget() == player && (idIntimidate != null && idIntimidate.equals(event.getEntityLiving().getType()) || classIntimidate != null && classIntimidate.isInstance(event.getEntityLiving())) && !(event.getEntityLiving().getRevengeTarget() == player || event.getEntityLiving().getAttackingEntity() == player))
+        {
+            ((MobEntity)event.getEntityLiving()).setAttackTarget(null);
+        }
     }
 }

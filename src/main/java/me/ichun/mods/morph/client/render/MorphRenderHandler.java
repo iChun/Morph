@@ -47,7 +47,8 @@ public class MorphRenderHandler
 
     //TODO add stats eg total morphs/total biomass/biomass lost etc
     //TODO config that forces nameplate rendering when morphed
-    public static void renderMorphInfo(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick) //TODO test the nameplate for named mods, maybe add a config to rename the mob
+    //TODO test the nameplate for named mods, maybe add a config to rename the mob
+    public static void renderMorphInfo(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
     {
         isRenderingMorph = true;
 

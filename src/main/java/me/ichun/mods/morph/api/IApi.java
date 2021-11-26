@@ -25,7 +25,7 @@ public interface IApi
     default boolean isClassicMode() { return false; }
 
     //Shared stuff
-    default void spawnAnimation(PlayerEntity player, LivingEntity living, boolean isMorphAcquisition) {} //TODO this
+    default void spawnAnimation(PlayerEntity player, LivingEntity living, boolean isMorphAcquisition) {}
 
     //Morph Stuff
     @Nullable
@@ -41,7 +41,7 @@ public interface IApi
 
     default boolean canAcquireMorph(PlayerEntity player, LivingEntity living)
     {
-        //Checks if the situation is ideal to acquire the morph, not exclusively for if the player can morph to the entity. Cancel acquiring the AcquireMorphEvent, triggered in acquireMorph below
+        //Checks if the situation is ideal to acquire the morph, not exclusively for if the player can morph to the entity. Cancel acquiring with the MorphEvent.CanAcquire event
         return false;
     }
 
@@ -51,11 +51,11 @@ public interface IApi
         return null;
     }
 
-    default void acquireMorph(ServerPlayerEntity player, MorphVariant variant) {}
+    default boolean acquireMorph(ServerPlayerEntity player, MorphVariant variant) { return false; }
 
     default boolean morphTo(ServerPlayerEntity player, MorphVariant variant) { return false; }
 
-    default boolean demorph(ServerPlayerEntity player) { return true; } //TODO this
+    default boolean demorph(ServerPlayerEntity player) { return true; }
 
     default Map<ResourceLocation, AttributeConfig> getSupportedAttributes() { return Collections.emptyMap(); }
 

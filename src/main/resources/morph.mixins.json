@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "me.ichun.mods.morph.api.mixin",
   "compatibilityLevel": "JAVA_8",
+  "refmap": "morph.refmap.json",
   "mixins": [
     "LivingEntityInvokerMixin",
     "LivingEntityMixin",

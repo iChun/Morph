@@ -30,6 +30,7 @@ public class MorphState implements Comparable<MorphState>
     {
         this.variant = variant;
         this.traits = MorphApi.getApiImpl().getTraitsForVariant(variant, player);
+        //TODO make sure other clients know what traits the player has unlocked
     }
 
     //For Traits
@@ -78,6 +79,11 @@ public class MorphState implements Comparable<MorphState>
         if(entInstance == null || entInstance.world != world)
         {
             entInstance = variant.createEntityInstance(world, playerId);
+
+            for(Trait<?> trait : traits)
+            {
+                trait.livingInstance = entInstance;
+            }
         }
 
         return entInstance;

@@ -24,6 +24,7 @@ import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
+import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import me.ichun.mods.morph.common.packet.PacketMorphInfo;
 import me.ichun.mods.morph.common.packet.PacketUpdateBiomassValue;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
@@ -93,6 +94,12 @@ public final class MorphHandler implements IApi
         return currentMode != null ? currentMode.isClassicMode() : IApi.super.isClassicMode();
     }
 
+    @Override
+    public void spawnAnimation(PlayerEntity player, LivingEntity living, boolean isMorphAcquisition)
+    {
+        Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), isMorphAcquisition), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
+    }
+
     //Morph overrides
     @Override
     @Nonnull
@@ -133,7 +140,7 @@ public final class MorphHandler implements IApi
 
         MorphVariant variant = new MorphVariant(living.getType().getRegistryName());
 
-        if(isPlayer) //TODO test all MC mobs in Multiplayer
+        if(isPlayer)
         {
             variant.thisVariant = new MorphVariant.Variant();
             variant.thisVariant.playerUUID = ((PlayerEntity)living).getGameProfile().getId();
@@ -169,22 +176,24 @@ public final class MorphHandler implements IApi
     }
 
     @Override
-    public void acquireMorph(ServerPlayerEntity player, MorphVariant variant)
+    public boolean acquireMorph(ServerPlayerEntity player, MorphVariant variant)
     {
         PlayerMorphData playerMorphData = MorphHandler.INSTANCE.getPlayerMorphData(player);
         if(!playerMorphData.containsVariant(variant))
         {
-            if(Morph.configServer.disabledMobsRL.contains(variant.id)) return;
+            if(Morph.configServer.disabledMobsRL.contains(variant.id)) return false;
 
-            MinecraftForge.EVENT_BUS.post(new MorphEvent.Acquire(player, variant));
+            if(MinecraftForge.EVENT_BUS.post(new MorphEvent.Acquire(player, variant))) return false;
 
             MorphVariant parentVariant = playerMorphData.addVariant(variant);
 
             Morph.channel.sendTo(new PacketUpdateMorph(parentVariant.write(new CompoundNBT())), player);
 
             saveData.markDirty();
+
+            return true;
         }
-        return;
+        return false;
     }
 
     @Override
@@ -202,6 +211,14 @@ public final class MorphHandler implements IApi
         Morph.channel.sendTo(new PacketMorphInfo(player.getEntityId(), info.write(new CompoundNBT())), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
 
         return true;
+    }
+
+    @Override
+    public boolean demorph(ServerPlayerEntity player)
+    {
+        MorphVariant variant = MorphVariant.createPlayerMorph(player.getGameProfile().getId(), true);
+        variant.thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
+        return morphTo(player, variant);
     }
 
     @Override

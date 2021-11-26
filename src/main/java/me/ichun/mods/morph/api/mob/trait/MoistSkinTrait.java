@@ -8,6 +8,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class MoistSkinTrait extends Trait<MoistSkinTrait>
+        implements IEventBusRequired
 {
     public Integer maxMoistness;
 
@@ -26,6 +27,7 @@ public class MoistSkinTrait extends Trait<MoistSkinTrait>
         {
             maxMoistness = 2400;
         }
+        super.addHooks();
     }
 
     @Override

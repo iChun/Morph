@@ -36,7 +36,7 @@ public class DefaultMode implements MorphMode
 
                 MorphHandler.INSTANCE.acquireMorph(player, variant);
 
-                Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), false), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
+                MorphHandler.INSTANCE.spawnAnimation(player, living, false);
 
 //                boolean morphTo = true;
 //                if(morphTo) //TODO make a config
@@ -66,7 +66,7 @@ public class DefaultMode implements MorphMode
                 }
             }
 
-            Morph.channel.sendTo(new PacketAcquisition(player.getEntityId(), living.getEntityId(), alsoAcquiredMorph), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player));
+            MorphHandler.INSTANCE.spawnAnimation(player, living, alsoAcquiredMorph);
         }
 */
     }
