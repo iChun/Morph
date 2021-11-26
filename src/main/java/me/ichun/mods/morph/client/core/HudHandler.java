@@ -140,7 +140,7 @@ public class HudHandler
             {
                 mc.displayGuiScreen(new WorkspaceMorph(mc.currentScreen));
             }
-            else if(!MorphHandler.INSTANCE.isClassicMode())
+            else if(MorphHandler.INSTANCE.getMorphModeName().equals("default"))
             {
                 barInsufficientFlash = 20;
             }

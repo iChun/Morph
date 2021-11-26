@@ -35,6 +35,11 @@ public class TraitHandler
         m.put("traitWaterBreather", WaterBreatherTrait.class);
 
         //TODO test all MC mobs in Multiplayer
+        //TODO map trait rideable on the skele zombie hoorses
+        //TODO mod-based entity synching of fields
+        //TODO kill based gamemode - check if the config can be ENUM based
+        //TODO strip all NBT by default rather than to select which to strip
+        //TODO acquire when you kill a morphed player??
 
         //Register the default abilities
         m.put("abilityClimb", ClimbAbility.class);

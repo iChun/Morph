@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.common.morph.mode;
+package me.ichun.mods.morph.common.mode;
 
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.event.MorphEvent;
@@ -11,12 +11,10 @@ import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
-import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -171,8 +169,8 @@ public class DefaultMode implements MorphMode
     }
 
     @Override
-    public boolean isClassicMode()
+    public String getModeName()
     {
-        return false;
+        return "default";
     }
 }

@@ -17,9 +17,10 @@ import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
 import me.ichun.mods.morph.common.mob.TraitHandler;
-import me.ichun.mods.morph.common.morph.mode.ClassicMode;
-import me.ichun.mods.morph.common.morph.mode.DefaultMode;
-import me.ichun.mods.morph.common.morph.mode.MorphMode;
+import me.ichun.mods.morph.common.mode.ClassicMode;
+import me.ichun.mods.morph.common.mode.DefaultMode;
+import me.ichun.mods.morph.common.mode.MorphMode;
+import me.ichun.mods.morph.common.mode.MorphModeType;
 import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
@@ -54,16 +55,9 @@ public final class MorphHandler implements IApi
         currentMode.handleMurderEvent(player, living);
     }
 
-    public void setMorphMode(boolean isClassic)
+    public void setMorphMode(MorphModeType type)
     {
-        if(isClassic)
-        {
-            currentMode = new ClassicMode();
-        }
-        else
-        {
-            currentMode = new DefaultMode();
-        }
+        currentMode = type.createMode();
     }
 
     public void setSaveData(MorphSavedData data)
@@ -89,9 +83,9 @@ public final class MorphHandler implements IApi
     public static final MorphHandler INSTANCE = new MorphHandler();
 
     @Override
-    public boolean isClassicMode()
+    public String getMorphModeName()
     {
-        return currentMode != null ? currentMode.isClassicMode() : IApi.super.isClassicMode();
+        return currentMode != null ? currentMode.getModeName() : IApi.super.getMorphModeName();
     }
 
     @Override

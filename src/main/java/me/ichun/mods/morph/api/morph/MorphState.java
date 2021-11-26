@@ -227,7 +227,7 @@ public class MorphState implements Comparable<MorphState>
         }
 
         //TODO synching of the pillager swing
-        //TODO syncing of death of ender dragon
+        //TODO syncing of ender dragon (+ death)
     }
 
     public static void syncInventory(LivingEntity living, PlayerEntity player, boolean reset)

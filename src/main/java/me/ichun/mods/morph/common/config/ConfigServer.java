@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.morph.api.morph.AttributeConfig;
 import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.common.mode.MorphModeType;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
@@ -54,7 +55,7 @@ public class ConfigServer extends ConfigBase
         list.add("minecraft:armor_stand");
     });
 
-    public boolean morphClassic = false;
+    public MorphModeType morphMode = MorphModeType.CLASSIC;
 
     public boolean biomassSkinWhilstInvisible = true;
 
@@ -71,7 +72,12 @@ public class ConfigServer extends ConfigBase
             return;
         }
 
-        MorphHandler.INSTANCE.setMorphMode(true || morphClassic); //TODO force true if I want to lock to classic mode
+        MorphModeType morphMode = this.morphMode;
+        if(morphMode == MorphModeType.DEFAULT) //TODO remove this to enable default mode
+        {
+            morphMode = MorphModeType.CLASSIC;
+        }
+        MorphHandler.INSTANCE.setMorphMode(morphMode);
 
         parseDisabledMobs();
 

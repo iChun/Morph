@@ -22,7 +22,8 @@ import java.util.Map;
 public interface IApi
 {
     //Mod GameMode
-    default boolean isClassicMode() { return false; }
+    @Nonnull
+    default String getMorphModeName() { return ""; }
 
     //Shared stuff
     default void spawnAnimation(PlayerEntity player, LivingEntity living, boolean isMorphAcquisition) {}
@@ -67,6 +68,7 @@ public interface IApi
 
     default void registerTrait(@Nonnull String type, @Nonnull Class<? extends Trait> clz) {}
 
+    @Nonnull
     default ArrayList<Trait<?>> getTraitsForVariant(MorphVariant variant, PlayerEntity player) { return new ArrayList<>(); }
 
     default boolean canUseAbility(PlayerEntity player, Ability<?> ability) { return false; }

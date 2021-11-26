@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.common.morph.mode;
+package me.ichun.mods.morph.common.mode;
 
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
@@ -30,5 +30,5 @@ public interface MorphMode
 
     double getBiomassAmount(PlayerEntity player, LivingEntity living);
 
-    boolean isClassicMode();
+    String getModeName();
 }

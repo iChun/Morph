@@ -31,6 +31,25 @@
   "config.morph.prop.acquisitionTendrilPartOpacity.name": "Acquisition - Tendril Opacity",
   "config.morph.prop.acquisitionTendrilPartOpacity.desc": "In first person, tendrils closer to you are partially opaque to reduce obscuring of your vision. Increase this number to keep tendrils partially transparent for longer distances.",
 
+  "config.morph.resources.reload.desc": "Reload All Mob Support Files?",
+  "config.morph.resources.reload.btn": "Reload",
+  "config.morph.resources.reload.reextract": "Reextract",
+  "config.morph.resources.reload.reextract.desc": "Reextract Mob Support Files from zip",
+  "config.morph.resources.reload.success": "Reloaded all mob support files!",
+
+  "command.morph.resources.error.extractionError": "An error occurred when extracting files. Check Java Console for more info.",
+  "command.morph.resources.success.reloaded": "Morph files reloaded!",
+  "command.morph.resources.success.reextract": "Morph files extracted and reloaded!",
+
+  "command.morph.morph.error.notLivingEntity": "Entity supplied is not a LivingEntity type!",
+  "command.morph.morph.error.failedToCreateEntity": "Entity could not be created!",
+  "command.morph.morph.error.unableToAcquireMorph": "Could not acquire morph!",
+  "command.morph.morph.error.unableToMorphTo": "Could not morph into entity!",
+  "command.morph.morph.error.unableToDemorph": "Unable to demorph player!",
+  "command.morph.morph.success.morphAcquired": "Morph acquired for %s!",
+  "command.morph.morph.success.morphTo": "%s morphed!",
+  "command.morph.morph.success.demorph": "%s demorphed!",
+
 
   "subtitles.morph.morph": "Entity morphing",
 

@@ -2,7 +2,6 @@ package me.ichun.mods.morph.common.resource;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.brigadier.Command;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.client.render.hand.HandHandler;
@@ -46,17 +45,7 @@ public class ResourceHandler
                 Path extractedMarker = morphDir.resolve(MOB_SUPPORT_VERSION + ".extracted");
                 if(!Files.exists(extractedMarker)) //presume we haven't extracted anything yet
                 {
-                    InputStream in = Morph.class.getResourceAsStream("/mobsupport.zip");
-                    if(in != null)
-                    {
-                        Morph.LOGGER.info("Extracted {} Morph-related files.", IOUtil.extractFiles(morphDir, in, true));
-                    }
-                    else
-                    {
-                        Morph.LOGGER.error("Error loading mobsupport.zip. InputStream was null.");
-                    }
-
-                    FileUtils.writeStringToFile(extractedMarker.toFile(), "", StandardCharsets.UTF_8);
+                    extractFiles(extractedMarker);
                 }
             }
             catch(IOException e)
@@ -66,6 +55,21 @@ public class ResourceHandler
             }
         }
         return init;
+    }
+
+    public static synchronized void extractFiles(Path extractedMarker) throws IOException
+    {
+        InputStream in = Morph.class.getResourceAsStream("/mobsupport.zip");
+        if(in != null)
+        {
+            Morph.LOGGER.info("Extracted {} Morph-related files.", IOUtil.extractFiles(morphDir, in, true));
+        }
+        else
+        {
+            Morph.LOGGER.error("Error loading mobsupport.zip. InputStream was null.");
+        }
+
+        FileUtils.writeStringToFile(extractedMarker.toFile(), "", StandardCharsets.UTF_8);
     }
 
     public static synchronized void loadConstResources()
@@ -90,12 +94,10 @@ public class ResourceHandler
         return morphDir;
     }
 
-    public static int reloadAllResources()
+    public static void reloadAllResources()
     {
         loadConstResources();
 
         loadPostInitResources();
-
-        return Command.SINGLE_SUCCESS;
     }
 }
