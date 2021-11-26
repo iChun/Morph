@@ -58,6 +58,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Mod(Morph.MOD_ID)
@@ -217,6 +218,23 @@ public class Morph
             else
             {
                 LOGGER.warn("IMC: Non-MobData object from {}", msg.getSenderModId());
+            }
+        });
+
+        //Register mod morph synchers
+        event.getIMCStream(m -> m.equalsIgnoreCase("morphSync")).forEach(msg -> {
+            Object o = msg.getMessageSupplier().get();
+            if(o instanceof BiConsumer)
+            {
+                BiConsumer consumer = (BiConsumer)o;
+
+                MorphHandler.INSTANCE.getModPlayerMorphSyncConsumers().add(consumer);
+
+                LOGGER.info("IMC: Registering morph sync BiConsumer from mod {}", msg.getSenderModId());
+            }
+            else
+            {
+                LOGGER.warn("IMC: Non-BiConsumer object from {}", msg.getSenderModId());
             }
         });
     }

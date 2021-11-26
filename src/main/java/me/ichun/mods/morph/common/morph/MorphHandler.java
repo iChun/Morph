@@ -17,8 +17,6 @@ import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
 import me.ichun.mods.morph.common.mob.TraitHandler;
-import me.ichun.mods.morph.common.mode.ClassicMode;
-import me.ichun.mods.morph.common.mode.DefaultMode;
 import me.ichun.mods.morph.common.mode.MorphMode;
 import me.ichun.mods.morph.common.mode.MorphModeType;
 import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
@@ -40,12 +38,16 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public final class MorphHandler implements IApi
 {
     public static final Splitter ON_SEMI_COLON = Splitter.on(";").trimResults().omitEmptyStrings();
     private static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png"); //call the getter.
+
+    private final ArrayList<BiConsumer<LivingEntity, PlayerEntity>> modPlayerMorphSyncConsumers = new ArrayList<>();
 
     private MorphMode currentMode;
     private MorphSavedData saveData;
@@ -233,6 +235,12 @@ public final class MorphHandler implements IApi
     public ResourceLocation getMorphSkinTexture()
     {
         return TEX_MORPH_SKIN;
+    }
+
+    @Override
+    public List<BiConsumer<LivingEntity, PlayerEntity>> getModPlayerMorphSyncConsumers()
+    {
+        return modPlayerMorphSyncConsumers;
     }
 
     @Override

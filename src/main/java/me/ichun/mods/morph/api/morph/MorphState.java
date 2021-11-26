@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 public class MorphState implements Comparable<MorphState>
 {
@@ -224,6 +225,11 @@ public class MorphState implements Comparable<MorphState>
         if(living instanceof IAngerable)
         {
             ((IAngerable)living).setAngerTime(((IAngerable)living).isAngry() ? 1000 : 0);
+        }
+
+        for(BiConsumer<LivingEntity, PlayerEntity> consumer : MorphApi.getApiImpl().getModPlayerMorphSyncConsumers())
+        {
+            consumer.accept(living, player);
         }
 
         //TODO synching of the pillager swing

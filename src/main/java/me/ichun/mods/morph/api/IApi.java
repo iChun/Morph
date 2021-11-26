@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.api;
 
+import com.google.common.collect.ImmutableList;
 import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.mob.MobData;
@@ -15,9 +16,8 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 public interface IApi
 {
@@ -62,6 +62,8 @@ public interface IApi
 
     @Nullable
     default ResourceLocation getMorphSkinTexture() { return null; }
+
+    default List<BiConsumer<LivingEntity, PlayerEntity>> getModPlayerMorphSyncConsumers() { return ImmutableList.of(); }
 
     //Mob Data Stuff
     default void registerMobData(@Nonnull ResourceLocation rl, @Nonnull MobData data) {}
