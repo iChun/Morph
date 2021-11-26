@@ -119,7 +119,7 @@ public class NbtHandler
         {
             NbtModifier.Modifier mod = new NbtModifier.Modifier();
             mod.key = s;
-            mod.strip = true;
+            mod.keep = true;
             modifier.modifiers.add(mod);
         }
 
@@ -128,7 +128,7 @@ public class NbtHandler
 
         NbtModifier.Modifier partMod = new NbtModifier.Modifier();
         partMod.key = "hats:capability_hat";
-        partMod.strip = true;
+        partMod.keep = true;
 
         hatsMod.nestedModifiers = new ArrayList<>();
         hatsMod.nestedModifiers.add(partMod);
@@ -166,7 +166,7 @@ public class NbtHandler
         if(NBT_MODIFIERS.containsKey(clz))
         {
             modifier = NBT_MODIFIERS.get(clz);
-            if(modifier.toStrip != null) // it's been set up;
+            if(modifier.toKeep != null) // it's been set up;
             {
                 return modifier;
             }
@@ -177,7 +177,7 @@ public class NbtHandler
             NBT_MODIFIERS.put(clz, modifier);
         }
 
-        modifier.toStrip = new HashSet<>();
+        modifier.toKeep = new HashSet<>();
         modifier.keyToModifier = new HashMap<>();
 
         if(clz != LivingEntity.class)
@@ -185,7 +185,7 @@ public class NbtHandler
             //get the parent class's modifier and add their modifiers
             NbtModifier parentModifier = getModifierFor(clz.getSuperclass());
 
-            modifier.toStrip.addAll(parentModifier.toStrip);
+            modifier.toKeep.addAll(parentModifier.toKeep);
             modifier.keyToModifier.putAll(parentModifier.keyToModifier);
         }
 
@@ -194,7 +194,7 @@ public class NbtHandler
         {
             if(e.getKey().isAssignableFrom(clz))
             {
-                modifier.toStrip.addAll(e.getValue().toStrip);
+                modifier.toKeep.addAll(e.getValue().toKeep);
                 modifier.keyToModifier.putAll(e.getValue().keyToModifier);
             }
         }
@@ -209,7 +209,7 @@ public class NbtHandler
     {
         for(Map.Entry<Class<?>, NbtModifier> e : NBT_MODIFIERS_INTERFACES.entrySet())
         {
-            e.getValue().toStrip = new HashSet<>();
+            e.getValue().toKeep = new HashSet<>();
             e.getValue().keyToModifier = new HashMap<>();
 
             e.getValue().setup();

@@ -24,7 +24,7 @@ public class NbtModifier
     public HashMap<String, ArrayList<Modifier>> modSpecificModifiers = new HashMap<>();
 
     //used in runtime
-    public transient HashSet<String> toStrip;
+    public transient HashSet<String> toKeep;
     public transient HashMap<String, Modifier> keyToModifier;
     public transient boolean valuesSetup;
 
@@ -49,15 +49,15 @@ public class NbtModifier
 
     private void addModifier(Modifier modifier)
     {
-        if(modifier.strip != null) //set to strip
+        if(modifier.keep != null) //set to strip
         {
-            if(modifier.strip)
+            if(modifier.keep)
             {
-                toStrip.add(modifier.key);
+                toKeep.add(modifier.key);
             }
             else
             {
-                toStrip.remove(modifier.key);
+                toKeep.remove(modifier.key);
             }
         }
         else if(keyToModifier.containsKey(modifier.key) && keyToModifier.get(modifier.key).nestedModifiers != null && modifier.nestedModifiers != null) //both have nested modifiers
@@ -79,13 +79,22 @@ public class NbtModifier
         }
     }
 
-    public void apply(CompoundNBT tag)
+    public void apply(CompoundNBT tag) //This is the parent function. This calls all its passed modifiers
     {
-        for(String s : toStrip)
+        //Collect all the keys we want to keep with this tag
+        HashSet<String> keysKept = new HashSet<>(toKeep);
+        keysKept.addAll(keyToModifier.keySet());
+
+        //Check the keys the tags have, if we don't have it in our set, remove it.
+        for(String s : tag.keySet())
         {
-            tag.remove(s);
+            if(!keysKept.contains(s))
+            {
+                tag.remove(s);
+            }
         }
 
+        //Apply the specific keyToModifiers
         keyToModifier.forEach((k, v) -> {
             v.apply(tag);
         });
@@ -95,7 +104,7 @@ public class NbtModifier
     {
         @Nonnull
         public String key = "UNSET";
-        public Boolean strip;
+        public Boolean keep;
         public ArrayList<Modifier> nestedModifiers;
         public String value;
 
@@ -105,7 +114,7 @@ public class NbtModifier
         {
             Modifier copy = new Modifier();
             copy.key = key;
-            copy.strip = strip;
+            copy.keep = keep;
             if(nestedModifiers != null)
             {
                 copy.nestedModifiers = new ArrayList<>();
@@ -120,7 +129,7 @@ public class NbtModifier
 
         public boolean setupValue()
         {
-            if(strip != null && strip)
+            if(keep != null)
             {
                 return true;
             }
@@ -157,24 +166,39 @@ public class NbtModifier
 
         public void apply(CompoundNBT tag)
         {
-            if(strip != null)
+            //We're told the keep command, handle the keep and return, do nothing more.
+            if(keep != null)
             {
-                if(strip) //this will allow an override to NOT strip.
+                //If the modifier is told *NOT* to keep, we strip it
+                if(!keep)
                 {
                     tag.tagMap.remove(key);
                 }
                 return;
             }
 
+            //We have nested modifiers. Check if this is a Compound Tag and strip the rest.
             if(nestedModifiers != null && !nestedModifiers.isEmpty() && tag.tagMap.get(key) instanceof CompoundNBT)
             {
+                HashSet<String> keep = new HashSet<>();
                 CompoundNBT compoundNBT = (CompoundNBT)tag.tagMap.get(key);
                 for(Modifier nestedModifier : nestedModifiers)
                 {
+                    keep.add(nestedModifier.key); //add this key to the ones we wanna keep since we're modifying this
                     nestedModifier.apply(compoundNBT);
+                }
+
+                //Check the keys the tags have, if we don't have it in our set, remove it.
+                for(String s : compoundNBT.keySet())
+                {
+                    if(!keep.contains(s))
+                    {
+                        compoundNBT.remove(s);
+                    }
                 }
             }
 
+            //We're modifying the value, do it.
             if(nbtValue != null)
             {
                 INBT ori = tag.tagMap.get(key);
