@@ -2,16 +2,16 @@
   "forClass": "net.minecraft.entity.monster.ShulkerEntity",
   "modifiers": [
     {
-      "key": "APX",
-      "strip": true
+      "key": "AttachFace",
+      "keep": true
     },
     {
-      "key": "APY",
-      "strip": true
+      "key": "Peek",
+      "keep": true
     },
     {
-      "key": "APZ",
-      "strip": true
+      "key": "Color",
+      "keep": true
     }
   ]
 }

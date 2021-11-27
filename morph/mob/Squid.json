@@ -3,7 +3,7 @@
   "traits": [
     {
       "type": "traitSwimmer",
-      "swimMultiplier": 22.5,
+      "swimMultiplier": 2.0,
       "landMultiplier": 0.025
     },
     {

@@ -167,7 +167,7 @@ public class MorphState implements Comparable<MorphState>
         living.setSprinting(player.isSprinting());
 
         //Cannot set silent, no more ambient noise??
-//        living.setSilent(true); //we don't wanna hear the mob when they get damaged by fire ticks or something
+        //        living.setSilent(true); //we don't wanna hear the mob when they get damaged by fire ticks or something
 
         living.setHealth(living.getMaxHealth() * (player.getHealth() / player.getMaxHealth()));
         living.hurtTime = player.hurtTime;

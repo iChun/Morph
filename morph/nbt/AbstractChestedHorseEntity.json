@@ -2,8 +2,8 @@
   "forClass": "net.minecraft.entity.passive.horse.AbstractChestedHorseEntity",
   "modifiers": [
     {
-      "key": "Items",
-      "strip": true
+      "key": "ChestedHorse",
+      "keep": true
     }
   ]
 }

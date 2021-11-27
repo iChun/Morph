@@ -1,0 +1,9 @@
+{
+  "forClass": "net.minecraft.entity.passive.StriderEntity",
+  "modifiers": [
+    {
+      "key": "Saddle",
+      "keep": true
+    }
+  ]
+}

@@ -2,12 +2,8 @@
   "forClass": "net.minecraft.entity.monster.piglin.PiglinEntity",
   "modifiers": [
     {
-      "key": "CannotHunt",
-      "strip": true
-    },
-    {
-      "key": "Inventory",
-      "strip": true
+      "key": "IsBaby",
+      "keep": true
     }
   ]
 }

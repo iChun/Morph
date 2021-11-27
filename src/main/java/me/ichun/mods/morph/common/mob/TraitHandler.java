@@ -38,6 +38,9 @@ public class TraitHandler
         //TODO strip all NBT by default rather than to select which to strip
         //TODO acquire when you kill a morphed player??
         //TODO add localisation
+        //TODO sync potion effects!
+        //TODO check chicken item drop (entity item drops outside death)
+        //TODO sync wither invul time?
 
         //Register the default abilities
         m.put("abilityClimb", ClimbAbility.class);

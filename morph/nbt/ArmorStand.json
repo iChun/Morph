@@ -1,0 +1,29 @@
+{
+  "forClass": "net.minecraft.entity.item.ArmorStandEntity",
+  "modifiers": [
+    {
+      "key": "Invisible",
+      "keep": true
+    },
+    {
+      "key": "Small",
+      "keep": true
+    },
+    {
+      "key": "ShowArms",
+      "keep": true
+    },
+    {
+      "key": "NoBasePlate",
+      "keep": true
+    },
+    {
+      "key": "Marker",
+      "keep": true
+    },
+    {
+      "key": "Pose",
+      "keep": true
+    }
+  ]
+}

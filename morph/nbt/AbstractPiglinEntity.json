@@ -4,10 +4,6 @@
     {
       "key": "IsImmuneToZombification",
       "value": "true"
-    },
-    {
-      "key": "TimeInOverworld",
-      "strip": true
     }
   ]
 }

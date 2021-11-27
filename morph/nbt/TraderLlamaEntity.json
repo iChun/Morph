@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.passive.horse.TraderLlamaEntity",
-  "modifiers": [
-    {
-      "key": "DespawnDelay",
-      "strip": true
-    }
-  ]
-}

@@ -2,12 +2,8 @@
   "forClass": "net.minecraft.entity.passive.MooshroomEntity",
   "modifiers": [
     {
-      "key": "EffectId",
-      "strip": true
-    },
-    {
-      "key": "EffectDuration",
-      "strip": true
+      "key": "Type",
+      "keep": true
     }
   ]
 }

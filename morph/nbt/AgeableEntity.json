@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.AgeableEntity",
-  "modifiers": [
-    {
-      "key": "ForcedAge",
-      "strip": true
-    }
-  ]
-}

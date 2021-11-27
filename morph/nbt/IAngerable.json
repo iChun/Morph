@@ -2,8 +2,8 @@
   "forClass": "net.minecraft.entity.IAngerable",
   "modifiers": [
     {
-      "key": "AngryAt",
-      "strip": true
+      "key": "AngerTime",
+      "keep": true
     }
   ]
 }

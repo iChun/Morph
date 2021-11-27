@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.passive.PandaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -126,6 +127,12 @@ public class MorphVariant implements Comparable<MorphVariant>
                 tag.putString("MainGene", "normal");
                 tag.putString("HiddenGene", "normal");
             }
+        }
+
+        if(living instanceof WitherEntity)
+        {
+            int i = ((WitherEntity)living).getInvulTime();
+            tag.putInt("Invul", i > 0 && (i > 80 || i / 5 % 2 != 1) ? 1000 : 0);
         }
     }
 

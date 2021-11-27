@@ -1,0 +1,13 @@
+{
+  "forClass": "net.minecraft.entity.passive.CatEntity",
+  "modifiers": [
+    {
+      "key": "CatType",
+      "keep": true
+    },
+    {
+      "key": "CollarColor",
+      "keep": true
+    }
+  ]
+}

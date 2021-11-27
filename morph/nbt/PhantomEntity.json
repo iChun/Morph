@@ -2,16 +2,8 @@
   "forClass": "net.minecraft.entity.monster.PhantomEntity",
   "modifiers": [
     {
-      "key": "AX",
-      "strip": true
-    },
-    {
-      "key": "AY",
-      "strip": true
-    },
-    {
-      "key": "AZ",
-      "strip": true
+      "key": "Size",
+      "keep": true
     }
   ]
 }

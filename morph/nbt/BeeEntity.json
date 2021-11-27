@@ -2,24 +2,12 @@
   "forClass": "net.minecraft.entity.passive.BeeEntity",
   "modifiers": [
     {
-      "key": "HivePos",
-      "strip": true
+      "key": "HasNectar",
+      "keep": true
     },
     {
-      "key": "FlowerPos",
-      "strip": true
-    },
-    {
-      "key": "TicksSincePollination",
-      "strip": true
-    },
-    {
-      "key": "CannotEnterHiveTicks",
-      "strip": true
-    },
-    {
-      "key": "CropsGrownSincePollination",
-      "strip": true
+      "key": "HasStung",
+      "keep": true
     }
   ]
 }

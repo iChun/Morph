@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.monster.PillagerEntity",
-  "modifiers": [
-    {
-      "key": "Inventory",
-      "strip": true
-    }
-  ]
-}

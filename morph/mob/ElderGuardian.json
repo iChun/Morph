@@ -13,7 +13,7 @@
     },
     {
       "type": "traitSwimmer",
-      "swimMultiplier": 4.0,
+      "swimMultiplier": 3.0,
       "landMultiplier": 0.1
     },
     {

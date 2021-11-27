@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.passive.IronGolemEntity",
-  "modifiers": [
-    {
-      "key": "PlayerCreated",
-      "strip": true
-    }
-  ]
-}

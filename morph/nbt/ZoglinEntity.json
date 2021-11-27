@@ -1,5 +1,5 @@
 {
-  "forClass": "net.minecraft.entity.monster.ZombieEntity",
+  "forClass": "net.minecraft.entity.monster.ZoglinEntity",
   "modifiers": [
     {
       "key": "IsBaby",

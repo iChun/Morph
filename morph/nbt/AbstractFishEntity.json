@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.passive.fish.AbstractFishEntity",
-  "modifiers": [
-    {
-      "key": "FromBucket",
-      "strip": true
-    }
-  ]
-}

@@ -1,0 +1,9 @@
+{
+  "forClass": "net.minecraft.entity.passive.PigEntity",
+  "modifiers": [
+    {
+      "key": "Saddle",
+      "keep": true
+    }
+  ]
+}

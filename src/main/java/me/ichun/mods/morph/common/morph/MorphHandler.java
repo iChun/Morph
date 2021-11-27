@@ -143,7 +143,7 @@ public final class MorphHandler implements IApi
         }
         else
         {
-            CompoundNBT tag = new CompoundNBT(); //TODO glint effect for ability??
+            CompoundNBT tag = new CompoundNBT();//TODO glint effect for ability??
 
             //Write the supported attributes to our Morph NBT
             variant.writeSupportedAttributes(living);

@@ -2,24 +2,8 @@
   "forClass": "net.minecraft.entity.passive.horse.AbstractHorseEntity",
   "modifiers": [
     {
-      "key": "EatingHaystack",
-      "strip": true
-    },
-    {
-      "key": "Bred",
-      "strip": true
-    },
-    {
-      "key": "Temper",
-      "strip": true
-    },
-    {
-      "key": "Tame",
-      "strip": true
-    },
-    {
-      "key": "Owner",
-      "strip": true
+      "key": "SaddleItem",
+      "keep": true
     }
   ]
 }

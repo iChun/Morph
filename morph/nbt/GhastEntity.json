@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.monster.GhastEntity",
-  "modifiers": [
-    {
-      "key": "ExplosionPower",
-      "strip": true
-    }
-  ]
-}

@@ -2,10 +2,6 @@
   "forClass": "net.minecraft.entity.passive.ChickenEntity",
   "modifiers": [
     {
-      "key": "IsChickenJockey",
-      "strip": true
-    },
-    {
       "key": "EggLayTime",
       "value": "2000000000"
     }

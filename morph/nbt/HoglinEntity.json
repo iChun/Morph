@@ -4,14 +4,6 @@
     {
       "key": "IsImmuneToZombification",
       "value": "true"
-    },
-    {
-      "key": "TimeInOverworld",
-      "strip": true
-    },
-    {
-      "key": "CannotBeHunted",
-      "strip": true
     }
   ]
 }

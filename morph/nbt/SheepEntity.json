@@ -1,0 +1,13 @@
+{
+  "forClass": "net.minecraft.entity.passive.SheepEntity",
+  "modifiers": [
+    {
+      "key": "Sheared",
+      "keep": true
+    },
+    {
+      "key": "Color",
+      "keep": true
+    }
+  ]
+}

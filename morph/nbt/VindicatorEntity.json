@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.monster.VindicatorEntity",
-  "modifiers": [
-    {
-      "key": "Johnny",
-      "strip": true
-    }
-  ]
-}

@@ -1,12 +1,12 @@
 {
-  "forClass": "net.minecraft.entity.passive.horse.LlamaEntity",
+  "forClass": "net.minecraft.entity.passive.horse.HorseEntity",
   "modifiers": [
     {
       "key": "Variant",
       "keep": true
     },
     {
-      "key": "DecorItem",
+      "key": "ArmorItem",
       "keep": true
     }
   ]

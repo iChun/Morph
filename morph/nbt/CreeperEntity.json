@@ -2,16 +2,8 @@
   "forClass": "net.minecraft.entity.monster.CreeperEntity",
   "modifiers": [
     {
-      "key": "Fuse",
-      "strip": true
-    },
-    {
-      "key": "ExplosionRadius",
-      "strip": true
-    },
-    {
-      "key": "ignited",
-      "strip": true
+      "key": "powered",
+      "keep": true
     }
   ]
 }

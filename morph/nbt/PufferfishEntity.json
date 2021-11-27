@@ -1,0 +1,9 @@
+{
+  "forClass": "net.minecraft.entity.passive.fish.PufferfishEntity",
+  "modifiers": [
+    {
+      "key": "PuffState",
+      "keep": true
+    }
+  ]
+}

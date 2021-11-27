@@ -6,6 +6,10 @@
     },
     {
       "type": "traitWaterSensitivity"
+    },
+    {
+      "type": "abilityRideable",
+      "requiresSaddle": true
     }
   ]
 }

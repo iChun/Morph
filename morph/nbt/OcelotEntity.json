@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.passive.OcelotEntity",
-  "modifiers": [
-    {
-      "key": "Trusting",
-      "strip": true
-    }
-  ]
-}

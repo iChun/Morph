@@ -2,8 +2,8 @@
   "forClass": "net.minecraft.entity.monster.SlimeEntity",
   "modifiers": [
     {
-      "key": "wasOnGround",
-      "strip": true
+      "key": "Size",
+      "keep": true
     }
   ]
 }

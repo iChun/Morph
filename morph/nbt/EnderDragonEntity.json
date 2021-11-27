@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.boss.dragon.EnderDragonEntity",
-  "modifiers": [
-    {
-      "key": "DragonPhase",
-      "strip": true
-    }
-  ]
-}

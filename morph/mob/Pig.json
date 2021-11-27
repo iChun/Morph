@@ -1,4 +1,9 @@
 {
   "forEntity": "minecraft:pig",
-  "traits": []
+  "traits": [
+    {
+      "type": "abilityRideable",
+      "requiresSaddle": true
+    }
+  ]
 }

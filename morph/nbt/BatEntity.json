@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.passive.BatEntity",
-  "modifiers": [
-    {
-      "key": "BatFlags",
-      "strip": true
-    }
-  ]
-}

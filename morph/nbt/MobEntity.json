@@ -2,40 +2,8 @@
   "forClass": "net.minecraft.entity.MobEntity",
   "modifiers": [
     {
-      "key": "CanPickUpLoot",
-      "value": "false"
-    },
-    {
       "key": "PersistenceRequired",
       "value": "true"
-    },
-    {
-      "key": "ArmorItems",
-      "strip": true
-    },
-    {
-      "key": "HandItems",
-      "strip": true
-    },
-    {
-      "key": "ArmorDropChances",
-      "strip": true
-    },
-    {
-      "key": "HandDropChances",
-      "strip": true
-    },
-    {
-      "key": "Leash",
-      "strip": true
-    },
-    {
-      "key": "LeftHanded",
-      "strip": true
-    },
-    {
-      "key": "DeathLootTable",
-      "strip": true
     },
     {
       "key": "NoAI",
