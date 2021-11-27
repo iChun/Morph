@@ -16,7 +16,7 @@ import java.util.HashSet;
 public class NbtModifier
 {
     //Used for serialisation
-    public String author;
+    public String author; //For Credit
     @Nonnull
     public String forClass = "Class Name Here";
     public Boolean isInterface;

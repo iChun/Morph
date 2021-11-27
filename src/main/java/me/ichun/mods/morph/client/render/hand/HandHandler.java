@@ -219,7 +219,7 @@ public final class HandHandler
 
                                 if(prevStacks[i] != null || nextStacks[i] != null)
                                 {
-                                    MatrixStack.Entry interimStackEntry = RenderHelper.createInterimStackEntry(prevStacks[i] != null ? prevStacks[i].getLast() : nextStacks[i] != null ? nextStacks[i].getLast() : (new MatrixStack()).getLast(), nextStacks[i] != null ? nextStacks[i].getLast() : prevStacks[i] != null ? prevStacks[i].getLast() : (new MatrixStack()).getLast(), transitionProg);
+                                    MatrixStack.Entry interimStackEntry = RenderHelper.createInterimStackEntry(prevStacks[i] != null ? prevStacks[i].getLast() : (new MatrixStack()).getLast(), nextStacks[i] != null ? nextStacks[i].getLast() : (new MatrixStack()).getLast(), transitionProg);
                                     MatrixStack interimStack = new MatrixStack();
                                     MatrixStack.Entry last = interimStack.getLast();
                                     last.getMatrix().mul(interimStackEntry.getMatrix());

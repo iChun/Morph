@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class MobData
 {
+    public String author; //For Credit
     public String forEntity;
 
     public Double biomassValueOverride;
