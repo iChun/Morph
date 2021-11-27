@@ -18,7 +18,6 @@ build
 .gradle
 libs
 src/api
-src/main/java/me/ichun/mods/morph/old
 logs
 
 # other

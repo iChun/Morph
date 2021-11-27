@@ -23,9 +23,11 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.play.server.SPlayerListItemPacket;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -142,14 +144,26 @@ public class MorphRenderHandler
 
                 mc.getConnection().playerInfoMap.put(player.getGameProfile().getId(), info);
             }
-
-            //TODO do I have to handle different gamemodes?
         }
 
         float yaw = MathHelper.lerp(partialTick, living.prevRotationYaw, living.rotationYaw);
         stack.push();
+        if(living instanceof EnderDragonEntity)
+        {
+            stack.rotate(Vector3f.YP.rotationDegrees(180F));
+        }
         renderer.render(living, yaw, partialTick, stack, buffer, light);
         stack.pop();
+
+        if(living instanceof AbstractClientPlayerEntity)
+        {
+            AbstractClientPlayerEntity player = (AbstractClientPlayerEntity)living;
+            NetworkPlayerInfo playerInfo = mc.getConnection().getPlayerInfo(player.getGameProfile().getId());
+            if(playerInfo != null && playerInfo.getResponseTime() == -100 && playerInfo.getGameType() == GameType.ADVENTURE) //we've spoofed, remove it now
+            {
+                mc.getConnection().playerInfoMap.remove(player.getGameProfile().getId());
+            }
+        }
     }
 
     public static void renderTransitionState(PlayerEntity player, MorphInfoImpl info, MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float partialTick, float transitionProgress, float skinAlpha)

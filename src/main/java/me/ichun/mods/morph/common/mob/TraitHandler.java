@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class TraitHandler
 {
+    //TODO test sleep bounding box
     private static final HashMap<String, Class<? extends Trait>> TRAITS = Util.make(new HashMap<>(), m -> {
         //Register the default traits (no fields)
         m.put("traitFallNegate", FallNegateTrait.class);
@@ -34,9 +35,6 @@ public class TraitHandler
         m.put("traitSunburn", SunburnTrait.class);
         m.put("traitWaterBreather", WaterBreatherTrait.class);
 
-        //TODO test all MC mobs in Multiplayer
-        //TODO add localisation to configs
-
         //Register the default abilities
         m.put("abilityClimb", ClimbAbility.class);
 
@@ -44,7 +42,7 @@ public class TraitHandler
         m.put("abilityEffectAttack", EffectAttackAbility.class);
         m.put("abilityFlight", FlyAbility.class);
         m.put("abilityFlightFlap", FlightFlapAbility.class);
-        m.put("abilityRideable", RideableAbility.class); //TODO test
+        m.put("abilityRideable", RideableAbility.class);
         m.put("abilitySlowFall", SlowFallAbility.class);
     });
 

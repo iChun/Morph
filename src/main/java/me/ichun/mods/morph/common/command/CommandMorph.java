@@ -43,7 +43,7 @@ public class CommandMorph
                 .then(Commands.literal("resources")
                         .then(Commands.literal("reload")
                                 .executes(context -> {
-                                    context.getSource().sendFeedback(new TranslationTextComponent("command.morph.morph.success.reloaded"), true);
+                                    context.getSource().sendFeedback(new TranslationTextComponent("command.morph.resources.success.reloaded"), true);
                                     ResourceHandler.reloadAllResources();
                                     return Command.SINGLE_SUCCESS;
                                 })
@@ -54,7 +54,7 @@ public class CommandMorph
                                     {
                                         ResourceHandler.extractFiles(ResourceHandler.getMorphDir().resolve(ResourceHandler.MOB_SUPPORT_VERSION + ".extracted"));
                                         ResourceHandler.reloadAllResources();
-                                        context.getSource().sendFeedback(new TranslationTextComponent("command.morph.morph.success.reloaded"), true);
+                                        context.getSource().sendFeedback(new TranslationTextComponent("command.morph.morph.resources.reloaded"), true);
                                         return Command.SINGLE_SUCCESS;
                                     }
                                     catch(IOException e)
@@ -141,6 +141,7 @@ public class CommandMorph
             MorphVariant variant = MorphHandler.INSTANCE.createVariant((LivingEntity)entity);
             if(createMorph(source, player, variant, isAcquire))
             {
+                source.sendFeedback(new TranslationTextComponent(isAcquire ? "command.morph.morph.success.morphAcquired" : "command.morph.morph.success.morphTo", player.getDisplayName()), true);
                 return Command.SINGLE_SUCCESS;
             }
             throw isAcquire ? UNABLE_TO_ACQUIRE_MORPH.create() : UNABLE_TO_MORPH_TO.create();

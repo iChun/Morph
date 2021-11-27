@@ -86,7 +86,8 @@ public class NbtModifier
         keysKept.addAll(keyToModifier.keySet());
 
         //Check the keys the tags have, if we don't have it in our set, remove it.
-        for(String s : tag.keySet())
+        HashSet<String> tagKeys = new HashSet<>(tag.keySet());
+        for(String s : tagKeys)
         {
             if(!keysKept.contains(s))
             {
@@ -189,7 +190,8 @@ public class NbtModifier
                 }
 
                 //Check the keys the tags have, if we don't have it in our set, remove it.
-                for(String s : compoundNBT.keySet())
+                HashSet<String> tagKeys = new HashSet<>(compoundNBT.keySet());
+                for(String s : tagKeys)
                 {
                     if(!keep.contains(s))
                     {

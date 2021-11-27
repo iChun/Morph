@@ -10,6 +10,7 @@ import me.ichun.mods.morph.common.morph.MorphInfoImpl;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketRequestMorphInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderNameplateEvent;
@@ -35,9 +36,17 @@ public class EventHandlerClient
             return;
         }
 
+        PlayerEntity player = event.getPlayer();
+
+        //Disables the render of this player if this player is riding the render view entity and the game is in first person
+        if(Morph.configClient.morphDisableRidingPlayerRenderInFirstPerson && player.getRidingEntity() == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.getPointOfView().equals(PointOfView.FIRST_PERSON))
+        {
+            event.setCanceled(true);
+            return;
+        }
+
         MorphRenderHandler.restoreShadowSize(event.getRenderer());
 
-        PlayerEntity player = event.getPlayer();
         if(!player.removed)
         {
             MorphInfoImpl info = (MorphInfoImpl)MorphHandler.INSTANCE.getMorphInfo(player);
@@ -67,7 +76,7 @@ public class EventHandlerClient
     }
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event) //TODO network player Infos during player list
+    public void onRenderTick(TickEvent.RenderTickEvent event)
     {
         if(event.phase == TickEvent.Phase.START && Minecraft.getInstance().player != null && !Minecraft.getInstance().player.removed)
         {

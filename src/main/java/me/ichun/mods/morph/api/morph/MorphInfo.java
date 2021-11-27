@@ -30,7 +30,7 @@ public abstract class MorphInfo
     public static final ResourceLocation CAPABILITY_IDENTIFIER = new ResourceLocation("morph", "capability_morph_state");
     private static final AtomicInteger NEXT_ENTITY_ID = new AtomicInteger(-70000000);// -70 million. We reduce even further as we use this more, negative ent IDs prevent collision with real entities (with positive IDs starting with 0)
 
-    public final PlayerEntity player; //TODO do I need to set a new one when change dimension?
+    public final PlayerEntity player;
 
     @Nullable
     public MorphState prevState;

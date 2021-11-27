@@ -41,6 +41,8 @@ public class ConfigClient extends ConfigBase
 
     public boolean morphAllowHandOverride = true;
 
+    public boolean morphDisableRidingPlayerRenderInFirstPerson = true;
+
     @Prop(min = 0, max = 2)
     public int biomassBarMode = 1;
 

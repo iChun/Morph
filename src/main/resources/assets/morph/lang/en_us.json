@@ -2,17 +2,27 @@
   "config.morph.cat.morph.name": "Morph Ability",
   "config.morph.cat.morph.desc": "Options for the morph ability.",
 
+  "config.morph.cat.biomass.name": "Biomass Ability",
+  "config.morph.cat.biomass.desc": "Options for the biomass ability. These configs only have effect in DEFAULT mode, which has been disabled until said mode is finished.",
+
   "config.morph.prop.morphTime.name": "Morph Time",
   "config.morph.prop.morphTime.desc": "Time (in ticks) for a morph to complete.",
-  "config.morph.prop.disabledMobs.name": "Disabled Mobs",
-  "config.morph.prop.disabledMobs.desc": "Resource Location name for Mob types you cannot acquire biomass or morphs from.",
   "config.morph.prop.aggressiveSizeRecalculation.name": "Aggressive Size Recalculation",
   "config.morph.prop.aggressiveSizeRecalculation.desc": "Morph normally only recalculates size when it has to. This makes Morph recalculate the player size every tick whilst morphed.",
-
   "config.morph.prop.supportedAttributes.name": "Supported Attributes",
   "config.morph.prop.supportedAttributes.desc": "Which attributes are supported by more, and how are values better. Format: <Resource Name of Attribute>;<more/less>. EG: \"minecraft:generic.max_health;more\".",
-  "config.morph.prop.morphClassic.name": "Morph Classic",
-  "config.morph.prop.morphClassic.desc": "Enable this for Morph Classic. No Biomass or Morph restrictions.",
+  "config.morph.prop.disabledTraits.name": "Disabled Traits",
+  "config.morph.prop.disabledTraits.desc": "ID of traits you want to disable.",
+
+  "config.morph.prop.biomassValue.name": "Biomass Value",
+  "config.morph.prop.biomassValue.desc": "How much of the entity volume is considered their mass.",
+  "config.morph.prop.biomassBypassAdvancement.name": "Bypass Biomass Advancement",
+  "config.morph.prop.biomassBypassAdvancement.desc": "Enable the Biomass ability without requiring the advancement to unlock it?",
+
+  "config.morph.prop.disabledMobs.name": "Disabled Mobs",
+  "config.morph.prop.disabledMobs.desc": "Resource Location name for Mob types you cannot acquire biomass or morphs from.",
+  "config.morph.prop.morphMode.name": "Morph Game Mode",
+  "config.morph.prop.morphMode.desc": "The mode the mod runs in. Accepts CLASSIC, DISGUISE. DEFAULT has been disabled until it has been finished.",
   "config.morph.prop.biomassSkinWhilstInvisible.name": "Biomass Skin Whilst Invisible",
   "config.morph.prop.biomassSkinWhilstInvisible.desc": "The Biomass Skin is meant to show during invisibility. Turning this off disables that.",
 
@@ -30,6 +40,14 @@
   "config.morph.prop.acquisitionTendrilMaxChild.desc": "The (approximate) maximum part count for a tendril. Also partially dictates the length (in ticks) of the animation. Higher = More parts, slower animation, Lower = Less parts, faster animation.",
   "config.morph.prop.acquisitionTendrilPartOpacity.name": "Acquisition - Tendril Opacity",
   "config.morph.prop.acquisitionTendrilPartOpacity.desc": "In first person, tendrils closer to you are partially opaque to reduce obscuring of your vision. Increase this number to keep tendrils partially transparent for longer distances.",
+  "config.morph.prop.morphAllowHandOverride.name": "Enable Hand Override",
+  "config.morph.prop.morphAllowHandOverride.desc": "Enable overriding the hand render with a (compatible) morph hand? Disable if you have crashing issues/conflicts with other mods.",
+  "config.morph.prop.morphDisableRidingPlayerRenderInFirstPerson.name": "Disable Riding Players Renders in First Person",
+  "config.morph.prop.morphDisableRidingPlayerRenderInFirstPerson.desc": "This disables rendering players that is riding the camera entity when in First Person.",
+  "config.morph.prop.biomassBarMode.name": "Biomass Bar Mode",
+  "config.morph.prop.biomassBarMode.desc": "How should we show the Biomass Bar? 0 = Disabled, 1 = When there's an update, 2 = Always",
+  "config.morph.prop.guiMinecraftStyle.name": "Render GUI in Minecraft Style",
+  "config.morph.prop.guiMinecraftStyle.desc": "Do we render the GUI in Minecraft Style (as opposed to Boxes & Stuff style)? 1 = Vanilla Style, 2 = Texture Pack Style",
 
   "config.morph.resources.reload.desc": "Reload All Mob Support Files?",
   "config.morph.resources.reload.btn": "Reload",

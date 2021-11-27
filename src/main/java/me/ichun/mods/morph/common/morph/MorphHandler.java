@@ -40,6 +40,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 public final class MorphHandler implements IApi
@@ -243,6 +244,19 @@ public final class MorphHandler implements IApi
     public LivingEntity getActiveMorphEntity(PlayerEntity player)
     {
         return getMorphInfo(player).getActiveMorphEntity();
+    }
+
+    @Override
+    public boolean isEntityAMorph(LivingEntity living)
+    {
+        return living != null && living.getPersistentData().contains(MorphVariant.NBT_PLAYER_ID);
+    }
+
+    @Nullable
+    @Override
+    public UUID getUuidOfPlayerForMorph(LivingEntity living)
+    {
+        return living != null && living.getPersistentData().contains(MorphVariant.NBT_PLAYER_ID) ? living.getPersistentData().getUniqueId(MorphVariant.NBT_PLAYER_ID) : null;
     }
 
     @Nonnull

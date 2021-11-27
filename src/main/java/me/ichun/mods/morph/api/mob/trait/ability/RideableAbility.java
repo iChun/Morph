@@ -4,6 +4,8 @@ import me.ichun.mods.morph.api.mob.trait.IEventBusRequired;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEquipable;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.util.ActionResultType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -71,6 +73,13 @@ public class RideableAbility extends Ability<RideableAbility>
             {
                 event.setCancellationResult(ActionResultType.SUCCESS);
                 event.setCanceled(true);
+
+                //We have to tell the ridden player that someone's riding 'em
+                if(!event.getTarget().world.isRemote)
+                {
+                    ServerPlayerEntity targetPlayer = (ServerPlayerEntity)event.getTarget();
+                    targetPlayer.connection.sendPacket(new SSetPassengersPacket(targetPlayer));
+                }
             }
         }
     }

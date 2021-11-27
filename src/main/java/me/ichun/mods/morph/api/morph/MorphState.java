@@ -3,6 +3,8 @@ package me.ichun.mods.morph.api.morph;
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import net.minecraft.entity.*;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -89,6 +91,12 @@ public class MorphState implements Comparable<MorphState>
             for(Trait<?> trait : traits)
             {
                 trait.livingInstance = entInstance;
+            }
+
+            if(entInstance.world.isRemote && entInstance instanceof EnderDragonEntity)
+            {
+                ((EnderDragonEntity)entInstance).setNoAI(false);
+                ((EnderDragonEntity)entInstance).getPhaseManager().setPhase(PhaseType.HOLDING_PATTERN);
             }
         }
 
@@ -220,6 +228,11 @@ public class MorphState implements Comparable<MorphState>
             ((AgeableEntity)living).setGrowingAge(living.isChild() ? -24000 : 0);
         }
 
+        if(living instanceof EnderDragonEntity)
+        {
+            ((EnderDragonEntity)living).deathTicks = player.deathTime * 10;
+        }
+
         if(living instanceof MobEntity)
         {
             MobEntity mob = (MobEntity)living;
@@ -242,7 +255,6 @@ public class MorphState implements Comparable<MorphState>
         {
             consumer.accept(living, player);
         }
-        //TODO syncing of ender dragon (+ death)
     }
 
     public static void syncInventory(LivingEntity living, PlayerEntity player, boolean reset)

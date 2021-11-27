@@ -16,10 +16,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface IApi
@@ -40,6 +37,11 @@ public interface IApi
 
     @Nullable
     default LivingEntity getActiveMorphEntity(PlayerEntity player) { return null; }
+
+    default boolean isEntityAMorph(LivingEntity living) { return false; }
+
+    @Nullable
+    default UUID getUuidOfPlayerForMorph(LivingEntity living) { return null; }
 
     default boolean canMorph(PlayerEntity player) { return false; }
 
