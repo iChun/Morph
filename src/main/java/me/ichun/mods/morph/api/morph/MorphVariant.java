@@ -5,10 +5,7 @@ import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.passive.PandaEntity;
@@ -132,7 +129,12 @@ public class MorphVariant implements Comparable<MorphVariant>
         if(living instanceof WitherEntity)
         {
             int i = ((WitherEntity)living).getInvulTime();
-            tag.putInt("Invul", i > 0 && (i > 80 || i / 5 % 2 != 1) ? 1000 : 0);
+            tag.putInt("Invul", i > 0 && (i > 80 || i / 5 % 2 != 1) ? 100000000 : 0);
+        }
+
+        if(living instanceof IAngerable)
+        {
+            tag.putInt("AngerTime", ((IAngerable)living).isAngry() ? 100000000 : 0);
         }
     }
 

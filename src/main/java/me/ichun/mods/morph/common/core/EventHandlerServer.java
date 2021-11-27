@@ -6,6 +6,7 @@ import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.BiomassUpgradeHandler;
 import me.ichun.mods.morph.common.command.CommandMorph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.morph.MorphInfoImpl;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.packet.PacketPlayerData;
 import me.ichun.mods.morph.common.packet.PacketSessionSync;
@@ -35,7 +36,7 @@ public class EventHandlerServer
         Entity entity = event.getObject();
         if(entity instanceof PlayerEntity && !(entity instanceof FakePlayer))
         {
-            event.addCapability(MorphInfo.CAPABILITY_IDENTIFIER, new MorphInfo.CapProvider(new MorphInfo((PlayerEntity)entity)));
+            event.addCapability(MorphInfo.CAPABILITY_IDENTIFIER, new MorphInfo.CapProvider(new MorphInfoImpl((PlayerEntity)entity)));
         }
     }
 

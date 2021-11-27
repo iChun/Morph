@@ -35,12 +35,7 @@ public class TraitHandler
         m.put("traitWaterBreather", WaterBreatherTrait.class);
 
         //TODO test all MC mobs in Multiplayer
-        //TODO strip all NBT by default rather than to select which to strip
-        //TODO acquire when you kill a morphed player??
-        //TODO add localisation
-        //TODO sync potion effects!
-        //TODO check chicken item drop (entity item drops outside death)
-        //TODO sync wither invul time?
+        //TODO add localisation to configs
 
         //Register the default abilities
         m.put("abilityClimb", ClimbAbility.class);

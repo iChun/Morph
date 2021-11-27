@@ -1,10 +1,10 @@
 package me.ichun.mods.morph.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.client.entity.EntityBiomassAbility;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.morph.MorphInfoImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.culling.ClippingHelper;
@@ -35,7 +35,7 @@ public class RenderEntityBiomassAbility extends EntityRenderer<EntityBiomassAbil
             return; //no render
         }
 
-        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(ability.player);
+        MorphInfoImpl info = (MorphInfoImpl)MorphHandler.INSTANCE.getMorphInfo(ability.player);
         boolean isFirstPerson = ability.player == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON;
         if(isFirstPerson)
         {

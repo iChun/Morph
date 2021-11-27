@@ -6,6 +6,7 @@ import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.morph.MorphInfoImpl;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketRequestMorphInfo;
 import net.minecraft.client.Minecraft;
@@ -39,7 +40,7 @@ public class EventHandlerClient
         PlayerEntity player = event.getPlayer();
         if(!player.removed)
         {
-            MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
+            MorphInfoImpl info = (MorphInfoImpl)MorphHandler.INSTANCE.getMorphInfo(player);
             if(!info.requested)
             {
                 Morph.channel.sendToServer(new PacketRequestMorphInfo(player.getGameProfile().getId()));

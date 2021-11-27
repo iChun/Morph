@@ -3,6 +3,7 @@ package me.ichun.mods.morph.api.morph;
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import net.minecraft.entity.*;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -22,6 +24,7 @@ public class MorphState implements Comparable<MorphState>
 {
     public MorphVariant variant;
     private LivingEntity entInstance;
+    private final Collection<ItemEntity> entInstanceDropCapture = new ArrayList<>();
     public float renderedShadowSize;
     public ArrayList<Trait<?>> traits = new ArrayList<>();
 
@@ -53,6 +56,8 @@ public class MorphState implements Comparable<MorphState>
     public void tick(PlayerEntity player, boolean resetInventory)
     {
         LivingEntity livingInstance = getEntityInstance(player.world, player.getGameProfile().getId());
+        livingInstance.captureDrops(entInstanceDropCapture); //We don't want our mob instance to drop items
+        entInstanceDropCapture.clear(); //Have the items, GC.
 
         syncEntityPosRotWithPlayer(livingInstance, player);
 
@@ -146,6 +151,9 @@ public class MorphState implements Comparable<MorphState>
 
         living.renderYawOffset = player.renderYawOffset;
         living.prevRenderYawOffset = player.prevRenderYawOffset;
+
+        //Clear potions so they don't get ticked when we tick this entity
+        living.getActivePotionMap().clear();
     }
 
     public static void syncEntityWithPlayer(LivingEntity living, PlayerEntity player)
@@ -199,6 +207,9 @@ public class MorphState implements Comparable<MorphState>
         //EntityRendererManager stuff
         living.forceFireTicks(player.getFireTimer());
 
+        //Sync potions for rendering purposes
+        living.getActivePotionMap().putAll(player.getActivePotionMap());
+
         specialEntityPlayerSync(living, player);
     }
 
@@ -231,8 +242,6 @@ public class MorphState implements Comparable<MorphState>
         {
             consumer.accept(living, player);
         }
-
-        //TODO synching of the pillager swing
         //TODO syncing of ender dragon (+ death)
     }
 

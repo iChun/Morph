@@ -101,7 +101,7 @@ public final class MorphHandler implements IApi
     @Nonnull
     public MorphInfo getMorphInfo(PlayerEntity player)
     {
-        return player.getCapability(MorphInfo.CAPABILITY_INSTANCE).orElse(new MorphInfo(player)); //if the player entity has no morph capabilities, just send a dummy morph info
+        return player.getCapability(MorphInfo.CAPABILITY_INSTANCE).orElse(new MorphInfoImpl(player)); //if the player entity has no morph capabilities, just send a dummy morph info
     }
 
     @Override
@@ -120,6 +120,21 @@ public final class MorphHandler implements IApi
     @Nullable
     public MorphVariant createVariant(LivingEntity living)
     {
+        boolean isPlayer = living instanceof PlayerEntity;
+        if(isPlayer)
+        {
+            MorphInfo morphInfo = getMorphInfo((PlayerEntity)living);
+            if(morphInfo.isMorphed())
+            {
+                if(morphInfo.getMorphProgress(1F) < 1F) //mid morph, no variant!
+                {
+                    return null;
+                }
+
+                living = morphInfo.getActiveMorphEntity(); //set the living into the morph the player is playing as right now.
+            }
+        }
+
         for(ResourceLocation rl : Morph.configServer.disabledMobsRL)
         {
             if(rl.equals(living.getType().getRegistryName()))
@@ -128,7 +143,7 @@ public final class MorphHandler implements IApi
             }
         }
 
-        boolean isPlayer = living instanceof PlayerEntity;
+        isPlayer = living instanceof PlayerEntity;
         if(!living.getType().isSerializable() && !isPlayer)
         {
             return null;

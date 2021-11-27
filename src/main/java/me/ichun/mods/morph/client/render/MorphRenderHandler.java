@@ -11,6 +11,7 @@ import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.morph.MorphInfoImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
@@ -48,7 +49,7 @@ public class MorphRenderHandler
     //TODO add stats eg total morphs/total biomass/biomass lost etc
     //TODO config that forces nameplate rendering when morphed
     //TODO test the nameplate for named mods, maybe add a config to rename the mob
-    public static void renderMorphInfo(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
+    public static void renderMorphInfo(PlayerEntity player, MorphInfoImpl info, MatrixStack stack, IRenderTypeBuffer buffer, int light, float partialTick)
     {
         isRenderingMorph = true;
 
@@ -151,7 +152,7 @@ public class MorphRenderHandler
         stack.pop();
     }
 
-    public static void renderTransitionState(PlayerEntity player, MorphInfo info, MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float partialTick, float transitionProgress, float skinAlpha)
+    public static void renderTransitionState(PlayerEntity player, MorphInfoImpl info, MatrixStack stack, IRenderTypeBuffer buffer, int light, int overlay, float partialTick, float transitionProgress, float skinAlpha)
     {
         if(info.transitionState == null)
         {
