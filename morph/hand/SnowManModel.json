@@ -1,0 +1,68 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.SnowManModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78192_d",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -57.295780181884766
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.28125
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78193_e",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -180.0
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 57.295780181884766
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.28125
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        },
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 180.0
+        }
+      ]
+    }
+  ]
+}

@@ -234,7 +234,24 @@ public class Morph
             }
             else
             {
-                LOGGER.warn("IMC: Non-BiConsumer object from {}", msg.getSenderModId());
+                LOGGER.warn("IMC: Non-BiConsumer morph sync object from {}", msg.getSenderModId());
+            }
+        });
+
+        //Register third party mob NBT tag setters
+        event.getIMCStream(m -> m.equalsIgnoreCase("variantNbtSetter")).forEach(msg -> {
+            Object o = msg.getMessageSupplier().get();
+            if(o instanceof BiConsumer)
+            {
+                BiConsumer consumer = (BiConsumer)o;
+
+                MorphHandler.VARIANT_SPECIAL_TAG_SETTERS.add(consumer);
+
+                LOGGER.info("IMC: Registering variant NBT setter BiConsumer from mod {}", msg.getSenderModId());
+            }
+            else
+            {
+                LOGGER.warn("IMC: Non-BiConsumer NBT setter object from {}", msg.getSenderModId());
             }
         });
     }

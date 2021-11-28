@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.ArmorStandModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78115_e",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.46875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.375
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78115_e",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.46875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.375
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ]
+}

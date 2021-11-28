@@ -1,0 +1,38 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.StriderModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_239119_b_",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_239118_a_",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ]
+}

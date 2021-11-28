@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.CreeperModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78130_g",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78129_f",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.RavagerModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_217174_j",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_217173_i",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ]
+}

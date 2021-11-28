@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.BoarModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_239111_i_",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.53125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_239110_h_",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.53125
+        }
+      ]
+    }
+  ]
+}

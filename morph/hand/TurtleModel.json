@@ -1,0 +1,58 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.TurtleModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78144_f",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.09375
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.21875
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78147_e",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.09375
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.21875
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ]
+}

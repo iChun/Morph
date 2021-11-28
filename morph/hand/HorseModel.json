@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.HorseModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_228264_h_",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.1875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_228265_i_",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.1875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.625
+        }
+      ]
+    }
+  ]
+}

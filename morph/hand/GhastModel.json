@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.GhastModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78127_b[2]",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.015625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.350000023841858
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78127_b[0]",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.140625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.287500023841858
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ]
+}

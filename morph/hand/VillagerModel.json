@@ -1,0 +1,38 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.VillagerModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78188_e",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78187_d",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ]
+}

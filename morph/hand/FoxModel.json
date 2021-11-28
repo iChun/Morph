@@ -1,0 +1,38 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.FoxModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_217123_l",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_217122_k",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ]
+}

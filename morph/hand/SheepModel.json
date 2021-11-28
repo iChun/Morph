@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.SheepModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78144_f",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.1875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78147_e",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.1875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ]
+}

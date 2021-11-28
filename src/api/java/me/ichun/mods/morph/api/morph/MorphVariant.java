@@ -103,40 +103,6 @@ public class MorphVariant implements Comparable<MorphVariant>
         }
     }
 
-    public void writeSpecialTags(LivingEntity living, CompoundNBT tag)
-    {
-        if(living instanceof AgeableEntity) //ForcedAge is only called when eating, useless for keeping a mob a baby.
-        {
-            tag.putInt("Age", living.isChild() ? -24000 : 0);
-        }
-
-        if(living instanceof PandaEntity)
-        {
-            PandaEntity panda = (PandaEntity)living;
-
-            if(!panda.getMainGene().func_221107_c()) //if main gene not recessive
-            {
-                tag.putString("HiddenGene", "normal");
-            }
-            else if(panda.getMainGene() != panda.getHiddenGene())//main gene is recessive, check hidden gene, if not equal, panda is normal
-            {
-                tag.putString("MainGene", "normal");
-                tag.putString("HiddenGene", "normal");
-            }
-        }
-
-        if(living instanceof WitherEntity)
-        {
-            int i = ((WitherEntity)living).getInvulTime();
-            tag.putInt("Invul", i > 0 && (i > 80 || i / 5 % 2 != 1) ? 100000000 : 0);
-        }
-
-        if(living instanceof IAngerable)
-        {
-            tag.putInt("AngerTime", ((IAngerable)living).isAngry() ? 100000000 : 0);
-        }
-    }
-
     public boolean combineVariants(MorphVariant variant)
     {
         if(!isSameMorphType(variant))

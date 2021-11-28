@@ -1,0 +1,14 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.IllagerModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_191224_h"
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_191223_g"
+    }
+  ]
+}

@@ -319,16 +319,31 @@ public final class HandHandler
                 continue;
             }
 
-            stack.push();
-
-            if(stacks[i] != null)
-            {
-                PlacementCorrector.multiplyStackWithStack(stack, stacks[i]);
-            }
+            float prevX = part.rotateAngleX;
             part.rotateAngleX = 0F;
-            part.render(stack, buffer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
 
-            stack.pop();
+            //taken from ModelRenderer.render
+            if(part.showModel && (!part.cubeList.isEmpty() || !part.childModels.isEmpty()))
+            {
+                stack.push();
+
+                part.translateRotate(stack);
+
+                if(stacks[i] != null) //inject our stack to reverse rotation and do the appropriate translates
+                {
+                    PlacementCorrector.multiplyStackWithStack(stack, stacks[i]);
+                }
+
+                part.doRender(stack.getLast(), buffer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
+
+                for(ModelRenderer modelrenderer : part.childModels) {
+                    modelrenderer.render(stack, buffer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
+                }
+
+                stack.pop();
+            }
+
+            part.rotateAngleX = prevX;
         }
     }
 

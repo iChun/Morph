@@ -1,0 +1,68 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.SquidModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78201_b[6]",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 180.0
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.375
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.3125
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        },
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -180.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78201_b[6]",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 180.0
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.375
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.3125
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        },
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -180.0
+        }
+      ]
+    }
+  ]
+}

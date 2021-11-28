@@ -1,0 +1,48 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.OcelotModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78160_c",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.30000001192092896
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.7562500238418579
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78157_d",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.30000001192092896
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.7562500238418579
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ]
+}

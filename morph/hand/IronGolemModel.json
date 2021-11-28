@@ -1,0 +1,38 @@
+{
+  "author": "iChun",
+  "forClass": "net.minecraft.client.renderer.entity.model.IronGolemModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_78174_d",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.3125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.53125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_78177_c",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.3125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.53125
+        }
+      ]
+    }
+  ]
+}

@@ -29,11 +29,16 @@ import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import me.ichun.mods.morph.common.packet.PacketMorphInfo;
 import me.ichun.mods.morph.common.packet.PacketUpdateBiomassValue;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.passive.PandaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -49,6 +54,44 @@ public final class MorphHandler implements IApi
 {
     public static final Splitter ON_SEMI_COLON = Splitter.on(";").trimResults().omitEmptyStrings();
     private static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png"); //call the getter.
+
+    public static final ArrayList<BiConsumer<LivingEntity, CompoundNBT>> VARIANT_SPECIAL_TAG_SETTERS = Util.make(new ArrayList<>(), list -> {
+        list.add((living, tag) -> {
+            if(living instanceof AgeableEntity) //ForcedAge is only called when eating, useless for keeping a mob a baby.
+            {
+                tag.putInt("Age", living.isChild() ? -24000 : 0);
+            }
+        });
+        list.add((living, tag) -> {
+            if(living instanceof PandaEntity)
+            {
+                PandaEntity panda = (PandaEntity)living;
+
+                if(!panda.getMainGene().func_221107_c()) //if main gene not recessive
+                {
+                    tag.putString("HiddenGene", "normal");
+                }
+                else if(panda.getMainGene() != panda.getHiddenGene())//main gene is recessive, check hidden gene, if not equal, panda is normal
+                {
+                    tag.putString("MainGene", "normal");
+                    tag.putString("HiddenGene", "normal");
+                }
+            }
+        });
+        list.add((living, tag) -> {
+            if(living instanceof WitherEntity)
+            {
+                int i = ((WitherEntity)living).getInvulTime();
+                tag.putInt("Invul", i > 0 && (i > 80 || i / 5 % 2 != 1) ? 100000000 : 0);
+            }
+        });
+        list.add((living, tag) -> {
+            if(living instanceof IAngerable)
+            {
+                tag.putInt("AngerTime", ((IAngerable)living).isAngry() ? 100000000 : 0);
+            }
+        });
+    });
 
     private final ArrayList<BiConsumer<LivingEntity, PlayerEntity>> modPlayerMorphSyncConsumers = new ArrayList<>();
 
@@ -179,7 +222,7 @@ public final class MorphHandler implements IApi
             living.writeAdditional(tag);
             //we have the default info
 
-            variant.writeSpecialTags(living, tag);
+            writeSpecialTags(living, tag);
 
             //time to apply the NBT modifiers
             NbtModifier nbtModifier = NbtHandler.getModifierFor(living);
@@ -194,6 +237,14 @@ public final class MorphHandler implements IApi
         }
 
         return variant;
+    }
+
+    private void writeSpecialTags(LivingEntity living, CompoundNBT tag)
+    {
+        for(BiConsumer<LivingEntity, CompoundNBT> consumer : VARIANT_SPECIAL_TAG_SETTERS)
+        {
+            consumer.accept(living, tag);
+        }
     }
 
     @Override
