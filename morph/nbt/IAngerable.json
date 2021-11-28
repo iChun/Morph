@@ -1,9 +1,0 @@
-{
-  "forClass": "net.minecraft.entity.IAngerable",
-  "modifiers": [
-    {
-      "key": "AngerTime",
-      "keep": true
-    }
-  ]
-}

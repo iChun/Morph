@@ -1,0 +1,21 @@
+{
+  "forClass": "noobanidus.mods.miniatures.entity.MiniMeEntity",
+  "modifiers": [
+    {
+      "key": "gameProfileExists",
+      "keep": true
+    },
+    {
+      "key": "gameProfile",
+      "keep": true
+    },
+    {
+      "key": "Noob",
+      "keep": true
+    },
+    {
+      "key": "Scale",
+      "keep": true
+    }
+  ]
+}

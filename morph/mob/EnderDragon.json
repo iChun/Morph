@@ -9,6 +9,7 @@
     },
     {
       "type": "abilityFlightFlap",
+      "velocityAdded": 1.2,
       "slowdownInWater": true
     },
     {

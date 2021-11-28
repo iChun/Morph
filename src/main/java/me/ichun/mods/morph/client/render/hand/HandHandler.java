@@ -3,6 +3,8 @@ package me.ichun.mods.morph.client.render.hand;
 import com.google.gson.Gson;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import me.ichun.mods.ichunutil.api.client.hand.HandInfo;
+import me.ichun.mods.ichunutil.api.common.PlacementCorrector;
 import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
@@ -321,7 +323,7 @@ public final class HandHandler
 
             if(stacks[i] != null)
             {
-                RenderHelper.multiplyStackWithStack(stack, stacks[i]);
+                PlacementCorrector.multiplyStackWithStack(stack, stacks[i]);
             }
             part.rotateAngleX = 0F;
             part.render(stack, buffer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
