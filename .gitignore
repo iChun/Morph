@@ -17,7 +17,7 @@ out
 build
 .gradle
 libs
-src/api
+src/api/resources/META-INF/accesstransformer.cfg
 logs
 
 # other
