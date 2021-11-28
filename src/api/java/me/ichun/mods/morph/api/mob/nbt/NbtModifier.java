@@ -1,8 +1,8 @@
-package me.ichun.mods.morph.common.morph.nbt;
+package me.ichun.mods.morph.api.mob.nbt;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.JsonToNBT;
@@ -157,7 +157,7 @@ public class NbtModifier
                 }
                 catch(CommandSyntaxException e)
                 {
-                    Morph.LOGGER.error("Error parsing Modifier key {} of value {}. Removing modifier.", key, value);
+                    MorphApi.getLogger().error("Error parsing Modifier key {} of value {}. Removing modifier.", key, value);
                     e.printStackTrace();
                     return false;
                 }
@@ -207,7 +207,7 @@ public class NbtModifier
 
                 if(ori != null && ori.getType() != nbtValue.getType())
                 {
-                    Morph.LOGGER.error("Error applying Modifier key {} of value {}. Incompatible INBT type of {} against {}.", key, value, nbtValue.getType(), ori.getType());
+                    MorphApi.getLogger().error("Error applying Modifier key {} of value {}. Incompatible INBT type of {} against {}.", key, value, nbtValue.getType(), ori.getType());
                     return;
                 }
 

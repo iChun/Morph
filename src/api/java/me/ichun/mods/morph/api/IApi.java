@@ -13,6 +13,7 @@ import me.ichun.mods.morph.api.morph.MorphVariant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -74,6 +75,8 @@ public interface IApi
     default ResourceLocation getMorphSkinTexture() { return null; }
 
     default List<BiConsumer<LivingEntity, PlayerEntity>> getModPlayerMorphSyncConsumers() { return ImmutableList.of(); }
+
+    default List<BiConsumer<LivingEntity, CompoundNBT>> getVariantNbtTagSetters() { return ImmutableList.of(); }
 
     //Mob Data Stuff
     default void registerMobData(@Nonnull ResourceLocation rl, @Nonnull MobData data) {}

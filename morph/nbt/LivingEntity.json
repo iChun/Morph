@@ -1,0 +1,13 @@
+{
+  "forClass": "net.minecraft.entity.LivingEntity",
+  "modifiers": [
+    {
+      "key": "CustomName",
+      "keep": true
+    },
+    {
+      "key": "CustomNameVisible",
+      "keep": true
+    }
+  ]
+}

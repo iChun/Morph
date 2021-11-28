@@ -12,5 +12,7 @@ public class MobData
     public Double biomassValueOverride;
     public Double biomassMultiplier;
 
+    public Boolean disableAcquiringMorph;
+
     public ArrayList<Trait<?>> traits = new ArrayList<>();
 }

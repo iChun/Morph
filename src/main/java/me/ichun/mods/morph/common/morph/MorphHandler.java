@@ -22,7 +22,7 @@ import me.ichun.mods.morph.common.mob.TraitHandler;
 import me.ichun.mods.morph.common.mode.MorphMode;
 import me.ichun.mods.morph.common.mode.MorphModeType;
 import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
-import me.ichun.mods.morph.common.morph.nbt.NbtModifier;
+import me.ichun.mods.morph.api.mob.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketAcquisition;
@@ -196,6 +196,12 @@ public final class MorphHandler implements IApi
             }
         }
 
+        MobData data = MobDataHandler.getMobData(living);
+        if(data != null && data.disableAcquiringMorph != null && data.disableAcquiringMorph)
+        {
+            return null;
+        }
+
         isPlayer = living instanceof PlayerEntity;
         if(!living.getType().isSerializable() && !isPlayer)
         {
@@ -222,11 +228,11 @@ public final class MorphHandler implements IApi
             living.writeAdditional(tag);
             //we have the default info
 
-            writeSpecialTags(living, tag);
-
             //time to apply the NBT modifiers
             NbtModifier nbtModifier = NbtHandler.getModifierFor(living);
             nbtModifier.apply(tag);
+
+            writeSpecialTags(living, tag);
 
             //Clean empty tags
             NbtHandler.removeEmptyCompoundTags(tag);
@@ -330,6 +336,12 @@ public final class MorphHandler implements IApi
     public List<BiConsumer<LivingEntity, PlayerEntity>> getModPlayerMorphSyncConsumers()
     {
         return modPlayerMorphSyncConsumers;
+    }
+
+    @Override
+    public List<BiConsumer<LivingEntity, CompoundNBT>> getVariantNbtTagSetters()
+    {
+        return VARIANT_SPECIAL_TAG_SETTERS;
     }
 
     @Override

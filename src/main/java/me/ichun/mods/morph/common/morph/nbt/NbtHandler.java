@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
+import me.ichun.mods.morph.api.mob.nbt.NbtModifier;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.entity.LivingEntity;
