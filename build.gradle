@@ -11,12 +11,12 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'org.spongepowered.mixin'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '10.0.0-betatest1'
+version = '10.0.0'
 group = 'morph'
 archivesBaseName = 'Morph-1.16.5'
 
@@ -67,6 +67,33 @@ minecraft {
     }
 }
 
+sourceSets {
+    api {
+        resources {
+            exclude 'META-INF/accesstransformer.cfg'
+        }
+    }
+    main {
+        // Make API classes visible from the main classes.
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+
+//        java {
+//            exclude 'example/directory/Class.java'
+//            exclude 'example/directory/Class2.java'
+//        }
+    }
+    test {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+}
+
+configurations {
+    // Make Minecraft classes visible from the API classes.
+    apiCompile.extendsFrom(compile)
+}
+
 mixin {
     add sourceSets.main, "morph.refmap.json"
 }
@@ -106,6 +133,11 @@ repositories {
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
+    from sourceSets.main.output.classesDirs
+    from sourceSets.api.output.classesDirs
+    from sourceSets.main.output.resourcesDir
+    from sourceSets.api.output.resourcesDir
+
     manifest {
         attributes([
                 "Specification-Title": "${group}",
@@ -117,5 +149,40 @@ jar {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "MixinConfigs": "morph.mixins.json"
         ])
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allJava
+    from sourceSets.api.allJava
+}
+
+task apiJar(type: Jar) {
+    classifier = "api"
+    from sourceSets.api.output
+}
+
+artifacts {
+    //archives sourcesJar
+    archives apiJar
+}
+
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+//publish.dependsOn('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
     }
 }

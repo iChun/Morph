@@ -8,6 +8,7 @@ import me.ichun.mods.morph.client.entity.EntityBiomassAbility;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.packet.PacketInvalidateClientHealth;
+import me.ichun.mods.morph.mixin.LivingEntityInvokerMixin;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -15,13 +16,17 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class MorphInfoImpl extends MorphInfo
@@ -342,5 +347,79 @@ public class MorphInfoImpl extends MorphInfo
             return alpha;
         }
         return 0F;
+    }
+
+    @Nullable
+    @Override
+    public SoundEvent getHurtSound(DamageSource source)
+    {
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetHurtSound(source);
+    }
+
+    @Nullable
+    @Override
+    public SoundEvent getDeathSound() {
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetDeathSound();
+    }
+
+    @Override
+    public SoundEvent getFallSound(int height) {
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetFallSound(height);
+    }
+
+    @Override
+    public SoundEvent getDrinkSound(ItemStack stack) {
+        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetDrinkSound(stack);
+    }
+
+    @Override
+    public SoundEvent getEatSound(ItemStack stack) {
+        return getActiveMorphEntityOrPlayer().getEatSound(stack);
+    }
+
+    @Override
+    public float getSoundVolume()
+    {
+        if(nextState != null)
+        {
+            if(prevState != null)
+            {
+                float transitionProg = getTransitionProgressLinear(1F);
+
+                float prevVolume = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
+                float nextVolume = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
+
+                return prevVolume + (nextVolume - prevVolume) * transitionProg;
+            }
+            else
+            {
+                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
+            }
+        }
+
+        return 1F;
+    }
+
+    @Override
+    public float getSoundPitch()
+    {
+        if(nextState != null)
+        {
+            if(prevState != null)
+            {
+                float transitionProg = getTransitionProgressLinear(1F);
+
+                float prevPitch = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
+                float nextPitch = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
+
+                return prevPitch + (nextPitch - prevPitch) * transitionProg;
+            }
+            else
+            {
+                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
+            }
+        }
+
+        return 1F;
     }
 }

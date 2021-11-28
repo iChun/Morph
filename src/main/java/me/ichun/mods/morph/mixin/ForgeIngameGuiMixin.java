@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.api.mixin;
+package me.ichun.mods.morph.mixin;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.morph.common.Morph;

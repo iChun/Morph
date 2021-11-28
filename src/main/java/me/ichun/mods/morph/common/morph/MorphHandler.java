@@ -1,6 +1,8 @@
 package me.ichun.mods.morph.common.morph;
 
 import com.google.common.base.Splitter;
+import com.mojang.authlib.GameProfile;
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.IApi;
 import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
@@ -84,6 +86,13 @@ public final class MorphHandler implements IApi
 
     //API overrides
     public static final MorphHandler INSTANCE = new MorphHandler();
+
+    @Nonnull
+    @Override
+    public GameProfile getGameProfile(UUID uuid, String name)
+    {
+        return EntityHelper.getGameProfile(uuid, name);
+    }
 
     @Override
     public String getMorphModeName()

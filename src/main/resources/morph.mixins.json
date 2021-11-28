@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "me.ichun.mods.morph.api.mixin",
+  "package": "me.ichun.mods.morph.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "morph.refmap.json",
   "mixins": [

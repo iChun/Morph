@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.api.mixin;
+package me.ichun.mods.morph.mixin;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;

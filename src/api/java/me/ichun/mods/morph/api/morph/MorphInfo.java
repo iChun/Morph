@@ -1,7 +1,6 @@
 package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.morph.api.MorphApi;
-import me.ichun.mods.morph.api.mixin.LivingEntityInvokerMixin;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -284,7 +283,7 @@ public abstract class MorphInfo
         return null;
     }
 
-    private LivingEntity getActiveMorphEntityOrPlayer()
+    protected LivingEntity getActiveMorphEntityOrPlayer()
     {
         LivingEntity activeMorph = getActiveMorphEntity();
         if(activeMorph == null)
@@ -354,70 +353,20 @@ public abstract class MorphInfo
     }
 
     @Nullable
-    public SoundEvent getHurtSound(DamageSource source) {
-        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetHurtSound(source);
-    }
+    public abstract SoundEvent getHurtSound(DamageSource source);
 
     @Nullable
-    public SoundEvent getDeathSound() {
-        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetDeathSound();
-    }
+    public abstract SoundEvent getDeathSound();
 
-    public SoundEvent getFallSound(int height) {
-        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetFallSound(height);
-    }
+    public abstract SoundEvent getFallSound(int height);
 
-    public SoundEvent getDrinkSound(ItemStack stack) {
-        return ((LivingEntityInvokerMixin)getActiveMorphEntityOrPlayer()).callGetDrinkSound(stack);
-    }
+    public abstract SoundEvent getDrinkSound(ItemStack stack);
 
-    public SoundEvent getEatSound(ItemStack stack) {
-        return getActiveMorphEntityOrPlayer().getEatSound(stack);
-    }
+    public abstract SoundEvent getEatSound(ItemStack stack);
 
-    public float getSoundVolume()
-    {
-        if(nextState != null)
-        {
-            if(prevState != null)
-            {
-                float transitionProg = getTransitionProgressLinear(1F);
+    public abstract float getSoundVolume();
 
-                float prevVolume = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
-                float nextVolume = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
-
-                return prevVolume + (nextVolume - prevVolume) * transitionProg;
-            }
-            else
-            {
-                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
-            }
-        }
-
-        return 1F;
-    }
-
-    public float getSoundPitch()
-    {
-        if(nextState != null)
-        {
-            if(prevState != null)
-            {
-                float transitionProg = getTransitionProgressLinear(1F);
-
-                float prevPitch = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
-                float nextPitch = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
-
-                return prevPitch + (nextPitch - prevPitch) * transitionProg;
-            }
-            else
-            {
-                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
-            }
-        }
-
-        return 1F;
-    }
+    public abstract float getSoundPitch();
 
     public static class CapProvider implements ICapabilitySerializable<CompoundNBT>
     {

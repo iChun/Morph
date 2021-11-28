@@ -1,6 +1,6 @@
 package me.ichun.mods.morph.api.mob.trait;
 
-import me.ichun.mods.morph.common.Morph;
+import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -16,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 
 public class IntimidateTrait extends Trait<IntimidateTrait>
-    implements IEventBusRequired
+        implements IEventBusRequired
 {
     public String idToIntimidate;
     public String classToIntimidate;
@@ -51,12 +51,12 @@ public class IntimidateTrait extends Trait<IntimidateTrait>
                 }
                 else
                 {
-                    Morph.LOGGER.warn("Found class to intimidate that is not a LivingEntity class: {}", classToIntimidate);
+                    MorphApi.getLogger().warn("Found class to intimidate that is not a LivingEntity class: {}", classToIntimidate);
                 }
             }
             catch(ClassNotFoundException e)
             {
-                Morph.LOGGER.warn("Could not find class to intimidate: {}", classToIntimidate);
+                MorphApi.getLogger().warn("Could not find class to intimidate: {}", classToIntimidate);
             }
         }
 

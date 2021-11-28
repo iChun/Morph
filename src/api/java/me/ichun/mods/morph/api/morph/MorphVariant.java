@@ -1,6 +1,5 @@
 package me.ichun.mods.morph.api.morph;
 
-import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.client.resources.I18n;
@@ -380,7 +379,7 @@ public class MorphVariant implements Comparable<MorphVariant>
             {
                 if(value.equals(EntityType.PLAYER))
                 {
-                    entInstance = world.isRemote ? createPlayer(world, thisVariant.playerUUID) : new FakePlayer((ServerWorld)world, EntityHelper.getGameProfile(thisVariant.playerUUID, null));
+                    entInstance = world.isRemote ? createPlayer(world, thisVariant.playerUUID) : new FakePlayer((ServerWorld)world, MorphApi.getApiImpl().getGameProfile(thisVariant.playerUUID, null));
                 }
                 else
                 {
@@ -421,7 +420,7 @@ public class MorphVariant implements Comparable<MorphVariant>
     @OnlyIn(Dist.CLIENT)
     private PlayerEntity createPlayer(World world, UUID uuid)
     {
-        return new RemoteClientPlayerEntity((ClientWorld)world, EntityHelper.getGameProfile(uuid, null));
+        return new RemoteClientPlayerEntity((ClientWorld)world, MorphApi.getApiImpl().getGameProfile(uuid, null));
     }
 
     public MorphVariant getAsVariant(Variant variant)

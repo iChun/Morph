@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.api.mixin;
+package me.ichun.mods.morph.mixin;
 
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphHandler;

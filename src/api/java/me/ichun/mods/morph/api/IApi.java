@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.api;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.authlib.GameProfile;
 import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.mob.MobData;
@@ -21,6 +22,10 @@ import java.util.function.BiConsumer;
 
 public interface IApi
 {
+    //Helpers
+    @Nonnull
+    default GameProfile getGameProfile(@Nullable UUID uuid, @Nullable String name) { return new GameProfile(uuid, name); }
+
     //Mod GameMode
     @Nonnull
     default String getMorphModeName() { return ""; }
