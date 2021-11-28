@@ -4,11 +4,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
+import me.ichun.mods.morph.api.event.MorphLoadResourceEvent;
 import me.ichun.mods.morph.api.mob.nbt.NbtModifier;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -68,6 +70,8 @@ public class NbtHandler
         Morph.LOGGER.info("Loaded {} NBT Modifier(s)", NBT_MODIFIERS.size() + NBT_MODIFIERS_INTERFACES.size());
 
         setupInterfaceModifiers();
+
+        MinecraftForge.EVENT_BUS.post(new MorphLoadResourceEvent(MorphLoadResourceEvent.Type.NBT));
     }
 
     private static boolean readNbtJson(String json) throws ClassNotFoundException, JsonSyntaxException

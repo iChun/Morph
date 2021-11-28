@@ -9,6 +9,7 @@ import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
+import me.ichun.mods.morph.api.event.MorphLoadResourceEvent;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
@@ -431,5 +432,7 @@ public final class HandHandler
         }
 
         Morph.LOGGER.info("Loaded {} Hand Info(s)", MODEL_HAND_INFO.size());
+
+        MinecraftForge.EVENT_BUS.post(new MorphLoadResourceEvent(MorphLoadResourceEvent.Type.HAND));
     }
 }

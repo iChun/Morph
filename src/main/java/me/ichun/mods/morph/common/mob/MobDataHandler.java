@@ -4,12 +4,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
+import me.ichun.mods.morph.api.event.MorphLoadResourceEvent;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.io.FileUtils;
 
@@ -17,10 +19,12 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MobDataHandler
 {
     private static final HashMap<ResourceLocation, MobData> MOB_DATA = new HashMap<>();
+    private static final HashMap<ResourceLocation, MobData> MOB_DATA_FROM_MODS = new HashMap<>();
 
     public static void loadMobData()
     {
@@ -62,6 +66,10 @@ public class MobDataHandler
         }
 
         Morph.LOGGER.info("Loaded {} Mob Data(s) from {} files", MOB_DATA.size(), filesProcessed);
+
+        readdModMobData();
+
+        MinecraftForge.EVENT_BUS.post(new MorphLoadResourceEvent(MorphLoadResourceEvent.Type.MOB));
     }
 
     private static boolean readMobDataJson(String json) throws JsonSyntaxException
@@ -100,12 +108,19 @@ public class MobDataHandler
 
     public static void registerMobData(ResourceLocation rl, MobData data)
     {
+        MOB_DATA_FROM_MODS.put(rl, data);
+
         if(MOB_DATA.containsKey(rl))
         {
             Morph.LOGGER.warn("We already have another Mob Data for {}. This is a mod-level override so we shall acknowledge it.", rl.toString());
         }
 
         MOB_DATA.put(rl, data);
+    }
+
+    private static void readdModMobData()
+    {
+        MOB_DATA.putAll(MOB_DATA_FROM_MODS);
     }
 
     @Nullable
