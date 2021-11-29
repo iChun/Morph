@@ -89,20 +89,24 @@ public abstract class MorphInfo
             if(transitionProgress <= 0F)
             {
                 LivingEntity prevInstance = prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                prevInstance.setPose(player.getPose());
                 prevInstance.recalculateSize();
                 return prevInstance.size;
             }
             else if(transitionProgress >= 1F)
             {
                 LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                nextInstance.setPose(player.getPose());
                 nextInstance.recalculateSize();
                 return nextInstance.size;
             }
             else
             {
                 LivingEntity prevInstance = prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                prevInstance.setPose(player.getPose());
                 prevInstance.recalculateSize();
                 LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                nextInstance.setPose(player.getPose());
                 nextInstance.recalculateSize();
                 EntitySize prevSize = prevInstance.size;
                 EntitySize nextSize = nextInstance.size;
@@ -112,6 +116,7 @@ public abstract class MorphInfo
         else
         {
             LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+            nextInstance.setPose(player.getPose());
             nextInstance.recalculateSize();
             return nextInstance.size;
         }

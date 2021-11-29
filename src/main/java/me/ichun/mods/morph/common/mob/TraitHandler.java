@@ -12,7 +12,6 @@ import java.util.HashMap;
 
 public class TraitHandler
 {
-    //TODO test sleep bounding box
     private static final HashMap<String, Class<? extends Trait>> TRAITS = Util.make(new HashMap<>(), m -> {
         //Register the default traits (no fields)
         m.put("traitFallNegate", FallNegateTrait.class);

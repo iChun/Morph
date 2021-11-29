@@ -202,6 +202,15 @@ public class MorphState implements Comparable<MorphState>
             living.recalculateSize();
         }
 
+        if(player.getBedPosition().isPresent())
+        {
+            living.setBedPosition(player.getBedPosition().get());
+        }
+        else
+        {
+            living.clearBedPosition();
+        }
+
         living.setInvisible(player.isInvisible());
 
         living.setUniqueId(player.getUniqueID());

@@ -63,8 +63,6 @@ public class MorphInfoImpl extends MorphInfo
             applyAttributeModifiers(transitionProgress);
         }
 
-        //TODO check player resize on sleeping
-
         if(transitionProgress < 1.0F) // is morphing
         {
             if(!player.world.isRemote)
