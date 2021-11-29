@@ -44,6 +44,8 @@ public class ConfigServer extends ConfigBase
 
     public List<String> disabledTraits = new ArrayList<>();
 
+    public boolean silentMorphs = false;
+
     @CategoryDivider(name = "biomass")
     @Prop(min = 0)
     public double biomassValue = 0.3D; //how much of the space the entity takes up to actually consider as biomass. Also essentially a configurable ratio

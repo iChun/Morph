@@ -245,13 +245,30 @@ public class Morph
             {
                 BiConsumer consumer = (BiConsumer)o;
 
-                MorphHandler.VARIANT_SPECIAL_TAG_SETTERS.add(consumer);
+                MorphHandler.INSTANCE.getVariantNbtTagSetters().add(consumer);
 
                 LOGGER.info("IMC: Registering variant NBT setter BiConsumer from mod {}", msg.getSenderModId());
             }
             else
             {
                 LOGGER.warn("IMC: Non-BiConsumer NBT setter object from {}", msg.getSenderModId());
+            }
+        });
+
+        //Register third party mob NBT tag readers
+        event.getIMCStream(m -> m.equalsIgnoreCase("variantNbtReader")).forEach(msg -> {
+            Object o = msg.getMessageSupplier().get();
+            if(o instanceof BiConsumer)
+            {
+                BiConsumer consumer = (BiConsumer)o;
+
+                MorphHandler.INSTANCE.getVariantNbtTagReaders().add(consumer);
+
+                LOGGER.info("IMC: Registering variant NBT reader BiConsumer from mod {}", msg.getSenderModId());
+            }
+            else
+            {
+                LOGGER.warn("IMC: Non-BiConsumer NBT reader object from {}", msg.getSenderModId());
             }
         });
     }

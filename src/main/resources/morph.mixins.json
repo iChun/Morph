@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "morph.refmap.json",
   "mixins": [
+    "EntityInvokerMixin",
+    "EntityMixin",
     "LivingEntityInvokerMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin"

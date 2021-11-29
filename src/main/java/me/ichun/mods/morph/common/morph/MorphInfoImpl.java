@@ -8,7 +8,9 @@ import me.ichun.mods.morph.client.entity.EntityBiomassAbility;
 import me.ichun.mods.morph.client.render.MorphRenderHandler;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.packet.PacketInvalidateClientHealth;
+import me.ichun.mods.morph.mixin.EntityInvokerMixin;
 import me.ichun.mods.morph.mixin.LivingEntityInvokerMixin;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -21,6 +23,7 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -347,6 +350,24 @@ public class MorphInfoImpl extends MorphInfo
             return alpha;
         }
         return 0F;
+    }
+
+    @Override
+    public void playStepSound(BlockPos pos, BlockState blockState)
+    {
+        ((EntityInvokerMixin)getActiveMorphEntityOrPlayer()).callPlayStepSound(pos, blockState);
+    }
+
+    @Override
+    public void playSwimSound(float volume)
+    {
+        ((EntityInvokerMixin)getActiveMorphEntityOrPlayer()).callPlaySwimSound(volume);
+    }
+
+    @Override
+    public float playFlySound(float volume)
+    {
+        return ((EntityInvokerMixin)getActiveMorphEntityOrPlayer()).callPlayFlySound(volume);
     }
 
     @Nullable

@@ -2,16 +2,14 @@ package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.morph.api.MorphApi;
 import me.ichun.mods.morph.api.mob.trait.Trait;
-import net.minecraft.entity.*;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.boss.dragon.phase.PhaseType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -63,6 +61,8 @@ public class MorphState implements Comparable<MorphState>
 
         syncEntityPosRotWithPlayer(livingInstance, player);
 
+        syncInventory(livingInstance, player, true); //reset the inventory so the entity doesn't actually use our equipment when ticking.
+
         if(livingInstance.canUpdate())
         {
             livingInstance.tick();
@@ -70,7 +70,12 @@ public class MorphState implements Comparable<MorphState>
 
         syncEntityWithPlayer(livingInstance, player);
 
-        syncInventory(livingInstance, player, resetInventory);
+        if(!resetInventory)
+        {
+            syncInventory(livingInstance, player, false); //sync the inventory for rendering purposes.
+        }
+
+        livingInstance.getDataManager().setClean(); //we don't want to flood the client with packets for an entity it can't find.
     }
 
     public void tickTraits()
@@ -91,12 +96,6 @@ public class MorphState implements Comparable<MorphState>
             for(Trait<?> trait : traits)
             {
                 trait.livingInstance = entInstance;
-            }
-
-            if(entInstance.world.isRemote && entInstance instanceof EnderDragonEntity)
-            {
-                ((EnderDragonEntity)entInstance).setNoAI(false);
-                ((EnderDragonEntity)entInstance).getPhaseManager().setPhase(PhaseType.HOLDING_PATTERN);
             }
         }
 
@@ -166,7 +165,7 @@ public class MorphState implements Comparable<MorphState>
 
     public static void syncEntityWithPlayer(LivingEntity living, PlayerEntity player)
     {
-        syncEntityPosRotWithPlayer(living, player);
+        syncEntityPosRotWithPlayer(living, player); //resync with the player position in case the entity moved whilst ticking.
 
         //Others
         living.limbSwing = player.limbSwing;
@@ -181,9 +180,6 @@ public class MorphState implements Comparable<MorphState>
         living.setSneaking(player.isSneaking());
         living.setSwimming(player.isSwimming());
         living.setSprinting(player.isSprinting());
-
-        //Cannot set silent, no more ambient noise??
-        //        living.setSilent(true); //we don't wanna hear the mob when they get damaged by fire ticks or something
 
         living.setHealth(living.getMaxHealth() * (player.getHealth() / player.getMaxHealth()));
         living.hurtTime = player.hurtTime;
@@ -223,34 +219,6 @@ public class MorphState implements Comparable<MorphState>
 
     public static void specialEntityPlayerSync(LivingEntity living, PlayerEntity player)
     {
-        if(living instanceof AgeableEntity)
-        {
-            ((AgeableEntity)living).setGrowingAge(living.isChild() ? -24000 : 0);
-        }
-
-        if(living instanceof EnderDragonEntity)
-        {
-            ((EnderDragonEntity)living).deathTicks = player.deathTime * 10;
-        }
-
-        if(living instanceof MobEntity)
-        {
-            MobEntity mob = (MobEntity)living;
-            mob.setLeftHanded(player.getPrimaryHand() == HandSide.LEFT);
-            mob.setAggroed(player.isHandActive());
-        }
-
-        if(living instanceof PlayerEntity)
-        {
-            PlayerEntity playerEntity = (PlayerEntity)living;
-            playerEntity.setPrimaryHand(player.getPrimaryHand());
-        }
-
-        if(living instanceof IAngerable)
-        {
-            ((IAngerable)living).setAngerTime(((IAngerable)living).isAngry() ? 1000 : 0);
-        }
-
         for(BiConsumer<LivingEntity, PlayerEntity> consumer : MorphApi.getApiImpl().getModPlayerMorphSyncConsumers())
         {
             consumer.accept(living, player);

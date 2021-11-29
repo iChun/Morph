@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,12 +25,14 @@ import org.apache.commons.lang3.RandomStringUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class MorphVariant implements Comparable<MorphVariant>
 {
     public static final int IDENTIFIER_LENGTH = 20;
     public static final String IDENTIFIER_DEFAULT_PLAYER_STATE = "default_player_state";
     public static final String NBT_PLAYER_ID = "Morph_Player_ID";
+    public static String[] TAGS_TO_TAKE = new String[] { "CustomName", "CustomNameVisible", "ForgeCaps", "ForgeData" }; //Intentionally non-final. If you're going to be adding to this please remember to include tthe originals!
 
     @Nonnull
     public ResourceLocation id; // the ID of the morph
@@ -92,9 +95,7 @@ public class MorphVariant implements Comparable<MorphVariant>
 
         living.writeWithoutTypeId(defs); //because I can't copy out serialiseCaps
 
-        String[] tagsToTake = new String[] { "CustomName", "CustomNameVisible", "ForgeCaps", "ForgeData" };
-
-        for(String s : tagsToTake)
+        for(String s : TAGS_TO_TAKE)
         {
             if(defs.tagMap.containsKey(s))
             {
@@ -356,6 +357,11 @@ public class MorphVariant implements Comparable<MorphVariant>
                         ent.read(tags);
 
                         entInstance = (LivingEntity)ent;
+
+                        for(BiConsumer<LivingEntity, CompoundNBT> consumer : MorphApi.getApiImpl().getVariantNbtTagReaders())
+                        {
+                            consumer.accept(entInstance, tags);
+                        }
                     }
                 }
             }
@@ -368,9 +374,9 @@ public class MorphVariant implements Comparable<MorphVariant>
 
         if(entInstance == null) //we can't find the entity type or errored out somewhere... have a pig.
         {
-            MorphApi.getLogger().error("Cannot find entity type: {}", id);
-            Thread.dumpStack();
+            MorphApi.getLogger().error("Cannot find entity type {} have a pig instead!", id);
             entInstance = EntityType.PIG.create(world);
+            entInstance.setCustomName(new StringTextComponent("Invalid Morph Pig"));
         }
 
         entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
@@ -386,7 +392,9 @@ public class MorphVariant implements Comparable<MorphVariant>
     @OnlyIn(Dist.CLIENT)
     private PlayerEntity createPlayer(World world, UUID uuid)
     {
-        return new RemoteClientPlayerEntity((ClientWorld)world, MorphApi.getApiImpl().getGameProfile(uuid, null));
+        RemoteClientPlayerEntity player = new RemoteClientPlayerEntity((ClientWorld)world, MorphApi.getApiImpl().getGameProfile(uuid, null));
+        player.getDataManager().set(PlayerEntity.PLAYER_MODEL_FLAG, (byte)127); //All model parts shown
+        return player;
     }
 
     public MorphVariant getAsVariant(Variant variant)

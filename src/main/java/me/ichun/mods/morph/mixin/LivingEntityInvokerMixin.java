@@ -16,7 +16,6 @@ public interface LivingEntityInvokerMixin
     @Invoker
     SoundEvent callGetDeathSound();
 
-    //Are these sounds really necessary?
     @Invoker
     SoundEvent callGetFallSound(int height);
 

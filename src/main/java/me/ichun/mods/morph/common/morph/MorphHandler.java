@@ -8,6 +8,7 @@ import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
 import me.ichun.mods.morph.api.biomass.BiomassUpgradeInfo;
 import me.ichun.mods.morph.api.event.MorphEvent;
 import me.ichun.mods.morph.api.mob.MobData;
+import me.ichun.mods.morph.api.mob.nbt.NbtModifier;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
 import me.ichun.mods.morph.api.morph.AttributeConfig;
@@ -22,7 +23,6 @@ import me.ichun.mods.morph.common.mob.TraitHandler;
 import me.ichun.mods.morph.common.mode.MorphMode;
 import me.ichun.mods.morph.common.mode.MorphModeType;
 import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
-import me.ichun.mods.morph.api.mob.nbt.NbtModifier;
 import me.ichun.mods.morph.common.morph.save.MorphSavedData;
 import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketAcquisition;
@@ -32,11 +32,15 @@ import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.entity.passive.PandaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.common.MinecraftForge;
@@ -55,7 +59,7 @@ public final class MorphHandler implements IApi
     public static final Splitter ON_SEMI_COLON = Splitter.on(";").trimResults().omitEmptyStrings();
     private static final ResourceLocation TEX_MORPH_SKIN = new ResourceLocation("morph", "textures/skin/morphskin.png"); //call the getter.
 
-    public static final ArrayList<BiConsumer<LivingEntity, CompoundNBT>> VARIANT_SPECIAL_TAG_SETTERS = Util.make(new ArrayList<>(), list -> {
+    private static final ArrayList<BiConsumer<LivingEntity, CompoundNBT>> VARIANT_SPECIAL_TAG_SETTERS = Util.make(new ArrayList<>(), list -> {
         list.add((living, tag) -> {
             if(living instanceof AgeableEntity) //ForcedAge is only called when eating, useless for keeping a mob a baby.
             {
@@ -93,7 +97,64 @@ public final class MorphHandler implements IApi
         });
     });
 
-    private final ArrayList<BiConsumer<LivingEntity, PlayerEntity>> modPlayerMorphSyncConsumers = new ArrayList<>();
+    private static final ArrayList<BiConsumer<LivingEntity, CompoundNBT>> VARIANT_SPECIAL_TAG_READERS = Util.make(new ArrayList<>(), list -> {
+        list.add((living, tag) -> {
+            if(living.world.isRemote && living instanceof EnderDragonEntity)
+            {
+                ((EnderDragonEntity)living).setNoAI(false);
+                ((EnderDragonEntity)living).getPhaseManager().setPhase(PhaseType.HOLDING_PATTERN);
+            }
+        });
+        list.add((living, tag) -> {
+            if(living instanceof IAngerable)
+            {
+                ((IAngerable)living).setAngerTime(tag.getInt("AngerTime")); //TODO this is fixed in 1.17
+            }
+        });
+    });
+
+    private static final ArrayList<BiConsumer<LivingEntity, PlayerEntity>> PLAYER_MORPH_SYNC_FUNCTIONS = Util.make(new ArrayList<>(), list -> {
+        list.add((living, player) -> {
+            if(Morph.configServer.silentMorphs)
+            {
+                living.setSilent(true);
+            }
+        });
+        list.add((living, player) -> {
+            if(living instanceof AgeableEntity)
+            {
+                ((AgeableEntity)living).setGrowingAge(living.isChild() ? -24000 : 0);
+            }
+        });
+        list.add((living, player) -> {
+            if(living instanceof EnderDragonEntity)
+            {
+                ((EnderDragonEntity)living).deathTicks = player.deathTime * 10;
+            }
+        });
+        list.add((living, player) -> {
+            if(living instanceof MobEntity)
+            {
+                MobEntity mob = (MobEntity)living;
+                mob.setLeftHanded(player.getPrimaryHand() == HandSide.LEFT);
+                mob.setAggroed(player.isHandActive());
+            }
+        });
+        list.add((living, player) -> {
+            if(living instanceof PlayerEntity)
+            {
+                PlayerEntity playerEntity = (PlayerEntity)living;
+                playerEntity.setPrimaryHand(player.getPrimaryHand());
+                playerEntity.getDataManager().set(PlayerEntity.PLAYER_MODEL_FLAG, player.getDataManager().get(PlayerEntity.PLAYER_MODEL_FLAG)); //sync up the model parts as the player
+            }
+        });
+        list.add((living, player) -> {
+            if(living instanceof IAngerable)
+            {
+                ((IAngerable)living).setAngerTime(((IAngerable)living).isAngry() ? 1000 : 0);
+            }
+        });
+    });
 
     private MorphMode currentMode;
     private MorphSavedData saveData;
@@ -335,13 +396,19 @@ public final class MorphHandler implements IApi
     @Override
     public List<BiConsumer<LivingEntity, PlayerEntity>> getModPlayerMorphSyncConsumers()
     {
-        return modPlayerMorphSyncConsumers;
+        return PLAYER_MORPH_SYNC_FUNCTIONS;
     }
 
     @Override
     public List<BiConsumer<LivingEntity, CompoundNBT>> getVariantNbtTagSetters()
     {
         return VARIANT_SPECIAL_TAG_SETTERS;
+    }
+
+    @Override
+    public List<BiConsumer<LivingEntity, CompoundNBT>> getVariantNbtTagReaders()
+    {
+        return VARIANT_SPECIAL_TAG_READERS;
     }
 
     @Override

@@ -78,6 +78,8 @@ public interface IApi
 
     default List<BiConsumer<LivingEntity, CompoundNBT>> getVariantNbtTagSetters() { return ImmutableList.of(); }
 
+    default List<BiConsumer<LivingEntity, CompoundNBT>> getVariantNbtTagReaders() { return ImmutableList.of(); }
+
     //Mob Data Stuff
     default void registerMobData(@Nonnull ResourceLocation rl, @Nonnull MobData data) {}
 

@@ -13,6 +13,8 @@
   "config.morph.prop.supportedAttributes.desc": "Which attributes are supported by more, and how are values better. Format: <Resource Name of Attribute>;<more/less>. EG: \"minecraft:generic.max_health;more\".",
   "config.morph.prop.disabledTraits.name": "Disabled Traits",
   "config.morph.prop.disabledTraits.desc": "ID of traits you want to disable.",
+  "config.morph.prop.silentMorphs.name": "Silent Morphs",
+  "config.morph.prop.silentMorphs.desc": "Set the morph entity instance to silent, this disables ambient noise and any sound the morph makes.",
 
   "config.morph.prop.biomassValue.name": "Biomass Value",
   "config.morph.prop.biomassValue.desc": "How much of the entity volume is considered their mass.",

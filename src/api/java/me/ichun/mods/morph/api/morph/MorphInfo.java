@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.api.morph;
 
 import me.ichun.mods.morph.api.MorphApi;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,6 +11,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -352,6 +354,14 @@ public abstract class MorphInfo
         return 0F;
     }
 
+    //Entity sound functions
+    public abstract void playStepSound(BlockPos pos, BlockState blockState);
+
+    public abstract void playSwimSound(float volume);
+
+    public abstract float playFlySound(float volume);
+
+    //Living Entity sound functions
     @Nullable
     public abstract SoundEvent getHurtSound(DamageSource source);
 
