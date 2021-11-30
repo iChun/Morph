@@ -52,7 +52,7 @@ public class FlyAbility extends Ability<FlyAbility>
         }
         else if(lastStrength == 1F) //strength != 1F, but lastStrength == 1F. We're morphing out, disable flight.
         {
-            if(player.abilities.allowFlying)
+            if(canPlayerFly() && player.abilities.allowFlying)
             {
                 player.abilities.allowFlying = false;
                 player.abilities.isFlying = false;
@@ -77,5 +77,10 @@ public class FlyAbility extends Ability<FlyAbility>
         FlyAbility ability = new FlyAbility();
         ability.slowdownInWater = this.slowdownInWater;
         return ability;
+    }
+
+    public boolean canPlayerFly()
+    {
+        return player.isSpectator() || player.isCreative();
     }
 }
