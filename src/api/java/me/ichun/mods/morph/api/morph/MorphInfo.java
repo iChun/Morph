@@ -4,6 +4,7 @@ import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -78,6 +79,11 @@ public abstract class MorphInfo
     public float getTransitionProgressSine(float partialTick)
     {
         return sineifyProgress(getTransitionProgressLinear(partialTick));
+    }
+
+    public EntitySize getActiveMorphSizeByPose(Pose pose)
+    {
+        return getActiveMorphEntity().getSize(pose);
     }
 
     public EntitySize getMorphSize(float partialTick)

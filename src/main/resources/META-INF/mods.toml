@@ -16,6 +16,6 @@ issueTrackerURL="https://github.com/iChun/Morph/issues"
 [[dependencies.morph]]
     modId="ichunutil"
     mandatory=true
-    versionRange="[10.5.0,11)"
+    versionRange="[10.5.1,11)"
     ordering="NONE"
     side="BOTH"

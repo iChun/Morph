@@ -2,6 +2,8 @@ package me.ichun.mods.morph.mixin;
 
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -42,6 +44,17 @@ public abstract class PlayerEntityMixin
         if(info.isMorphed())
         {
             cir.setReturnValue(info.getFallSound(height));
+        }
+
+    }
+
+    @Inject(method = "getSize", at = @At("HEAD"), cancellable = true)
+    private void getSize(Pose pose, CallbackInfoReturnable<EntitySize> cir)
+    {
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo((PlayerEntity)(Object)this);
+        if(info.isMorphed())
+        {
+            cir.setReturnValue(info.getActiveMorphSizeByPose(pose));
         }
 
     }
