@@ -111,6 +111,12 @@ public class HudHandler
     //key listeners
     public boolean keyEscDown;
     public boolean keyEnterDown;
+    public boolean keyDeleteDown;
+
+    public boolean keyDirUp;
+    public boolean keyDirDown;
+    public boolean keyDirLeft;
+    public boolean keyDirRight;
 
     public HashMap<MorphVariant, MorphState> morphStates = new HashMap<>();
 
@@ -149,7 +155,7 @@ public class HudHandler
 
     private void handleMorphInput(KeyBind keyBind, boolean isReleased)
     {
-        if(MorphHandler.INSTANCE.canMorph(mc.player))
+        if(MorphHandler.INSTANCE.canShowMorphSelector(mc.player))
         {
             if(keyBind == KeyBinds.keySelectorDown || keyBind == KeyBinds.keySelectorUp || keyBind == KeyBinds.keySelectorLeft || keyBind == KeyBinds.keySelectorRight)
             {
@@ -206,7 +212,7 @@ public class HudHandler
 
     public void setIndicesToCurrentMorph()
     {
-        PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
+        PlayerMorphData morphData = getMorphData();
 
         indexVert = indexHori = 0; //the player default morph should always be first.
 
@@ -239,6 +245,14 @@ public class HudHandler
 
         lastIndexVert = indexVert;
         indexChangeTime = 0;
+    }
+
+    public void updateMorphs()
+    {
+        if(shouldRenderSelector())
+        {
+            validateIndices();
+        }
     }
 
     private void tick()
@@ -309,6 +323,12 @@ public class HudHandler
     {
         boolean isEnterDown = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_ENTER) || InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_KP_ENTER);
         boolean isEscDown = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_ESCAPE);
+        boolean isDeleteDown = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_DELETE) || InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_KP_DECIMAL);
+
+        boolean isDirUp = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_UP);
+        boolean isDirDown = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_DOWN);
+        boolean isDirLeft = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT);
+        boolean isDirRight = InputMappings.isKeyDown(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_RIGHT);
 
         if(showSelector || showRadial)
         {
@@ -335,9 +355,43 @@ public class HudHandler
                     closeRadial();
                 }
             }
+
+            if(showSelector) //Only selector
+            {
+                if(!keyDeleteDown && isDeleteDown)
+                {
+                    deleteSelector();
+                }
+
+                if(!keyDirUp && isDirUp)
+                {
+                    shiftIndexSelector(false, false);
+                }
+
+                if(!keyDirDown && isDirDown)
+                {
+                    shiftIndexSelector(true, false);
+                }
+
+                if(!keyDirLeft && isDirLeft)
+                {
+                    shiftIndexSelector(false, true);
+                }
+
+                if(!keyDirRight && isDirRight)
+                {
+                    shiftIndexSelector(true, true);
+                }
+            }
         }
         keyEnterDown = isEnterDown;
         keyEscDown = isEscDown;
+        keyDeleteDown = isDeleteDown;
+
+        keyDirUp = isDirUp;
+        keyDirDown = isDirDown;
+        keyDirLeft = isDirLeft;
+        keyDirRight = isDirRight;
     }
 
     private void updateBiomassBar()
@@ -357,14 +411,25 @@ public class HudHandler
     private void confirmSelector()
     {
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(mc.player);
-        MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
+        MorphVariant.Variant variant = getMorphData().morphs.get(indexVert).variants.get(indexHori);
 
         if(!info.isCurrentlyThisVariant(variant)) //if we're already morphed to this, don't morph to this.
         {
-            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false));
+            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false, false));
         }
 
         closeSelector();
+    }
+
+    private void deleteSelector()
+    {
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(mc.player);
+        MorphVariant.Variant variant = getMorphData().morphs.get(indexVert).variants.get(indexHori);
+
+        if(!info.isCurrentlyThisVariant(variant)) //if we're already morphed to this, don't morph to this.
+        {
+            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false, true));
+        }
     }
 
     private void closeSelector()
@@ -377,7 +442,7 @@ public class HudHandler
         }
 
         //makes the horizontal slider slide back in
-        PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
+        PlayerMorphData morphData = getMorphData();
         indexHori = morphData.morphs.get(indexVert).variants.size() - 1;
         indexChangeTime = 0;
     }
@@ -394,7 +459,7 @@ public class HudHandler
 
                 if(!info.isCurrentlyThisVariant(variant.thisVariant)) //if we're already morphed to this, don't morph to this.
                 {
-                    Morph.channel.sendToServer(new PacketMorphInput(variant.thisVariant.identifier, false, false));
+                    Morph.channel.sendToServer(new PacketMorphInput(variant.thisVariant.identifier, false, false, false));
                 }
 
                 radialFavourites = null; //enjoy, GC.
@@ -418,12 +483,12 @@ public class HudHandler
 
     private void toggleFavourite()
     {
-        MorphVariant.Variant variant = Morph.eventHandlerClient.morphData.morphs.get(indexVert).variants.get(indexHori);
+        MorphVariant.Variant variant = getMorphData().morphs.get(indexVert).variants.get(indexHori);
         if(!variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE)) //you can't favourite your personal variant
         {
             variant.isFavourite = !variant.isFavourite;
 
-            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, true, variant.isFavourite));
+            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, true, variant.isFavourite, false));
         }
     }
 
@@ -433,7 +498,7 @@ public class HudHandler
         radialFavourites.add(MorphVariant.createPlayerMorph(mc.player.getGameProfile().getId(), true));
         radialFavourites.get(0).thisVariant.identifier = MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE;
 
-        PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
+        PlayerMorphData morphData = getMorphData();
         for(MorphVariant morph : morphData.morphs)
         {
             if(morph.hasFavourite())
@@ -451,7 +516,7 @@ public class HudHandler
 
     private void shiftIndexSelector(boolean isDown, boolean isHori)
     {
-        PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
+        PlayerMorphData morphData = getMorphData();
         if(isDown)
         {
             if(isHori) //adjust horizontally
@@ -507,6 +572,35 @@ public class HudHandler
         indexChangeTime = 0;
     }
 
+    private void validateIndices()
+    {
+        PlayerMorphData morphData = getMorphData();
+        if(indexVert >= morphData.morphs.size())
+        {
+            indexVert = 0;
+
+            lastIndexHori = morphData.morphs.get(indexVert).variants.size() - 1;
+            indexHori = 0;//reset the hori index
+        }
+        else if(indexVert < 0)
+        {
+            indexVert = morphData.morphs.size() - 1;
+
+            lastIndexHori = morphData.morphs.get(indexVert).variants.size() - 1;
+            indexHori = 0;//reset the hori index
+        }
+
+        if(indexHori >= morphData.morphs.get(indexVert).variants.size())
+        {
+            indexHori = 0;
+        }
+        else if(indexHori < 0)
+        {
+            indexHori = morphData.morphs.get(indexVert).variants.size() - 1;
+        }
+
+    }
+
     private void drawSelector(MatrixStack stack, float partialTick, MainWindow window)
     {
         RenderSystem.enableBlend();
@@ -524,7 +618,7 @@ public class HudHandler
 
         double posX = -size * (1F - outProg);
 
-        PlayerMorphData morphData = Morph.eventHandlerClient.morphData;
+        PlayerMorphData morphData = getMorphData();
 
         float indexChangeTimeProg = EntityHelper.sineifyProgress(MathHelper.clamp((indexChangeTime + partialTick) / INDEX_TIME, 0F, 1F));
 
@@ -1145,7 +1239,7 @@ public class HudHandler
         return barCapacity.requiresUpdate() || barCriticalCapacity.requiresUpdate() || barCurrentBiomass.requiresUpdate() || barAbilityCost > 0D || barInsufficientFlash > 0;
     }
 
-    public void update(PlayerMorphData morphData)
+    public void updateBiomass(PlayerMorphData morphData)
     {
         barCapacity.updateTarget(morphData.getBiomassUpgradeValue(Upgrades.ID_BIOMASS_CAPACITY));
         barCriticalCapacity.updateTarget(morphData.getBiomassUpgradeValue(Upgrades.ID_BIOMASS_CRITICAL_CAPACITY));
@@ -1160,6 +1254,12 @@ public class HudHandler
     public void destroy()
     {
         //TODO required??
+    }
+
+    //helper func
+    private PlayerMorphData getMorphData()
+    {
+        return Morph.eventHandlerClient.morphData;
     }
 
     @SubscribeEvent

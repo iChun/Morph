@@ -5,6 +5,7 @@ import me.ichun.mods.morph.api.event.MorphEvent;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
+import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.Upgrades;
@@ -70,9 +71,23 @@ public class DefaultMode implements MorphMode
     }
 
     @Override
-    public boolean canMorph(PlayerEntity player)
+    public boolean canShowMorphSelector(PlayerEntity player)
     {
         return MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_MORPH_ABILITY) != null;
+    }
+
+    @Override
+    public boolean canMorph(PlayerEntity player)
+    {
+        if(MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_MORPH_ABILITY) != null)
+        {
+            MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
+            if(!info.isMorphed() || info.getMorphProgress(1F) == 1F)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

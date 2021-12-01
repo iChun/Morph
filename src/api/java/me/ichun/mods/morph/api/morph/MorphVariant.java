@@ -39,7 +39,7 @@ public class MorphVariant implements Comparable<MorphVariant>
     @Nonnull
     public CompoundNBT nbtMorph; //special morph specific NBT
     public CompoundNBT nbtCommon; //common nbt tags shared by all variants
-    public ArrayList<Variant> variants; //empty if it is not of a save. if populated, thisVariant should not be used.
+    public ArrayList<Variant> variants; //if populated, thisVariant should not be used.
 
     public Variant thisVariant; //this is set for a specific variant/render. variants should be left empty.
 
@@ -104,6 +104,11 @@ public class MorphVariant implements Comparable<MorphVariant>
         }
     }
 
+    public boolean hasVariants()
+    {
+        return !variants.isEmpty();
+    }
+
     public boolean combineVariants(MorphVariant variant)
     {
         if(!isSameMorphType(variant))
@@ -123,9 +128,8 @@ public class MorphVariant implements Comparable<MorphVariant>
 
         CompoundNBT variantTag = variant.getCumulativeTags();
 
-        HashSet<String> uncommons = new HashSet<>();
-
         //compare with our commons first to see what doesn't match.
+        HashSet<String> uncommons = new HashSet<>();
         for(Map.Entry<String, INBT> e : nbtCommon.tagMap.entrySet())
         {
             INBT varNBT = variantTag.tagMap.get(e.getKey());
@@ -140,7 +144,7 @@ public class MorphVariant implements Comparable<MorphVariant>
             }
         }
 
-        //add the now uncommon to the existing variants
+        //add the now uncommon to the existing variants, and remove the previous common, it's not common anymore.
         for(String key : uncommons)
         {
             INBT nbt = nbtCommon.get(key);
@@ -155,6 +159,9 @@ public class MorphVariant implements Comparable<MorphVariant>
         variant.thisVariant.nbtVariant = variantTag;
 
         variants.add(variant.thisVariant);
+
+        //we've fixed the uncommons... now get the new commons.
+        gatherNewCommons();
 
         return true;
     }
@@ -171,9 +178,21 @@ public class MorphVariant implements Comparable<MorphVariant>
             }
         }
 
-        if(flag && !variants.isEmpty())
+        if(flag)
         {
-            gatherNewCommons();
+            if(variants.size() >= 2)
+            {
+                gatherNewCommons();
+            }
+            else if(!variants.isEmpty()) //Only one variant left
+            {
+                variants.get(0).nbtVariant.tagMap.putAll(nbtCommon.tagMap);
+                nbtCommon.tagMap.clear(); // no more commons
+            }
+            else //no more variants, aka no more common tags.
+            {
+                nbtCommon.tagMap.clear();
+            }
         }
 
         return flag;

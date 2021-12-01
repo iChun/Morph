@@ -14,7 +14,9 @@ public interface MorphMode
 {
     void handleMurderEvent(ServerPlayerEntity player, LivingEntity living);
 
-    boolean canMorph(PlayerEntity player); //if the player has the ability to morph
+    boolean canShowMorphSelector(PlayerEntity player);
+
+    boolean canMorph(PlayerEntity player); //if the player has the ability to morph and is not mid-morph
 
     boolean canAcquireMorph(PlayerEntity player, LivingEntity living, @Nullable MorphVariant variant); //NOT FOR BLACKLISTING! Variant creation and acquire morph already checks the blacklist. This is for other reasons eg upgrade related stuff or range related stuff
 

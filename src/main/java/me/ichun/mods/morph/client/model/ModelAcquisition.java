@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.morph.client.entity.EntityAcquisition;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.settings.PointOfView;
@@ -14,6 +15,11 @@ import java.util.ArrayList;
 
 public class ModelAcquisition extends EntityModel<EntityAcquisition>
 {
+    public ModelAcquisition()
+    {
+        super(RenderType::getEntityTranslucentCull);
+    }
+
     public void render(EntityAcquisition entity, float partialTick, MatrixStack stack, IVertexBuilder buffer, int light, int overlay)
     {
         boolean isFirstPerson = entity.livingOrigin == Minecraft.getInstance().getRenderViewEntity() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON;

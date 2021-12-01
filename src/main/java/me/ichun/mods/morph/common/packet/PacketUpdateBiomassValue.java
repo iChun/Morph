@@ -34,7 +34,7 @@ public class PacketUpdateBiomassValue extends AbstractPacket
         context.enqueueWork(() -> {
             Morph.eventHandlerClient.morphData.biomass = value;
 
-            Morph.eventHandlerClient.hudHandler.update(Morph.eventHandlerClient.morphData);
+            Morph.eventHandlerClient.hudHandler.updateBiomass(Morph.eventHandlerClient.morphData);
         });
     }
 }

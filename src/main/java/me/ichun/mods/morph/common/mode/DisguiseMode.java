@@ -3,6 +3,7 @@ package me.ichun.mods.morph.common.mode;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
+import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
@@ -19,15 +20,32 @@ public class DisguiseMode implements MorphMode
     @Override
     public void handleMurderEvent(ServerPlayerEntity player, LivingEntity living)
     {
-        MorphVariant variant = MorphHandler.INSTANCE.createVariant(living);
+        if(canMorph(player))
+        {
+            MorphVariant variant = MorphHandler.INSTANCE.createVariant(living);
 
-        MorphHandler.INSTANCE.morphTo(player, variant);
+            MorphHandler.INSTANCE.morphTo(player, variant);
+        }
+    }
+
+    @Override
+    public boolean canShowMorphSelector(PlayerEntity player)
+    {
+        return false;
     }
 
     @Override
     public boolean canMorph(PlayerEntity player)
     {
-        return false;
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
+        if(info.isMorphed())
+        {
+            if(info.getMorphProgress(1F) < 1F) //mid morphing
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

@@ -58,9 +58,8 @@ public class PlayerMorphData
     {
         for(MorphVariant morph : morphs)
         {
-            if(morph.isSameMorphType(variant))
+            if(morph.combineVariants(variant))
             {
-                morph.combineVariants(variant);
                 return morph;
             }
         }

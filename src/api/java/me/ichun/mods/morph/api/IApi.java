@@ -49,6 +49,8 @@ public interface IApi
     @Nullable
     default UUID getUuidOfPlayerForMorph(LivingEntity living) { return null; }
 
+    default boolean canShowMorphSelector(PlayerEntity player) { return false; }
+
     default boolean canMorph(PlayerEntity player) { return false; }
 
     default boolean canAcquireMorph(PlayerEntity player, LivingEntity living)

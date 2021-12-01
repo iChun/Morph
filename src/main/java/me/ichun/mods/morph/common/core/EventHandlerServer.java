@@ -21,8 +21,8 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,7 +42,7 @@ public class EventHandlerServer
     }
 
     @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event)
+    public void onLivingAttacked(LivingAttackEvent event)
     {
         //The entity getting hurt is a morph. Cancel the event.
         if(event.getEntityLiving().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID))

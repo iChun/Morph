@@ -4,6 +4,7 @@ import me.ichun.mods.morph.api.event.MorphEvent;
 import me.ichun.mods.morph.api.mob.MobData;
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import me.ichun.mods.morph.api.mob.trait.ability.Ability;
+import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.mob.MobDataHandler;
@@ -35,8 +36,22 @@ public class ClassicMode implements MorphMode
     }
 
     @Override
+    public boolean canShowMorphSelector(PlayerEntity player)
+    {
+        return true;
+    }
+
+    @Override
     public boolean canMorph(PlayerEntity player)
     {
+        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
+        if(info.isMorphed())
+        {
+            if(info.getMorphProgress(1F) < 1F) //mid morphing
+            {
+                return false;
+            }
+        }
         return true;
     }
 

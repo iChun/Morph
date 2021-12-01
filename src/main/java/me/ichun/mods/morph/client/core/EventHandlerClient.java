@@ -113,11 +113,11 @@ public class EventHandlerClient
         hudHandler.handleInput(keyBind, isReleased);
     }
 
-    public void updateMorph(MorphVariant variant) //TODO if I ever remove morphs, ensure to update the selector.
+    public void updateMorph(MorphVariant variant)
     {
         if(morphData != null)
         {
-            boolean added = false;
+            boolean handled = false;
 
             ArrayList<MorphVariant> morphs = morphData.morphs;
             for(int i = 0; i < morphs.size(); i++)
@@ -126,16 +126,21 @@ public class EventHandlerClient
                 if(morph.id.equals(variant.id))
                 {
                     morphs.remove(i);
-                    morphs.add(i, variant);
-                    added = true;
+                    if(variant.hasVariants())
+                    {
+                        morphs.add(i, variant);
+                    }
+                    handled = true;
                     break;
                 }
             }
 
-            if(!added) //presume a new morph
+            if(!handled && variant.hasVariants()) //presume a new morph
             {
                 morphs.add(variant);
             }
+
+            hudHandler.updateMorphs();
 
             Collections.sort(morphData.morphs); //sort in order of name.
         }
@@ -161,6 +166,8 @@ public class EventHandlerClient
         }
         else
         {
+            morphData.morphs.removeIf(morph -> !morph.hasVariants()); //we remove those that don't have variants, don't care no more
+
             Collections.sort(morphData.morphs); //sort in order of name.
 
             if(hudHandler == null)
@@ -170,7 +177,8 @@ public class EventHandlerClient
             }
             else
             {
-                hudHandler.update(morphData);
+                hudHandler.updateBiomass(morphData);
+                hudHandler.updateMorphs();
             }
         }
     }

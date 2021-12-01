@@ -219,9 +219,15 @@ public final class MorphHandler implements IApi
     }
 
     @Override
+    public boolean canShowMorphSelector(PlayerEntity player)
+    {
+        return currentMode != null ? currentMode.canShowMorphSelector(player) : IApi.super.canShowMorphSelector(player);
+    }
+
+    @Override
     public boolean canMorph(PlayerEntity player)
     {
-        return currentMode.canMorph(player);
+        return currentMode != null && currentMode.canMorph(player);
     }
 
     @Override
@@ -339,9 +345,6 @@ public final class MorphHandler implements IApi
     public boolean morphTo(ServerPlayerEntity player, MorphVariant variant)
     {
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
-
-        //mid morph
-        if(info.getMorphProgress(1F) < 1F) return false;
 
         if(MinecraftForge.EVENT_BUS.post(new MorphEvent.Morph(player, variant))) return false;
 
