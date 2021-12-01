@@ -178,7 +178,7 @@ public class MorphVariant implements Comparable<MorphVariant>
             }
         }
 
-        if(flag)
+        if(flag && !id.equals(EntityType.PLAYER.getRegistryName())) //player morphs don't have commons
         {
             if(variants.size() >= 2)
             {

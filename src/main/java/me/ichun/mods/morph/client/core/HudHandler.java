@@ -423,12 +423,15 @@ public class HudHandler
 
     private void deleteSelector()
     {
-        MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(mc.player);
-        MorphVariant.Variant variant = getMorphData().morphs.get(indexVert).variants.get(indexHori);
-
-        if(!info.isCurrentlyThisVariant(variant)) //if we're already morphed to this, don't morph to this.
+        if(MorphHandler.INSTANCE.getMorphModeName().equals("classic"))
         {
-            Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false, true));
+            MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(mc.player);
+            MorphVariant.Variant variant = getMorphData().morphs.get(indexVert).variants.get(indexHori);
+
+            if(!info.isCurrentlyThisVariant(variant) && !variant.identifier.equals(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE)) //if we're already morphed to this, don't delete it. Also don't delete our default morph
+            {
+                Morph.channel.sendToServer(new PacketMorphInput(variant.identifier, false, false, true));
+            }
         }
     }
 
@@ -726,6 +729,7 @@ public class HudHandler
 
                     if(j == morph.variants.size() - 1)
                     {
+                        IFormattableTextComponent customName = null;
                         MorphVariant selectedVariant = morph.getAsVariant(morph.variants.get(indexHori));
                         MorphState selectedState = morphStates.computeIfAbsent(selectedVariant, v -> new MorphState(selectedVariant, player));
 
@@ -738,13 +742,10 @@ public class HudHandler
                         {
                             if(!selectedLiving.getName().equals(value.getName())) //has a custom name
                             {
-                                text = selectedLiving.getName().deepCopy();
-                                text.setStyle(text.getStyle().setItalic(true));
+                                customName = selectedLiving.getName().deepCopy();
+                                customName.setStyle(customName.getStyle().setItalic(true));
                             }
-                            else
-                            {
-                                text = new TranslationTextComponent(value.getTranslationKey());
-                            }
+                            text = new TranslationTextComponent(value.getTranslationKey());
                         }
                         else
                         {
@@ -769,6 +770,11 @@ public class HudHandler
                             textPosX = window.getScaledWidth() - mc.fontRenderer.getStringPropertyWidth(text) - 2;
                         }
                         mc.fontRenderer.drawTextWithShadow(stack, text, textPosX, (float)textHeight, 0xFFFFFF);
+
+                        if(customName != null)
+                        {
+                            mc.fontRenderer.drawTextWithShadow(stack, customName, 3, (float)(top + size - mc.fontRenderer.FONT_HEIGHT - 5 + indexSizeHeight), 0xFFFFFF);
+                        }
                         stack.pop();
                     }
                 }
