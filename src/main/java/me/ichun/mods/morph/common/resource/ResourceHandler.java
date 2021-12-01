@@ -72,21 +72,18 @@ public class ResourceHandler
         FileUtils.writeStringToFile(extractedMarker.toFile(), "", StandardCharsets.UTF_8);
     }
 
-    public static synchronized void loadConstResources()
+    public static synchronized void loadResources() //should be initialised in FMLLoadCompleteEvent stage
     {
-        //These resources are Class based and can be loaded up immediately.
+        //This data is reliant on Class names.
         NbtHandler.loadNbtModifiers();
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> HandHandler::loadHandInfos); //load the hand infos. Only required on the client
 
+        //This data rely on entity type resource location
+        MobDataHandler.loadMobData();
+
         //                loadBiomassUpgrades(); //TODO propagate the upgrades to the players if there are players connected
         //TODO just load up the biomass upgrades when server starts. sync with client.
-    }
-
-    public static synchronized void loadPostInitResources()
-    {
-        //These data rely on entity type resource location, must be loaded after registries have been set up.
-        MobDataHandler.loadMobData();
     }
 
     public static Path getMorphDir()
@@ -96,8 +93,6 @@ public class ResourceHandler
 
     public static void reloadAllResources()
     {
-        loadConstResources();
-
-        loadPostInitResources();
+        loadResources();
     }
 }

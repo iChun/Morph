@@ -85,7 +85,6 @@ public class Morph
             LOGGER.fatal("Error initialising Morph Resource Handler! Terminating init.");
             return;
         }
-        ResourceHandler.loadConstResources();
 
         configServer = new ConfigServer().init();
 
@@ -275,7 +274,7 @@ public class Morph
 
     private void finishLoading(FMLLoadCompleteEvent event)
     {
-        ResourceHandler.loadPostInitResources();
+        ResourceHandler.loadResources();
     }
 
     public static class Advancements implements Consumer<Consumer<Advancement>>
