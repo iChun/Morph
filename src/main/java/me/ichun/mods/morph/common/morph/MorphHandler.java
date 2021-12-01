@@ -290,7 +290,7 @@ public final class MorphHandler implements IApi
             variant.writeSupportedAttributes(living);
 
             //write the default info
-            variant.writeDefaults(living, tag);
+            MorphVariant.writeDefaults(living, tag);
 
             living.writeAdditional(tag);
             //we have the default info

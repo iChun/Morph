@@ -66,7 +66,7 @@ public class Morph
 {
     public static final String MOD_NAME = "Morph";
     public static final String MOD_ID = "morph";
-    public static final String PROTOCOL = "1"; //Network protocol
+    public static final String PROTOCOL = "2"; //Network protocol
 
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -112,7 +112,8 @@ public class Morph
                 PacketAcquisition.class,
                 PacketUpdateBiomassValue.class,
                 PacketUpdateBiomassUpgrades.class,
-                PacketInvalidateClientHealth.class
+                PacketInvalidateClientHealth.class,
+                PacketOpenGeneratorNbt.class
         );
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

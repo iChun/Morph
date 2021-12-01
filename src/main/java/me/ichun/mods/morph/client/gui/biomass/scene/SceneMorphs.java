@@ -1,10 +1,10 @@
-package me.ichun.mods.morph.client.gui.scene;
+package me.ichun.mods.morph.client.gui.biomass.scene;
 
-import me.ichun.mods.morph.client.gui.WorkspaceMorph;
+import me.ichun.mods.morph.client.gui.biomass.WorkspaceMorph;
 
-public class SceneBiomassAbilities extends Scene
+public class SceneMorphs extends Scene
 {
-    public SceneBiomassAbilities(WorkspaceMorph workspace)
+    public SceneMorphs(WorkspaceMorph workspace)
     {
         super(workspace);
     }

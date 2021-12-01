@@ -89,7 +89,7 @@ public class MorphVariant implements Comparable<MorphVariant>
         }
     }
 
-    public void writeDefaults(LivingEntity living, CompoundNBT tag) //taken from Entity.writeWithoutTypeId
+    public static void writeDefaults(LivingEntity living, CompoundNBT tag) //taken from Entity.writeWithoutTypeId
     {
         CompoundNBT defs = new CompoundNBT();
 

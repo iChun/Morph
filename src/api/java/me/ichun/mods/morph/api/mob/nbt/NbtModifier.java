@@ -246,5 +246,41 @@ public class NbtModifier
 
             value = modifier.value;
         }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if(obj instanceof Modifier)
+            {
+                Modifier mod = (Modifier)obj;
+                if(this.key != null && this.key.equals(mod.key))
+                {
+                    return (this.keep != null && this.keep.equals(mod.keep) || this.keep == null && mod.keep == null) && areNestedModifiersEqual(mod.nestedModifiers) && (this.value != null && this.value.equals(mod.value) || this.value == null && mod.value == null);
+                }
+            }
+            return false;
+        }
+
+        private boolean areNestedModifiersEqual(ArrayList<Modifier> nested)
+        {
+            if(this.nestedModifiers == null && nested == null)
+            {
+                return true;
+            }
+            else if(this.nestedModifiers != null && nested != null && this.nestedModifiers.size() == nested.size())
+            {
+                boolean equal = true;
+                for(int i = 0; i < nestedModifiers.size(); i++)
+                {
+                    if(!nestedModifiers.get(i).equals(nested.get(i)))
+                    {
+                        equal = false;
+                        break;
+                    }
+                }
+                return equal;
+            }
+            return false;
+        }
     }
 }

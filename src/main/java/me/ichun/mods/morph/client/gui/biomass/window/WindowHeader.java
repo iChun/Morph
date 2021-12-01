@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.client.gui.window;
+package me.ichun.mods.morph.client.gui.biomass.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
@@ -7,8 +7,8 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementToggle;
-import me.ichun.mods.morph.client.gui.WorkspaceMorph;
-import me.ichun.mods.morph.client.gui.window.element.ElementBiomassBar;
+import me.ichun.mods.morph.client.gui.biomass.WorkspaceMorph;
+import me.ichun.mods.morph.client.gui.biomass.window.element.ElementBiomassBar;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.resources.I18n;
 

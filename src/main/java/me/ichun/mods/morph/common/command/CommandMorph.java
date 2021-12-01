@@ -11,6 +11,7 @@ import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.packet.PacketOpenGeneratorNbt;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -18,9 +19,12 @@ import net.minecraft.command.arguments.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 
@@ -30,6 +34,7 @@ import java.util.UUID;
 public class CommandMorph
 {
     private static final SimpleCommandExceptionType EXTRACTION_ERROR = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.resources.error.extractionError"));
+    private static final SimpleCommandExceptionType PLAYER_NO_NBT = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.resources.error.playerNoNbt"));
 
     private static final SimpleCommandExceptionType NOT_LIVING_ENTITY = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.notLivingEntity"));
     private static final SimpleCommandExceptionType ENTITY_COULD_NOT_BE_CREATED = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.failedToCreateEntity"));
@@ -63,6 +68,21 @@ public class CommandMorph
                                         throw EXTRACTION_ERROR.create();
                                     }
                                 })
+                        )
+                        .then(Commands.literal("generate")
+                                .then(Commands.literal("nbt")
+                                        .executes(context -> {
+                                            RayTraceResult entityLook = EntityHelper.getEntityLook(context.getSource().asPlayer(), 5);
+                                            if(entityLook.getType() == RayTraceResult.Type.ENTITY)
+                                            {
+                                                return openNBTGenerator(context.getSource(), ((EntityRayTraceResult)entityLook).getEntity());
+                                            }
+                                            throw NOT_LIVING_ENTITY.create();
+                                        })
+                                        .then(Commands.argument("target", EntityArgument.entity())
+                                                .executes(context -> openNBTGenerator(context.getSource(), EntityArgument.getEntity(context, "target")))
+                                        )
+                                )
                         )
                 )
                 .then(Commands.argument("player", EntityArgument.player())
@@ -126,6 +146,25 @@ public class CommandMorph
                         )
                 )
         );
+    }
+
+    private static int openNBTGenerator(CommandSource source, Entity target) throws CommandSyntaxException
+    {
+        if(!(target instanceof LivingEntity))
+        {
+            throw NOT_LIVING_ENTITY.create();
+        }
+
+        if(target instanceof PlayerEntity)
+        {
+            throw PLAYER_NO_NBT.create();
+        }
+
+        ServerPlayerEntity player = source.asPlayer();
+
+        Morph.channel.sendTo(new PacketOpenGeneratorNbt(target.getEntityId()), player);
+
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int setBiomass(CommandSource source, ServerPlayerEntity player, double value)

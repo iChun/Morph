@@ -23,8 +23,8 @@ import java.util.Map;
 
 public class NbtHandler
 {
-    private static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
-    private static final HashMap<Class<?>, NbtModifier> NBT_MODIFIERS_INTERFACES = new HashMap<>();
+    public static final HashMap<Class<? extends LivingEntity>, NbtModifier> NBT_MODIFIERS = new HashMap<>();
+    public static final HashMap<Class<?>, NbtModifier> NBT_MODIFIERS_INTERFACES = new HashMap<>();
 
     public static void loadNbtModifiers()
     {
@@ -165,7 +165,7 @@ public class NbtHandler
         return modifier;
     }
 
-    private static NbtModifier getModifierFor(Class clz)
+    public static NbtModifier getModifierFor(Class clz)
     {
         NbtModifier modifier;
         if(NBT_MODIFIERS.containsKey(clz))

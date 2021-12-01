@@ -11,7 +11,7 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.morph.api.morph.MorphInfo;
 import me.ichun.mods.morph.api.morph.MorphState;
 import me.ichun.mods.morph.api.morph.MorphVariant;
-import me.ichun.mods.morph.client.gui.WorkspaceMorph;
+import me.ichun.mods.morph.client.gui.biomass.WorkspaceMorph;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.biomass.Upgrades;
 import me.ichun.mods.morph.common.morph.MorphHandler;

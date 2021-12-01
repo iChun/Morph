@@ -1,4 +1,4 @@
-package me.ichun.mods.morph.client.gui.window.element;
+package me.ichun.mods.morph.client.gui.biomass.window.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

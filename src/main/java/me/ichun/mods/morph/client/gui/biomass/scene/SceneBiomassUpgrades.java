@@ -1,8 +1,8 @@
-package me.ichun.mods.morph.client.gui.scene;
+package me.ichun.mods.morph.client.gui.biomass.scene;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.morph.client.gui.WorkspaceMorph;
-import me.ichun.mods.morph.client.gui.window.WindowBiomassUpgrades;
+import me.ichun.mods.morph.client.gui.biomass.WorkspaceMorph;
+import me.ichun.mods.morph.client.gui.biomass.window.WindowBiomassUpgrades;
 
 public class SceneBiomassUpgrades extends Scene
 {

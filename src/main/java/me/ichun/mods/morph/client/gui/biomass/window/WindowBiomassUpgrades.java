@@ -1,11 +1,11 @@
-package me.ichun.mods.morph.client.gui.window;
+package me.ichun.mods.morph.client.gui.biomass.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
-import me.ichun.mods.morph.client.gui.WorkspaceMorph;
-import me.ichun.mods.morph.client.gui.window.element.ElementBiomassUpgrades;
+import me.ichun.mods.morph.client.gui.biomass.WorkspaceMorph;
+import me.ichun.mods.morph.client.gui.biomass.window.element.ElementBiomassUpgrades;
 
 import javax.annotation.Nonnull;
 

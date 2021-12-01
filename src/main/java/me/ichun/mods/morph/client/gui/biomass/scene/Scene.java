@@ -1,6 +1,6 @@
-package me.ichun.mods.morph.client.gui.scene;
+package me.ichun.mods.morph.client.gui.biomass.scene;
 
-import me.ichun.mods.morph.client.gui.WorkspaceMorph;
+import me.ichun.mods.morph.client.gui.biomass.WorkspaceMorph;
 
 public abstract class Scene
 {

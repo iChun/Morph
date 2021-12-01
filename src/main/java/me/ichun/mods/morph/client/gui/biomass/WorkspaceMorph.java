@@ -1,15 +1,15 @@
-package me.ichun.mods.morph.client.gui;
+package me.ichun.mods.morph.client.gui.biomass;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.morph.client.gui.scene.Scene;
-import me.ichun.mods.morph.client.gui.scene.SceneBiomassAbilities;
-import me.ichun.mods.morph.client.gui.scene.SceneBiomassUpgrades;
-import me.ichun.mods.morph.client.gui.scene.SceneMorphs;
-import me.ichun.mods.morph.client.gui.window.WindowHeader;
-import me.ichun.mods.morph.client.gui.window.WindowSidebar;
+import me.ichun.mods.morph.client.gui.biomass.scene.Scene;
+import me.ichun.mods.morph.client.gui.biomass.scene.SceneBiomassAbilities;
+import me.ichun.mods.morph.client.gui.biomass.scene.SceneBiomassUpgrades;
+import me.ichun.mods.morph.client.gui.biomass.scene.SceneMorphs;
+import me.ichun.mods.morph.client.gui.biomass.window.WindowSidebar;
+import me.ichun.mods.morph.client.gui.biomass.window.WindowHeader;
 import me.ichun.mods.morph.common.Morph;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -54,7 +54,7 @@ public class WorkspaceMorph extends Workspace
         //no need to call init, we haven't even inited yet
     }
 
-    public void setScene(Scene scene)
+    public void setScene(Scene scene) //TODO why not just swap scenes??
     {
         if(currentScene != scene)
         {

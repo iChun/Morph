@@ -58,6 +58,7 @@
   "config.morph.resources.reload.success": "Reloaded all mob support files!",
 
   "command.morph.resources.error.extractionError": "An error occurred when extracting files. Check Java Console for more info.",
+  "command.morph.resources.error.playerNoNbt": "Players do not need NBT modifiers!",
   "command.morph.resources.success.reloaded": "Morph files reloaded!",
   "command.morph.resources.success.reextract": "Morph files extracted and reloaded!",
 
@@ -95,6 +96,20 @@
   "morph.gui.text.weight.tooltip": "%1$s kg is %2$s lb for you imperial folk.",
 
   "morph.gui.button.upgrade": "Upgrade",
+
+  "morph.gui.workspace.nbt.title": "NBT Modifier Generator",
+  "morph.gui.workspace.nbt.targetEntity": "Targeted",
+  "morph.gui.workspace.nbt.asMorphEntity": "As Morph",
+  "morph.gui.workspace.nbt.forClass": "For Class",
+  "morph.gui.workspace.nbt.nbtKeys": "NBT Keys",
+  "morph.gui.workspace.nbt.handledElsewhere": "This key is modified by another NBT modifier.",
+  "morph.gui.workspace.nbt.stripped": "This key is stripped from the morph.",
+  "morph.gui.workspace.nbt.keep": "Keep:",
+  "morph.gui.workspace.nbt.forceRemove": "Force Remove:",
+  "morph.gui.workspace.nbt.forceValue": "Force Value:",
+  "morph.gui.workspace.nbt.modRequired": "Mod Required:",
+
+  "morph.gui.workspace.resources.export": "Export",
 
   "morph.advancement.unlock_biomass.title": "A Mutation Complication",
   "morph.advancement.unlock_biomass.description": "Rapid cellular death combined with rapid cellular regeneration increases the risk for random mutations.\n\nUnlocks the ability to absorb Biomass."

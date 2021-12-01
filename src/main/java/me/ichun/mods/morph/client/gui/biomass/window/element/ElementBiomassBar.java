@@ -1,8 +1,8 @@
-package me.ichun.mods.morph.client.gui.window.element;
+package me.ichun.mods.morph.client.gui.biomass.window.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
-import me.ichun.mods.morph.client.gui.window.WindowHeader;
+import me.ichun.mods.morph.client.gui.biomass.window.WindowHeader;
 import me.ichun.mods.morph.common.Morph;
 
 import javax.annotation.Nonnull;
