@@ -30,8 +30,10 @@ import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GraphicsFanciness;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
@@ -691,7 +693,8 @@ public class HudHandler
 
                     LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                    float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
+                    EntitySize livingSize = living.getSize(Pose.STANDING);
+                    float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
 
                     if(j == indexHori) //if it is selected, prevent the downscale.
                     {

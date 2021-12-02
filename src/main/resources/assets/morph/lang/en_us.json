@@ -102,15 +102,26 @@
   "morph.gui.workspace.nbt.asMorphEntity": "As Morph",
   "morph.gui.workspace.nbt.forClass": "For Class",
   "morph.gui.workspace.nbt.nbtKeys": "NBT Keys",
+  "morph.gui.workspace.nbt.nbtType": "Type: ",
+  "morph.gui.workspace.nbt.kept": "This key is kept by this NBT modifier.",
   "morph.gui.workspace.nbt.handledElsewhere": "This key is modified by another NBT modifier.",
   "morph.gui.workspace.nbt.stripped": "This key is stripped from the morph.",
   "morph.gui.workspace.nbt.keep": "Keep:",
+  "morph.gui.workspace.nbt.keep.tooltip": "Keep this NBT Key. Forcing a value also keeps this key (without this setting being enabled)",
   "morph.gui.workspace.nbt.forceRemove": "Force Remove:",
+  "morph.gui.workspace.nbt.forceRemove.tooltip": "Force remove this NBT Key. This overrides inherited Keep Modifiers",
   "morph.gui.workspace.nbt.forceValue": "Force Value:",
+  "morph.gui.workspace.nbt.forceValue.tooltip": "Force a value for this NBT Key. Leaving it as empty will not change the NBT value.",
   "morph.gui.workspace.nbt.modRequired": "Mod Required:",
+  "morph.gui.workspace.nbt.modRequired.tooltip": "Add a mod requirement (by mod id) for this modifier to work.",
+  "morph.gui.workspace.nbt.help": "Generate an NBT Modifier for an existing entity.\n\nDo your best to only keep NBT Keys that affect the appearance of the entity.\n\nHover over elements and the tooltips will help.\n\nSHIFT-Click this button to open the export folder.",
+  "morph.gui.workspace.nbt.classRequired": "You need to select a class level (For Class) to export to.",
 
   "morph.gui.workspace.resources.export": "Export",
 
   "morph.advancement.unlock_biomass.title": "A Mutation Complication",
-  "morph.advancement.unlock_biomass.description": "Rapid cellular death combined with rapid cellular regeneration increases the risk for random mutations.\n\nUnlocks the ability to absorb Biomass."
+  "morph.advancement.unlock_biomass.description": "Rapid cellular death combined with rapid cellular regeneration increases the risk for random mutations.\n\nUnlocks the ability to absorb Biomass.",
+
+  "morph.trait.traitFallNegate.name": "Fall Negation",
+  "morph.trait.traitFallNegate.desc": "Negates fall damage."
 }

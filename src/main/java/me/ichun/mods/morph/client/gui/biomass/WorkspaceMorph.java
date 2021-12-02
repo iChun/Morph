@@ -54,7 +54,7 @@ public class WorkspaceMorph extends Workspace
         //no need to call init, we haven't even inited yet
     }
 
-    public void setScene(Scene scene) //TODO why not just swap scenes??
+    public void setScene(Scene scene) //TODO why not just swap views??
     {
         if(currentScene != scene)
         {

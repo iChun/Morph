@@ -6,7 +6,9 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.morph.client.gui.nbt.window.WindowNbt;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.util.Util;
 import org.lwjgl.opengl.GL11;
 
@@ -51,7 +53,8 @@ public class ElementRenderEntity extends Element<WindowNbt.ViewNbt>
 
         RenderHelper.drawColour(stack, 0, 0, 0, 255, getLeft(), getTop(), width, height, 0);
 
-        float entSize = Math.max(entToRender.getWidth(), entToRender.getHeight()) / 1.95F; //1.95F = zombie height
+        EntitySize livingSize = entToRender.getSize(Pose.STANDING);
+        float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
 
         float entScale = 1.0F * (1F / Math.max(1F, entSize));
 
