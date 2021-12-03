@@ -113,7 +113,7 @@ public class Morph
                 PacketUpdateBiomassValue.class,
                 PacketUpdateBiomassUpgrades.class,
                 PacketInvalidateClientHealth.class,
-                PacketOpenGeneratorNbt.class
+                PacketOpenGenerator.class
         );
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {

@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.common.packet;
 
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
+import me.ichun.mods.morph.client.gui.mob.WorkspaceMobData;
 import me.ichun.mods.morph.client.gui.nbt.WorkspaceNbt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -11,13 +12,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PacketOpenGeneratorNbt extends AbstractPacket
+public class PacketOpenGenerator extends AbstractPacket
 {
     public int targetId;
 
-    public PacketOpenGeneratorNbt(){}
+    public PacketOpenGenerator(){}
 
-    public PacketOpenGeneratorNbt(int targetId)
+    public PacketOpenGenerator(int targetId)
     {
         this.targetId = targetId;
     }
@@ -45,13 +46,20 @@ public class PacketOpenGeneratorNbt extends AbstractPacket
     {
         context.enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
-            Entity target = mc.world.getEntityByID(targetId);
-
-            if(target instanceof LivingEntity && !(target instanceof PlayerEntity))
+            if(targetId >= 0)
             {
-                LivingEntity living = (LivingEntity)target;
+                Entity target = mc.world.getEntityByID(targetId);
 
-                Minecraft.getInstance().displayGuiScreen(new WorkspaceNbt(Minecraft.getInstance().currentScreen, living));
+                if(target instanceof LivingEntity && !(target instanceof PlayerEntity))
+                {
+                    LivingEntity living = (LivingEntity)target;
+
+                    Minecraft.getInstance().displayGuiScreen(new WorkspaceNbt(Minecraft.getInstance().currentScreen, living));
+                }
+            }
+            else
+            {
+                Minecraft.getInstance().displayGuiScreen(new WorkspaceMobData(Minecraft.getInstance().currentScreen));
             }
         });
     }

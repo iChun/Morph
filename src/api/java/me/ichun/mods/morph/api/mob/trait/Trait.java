@@ -1,20 +1,25 @@
 package me.ichun.mods.morph.api.mob.trait;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public abstract class Trait<T extends Trait>
+public abstract class Trait<T extends Trait> implements Comparable<T>
 {
     @Nonnull
     public String type;
     public String upgradeFor; //TODO make upgrades
     public Double purchaseCost;
+    public Boolean hidden;
 
     public transient PlayerEntity player;
     public transient ArrayList<Trait<?>> stateTraits;
@@ -63,14 +68,19 @@ public abstract class Trait<T extends Trait>
     public abstract T copy();
 
     //IN-GAME INFO
-    public String keyName() //A null name = hidden trait
+    public String getTranslationKeyRoot()
+    {
+        return translationKeyRootOverride() == null ? "morph.trait." + type : translationKeyRootOverride();
+    }
+
+    private String translationKeyRootOverride() //we use <key>.name/desc/<field>.name/<field>.desc. If left null, defaults to Morph's prefix "morph.trait.<type>"
     {
         return null;
     }
 
-    public String keyDescription()
+    public boolean isHidden()
     {
-        return null;
+        return hidden != null && hidden;
     }
 
     public ResourceLocation texIcon()
@@ -84,4 +94,29 @@ public abstract class Trait<T extends Trait>
         return false;
     }
 
+    @Override
+    public int compareTo(T o)
+    {
+        if(!this.isAbility() && o.isAbility())
+        {
+            //we're before
+            return -1;
+        }
+        else if(this.isAbility() && !o.isAbility())
+        {
+            //we're after
+            return 1;
+        }
+        else if(FMLEnvironment.dist.isClient())
+        {
+            return compareTranslatedName(o);
+        }
+        return type.compareTo(o.type);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private int compareTranslatedName(T o)
+    {
+        return I18n.format(getTranslationKeyRoot() + ".name").compareTo(I18n.format(o.getTranslationKeyRoot() + ".name"));
+    }
 }

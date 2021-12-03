@@ -11,7 +11,7 @@ import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
-import me.ichun.mods.morph.common.packet.PacketOpenGeneratorNbt;
+import me.ichun.mods.morph.common.packet.PacketOpenGenerator;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -83,6 +83,9 @@ public class CommandMorph
                                                 .executes(context -> openNBTGenerator(context.getSource(), EntityArgument.getEntity(context, "target")))
                                         )
                                 )
+                                .then(Commands.literal("mob")
+                                        .executes(context -> openMobDataGerator(context.getSource()))
+                                )
                         )
                 )
                 .then(Commands.argument("player", EntityArgument.player())
@@ -148,6 +151,15 @@ public class CommandMorph
         );
     }
 
+    private static int openMobDataGerator(CommandSource source) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = source.asPlayer();
+
+        Morph.channel.sendTo(new PacketOpenGenerator(-1), player);
+
+        return Command.SINGLE_SUCCESS;
+    }
+
     private static int openNBTGenerator(CommandSource source, Entity target) throws CommandSyntaxException
     {
         if(!(target instanceof LivingEntity))
@@ -162,7 +174,7 @@ public class CommandMorph
 
         ServerPlayerEntity player = source.asPlayer();
 
-        Morph.channel.sendTo(new PacketOpenGeneratorNbt(target.getEntityId()), player);
+        Morph.channel.sendTo(new PacketOpenGenerator(target.getEntityId()), player);
 
         return Command.SINGLE_SUCCESS;
     }

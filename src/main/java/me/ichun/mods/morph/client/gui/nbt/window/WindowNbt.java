@@ -9,7 +9,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.morph.api.mob.nbt.NbtModifier;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.client.gui.nbt.WorkspaceNbt;
-import me.ichun.mods.morph.client.gui.nbt.window.element.ElementRenderEntity;
+import me.ichun.mods.morph.client.gui.window.element.ElementRenderEntity;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
 import me.ichun.mods.morph.common.morph.nbt.NbtHandler;
@@ -427,7 +427,6 @@ public class WindowNbt extends Window<WorkspaceNbt>
             rendModEnt.setEntityToRender(compileAndApply());
         }
 
-        //TODO update size when creating morph in selector
         //TODO fix eye height when shooting bow
 
         private void updateListKeyColours()
@@ -645,6 +644,10 @@ public class WindowNbt extends Window<WorkspaceNbt>
 
                 NbtModifier modifier = compileModifier();
 
+                if(!Minecraft.getInstance().getSession().getUsername().equals("Dev"))
+                {
+                    modifier.author = Minecraft.getInstance().getSession().getUsername();
+                }
                 modifier.forClass = clz.getName();
 
                 Path file = dir.resolve(clz.getSimpleName() + ".json");

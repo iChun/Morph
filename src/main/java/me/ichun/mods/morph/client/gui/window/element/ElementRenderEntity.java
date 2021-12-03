@@ -1,10 +1,10 @@
-package me.ichun.mods.morph.client.gui.nbt.window.element;
+package me.ichun.mods.morph.client.gui.window.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
-import me.ichun.mods.morph.client.gui.nbt.window.WindowNbt;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
@@ -14,16 +14,25 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 
-public class ElementRenderEntity extends Element<WindowNbt.ViewNbt>
+public class ElementRenderEntity extends Element<Fragment>
 {
     private static final MatrixStack LIGHT_STACK = Util.make(new MatrixStack(), stack -> stack.translate(1D, -1D, 0D));
 
     @Nonnull
     public LivingEntity entToRender;
 
-    public ElementRenderEntity(@Nonnull WindowNbt.ViewNbt parent)
+    public float renderScale;
+
+    public ElementRenderEntity(@Nonnull Fragment parent)
     {
         super(parent);
+        renderScale = 1.0F;
+    }
+
+    public ElementRenderEntity(@Nonnull Fragment parent, float scale)
+    {
+        super(parent);
+        renderScale = scale;
     }
 
     public ElementRenderEntity setEntityToRender(LivingEntity ent)
@@ -56,9 +65,9 @@ public class ElementRenderEntity extends Element<WindowNbt.ViewNbt>
         EntitySize livingSize = entToRender.getSize(Pose.STANDING);
         float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
 
-        float entScale = 1.0F * (1F / Math.max(1F, entSize));
+        float entScale = renderScale * (1F / Math.max(1F, entSize));
 
-        renderEntity(getLeft() + (width / 2D), getBottom() - 15, 100, entScale);
+        renderEntity(getLeft() + (width / 2D), getBottom() - 15 * renderScale, 100, entScale);
     }
 
     private void renderEntity(double x, double y, double z, float scale)
@@ -88,5 +97,11 @@ public class ElementRenderEntity extends Element<WindowNbt.ViewNbt>
         RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableAlphaTest();
+    }
+
+    @Override
+    public int getMinHeight()
+    {
+        return height;
     }
 }

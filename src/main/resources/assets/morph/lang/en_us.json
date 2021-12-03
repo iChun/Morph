@@ -98,6 +98,7 @@
   "morph.gui.button.upgrade": "Upgrade",
 
   "morph.gui.workspace.nbt.title": "NBT Modifier Generator",
+  "morph.gui.workspace.nbt.help": "Generate an NBT Modifier for an existing entity.\n\nDo your best to only keep NBT Keys that affect the appearance of the entity.\n\nHover over elements and the tooltips will help.\n\nSHIFT-Click this button to open the export folder.",
   "morph.gui.workspace.nbt.targetEntity": "Targeted",
   "morph.gui.workspace.nbt.asMorphEntity": "As Morph",
   "morph.gui.workspace.nbt.forClass": "For Class",
@@ -114,8 +115,15 @@
   "morph.gui.workspace.nbt.forceValue.tooltip": "Force a value for this NBT Key. Leaving it as empty will not change the NBT value.",
   "morph.gui.workspace.nbt.modRequired": "Mod Required:",
   "morph.gui.workspace.nbt.modRequired.tooltip": "Add a mod requirement (by mod id) for this modifier to work.",
-  "morph.gui.workspace.nbt.help": "Generate an NBT Modifier for an existing entity.\n\nDo your best to only keep NBT Keys that affect the appearance of the entity.\n\nHover over elements and the tooltips will help.\n\nSHIFT-Click this button to open the export folder.",
   "morph.gui.workspace.nbt.classRequired": "You need to select a class level (For Class) to export to.",
+
+  "morph.gui.workspace.mobData.title": "Mob Data Generator",
+  "morph.gui.workspace.mobData.help": "Generate Mob Data (biomass stats & traits) for a morph.\n\nHover over elements and the tooltips will help.\n\nSHIFT-Click this button to open the export folder.",
+  "morph.gui.workspace.mobData.morphs": "Morphs",
+  "morph.gui.workspace.mobData.selectAMorph": "Select A Morph",
+  "morph.gui.workspace.mobData.traits": "Traits",
+  "morph.gui.workspace.mobData.additionalTraitInfo": "Additional Trait Info",
+  "morph.gui.workspace.mobData.addTrait": "Add Trait",
 
   "morph.gui.workspace.resources.export": "Export",
 
@@ -123,5 +131,115 @@
   "morph.advancement.unlock_biomass.description": "Rapid cellular death combined with rapid cellular regeneration increases the risk for random mutations.\n\nUnlocks the ability to absorb Biomass.",
 
   "morph.trait.traitFallNegate.name": "Fall Negation",
-  "morph.trait.traitFallNegate.desc": "Negates fall damage."
+  "morph.trait.traitFallNegate.desc": "Negates fall damage.",
+
+  "morph.trait.traitFloat.name": "Float",
+  "morph.trait.traitFloat.desc": "Mob floats on water.",
+
+  "morph.trait.traitHostile.name": "Hostile",
+  "morph.trait.traitHostile.desc": "Morph is marked as hostile and may not be targeted by mobs.",
+
+  "morph.trait.traitImmunityExplosive.name": "Immunity - Explosives",
+  "morph.trait.traitImmunityExplosive.desc": "Gain immunity to explosive damage.",
+
+  "morph.trait.traitImmunityFire.name": "Immunity - Fire",
+  "morph.trait.traitImmunityFire.desc": "Gain immunity to fire damage.",
+
+  "morph.trait.traitImmunityMagic.name": "Immunity - Magic",
+  "morph.trait.traitImmunityMagic.desc": "Gain immunity to magic damage.",
+
+  "morph.trait.traitSink.name": "Sink",
+  "morph.trait.traitSink.desc": "Mob sinks in water.",
+
+  "morph.trait.traitSwimmer.name": "Swimmer",
+  "morph.trait.traitSwimmer.desc": "Morph has increased mobility in water.",
+
+  "morph.trait.traitWaterSensitivity.name": "Water Sensitivity",
+  "morph.trait.traitWaterSensitivity.desc": "Getting wet increases damage.",
+
+  "morph.trait.traitUndead.name": "Undead",
+  "morph.trait.traitUndead.desc": "Mob is undead and will receive undead-related traits.",
+
+  "morph.trait.traitEffectResistance.name": "Effect Resistance",
+  "morph.trait.traitEffectResistance.desc": "Gain resistance to effect set in the trait.",
+  "morph.trait.traitEffectResistance.effectId.name": "Effect ID",
+  "morph.trait.traitEffectResistance.effectId.desc": "The ID of the effect resistance. EG: minecraft:slowness.",
+
+  "morph.trait.traitImmunityDamageSource.name": "Immunity - Damage Source",
+  "morph.trait.traitImmunityDamageSource.desc": "Gain immunity to the damage source set in the trait.",
+  "morph.trait.traitImmunityDamageSource.damageType.name": "Damage Type",
+  "morph.trait.traitImmunityDamageSource.damageType.desc": "The name of the damage type to be immune to. EG: outOfWorld",
+
+  "morph.trait.traitIntimidate.name": "Intimidate",
+  "morph.trait.traitIntimidate.desc": "Scares mobs of a certain type away from you (and prevents targeting).",
+  "morph.trait.traitIntimidate.idToIntimidate.name": "ID to intimidate",
+  "morph.trait.traitIntimidate.idToIntimidate.desc": "ID of the entity type to intimidate. Takes priority over Class to Intimidate.",
+  "morph.trait.traitIntimidate.classToIntimidate.name": "Class To Intimidate",
+  "morph.trait.traitIntimidate.classToIntimidate.desc": "Class name of the entity to intimidate.",
+  "morph.trait.traitIntimidate.distance.name": "Distance",
+  "morph.trait.traitIntimidate.distance.desc": "Distance (in blocks) where intimidation works.",
+  "morph.trait.traitIntimidate.farRunSpeed.name": "Far Run Speed",
+  "morph.trait.traitIntimidate.farRunSpeed.desc": "The multiplier for the entity to run from you when intimidated (from far).",
+  "morph.trait.traitIntimidate.nearRunSpeed.name": "Near Run Speed",
+  "morph.trait.traitIntimidate.nearRunSpeed.desc": "The multiplier for the entity to run from you when intimidated (when near).",
+
+  "morph.trait.traitMoistSkin.name": "Moist Skin",
+  "morph.trait.traitMoistSkin.desc": "Mob must stay wet or will take dryness damage.",
+  "morph.trait.traitMoistSkin.maxMoistness.name": "Max Moistness",
+  "morph.trait.traitMoistSkin.maxMoistness.desc": "The max number of ticks the player can stay out of water before taking dryness damage.",
+
+  "morph.trait.traitStepHeight.name": "Step Height",
+  "morph.trait.traitStepHeight.desc": "Modifies the step height of the player.",
+  "morph.trait.traitStepHeight.amount.name": "Amount",
+  "morph.trait.traitStepHeight.amount.desc": "Step height amount.",
+
+  "morph.trait.traitSunburn.name": "Sunburn",
+  "morph.trait.traitSunburn.desc": "Being out in daylight causes the mob to catch on fire.",
+  "morph.trait.traitSunburn.childrenAreImmune.name": "Children Are Immune",
+  "morph.trait.traitSunburn.childrenAreImmune.desc": "Are child mobs of this entity immune to sunburn.",
+
+  "morph.trait.traitWaterBreather.name": "Water Breather",
+  "morph.trait.traitWaterBreather.desc": "Can breathe in water.",
+  "morph.trait.traitWaterBreather.suffocatesOnLand.name": "Suffocates On Land",
+  "morph.trait.traitWaterBreather.suffocatesOnLand.desc": "Cannot breathe out of water.",
+
+  "morph.trait.abilityClimb.name": "Climb",
+  "morph.trait.abilityClimb.desc": "Can climb on blocks.",
+
+  "morph.trait.abilityEffectAttack.name": "Effect Attack",
+  "morph.trait.abilityEffectAttack.desc": "Attacks inflict an effect.",
+  "morph.trait.abilityEffectAttack.effectId.name": "Effect ID",
+  "morph.trait.abilityEffectAttack.effectId.desc": "The ID of the effect inflicted. EG: minecraft:slowness.",
+  "morph.trait.abilityEffectAttack.duration.name": "Duration",
+  "morph.trait.abilityEffectAttack.duration.desc": "Duration (in ticks) of the effect inflicted.",
+  "morph.trait.abilityEffectAttack.amplifier.name": "Amplifier",
+  "morph.trait.abilityEffectAttack.amplifier.desc": "Amplifier of the effect..",
+
+  "morph.trait.abilityFlight.name": "Flight - Creative Style",
+  "morph.trait.abilityFlight.desc": "Can use creative-mode flight.",
+  "morph.trait.abilityFlight.slowdownInWater.name": "Slowdown In Water",
+  "morph.trait.abilityFlight.slowdownInWater.desc": "Will flying through water slow you down.",
+
+  "morph.trait.abilityFlightFlap.name": "Flight - Flapping",
+  "morph.trait.abilityFlightFlap.desc": "Can flap wings for flight aka infinite jump.",
+  "morph.trait.abilityFlightFlap.resetVerticalVelocity.name": "Reset Vertical Velocity",
+  "morph.trait.abilityFlightFlap.resetVerticalVelocity.desc": "Resets vertical velocity when player hits Jump again.",
+  "morph.trait.abilityFlightFlap.velocityAdded.name": "Velocity Added",
+  "morph.trait.abilityFlightFlap.velocityAdded.desc": "How much vertical velocity to add when hitting Jump (can also be negative).",
+  "morph.trait.abilityFlightFlap.flapLimit.name": "Flap Limit",
+  "morph.trait.abilityFlightFlap.flapLimit.desc": "The limit of the number of flaps. Leave as null for infinite flaps.",
+  "morph.trait.abilityFlightFlap.slowdownInWater.name": "Slowdown In Water",
+  "morph.trait.abilityFlightFlap.slowdownInWater.desc": "Will flying through water slow you down.",
+
+  "morph.trait.abilityRideable.name": "Rideable",
+  "morph.trait.abilityRideable.desc": "Can be ridden by other players.",
+  "morph.trait.abilityRideable.requiresSaddle.name": "Requires Saddle",
+  "morph.trait.abilityRideable.requiresSaddle.desc": "If the entity implements IEquipable (MCP name), this makes Morph check if the entity is saddled.",
+
+  "morph.trait.abilitySlowFall.name": "Slow Fall",
+  "morph.trait.abilitySlowFall.desc": "Falls slowly (when not sneaking).",
+  "morph.trait.abilitySlowFall.velocityMultiplier.name": "Velocity Multiplier",
+  "morph.trait.abilitySlowFall.velocityMultiplier.desc": "Multiply the vertical velocity (when falling) by this amount every tick. Can be more than 1.",
+  "morph.trait.abilitySlowFall.resetFallDistance.name": "Reset Fall Distance",
+  "morph.trait.abilitySlowFall.resetFallDistance.desc": "Does this ability reset the fall distance."
 }

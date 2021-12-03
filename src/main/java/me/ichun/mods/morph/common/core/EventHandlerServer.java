@@ -70,7 +70,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onEntitySize(EntityEvent.Size event)
     {
-        if(event.getEntity() instanceof PlayerEntity && !event.getEntity().removed && event.getEntity().getEntityId() > 0 && event.getEntity().ticksExisted > 0)
+        if(event.getEntity() instanceof PlayerEntity && !event.getEntity().removed && event.getEntity().getEntityId() > 0 && event.getEntity().ticksExisted >= 0)
         {
             MorphInfo info = MorphHandler.INSTANCE.getMorphInfo((PlayerEntity)event.getEntity());
             if(info.isMorphed())

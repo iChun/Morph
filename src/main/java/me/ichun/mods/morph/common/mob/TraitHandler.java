@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class TraitHandler
 {
-    private static final HashMap<String, Class<? extends Trait>> TRAITS = Util.make(new HashMap<>(), m -> {
+    public static final HashMap<String, Class<? extends Trait>> TRAITS = Util.make(new HashMap<>(), m -> {
         //Register the default traits (no fields)
         m.put("traitFallNegate", FallNegateTrait.class);
         m.put("traitFloat", FloatTrait.class);

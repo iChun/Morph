@@ -743,7 +743,7 @@ public class HudHandler
                         EntityType<?> value = ForgeRegistries.ENTITIES.getValue(variant.id);
                         if(value != null)
                         {
-                            if(!selectedLiving.getName().equals(value.getName())) //has a custom name
+                            if(!selectedLiving.getName().equals(value.getName()) && showTime >= SHOW_SELECTOR_TIME) //has a custom name
                             {
                                 customName = selectedLiving.getName().deepCopy();
                                 customName.setStyle(customName.getStyle().setItalic(true));
@@ -791,7 +791,8 @@ public class HudHandler
 
                 LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
 
-                float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
+                EntitySize livingSize = living.getSize(Pose.STANDING);
+                float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
 
                 if(i == Math.round(lastIndexVert)) //last selected
                 {
@@ -927,7 +928,8 @@ public class HudHandler
 
                 boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == MouseHelper.getSelectedIndex(radialFavourites.size());
 
-                float entSize = Math.max(living.getWidth(), living.getHeight()) / 1.95F; //1.95F = zombie height
+                EntitySize livingSize = living.getSize(Pose.STANDING);
+                float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
 
                 float entScale = 0.4F * (1F / Math.max(1F, entSize)) * (float)(radialProg * textScale);
 
