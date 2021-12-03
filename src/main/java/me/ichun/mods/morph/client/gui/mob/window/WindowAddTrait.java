@@ -40,7 +40,7 @@ public class WindowAddTrait extends Window<Workspace>
 
             ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
             sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
-                    .bottom(this, Constraint.Property.Type.BOTTOM, 40) // 10 + 20 + 10, bottom + button height + padding
+                    .bottom(this, Constraint.Property.Type.BOTTOM, 64) // 10 + 20 + 10, bottom + button height + padding
                     .right(this, Constraint.Property.Type.RIGHT, 0)
             );
             elements.add(sv);
@@ -78,7 +78,7 @@ public class WindowAddTrait extends Window<Workspace>
             ElementScrollBar<?> scroll = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
             scroll.setConstraint(new Constraint(scroll).top(list, Constraint.Property.Type.BOTTOM, 0)
                     .bottom(this, Constraint.Property.Type.BOTTOM, 0)
-                    .right(button1, Constraint.Property.Type.LEFT, 5)
+                    .right(this, Constraint.Property.Type.RIGHT, 0)
             );
             elements.add(scroll);
 
