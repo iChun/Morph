@@ -104,14 +104,7 @@ public final class HandHandler
                             HandInfo handInfo = HandHandler.getHandInfo(entityModel.getClass());
                             if(handInfo != null)
                             {
-                                //these taken from PlayerRenderer
-                                entityModel.swingProgress = 0.0F;
-                                if(entityModel instanceof BipedModel)
-                                {
-                                    ((BipedModel<?>)entityModel).isSneak = false;
-                                    ((BipedModel<?>)entityModel).swimAnimation = 0.0F;
-                                }
-                                entityModel.setRotationAngles(livingInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+                                renderModelPreHandModelRendererCopy(entityModel, livingInstance);
 
                                 handParts = handInfo.getHandParts(handSide, entityModel);
                                 stacks = handInfo.getPlacementCorrectors(handSide);
@@ -145,14 +138,7 @@ public final class HandHandler
                             HandInfo handInfo = HandHandler.getHandInfo(entityModel.getClass());
                             if(handInfo != null)
                             {
-                                //these taken from PlayerRenderer
-                                entityModel.swingProgress = 0.0F;
-                                if(entityModel instanceof BipedModel)
-                                {
-                                    ((BipedModel<?>)entityModel).isSneak = false;
-                                    ((BipedModel<?>)entityModel).swimAnimation = 0.0F;
-                                }
-                                entityModel.setRotationAngles(prevInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+                                renderModelPreHandModelRendererCopy(entityModel, prevInstance);
 
                                 prevHandParts = handInfo.getHandParts(handSide, entityModel);
                                 prevStacks = handInfo.getPlacementCorrectors(handSide);
@@ -168,14 +154,7 @@ public final class HandHandler
                             HandInfo handInfo = HandHandler.getHandInfo(entityModel.getClass());
                             if(handInfo != null)
                             {
-                                //these taken from PlayerRenderer
-                                entityModel.swingProgress = 0.0F;
-                                if(entityModel instanceof BipedModel)
-                                {
-                                    ((BipedModel<?>)entityModel).isSneak = false;
-                                    ((BipedModel<?>)entityModel).swimAnimation = 0.0F;
-                                }
-                                entityModel.setRotationAngles(nextInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+                                renderModelPreHandModelRendererCopy(entityModel, nextInstance);
 
                                 nextHandParts = handInfo.getHandParts(handSide, entityModel);
                                 nextStacks = handInfo.getPlacementCorrectors(handSide);
@@ -218,7 +197,7 @@ public final class HandHandler
                                 ModelHelper.matchBoxAndChildrenCount(oldPart, newPart);
                                 ModelHelper.matchBoxAndChildrenCount(newPart, oldPart);
 
-                                handParts[i] = ModelHelper.createModelRenderer(ModelHelper.createInterimPart(oldPart, newPart, transitionProg));
+                                handParts[i] = ModelHelper.createModelRenderer(ModelHelper.createInterimPart(oldPart, newPart, transitionProg), true);
 
                                 if(prevStacks[i] != null || nextStacks[i] != null)
                                 {
@@ -254,14 +233,7 @@ public final class HandHandler
                         HandInfo handInfo = HandHandler.getHandInfo(entityModel.getClass());
                         if(handInfo != null)
                         {
-                            //these taken from PlayerRenderer
-                            entityModel.swingProgress = 0.0F;
-                            if(entityModel instanceof BipedModel)
-                            {
-                                ((BipedModel<?>)entityModel).isSneak = false;
-                                ((BipedModel<?>)entityModel).swimAnimation = 0.0F;
-                            }
-                            entityModel.setRotationAngles(livingInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+                            renderModelPreHandModelRendererCopy(entityModel, livingInstance);
 
                             handParts = handInfo.getHandParts(handSide, entityModel);
                             stacks = handInfo.getPlacementCorrectors(handSide);
@@ -308,6 +280,33 @@ public final class HandHandler
         }
 
         return false;
+    }
+
+    private static void renderModelPreHandModelRendererCopy(EntityModel entityModel, LivingEntity livingInstance)
+    {
+        //these taken from PlayerRenderer
+        entityModel.swingProgress = 0.0F;
+        if(entityModel instanceof BipedModel)
+        {
+            ((BipedModel<?>)entityModel).isSneak = false;
+            ((BipedModel<?>)entityModel).swimAnimation = 0.0F;
+        }
+
+        //Reset the limb swing because some mods calculate directly in their renderer :(
+        float limbSwing = livingInstance.limbSwing;
+        float prevLimbSwingAmount = livingInstance.prevLimbSwingAmount;
+        float limbSwingAmount = livingInstance.limbSwingAmount;
+
+        livingInstance.limbSwing = 0F;
+        livingInstance.prevLimbSwingAmount = 0F;
+        livingInstance.limbSwingAmount = 0F;
+
+        entityModel.setRotationAngles(livingInstance, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+
+        livingInstance.limbSwing = limbSwing;
+        livingInstance.prevLimbSwingAmount = prevLimbSwingAmount;
+        livingInstance.limbSwingAmount = limbSwingAmount;
+
     }
 
     private static void renderModelPartsWithTexture(ModelRenderer[] parts, MatrixStack[] stacks, MatrixStack stack, IVertexBuilder buffer, int light, float alpha)

@@ -124,6 +124,7 @@
   "morph.gui.workspace.mobData.traits": "Traits",
   "morph.gui.workspace.mobData.additionalTraitInfo": "Additional Trait Info",
   "morph.gui.workspace.mobData.addTrait": "Add Trait",
+  "morph.gui.workspace.mobData.type": "Type: %s",
 
   "morph.gui.workspace.resources.export": "Export",
 
@@ -150,9 +151,6 @@
 
   "morph.trait.traitSink.name": "Sink",
   "morph.trait.traitSink.desc": "Mob sinks in water.",
-
-  "morph.trait.traitSwimmer.name": "Swimmer",
-  "morph.trait.traitSwimmer.desc": "Morph has increased mobility in water.",
 
   "morph.trait.traitWaterSensitivity.name": "Water Sensitivity",
   "morph.trait.traitWaterSensitivity.desc": "Getting wet increases damage.",
@@ -192,6 +190,15 @@
   "morph.trait.traitStepHeight.desc": "Modifies the step height of the player.",
   "morph.trait.traitStepHeight.amount.name": "Amount",
   "morph.trait.traitStepHeight.amount.desc": "Step height amount.",
+
+  "morph.trait.traitSwimmer.name": "Swimmer",
+  "morph.trait.traitSwimmer.desc": "Morph has increased mobility in water.",
+  "morph.trait.traitSwimmer.swimMultiplier.name": "Swim Multiplier",
+  "morph.trait.traitSwimmer.swimMultiplier.desc": "Swim speed multiplier.",
+  "morph.trait.traitSwimmer.landMultiplier.name": "Land Multiplier",
+  "morph.trait.traitSwimmer.landMultiplier.desc": "Land speed multiplier.",
+  "morph.trait.traitSwimmer.doNotAffectFog.name": "Do Not Affect Fog",
+  "morph.trait.traitSwimmer.doNotAffectFog.desc": "Disables the fog effects when trait is active.",
 
   "morph.trait.traitSunburn.name": "Sunburn",
   "morph.trait.traitSunburn.desc": "Being out in daylight causes the mob to catch on fire.",

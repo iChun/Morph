@@ -1,5 +1,6 @@
 package me.ichun.mods.morph.client.gui.mob.window;
 
+import com.google.common.base.Splitter;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowPopup;
@@ -33,6 +34,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 
 public class WindowMobData extends Window<WorkspaceMobData>
@@ -49,16 +51,16 @@ public class WindowMobData extends Window<WorkspaceMobData>
 
         setId("windowMobData");
 
-        setView(new ViewTraits(this));
+        setView(new ViewMobData(this));
     }
 
     @Override
-    public ViewTraits getCurrentView()
+    public ViewMobData getCurrentView()
     {
-        return (ViewTraits)currentView;
+        return (ViewMobData)currentView;
     }
 
-    public static class ViewTraits extends View<WindowMobData>
+    public static class ViewMobData extends View<WindowMobData>
     {
         public ElementList<?> listMorphs;
         public ElementList<?> listTraits;
@@ -67,7 +69,7 @@ public class WindowMobData extends Window<WorkspaceMobData>
 
         public MobData selectedMobData;
 
-        public ViewTraits(@Nonnull WindowMobData parent)
+        public ViewMobData(@Nonnull WindowMobData parent)
         {
             super(parent, "morph.gui.workspace.mobData.title");
 
@@ -211,15 +213,18 @@ public class WindowMobData extends Window<WorkspaceMobData>
             elements.add(buttonRemove);
 
             ElementButton<?> buttonAdd = new ElementButton<>(this, "+", btn -> {
-                Window<?> window = new WindowAddTrait(getWorkspace(), trait -> {
-                    selectedMobData.traits.add(trait);
+                if(selectedMobData != null)
+                {
+                    Window<?> window = new WindowAddTrait(getWorkspace(), trait -> {
+                        selectedMobData.traits.add(trait);
 
-                    updateTraitsList();
+                        updateTraitsList();
 
-                    updateTraitInfoList(null);
-                });
-                getWorkspace().openWindowInCenter(window, 0.6D, 0.9D, true);
-                window.init();
+                        updateTraitInfoList(null);
+                    });
+                    getWorkspace().openWindowInCenter(window, 0.6D, 0.9D, true);
+                    window.init();
+                }
             });
             buttonAdd.setSize(16, 16);
             buttonAdd.constraints().right(buttonRemove, Constraint.Property.Type.LEFT, 0).bottom(buttonRemove, Constraint.Property.Type.BOTTOM, 0);
@@ -264,9 +269,25 @@ public class WindowMobData extends Window<WorkspaceMobData>
             for(Trait<?> trait : selectedMobData.traits)
             {
                 ElementList.Item<? extends Trait<?>> item = listTraits.addItem(trait);
-                item.addTextWrapper(I18n.format(trait.getTranslationKeyRoot() + ".name"));
+                String name = I18n.format(trait.getTranslationKeyRoot() + ".name");
+                if(name.equals(trait.getTranslationKeyRoot() + ".name"))
+                {
+                    name = trait.type;
+                }
+                item.addTextWrapper(name);
+
+                String tooltip = I18n.format("morph.gui.workspace.mobData.type", trait.type);
+
+                String desc = I18n.format(trait.getTranslationKeyRoot() + ".desc");
+                if(!desc.equals(trait.getTranslationKeyRoot() + ".desc"))
+                {
+                    tooltip = tooltip + "\n\n" + desc;
+                }
+
+                item.setTooltip(tooltip);
 
                 ElementTextWrapper text = (ElementTextWrapper)item.elements.get(0);
+                text.setTooltip(tooltip);
                 if(!trait.isAbility())
                 {
                     text.setColor(Theme.getAsHex(getTheme().fontChat));
@@ -312,15 +333,17 @@ public class WindowMobData extends Window<WorkspaceMobData>
                     ElementList.Item<Field> fItem = listTraitInfo.addItem(f).addTextWrapper("");
                     updateItemName(fItem, trait, f);
                     fItem.setSelectionHandler(fieldItem -> {
-                        if(fieldItem.selected)
+                        String desc = I18n.format(trait.getTranslationKeyRoot() + "." + f.getName() + ".desc");
+                        if(fieldItem.selected && !desc.equals(trait.getTranslationKeyRoot() + "." + f.getName() + ".desc"))
                         {
-                            textFieldDesc.setText(I18n.format(trait.getTranslationKeyRoot() + "." + f.getName() + ".desc"));
+                            textFieldDesc.setText(desc);
+                            textFieldDesc.constraint.bottom(this, Constraint.Property.Type.BOTTOM, 28);
                         }
                         else
                         {
                             textFieldDesc.setText(" ");
+                            textFieldDesc.constraint.bottom(this, Constraint.Property.Type.BOTTOM, 12);
                         }
-                        textFieldDesc.constraint.bottom(this, Constraint.Property.Type.BOTTOM, 28);
                         this.resize(parentFragment.parent.getMinecraft(), getWidth(), getHeight());
                     });
 
@@ -390,7 +413,12 @@ public class WindowMobData extends Window<WorkspaceMobData>
 
         public void updateItemName(ElementList.Item<Field> item, Trait<?> trait, Field f)
         {
-            StringTextComponent text = new StringTextComponent(TextFormatting.GOLD + I18n.format(trait.getTranslationKeyRoot() + "." + f.getName() + ".name"));
+            String name = I18n.format(trait.getTranslationKeyRoot() + "." + f.getName() + ".name");
+            if(name.equals(trait.getTranslationKeyRoot() + "." + f.getName() + ".name"))
+            {
+                name = f.getName();
+            }
+            StringTextComponent text = new StringTextComponent(TextFormatting.GOLD + name);
             String fhName = "";
             try
             {
@@ -430,7 +458,7 @@ public class WindowMobData extends Window<WorkspaceMobData>
 
                 if(!rl.getNamespace().equals("minecraft"))
                 {
-                    dir = dir.resolve(rl.getNamespace());
+                    dir = dir.resolve(capitaliseWords(rl.getNamespace(), true));
                     if(!Files.exists(dir))
                     {
                         Files.createDirectory(dir);
@@ -442,7 +470,7 @@ public class WindowMobData extends Window<WorkspaceMobData>
                     selectedMobData.author = Minecraft.getInstance().getSession().getUsername();
                 }
 
-                String name = rl.getPath().toUpperCase(Locale.ROOT).charAt(0) + rl.getPath().substring(1);
+                String name = capitaliseWords(rl.getPath(), false);
 
                 Path file = dir.resolve(name + ".json");
 
@@ -457,6 +485,27 @@ public class WindowMobData extends Window<WorkspaceMobData>
             }
 
             return false;
+        }
+
+        public static String capitaliseWords(String s, boolean addSpace)
+        {
+            Splitter UNDERSCORE_SPLITTER = Splitter.on("_").trimResults().omitEmptyStrings();
+            List<String> names = UNDERSCORE_SPLITTER.splitToList(s);
+
+            StringBuilder sb = new StringBuilder();
+
+            for(String name : names)
+            {
+                sb.append(name.toUpperCase(Locale.ROOT).charAt(0));
+                sb.append(name.substring(1));
+
+                if(addSpace)
+                {
+                    sb.append(" ");
+                }
+            }
+
+            return sb.toString().trim();
         }
     }
 }

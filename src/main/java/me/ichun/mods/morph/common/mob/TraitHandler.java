@@ -21,7 +21,6 @@ public class TraitHandler
         m.put("traitImmunityFire", FireImmunityTrait.class);
         m.put("traitImmunityMagic", MagicImmunityTrait.class);
         m.put("traitSink", SinkTrait.class);
-        m.put("traitSwimmer", SwimmerTrait.class);
         m.put("traitWaterSensitivity", WaterSensitivityTrait.class);
         m.put("traitUndead", UndeadTrait.class);
 
@@ -31,6 +30,7 @@ public class TraitHandler
         m.put("traitIntimidate", IntimidateTrait.class);
         m.put("traitMoistSkin", MoistSkinTrait.class);
         m.put("traitStepHeight", StepHeightTrait.class);
+        m.put("traitSwimmer", SwimmerTrait.class);
         m.put("traitSunburn", SunburnTrait.class);
         m.put("traitWaterBreather", WaterBreatherTrait.class);
 

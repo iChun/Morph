@@ -33,7 +33,7 @@ public class WindowAddTrait extends Window<Workspace>
         public ElementTextWrapper description;
         public ElementList<?> list;
 
-        public ViewAddTrait(@Nonnull WindowAddTrait parent, Consumer callback)
+        public ViewAddTrait(@Nonnull WindowAddTrait parent, Consumer<Trait<?>> callback)
         {
             super(parent, "morph.gui.workspace.mobData.addTrait");
             this.callback = callback;
@@ -116,9 +116,10 @@ public class WindowAddTrait extends Window<Workspace>
                             }
                             return false;
                         }).setSelectionHandler(item -> {
-                            if(item.selected)
+                            String desc = I18n.format(instance.getTranslationKeyRoot() + ".desc");
+                            if(item.selected && !desc.equals(instance.getTranslationKeyRoot() + ".desc"))
                             {
-                                description.setText(I18n.format(instance.getTranslationKeyRoot() + ".desc"));
+                                description.setText(desc);
                             }
                             else
                             {

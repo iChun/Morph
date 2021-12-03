@@ -8,6 +8,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.morph.api.mob.nbt.NbtModifier;
 import me.ichun.mods.morph.api.morph.MorphVariant;
+import me.ichun.mods.morph.client.gui.mob.window.WindowMobData;
 import me.ichun.mods.morph.client.gui.nbt.WorkspaceNbt;
 import me.ichun.mods.morph.client.gui.window.element.ElementRenderEntity;
 import me.ichun.mods.morph.common.Morph;
@@ -22,6 +23,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 import org.apache.commons.io.FileUtils;
@@ -624,6 +626,17 @@ public class WindowNbt extends Window<WorkspaceNbt>
                 if(!Files.exists(dir))
                 {
                     Files.createDirectory(dir);
+                }
+
+                ResourceLocation rl = rendModEnt.entToRender.getType().getRegistryName();
+
+                if(!rl.getNamespace().equals("minecraft"))
+                {
+                    dir = dir.resolve(WindowMobData.ViewMobData.capitaliseWords(rl.getNamespace(), true));
+                    if(!Files.exists(dir))
+                    {
+                        Files.createDirectory(dir);
+                    }
                 }
 
                 Class clz = null;
