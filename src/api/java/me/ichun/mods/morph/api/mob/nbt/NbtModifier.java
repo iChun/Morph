@@ -31,20 +31,26 @@ public class NbtModifier
     public void setup()
     {
         //set up the runtime stuff
-        for(Modifier modifier : modifiers)
+        if(modifiers != null)
         {
-            addModifier(modifier);
+            for(Modifier modifier : modifiers)
+            {
+                addModifier(modifier);
+            }
         }
 
-        modSpecificModifiers.forEach((k, v) -> {
-            if(ModList.get().isLoaded(k))
-            {
-                for(Modifier modifier : v)
+        if(modSpecificModifiers != null)
+        {
+            modSpecificModifiers.forEach((k, v) -> {
+                if(ModList.get().isLoaded(k))
                 {
-                    addModifier(modifier);
+                    for(Modifier modifier : v)
+                    {
+                        addModifier(modifier);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void addModifier(Modifier modifier)
