@@ -1,7 +1,11 @@
 package me.ichun.mods.morph.api.morph;
 
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import me.ichun.mods.morph.api.MorphApi;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
+import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -11,8 +15,10 @@ import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.network.play.server.SPlayerListItemPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -411,8 +417,37 @@ public class MorphVariant implements Comparable<MorphVariant>
     @OnlyIn(Dist.CLIENT)
     private PlayerEntity createPlayer(World world, UUID uuid)
     {
-        RemoteClientPlayerEntity player = new RemoteClientPlayerEntity((ClientWorld)world, MorphApi.getApiImpl().getGameProfile(uuid, null));
+        Minecraft mc = Minecraft.getInstance();
+        GameProfile gameProfile = MorphApi.getApiImpl().getGameProfile(uuid, null);
+        boolean added = false;
+        if(mc.getConnection().getPlayerInfo(gameProfile.getId()) == null) //we have to assign a NetworkPlayerInfo for the player skin to render.
+        {
+            //Silly Mojang and their privates
+            SPlayerListItemPacket spoof = new SPlayerListItemPacket()
+            {
+                @Override
+                public List<AddPlayerData> getEntries()
+                {
+                    return Lists.newArrayList(new AddPlayerData(gameProfile, -100, GameType.ADVENTURE, new StringTextComponent(gameProfile.getName())));
+                }
+            };
+
+            NetworkPlayerInfo info = new NetworkPlayerInfo(spoof.getEntries().get(0));
+
+            mc.getConnection().playerInfoMap.put(gameProfile.getId(), info);
+
+            added = true;
+        }
+
+        RemoteClientPlayerEntity player = new RemoteClientPlayerEntity((ClientWorld)world, gameProfile);
         player.getDataManager().set(PlayerEntity.PLAYER_MODEL_FLAG, (byte)127); //All model parts shown
+        player.isPlayerInfoSet(); //just to set the playerInfo with our spoof.
+
+        if(added)
+        {
+            mc.getConnection().playerInfoMap.remove(gameProfile.getId());
+        }
+
         return player;
     }
 

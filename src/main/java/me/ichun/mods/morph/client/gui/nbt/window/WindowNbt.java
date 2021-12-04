@@ -575,6 +575,11 @@ public class WindowNbt extends Window<WorkspaceNbt>
                 }
             }
 
+            if(modifier.modSpecificModifiers.isEmpty())
+            {
+                modifier.modSpecificModifiers = null;
+            }
+
             modifier.setup();
 
             modifier.setupValues();

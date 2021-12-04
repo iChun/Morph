@@ -544,8 +544,11 @@ public class HudHandler
                     indexVert = 0;
                 }
 
-                lastIndexHori = morphData.morphs.get(indexVert).variants.size() - 1;
-                indexHori = 0;//reset the hori index
+                if(morphData.morphs.size() > 1)
+                {
+                    lastIndexHori = morphData.morphs.get(indexVert).variants.size() - 1;
+                    indexHori = 0;//reset the hori index
+                }
             }
         }
         else
@@ -570,8 +573,11 @@ public class HudHandler
                     indexVert = morphData.morphs.size() - 1;
                 }
 
-                lastIndexHori = morphData.morphs.get(indexVert).variants.size() - 1;
-                indexHori = 0;//reset the hori index
+                if(morphData.morphs.size() > 1)
+                {
+                    lastIndexHori = morphData.morphs.get(indexVert).variants.size() - 1;
+                    indexHori = 0;//reset the hori index
+                }
             }
         }
         indexChangeTime = 0;
