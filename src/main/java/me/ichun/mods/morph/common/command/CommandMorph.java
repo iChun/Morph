@@ -59,7 +59,7 @@ public class CommandMorph
                                     {
                                         ResourceHandler.extractFiles(ResourceHandler.getMorphDir().resolve(ResourceHandler.MOB_SUPPORT_VERSION + ".extracted"));
                                         ResourceHandler.reloadAllResources();
-                                        context.getSource().sendFeedback(new TranslationTextComponent("command.morph.morph.resources.reloaded"), true);
+                                        context.getSource().sendFeedback(new TranslationTextComponent("command.morph.resources.success.reextract"), true);
                                         return Command.SINGLE_SUCCESS;
                                     }
                                     catch(IOException e)

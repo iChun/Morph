@@ -60,7 +60,7 @@
   "command.morph.resources.error.extractionError": "An error occurred when extracting files. Check Java Console for more info.",
   "command.morph.resources.error.playerNoNbt": "Players do not need NBT modifiers!",
   "command.morph.resources.success.reloaded": "Morph files reloaded!",
-  "command.morph.resources.success.reextract": "Morph files extracted and reloaded!",
+  "command.morph.resources.success.reextract": "Morph files reextracted and reloaded!",
 
   "command.morph.morph.error.notLivingEntity": "Entity supplied is not a LivingEntity type!",
   "command.morph.morph.error.failedToCreateEntity": "Entity could not be created!",
