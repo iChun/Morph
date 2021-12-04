@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "fuzs.betteranimationscollection.client.renderer.entity.model.GhastTentaclesModel",
+  "leftHandParts": [
+    {
+      "fieldName": "tentacles[2]",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.015625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.162500023841858
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "tentacles[0]",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.140625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.162500023841858
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ]
+}

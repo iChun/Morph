@@ -52,7 +52,7 @@ public class FlyAbility extends Ability<FlyAbility>
         }
         else if(lastStrength == 1F) //strength != 1F, but lastStrength == 1F. We're morphing out, disable flight.
         {
-            if(canPlayerFly() && player.abilities.allowFlying)
+            if(!canPlayerFly() && player.abilities.allowFlying)
             {
                 player.abilities.allowFlying = false;
                 player.abilities.isFlying = false;

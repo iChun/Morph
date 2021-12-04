@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "fuzs.betteranimationscollection.client.renderer.entity.model.FlailingEndermanModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_178724_i",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.0625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.25
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_178723_h",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.0625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.25
+        }
+      ]
+    }
+  ]
+}
