@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.LavaCatModel",
+  "leftHandParts": [
+    {
+      "fieldName": "ocelotFrontLeftLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.30000001192092896
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.737500011920929
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "ocelotFrontRightLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.30000001192092896
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.737500011920929
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3125
+        }
+      ]
+    }
+  ]
+}

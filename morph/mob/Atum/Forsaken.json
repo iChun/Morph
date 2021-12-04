@@ -1,0 +1,14 @@
+{
+  "forEntity": "atum:forsaken",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSunburn"
+    },
+    {
+      "type": "traitUndead"
+    }
+  ]
+}

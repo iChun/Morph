@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:seclam",
+  "traits": [
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

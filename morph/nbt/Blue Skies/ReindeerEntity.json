@@ -1,0 +1,12 @@
+{
+  "forClass": "com.legacy.blue_skies.entities.passive.ReindeerEntity",
+  "modifiers": [],
+  "modSpecificModifiers": {
+    "blue_skies": [
+      {
+        "key": "Saddle",
+        "keep": true
+      }
+    ]
+  }
+}

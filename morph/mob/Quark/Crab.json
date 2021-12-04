@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "quark:crab",
+  "traits": [
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

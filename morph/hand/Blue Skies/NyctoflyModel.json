@@ -1,0 +1,78 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.NyctoflyModel",
+  "leftHandParts": [
+    {
+      "fieldName": "frontLeftLeg",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -40.1070442199707
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -37.3327522277832
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.15625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.8250000476837158
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.09375
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "frontRightLeg",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 40.1070442199707
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 37.3327522277832
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.14375001192092896
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.8875000476837158
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.09375
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ]
+}

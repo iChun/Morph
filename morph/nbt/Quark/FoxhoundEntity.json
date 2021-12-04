@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.FoxhoundEntity",
+  "modifiers": [
+    {
+      "key": "IsBlue",
+      "keep": true
+    },
+    {
+      "key": "OhLawdHeComin",
+      "keep": true
+    },
+    {
+      "key": "IsSlep",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

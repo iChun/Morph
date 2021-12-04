@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.blackgear.cavesandcliffs.client.renderer.entity.model.GoatModel",
+  "leftHandParts": [
+    {
+      "fieldName": "left_front_leg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.21875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.28125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "right_front_leg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.28125
+        }
+      ]
+    }
+  ]
+}

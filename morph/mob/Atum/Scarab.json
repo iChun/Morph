@@ -1,0 +1,8 @@
+{
+  "forEntity": "atum:scarab",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

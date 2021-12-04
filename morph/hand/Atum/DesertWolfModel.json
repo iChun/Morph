@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.client.model.entity.DesertWolfModel",
+  "leftHandParts": [
+    {
+      "fieldName": "wolfLeg4",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "wolfLeg3",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ]
+}

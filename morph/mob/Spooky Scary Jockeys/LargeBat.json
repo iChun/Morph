@@ -1,0 +1,21 @@
+{
+  "author": "WenXin2",
+  "forEntity": "batjockeys:large_bat",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSunburn"
+    },
+    {
+      "type": "abilityFlightFlap",
+      "slowdownInWater": true
+    },
+    {
+      "type": "abilityFlight",
+      "upgradeFor": "abilityFlightFlap",
+      "slowdownInWater": true
+    }
+  ]
+}

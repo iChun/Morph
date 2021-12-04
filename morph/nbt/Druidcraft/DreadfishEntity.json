@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.vulp.druidcraft.entities.DreadfishEntity",
+  "modifiers": [
+    {
+      "key": "Hostile",
+      "keep": true
+    },
+    {
+      "key": "SmokeColor",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

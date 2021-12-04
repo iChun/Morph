@@ -1,0 +1,11 @@
+{
+  "forEntity": "chaosawakens:robo_warrior",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSink"
+    }
+  ]
+}

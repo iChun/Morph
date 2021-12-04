@@ -1,0 +1,15 @@
+{
+  "forEntity": "atum:serval",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitIntimidate",
+      "classToIntimidate": "net.minecraft.entity.monster.CreeperEntity",
+      "distance": 6.0,
+      "farRunSpeed": 1.0,
+      "nearRunSpeed": 1.2
+    }
+  ]
+}

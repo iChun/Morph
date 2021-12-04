@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "darkerdepths:magma_minion",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "type": "traitSink"
+    }
+  ]
+}

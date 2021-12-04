@@ -1,0 +1,23 @@
+{
+  "forEntity": "chaosawakens:wasp",
+  "traits": [
+    {
+      "type": "abilityEffectAttack",
+      "effectId": "minecraft:poison",
+      "duration": 140,
+      "amplifier": 0
+    },
+    {
+      "type": "abilityFlightFlap",
+      "slowdownInWater": true
+    },
+    {
+      "type": "abilityFlight",
+      "upgradeFor": "abilityFlightFlap",
+      "slowdownInWater": true
+    },
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "quark:wrapped",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSunburn"
+    },
+    {
+      "type": "traitUndead"
+    }
+  ]
+}

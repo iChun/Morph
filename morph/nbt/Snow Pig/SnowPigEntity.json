@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.uraneptus.snowpig.common.entities.SnowPigEntity",
+  "modifiers": [
+    {
+      "key": "Saddle",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

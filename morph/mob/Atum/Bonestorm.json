@@ -1,0 +1,11 @@
+{
+  "forEntity": "atum:bonestorm",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "abilityFlight"
+    }
+  ]
+}

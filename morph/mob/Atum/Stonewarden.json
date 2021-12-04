@@ -1,0 +1,17 @@
+{
+  "forEntity": "atum:stonewarden",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

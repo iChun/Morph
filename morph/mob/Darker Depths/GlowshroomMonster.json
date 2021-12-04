@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "darkerdepths:glowshroom_monster",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSink"
+    }
+  ]
+}

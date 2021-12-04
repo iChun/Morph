@@ -1,0 +1,9 @@
+{
+  "author": "WenXin2",
+  "forEntity": "lotr:mordor_orc",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

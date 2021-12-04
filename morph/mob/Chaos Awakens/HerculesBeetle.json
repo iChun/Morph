@@ -1,0 +1,8 @@
+{
+  "forEntity": "chaosawakens:hercules_beetle",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

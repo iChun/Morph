@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.passive.CrystalCamelModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftFrontLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.13124999403953552
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3687500059604645
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightFrontLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.13124999403953552
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.3687500059604645
+        }
+      ]
+    }
+  ]
+}

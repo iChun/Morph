@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:whistleshell_crab",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

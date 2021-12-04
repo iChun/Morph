@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forEntity": "druidcraft:beetle",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "amount": 1.0,
+      "type": "traitStepHeight"
+    },
+    {
+      "requiresSaddle": true,
+      "type": "abilityRideable"
+    }
+  ]
+}

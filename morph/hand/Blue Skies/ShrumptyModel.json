@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.ShrumptyModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.SnowOwlEntity",
+  "modifiers": [
+    {
+      "key": "OwlHostile",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

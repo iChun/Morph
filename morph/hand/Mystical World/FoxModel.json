@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.FoxModel",
+  "leftHandParts": [
+    {
+      "fieldName": "frontL",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.3125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.0625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "frontR",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.3125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.0625
+        }
+      ]
+    }
+  ]
+}

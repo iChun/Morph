@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.boss.ArachnarchModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftLegEnd1",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -1.03125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.25
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.0625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightLegEnd1",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -1.78125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.25
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.0625
+        }
+      ]
+    }
+  ]
+}

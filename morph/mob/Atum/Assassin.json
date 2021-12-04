@@ -1,0 +1,8 @@
+{
+  "forEntity": "atum:assassin",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

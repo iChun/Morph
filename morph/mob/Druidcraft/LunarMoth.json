@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "druidcraft:lunar_moth",
+  "traits": [
+    {
+      "slowdownInWater": true,
+      "type": "abilityFlight",
+      "upgradeFor": "abilityFlightFlap"
+    },
+    {
+      "slowdownInWater": true,
+      "type": "abilityFlightFlap"
+    }
+  ]
+}

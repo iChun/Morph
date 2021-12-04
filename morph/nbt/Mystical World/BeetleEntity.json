@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.BeetleEntity",
+  "modifiers": [
+    {
+      "key": "Sitting",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

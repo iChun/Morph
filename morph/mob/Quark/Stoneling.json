@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "quark:stoneling",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

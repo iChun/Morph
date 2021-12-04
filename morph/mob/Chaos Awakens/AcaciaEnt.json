@@ -1,0 +1,8 @@
+{
+  "forEntity": "chaosawakens:acacia_ent",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

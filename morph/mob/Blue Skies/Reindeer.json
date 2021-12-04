@@ -1,0 +1,9 @@
+{
+  "forEntity": "blue_skies:reindeer",
+  "traits": [
+    {
+      "type": "abilityRideable",
+      "requiresSaddle": true
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "forEntity": "atum:tarantula",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "abilityClimb"
+    }
+  ]
+}

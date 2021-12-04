@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forEntity": "quark:toretoise",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.boss.StarlitCrusherModel",
+  "leftHandParts": [
+    {
+      "fieldName": "rightBranch",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -39.9981803894043
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 1.875
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 5.160058498382568
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 37.24225616455078
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.4375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.015625
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.passive.ReindeerModel",
+  "leftHandParts": [
+    {
+      "fieldName": "thighLeft[0]",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.40625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.125
+        }
+      ]
+    },
+    {
+      "fieldName": "thighLeft",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.1875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.5625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "leg4",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.40625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.125
+        }
+      ]
+    },
+    {
+      "fieldName": "thighRight",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.1875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.5625
+        }
+      ]
+    }
+  ]
+}

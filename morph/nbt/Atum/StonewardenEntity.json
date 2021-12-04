@@ -1,0 +1,10 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.entity.stone.StonewardenEntity",
+  "modifiers": [
+    {
+      "key": "Variant",
+      "keep": true
+    }
+  ]
+}

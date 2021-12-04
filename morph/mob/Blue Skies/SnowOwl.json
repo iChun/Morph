@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:snow_owl",
+  "traits": [
+    {
+      "type": "abilityFlight",
+      "upgradeFor": "abilityFlightFlap",
+      "slowdownInWater": true
+    },
+    {
+      "slowdownInWater": true,
+      "type": "abilityFlightFlap"
+    }
+  ]
+}

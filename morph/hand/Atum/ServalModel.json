@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.client.model.entity.ServalModel",
+  "leftHandParts": [
+    {
+      "fieldName": "frontLeftLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.30000001192092896
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "frontRightLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.30000001192092896
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        }
+      ]
+    }
+  ]
+}

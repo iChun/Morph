@@ -1,0 +1,10 @@
+{
+  "author": "WenXin2",
+  "forEntity": "snowpig:snow_pig",
+  "traits": [
+    {
+      "requiresSaddle": true,
+      "type": "abilityRideable"
+    }
+  ]
+}

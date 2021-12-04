@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:stonelet",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

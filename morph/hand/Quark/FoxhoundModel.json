@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.client.model.FoxhoundModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftFrontLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightFrontLeg",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.125
+        }
+      ]
+    }
+  ]
+}

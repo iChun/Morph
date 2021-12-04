@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.HellSproutModel",
+  "leftHandParts": [
+    {
+      "fieldName": "legL",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "legR",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        }
+      ]
+    }
+  ]
+}

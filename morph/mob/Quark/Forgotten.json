@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forEntity": "quark:forgotten",
+  "traits": [
+    {
+      "effectId": "*",
+      "type": "traitEffectResistance"
+    },
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSunburn"
+    },
+    {
+      "type": "traitUndead"
+    }
+  ]
+}

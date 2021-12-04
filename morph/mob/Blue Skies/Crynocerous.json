@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:crynocerous",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitWaterSensitivity"
+    }
+  ]
+}

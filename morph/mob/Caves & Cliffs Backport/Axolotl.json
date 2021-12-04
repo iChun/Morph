@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forEntity": "cavesandcliffs:axolotl",
+  "traits": [
+    {
+      "type": "traitMoistSkin"
+    },
+    {
+      "swimMultiplier": 4.0,
+      "landMultiplier": 0.1,
+      "type": "traitSwimmer"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

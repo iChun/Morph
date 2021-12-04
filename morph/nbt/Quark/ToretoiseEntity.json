@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.ToretoiseEntity",
+  "modifiers": [
+    {
+      "key": "oreType",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

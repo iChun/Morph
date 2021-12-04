@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "mysticalworld:endermini",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitWaterSensitivity"
+    }
+  ]
+}

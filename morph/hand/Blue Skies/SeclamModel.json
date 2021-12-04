@@ -1,0 +1,108 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.SeclamModel",
+  "leftHandParts": [
+    {
+      "fieldName": "topShell",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.5625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.21875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.5625
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    },
+    {
+      "fieldName": "bottomShell",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.5625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.21875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.5625
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "topShell",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.5625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.21875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.5625
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    },
+    {
+      "fieldName": "bottomShell",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.5625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.21875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.5625
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ]
+}

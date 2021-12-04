@@ -1,0 +1,53 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.StoneletModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 0.8189802169799805
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.21875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.5625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -0.8189802169799805
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.6875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.03125
+        }
+      ]
+    }
+  ]
+}

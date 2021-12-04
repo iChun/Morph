@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.vulp.druidcraft.entities.BeetleEntity",
+  "modifiers": [
+    {
+      "key": "chested",
+      "keep": true
+    },
+    {
+      "key": "saddled",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

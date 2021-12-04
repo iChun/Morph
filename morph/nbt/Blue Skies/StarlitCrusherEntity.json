@@ -1,0 +1,23 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.boss.StarlitCrusherEntity",
+  "modifiers": [
+    {
+      "key": "IsRooted",
+      "keep": true
+    },
+    {
+      "key": "DifficultyID",
+      "keep": true
+    },
+    {
+      "key": "Invul",
+      "keep": true
+    },
+    {
+      "key": "DungeonSpawned",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

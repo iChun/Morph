@@ -1,0 +1,8 @@
+{
+  "forEntity": "atum:nomad",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

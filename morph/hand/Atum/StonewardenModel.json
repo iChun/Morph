@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.client.model.entity.StonewardenModel",
+  "leftHandParts": [
+    {
+      "fieldName": "stonewardenLeftArm",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.3125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.53125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "stonewardenRightArm",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.3125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.53125
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.ArmoredFrostSpiritEntity",
+  "modifiers": [
+    {
+      "key": "IceType",
+      "keep": true
+    },
+    {
+      "key": "IsRanged",
+      "keep": true
+    }
+  ]
+}

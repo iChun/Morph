@@ -1,0 +1,58 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.SilkwormModel",
+  "leftHandParts": [
+    {
+      "fieldName": "bodyParts[2]",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 1.4756165742874146
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.375
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.1875
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "bodyParts[0]",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 0.09991396963596344
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.41426318883895874
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.21875
+        }
+      ]
+    }
+  ]
+}

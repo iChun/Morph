@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "io.github.chaosawakens.client.entity.model.EnchantedGoldenAppleCowModel",
+  "leftHandParts": [
+    {
+      "fieldName": "legFrontLeft",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.375
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "legFrontRight",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.375
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "quark:foxhound",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    }
+  ]
+}

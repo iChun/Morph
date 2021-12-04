@@ -1,0 +1,78 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.EmberbackModel",
+  "leftHandParts": [
+    {
+      "fieldName": "frontLeftLeg",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -22.5
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -33.29999923706055
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.0625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "frontRightLeg",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 22.5
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 33.29999923706055
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.0625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.25
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ]
+}

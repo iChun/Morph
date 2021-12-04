@@ -1,0 +1,14 @@
+{
+  "forEntity": "blue_skies:charscale_moki",
+  "traits": [
+    {
+      "type": "traitSwimmer",
+      "swimMultiplier": 2.0,
+      "landMultiplier": 0.05
+    },
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

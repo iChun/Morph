@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.DuckModel",
+  "leftHandParts": [
+    {
+      "fieldName": "wing_R",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.15625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "wing_L",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.15625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.625
+        }
+      ]
+    }
+  ]
+}

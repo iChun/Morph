@@ -1,0 +1,68 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.WhistleshellCrabModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 34.37746810913086
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.40625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.53125
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.4375
+        },
+        {
+          "type": "rotate",
+          "axis": "x",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -34.37746810913086
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.40312498807907104
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.71875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.4375
+        },
+        {
+          "type": "rotate",
+          "axis": "x",
+          "amount": 90.0
+        }
+      ]
+    }
+  ]
+}

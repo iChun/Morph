@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.blackgear.cavesandcliffs.common.entity.AxolotlEntity",
+  "modifiers": [
+    {
+      "key": "Variant",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

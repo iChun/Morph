@@ -1,0 +1,13 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.fish.JellyDrifterEntity",
+  "modifiers": [],
+  "modSpecificModifiers": {
+    "blue_skies": [
+      {
+        "key": "Color",
+        "keep": true
+      }
+    ]
+  }
+}

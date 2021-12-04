@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:spewter",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSink"
+    }
+  ]
+}

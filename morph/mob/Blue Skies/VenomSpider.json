@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:venom_spider",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "abilityClimb"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.naterbobber.darkerdepths.client.entity.model.MagmaMinionModel",
+  "leftHandParts": [
+    {
+      "fieldName": "left_arm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 24.998149871826172
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.03125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.625
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.03125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "right_arm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -24.998149871826172
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.03125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.625
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.03125
+        }
+      ]
+    }
+  ]
+}

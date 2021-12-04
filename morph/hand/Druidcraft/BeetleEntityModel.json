@@ -1,0 +1,78 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.vulp.druidcraft.client.models.BeetleEntityModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leg_R_middle",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 6.991631665981268E-12
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -35.001991271972656
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.75
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "leg_L_middle",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -6.991631665981268E-12
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 35.001991271972656
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.75
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -90.0
+        }
+      ]
+    }
+  ]
+}

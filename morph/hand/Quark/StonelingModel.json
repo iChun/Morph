@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.client.model.StonelingModel",
+  "leftHandParts": [
+    {
+      "fieldName": "arm_left",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.125
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "arm_right",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.125
+        }
+      ]
+    }
+  ]
+}

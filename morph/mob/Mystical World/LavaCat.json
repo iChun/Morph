@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forEntity": "mysticalworld:lava_cat",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "classToIntimidate": "net.minecraft.entity.monster.CreeperEntity",
+      "distance": 6.0,
+      "farRunSpeed": 1.0,
+      "nearRunSpeed": 1.2,
+      "type": "traitIntimidate"
+    }
+  ]
+}

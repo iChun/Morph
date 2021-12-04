@@ -1,0 +1,23 @@
+{
+  "forEntity": "blue_skies:crogre",
+  "traits": [
+    {
+      "type": "abilityRideable",
+      "requiresSaddle": true
+    },
+    {
+      "type": "traitIntimidate",
+      "classToIntimidate": "com.legacy.blue_skies.entities.hostile.EmberbackEntity",
+      "distance": 12.0,
+      "farRunSpeed": 0.5,
+      "nearRunSpeed": 0.5
+    },
+    {
+      "type": "traitIntimidate",
+      "classToIntimidate": "com.legacy.blue_skies.entities.hostile.InfestedSwarmerEntity",
+      "distance": 12.0,
+      "farRunSpeed": 0.5,
+      "nearRunSpeed": 0.5
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:arachnarch",
+  "traits": [
+    {
+      "type": "abilityClimb"
+    },
+    {
+      "type": "abilityEffectAttack",
+      "effectId": "minecraft:poison",
+      "duration": 280,
+      "amplifier": 1
+    },
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

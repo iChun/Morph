@@ -1,0 +1,58 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.client.model.FrogModel",
+  "leftHandParts": [
+    {
+      "fieldName": "rightArm",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.9375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.0625
+        },
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 180.0
+        },
+        {
+          "type": "rotate",
+          "axis": "x",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "leftArm",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.9375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.0625
+        },
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 180.0
+        },
+        {
+          "type": "rotate",
+          "axis": "x",
+          "amount": 90.0
+        }
+      ]
+    }
+  ]
+}

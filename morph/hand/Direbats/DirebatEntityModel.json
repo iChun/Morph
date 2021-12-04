@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "net.teamhollow.direbats.entity.direbat.DirebatEntityModel",
+  "leftHandParts": [
+    {
+      "fieldName": "talons",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.21875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.25
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "talons",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.21875
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.25
+        }
+      ]
+    }
+  ]
+}

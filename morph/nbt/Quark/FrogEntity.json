@@ -1,0 +1,35 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.FrogEntity",
+  "modifiers": [
+    {
+      "key": "Chain",
+      "keep": true
+    },
+    {
+      "key": "FrogAmount",
+      "keep": true
+    },
+    {
+      "key": "DudeAmount",
+      "keep": true
+    },
+    {
+      "key": "Jack",
+      "keep": true
+    },
+    {
+      "key": "SweaterComp",
+      "keep": true
+    },
+    {
+      "key": "FakeFrog",
+      "keep": true
+    },
+    {
+      "key": "Sweater",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

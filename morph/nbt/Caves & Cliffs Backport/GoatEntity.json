@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.blackgear.cavesandcliffs.common.entity.GoatEntity",
+  "modifiers": [
+    {
+      "key": "IsScreamingGoat",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

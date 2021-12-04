@@ -1,0 +1,10 @@
+{
+  "forEntity": "atum:quail",
+  "traits": [
+    {
+      "type": "abilitySlowFall",
+      "velocityMultiplier": 0.6,
+      "resetFallDistance": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "author": "WenXin2",
+  "forEntity": "mysticalworld:hell_sprout",
+  "traits": [
+    {
+      "type": "traitImmunityFire"
+    }
+  ]
+}

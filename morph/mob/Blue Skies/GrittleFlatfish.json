@@ -1,0 +1,14 @@
+{
+  "forEntity": "blue_skies:grittle_flatfish",
+  "traits": [
+    {
+      "type": "traitSwimmer",
+      "swimMultiplier": 2.0,
+      "landMultiplier": 0.05
+    },
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

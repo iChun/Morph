@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.EnderminiModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_178724_i",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 5.729578018188477
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.0625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.0625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_178723_h",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -5.729578018188477
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.0625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.0625
+        }
+      ]
+    }
+  ]
+}

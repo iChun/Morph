@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.client.model.WraithModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 95.02361297607422
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -118.56742858886719
+        }
+      ]
+    }
+  ]
+}

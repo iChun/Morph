@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:summoner",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "classToIntimidate": "net.minecraft.entity.merchant.villager.AbstractVillagerEntity",
+      "distance": 12.0,
+      "farRunSpeed": 0.5,
+      "nearRunSpeed": 0.5,
+      "type": "traitIntimidate"
+    }
+  ]
+}

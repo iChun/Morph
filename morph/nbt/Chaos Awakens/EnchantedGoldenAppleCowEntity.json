@@ -1,0 +1,10 @@
+{
+  "author": "WenXin2",
+  "forClass": "io.github.chaosawakens.common.entity.EnchantedGoldenAppleCowEntity",
+  "modifiers": [
+    {
+      "key": "enchanted",
+      "keep": true
+    }
+  ]
+}

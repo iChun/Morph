@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.ForgottenEntity",
+  "modifiers": [
+    {
+      "key": "sheathed",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

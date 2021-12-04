@@ -1,0 +1,58 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.BeetleModel",
+  "leftHandParts": [
+    {
+      "fieldName": "legL1",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 15.0
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.0625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "legR1",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -15.0
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": -0.0625
+        }
+      ]
+    }
+  ]
+}

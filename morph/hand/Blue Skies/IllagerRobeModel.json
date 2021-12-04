@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.boss.IllagerRobeModel",
+  "leftHandParts": [
+    {
+      "fieldName": "field_191224_h",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 135.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "field_191223_g",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -135.0
+        }
+      ]
+    }
+  ]
+}

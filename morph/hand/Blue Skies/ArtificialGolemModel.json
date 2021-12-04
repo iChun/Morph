@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.hostile.ArtificialGolemModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 5.729578018188477
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.15625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.1875
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightArm",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": -5.729578018188477
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.15625
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.1875
+        }
+      ]
+    }
+  ]
+}

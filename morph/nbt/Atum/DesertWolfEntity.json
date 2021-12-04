@@ -1,0 +1,14 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.entity.animal.DesertWolfEntity",
+  "modifiers": [
+    {
+      "key": "CollarColor",
+      "keep": true
+    },
+    {
+      "key": "ArmorItem",
+      "keep": true
+    }
+  ]
+}

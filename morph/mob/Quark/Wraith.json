@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forEntity": "quark:wraith",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitImmunityFire"
+    },
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    },
+    {
+      "effectId": "minecraft:slowness",
+      "duration": 100,
+      "amplifier": 0,
+      "type": "abilityEffectAttack"
+    }
+  ]
+}

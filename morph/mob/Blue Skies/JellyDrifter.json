@@ -1,0 +1,20 @@
+{
+  "forEntity": "blue_skies:jelly_drifter",
+  "traits": [
+    {
+      "type": "abilityEffectAttack",
+      "effectId": "minecraft:poison",
+      "duration": 140,
+      "amplifier": 0
+    },
+    {
+      "type": "traitSwimmer",
+      "swimMultiplier": 2.0,
+      "landMultiplier": 0.05
+    },
+    {
+      "type": "traitWaterBreather",
+      "suffocatesOnLand": true
+    }
+  ]
+}

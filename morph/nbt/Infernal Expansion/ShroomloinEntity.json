@@ -1,0 +1,10 @@
+{
+  "author": "Jose_MV",
+  "forClass": "org.infernalstudios.infernalexp.entities.ShroomloinEntity",
+  "modifiers": [
+    {
+      "key": "ShroomloinType",
+      "keep": true
+    }
+  ]
+}

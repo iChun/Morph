@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.CrystalCamelEntity",
+  "modifiers": [
+    {
+      "key": "Chested",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {
+    "blue_skies": [
+      {
+        "key": "Saddle",
+        "keep": true
+      }
+    ]
+  }
+}

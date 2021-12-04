@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.SproutEntity",
+  "modifiers": [
+    {
+      "key": "variant",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

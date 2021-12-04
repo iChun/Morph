@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:nested_spider",
+  "traits": [
+    {
+      "type": "abilityClimb"
+    },
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

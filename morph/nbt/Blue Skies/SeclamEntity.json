@@ -1,0 +1,16 @@
+{
+  "forClass": "com.legacy.blue_skies.entities.hostile.SeclamEntity",
+  "modifiers": [],
+  "modSpecificModifiers": {
+    "blue_skies": [
+      {
+        "key": "HasPearl",
+        "keep": true
+      },
+      {
+        "key": "Open",
+        "keep": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.SilkwormEntity",
+  "modifiers": [
+    {
+      "key": "Size",
+      "keep": true
+    },
+    {
+      "key": "Leaves",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

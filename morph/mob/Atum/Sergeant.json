@@ -1,0 +1,8 @@
+{
+  "forEntity": "atum:sergeant",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.experimental.shiba.entity.ShibaEntity",
+  "modifiers": [
+    {
+      "key": "MouthItem",
+      "keep": true
+    },
+    {
+      "key": "CollarColor",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

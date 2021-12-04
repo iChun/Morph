@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "mysticalworld:owl",
+  "traits": [
+    {
+      "type": "abilityFlight",
+      "upgradeFor": "abilityFlightFlap",
+      "slowdownInWater": true
+    },
+    {
+      "type": "abilityFlightFlap",
+      "slowdownInWater": true
+    }
+  ]
+}

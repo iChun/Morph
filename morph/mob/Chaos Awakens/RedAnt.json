@@ -1,0 +1,8 @@
+{
+  "forEntity": "chaosawakens:red_ant",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

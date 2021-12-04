@@ -1,0 +1,8 @@
+{
+  "forEntity": "atum:pharaoh",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

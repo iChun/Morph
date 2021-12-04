@@ -1,0 +1,16 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:starlit_crusher",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    },
+    {
+      "amount": 1.0,
+      "type": "traitStepHeight"
+    }
+  ]
+}

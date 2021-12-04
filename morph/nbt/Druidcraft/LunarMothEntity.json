@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.vulp.druidcraft.entities.LunarMothEntity",
+  "modifiers": [
+    {
+      "key": "Color",
+      "keep": true
+    },
+    {
+      "key": "MothResting",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

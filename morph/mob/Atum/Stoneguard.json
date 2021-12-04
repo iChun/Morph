@@ -1,0 +1,17 @@
+{
+  "forEntity": "atum:stoneguard",
+  "traits": [
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitSink"
+    },
+    {
+      "type": "traitWaterBreather"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "forEntity": "chaosawakens:dark_oak_ent",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

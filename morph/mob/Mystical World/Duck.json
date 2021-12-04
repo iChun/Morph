@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forEntity": "mysticalworld:duck",
+  "traits": [
+    {
+      "velocityMultiplier": 0.6,
+      "resetFallDistance": true,
+      "type": "abilitySlowFall"
+    }
+  ]
+}

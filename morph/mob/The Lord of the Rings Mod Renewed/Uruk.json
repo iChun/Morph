@@ -1,0 +1,9 @@
+{
+  "author": "WenXin2",
+  "forEntity": "lotr:uruk",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

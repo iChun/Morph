@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.OwlModel",
+  "leftHandParts": [
+    {
+      "fieldName": "wingL1",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.9375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.0625
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "wingR1",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": 0.875
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.0625
+        }
+      ]
+    }
+  ]
+}

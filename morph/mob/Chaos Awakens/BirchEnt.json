@@ -1,0 +1,8 @@
+{
+  "forEntity": "chaosawakens:birch_ent",
+  "traits": [
+    {
+      "type": "traitHostile"
+    }
+  ]
+}

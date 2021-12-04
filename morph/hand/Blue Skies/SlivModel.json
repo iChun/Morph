@@ -1,0 +1,68 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.client.models.entities.passive.SlivModel",
+  "leftHandParts": [
+    {
+      "fieldName": "bodyFront",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.23609964549541473
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.9375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.46875
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 180.0
+        },
+        {
+          "type": "rotate",
+          "axis": "x",
+          "amount": 90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "bodyFront",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.23609964549541473
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -1.9375
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.46875
+        },
+        {
+          "type": "rotate",
+          "axis": "z",
+          "amount": 180.0
+        },
+        {
+          "type": "rotate",
+          "axis": "x",
+          "amount": 90.0
+        }
+      ]
+    }
+  ]
+}

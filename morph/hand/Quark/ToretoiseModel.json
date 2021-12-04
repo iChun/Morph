@@ -1,0 +1,68 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.client.model.ToretoiseModel",
+  "leftHandParts": [
+    {
+      "fieldName": "leftFrontLeg",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 45.0
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.625
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.75
+        },
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -90.0
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "rightFrontLeg",
+      "placementCorrectors": [
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": -45.0
+        },
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.25
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.625
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.75
+        },
+        {
+          "type": "rotate",
+          "axis": "y",
+          "amount": 90.0
+        }
+      ]
+    }
+  ]
+}

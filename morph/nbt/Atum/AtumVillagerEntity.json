@@ -1,0 +1,13 @@
+{
+  "forClass": "com.teammetallurgy.atum.entity.villager.AtumVillagerEntity",
+  "modifiers": [
+    {
+      "key": "AtumVillagerData",
+      "keep": true
+    },
+    {
+      "key": "Variant",
+      "keep": true
+    }
+  ]
+}

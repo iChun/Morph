@@ -1,0 +1,48 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.model.DeerModel",
+  "leftHandParts": [
+    {
+      "fieldName": "legLF",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": 0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.18458330631256104
+        }
+      ]
+    }
+  ],
+  "rightHandParts": [
+    {
+      "fieldName": "legRF",
+      "placementCorrectors": [
+        {
+          "type": "translate",
+          "axis": "x",
+          "amount": -0.28125
+        },
+        {
+          "type": "translate",
+          "axis": "y",
+          "amount": -0.75
+        },
+        {
+          "type": "translate",
+          "axis": "z",
+          "amount": 0.18458330631256104
+        }
+      ]
+    }
+  ]
+}

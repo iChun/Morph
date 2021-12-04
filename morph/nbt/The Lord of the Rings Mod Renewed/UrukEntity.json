@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "lotr.common.entity.npc.UrukEntity",
+  "modifiers": [
+    {
+      "key": "NPCAge",
+      "keep": true
+    },
+    {
+      "key": "NPCMale",
+      "keep": true
+    },
+    {
+      "key": "NPCName",
+      "keep": true
+    },
+    {
+      "key": "NPCPersonality",
+      "keep": true
+    }
+  ]
+}

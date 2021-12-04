@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forEntity": "blue_skies:artificial_golem",
+  "traits": [
+    {
+      "type": "traitFallNegate"
+    },
+    {
+      "type": "traitHostile"
+    },
+    {
+      "type": "traitSink"
+    }
+  ]
+}

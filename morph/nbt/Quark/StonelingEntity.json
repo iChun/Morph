@@ -1,0 +1,33 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.StonelingEntity",
+  "modifiers": [
+    {
+      "key": "carryingItem",
+      "keep": true,
+      "nestedModifiers": [
+        {
+          "key": "id",
+          "keep": true
+        },
+        {
+          "key": "Count",
+          "keep": true
+        }
+      ]
+    },
+    {
+      "key": "itemAngle",
+      "keep": true
+    },
+    {
+      "key": "variant",
+      "keep": true
+    },
+    {
+      "key": "playerMade",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.CrabEntity",
+  "modifiers": [
+    {
+      "key": "Variant",
+      "keep": true
+    }
+  ],
+  "modSpecificModifiers": {}
+}

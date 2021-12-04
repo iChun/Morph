@@ -1,0 +1,14 @@
+{
+  "author": "WenXin2",
+  "forClass": "lotr.common.entity.animal.CaracalEntity",
+  "modifiers": [
+    {
+      "key": "CatType",
+      "keep": true
+    },
+    {
+      "key": "CollarColor",
+      "keep": true
+    }
+  ]
+}
