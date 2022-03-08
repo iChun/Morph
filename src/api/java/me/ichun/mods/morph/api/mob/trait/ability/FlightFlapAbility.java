@@ -2,6 +2,8 @@ package me.ichun.mods.morph.api.mob.trait.ability;
 
 import me.ichun.mods.morph.api.mob.trait.Trait;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
@@ -54,6 +56,12 @@ public class FlightFlapAbility extends Ability<FlightFlapAbility>
         if(player.world.isRemote)
         {
             clientTick(strength, velocityToAdd);
+        }
+        else
+        {
+            //To prevent the client from being kicked for "flying".
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+            serverPlayer.connection.floatingTickCount = 0;
         }
 
         if(slowdownInWater != null && slowdownInWater && player.areEyesInFluid(FluidTags.WATER))

@@ -87,9 +87,7 @@ public class MobDataHandler
 
             try
             {
-                EntityType<?> entType = ForgeRegistries.ENTITIES.getValue(rl);
-
-                if(entType != null) //this entity type is registered, load it up
+                if(ForgeRegistries.ENTITIES.containsKey(rl)) //this entity type is registered, load it up
                 {
                     MobData mobData = ResourceHandler.GSON.fromJson(json, MobData.class);
                     MOB_DATA.put(rl, mobData);
