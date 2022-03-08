@@ -213,7 +213,7 @@ public class MorphState implements Comparable<MorphState>
 
         living.setInvisible(player.isInvisible());
 
-        living.setUniqueId(player.getUniqueID());
+        //living.setUniqueId(player.getUniqueID()); //iChun Note: Commented out because we shouldn't set the entity unique ID to the player's, might confuse world should the entity somehow ever be added by other mods. Sync it just pre render and reset it afterwards.
 
         living.setGlowing(player.isGlowing());
 

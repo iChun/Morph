@@ -36,6 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class MorphRenderHandler
@@ -63,14 +64,22 @@ public class MorphRenderHandler
             float transitionProgress = info.getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                MorphState.syncEntityWithPlayer(info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
-                renderLiving(info.prevState, info.prevState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
+                LivingEntity entInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                UUID morphUniqueId = entInstance.getUniqueID();
+                entInstance.setUniqueId(player.getUniqueID());
+                MorphState.syncEntityWithPlayer(entInstance, player);
+                renderLiving(info.prevState, entInstance, stack, buffer, light, partialTick);
+                entInstance.setUniqueId(morphUniqueId);
                 skinProg = EntityHelper.sineifyProgress(morphProgress / 0.125F);
             }
             else if(transitionProgress >= 1F)
             {
-                MorphState.syncEntityWithPlayer(info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
-                renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
+                LivingEntity entInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                UUID morphUniqueId = entInstance.getUniqueID();
+                entInstance.setUniqueId(player.getUniqueID());
+                MorphState.syncEntityWithPlayer(entInstance, player);
+                renderLiving(info.nextState, entInstance, stack, buffer, light, partialTick);
+                entInstance.setUniqueId(morphUniqueId);
                 skinProg = 1F - EntityHelper.sineifyProgress((morphProgress - 0.875F) / 0.125F);
             }
 
@@ -79,8 +88,12 @@ public class MorphRenderHandler
         }
         else //has completed morph
         {
-            MorphState.syncEntityWithPlayer(info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), player);
-            renderLiving(info.nextState, info.nextState.getEntityInstance(player.world, player.getGameProfile().getId()), stack, buffer, light, partialTick);
+            LivingEntity entInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+            UUID morphUniqueId = entInstance.getUniqueID();
+            entInstance.setUniqueId(player.getUniqueID());
+            MorphState.syncEntityWithPlayer(entInstance, player);
+            entInstance.setUniqueId(morphUniqueId);
+            renderLiving(info.nextState, entInstance, stack, buffer, light, partialTick);
         }
 
         isRenderingMorph = false;

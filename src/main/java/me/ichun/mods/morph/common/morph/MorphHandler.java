@@ -195,7 +195,12 @@ public final class MorphHandler implements IApi
     @Override
     public GameProfile getGameProfile(UUID uuid, String name)
     {
-        return EntityHelper.getGameProfile(uuid, name);
+        GameProfile profile = EntityHelper.getGameProfile(uuid, name);
+        if(profile.getName() == null)
+        {
+            profile = new GameProfile(uuid, "No Profile :(");
+        }
+        return profile;
     }
 
     @Override
