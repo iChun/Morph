@@ -29,6 +29,10 @@ import me.ichun.mods.morph.common.packet.PacketAcquisition;
 import me.ichun.mods.morph.common.packet.PacketMorphInfo;
 import me.ichun.mods.morph.common.packet.PacketUpdateBiomassValue;
 import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
+import me.ichun.mods.morph.mixin.AbstractHorseEntityInvokerMixin;
+import me.ichun.mods.morph.mixin.LlamaEntityInvokerMixin;
+import net.minecraft.block.Block;
+import net.minecraft.block.CarpetBlock;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.IAngerable;
 import net.minecraft.entity.LivingEntity;
@@ -37,6 +41,7 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.phase.PhaseType;
 import net.minecraft.entity.passive.PandaEntity;
+import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -109,6 +114,15 @@ public final class MorphHandler implements IApi
             if(living instanceof IAngerable)
             {
                 ((IAngerable)living).setAngerTime(tag.getInt("AngerTime")); //TODO this is fixed in 1.17
+            }
+        });
+        list.add((living, tag) -> {
+            if(living instanceof LlamaEntity)
+            {
+                ((AbstractHorseEntityInvokerMixin)living).callSetHorseWatchableBoolean(4, !((AbstractHorseEntityInvokerMixin)living).getHorseChest().getStackInSlot(0).isEmpty());
+                //Taken from LlamaEntity.getCarpetColor
+                Block block = Block.getBlockFromItem(((AbstractHorseEntityInvokerMixin)living).getHorseChest().getStackInSlot(1).getItem());
+                ((LlamaEntityInvokerMixin)living).callSetColor(block instanceof CarpetBlock ? ((CarpetBlock)block).getColor() : null);
             }
         });
     });

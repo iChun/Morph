@@ -5,10 +5,12 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "morph.refmap.json",
   "mixins": [
+    "AbstractHorseEntityInvokerMixin",
     "EntityInvokerMixin",
     "EntityMixin",
     "LivingEntityInvokerMixin",
     "LivingEntityMixin",
+    "LlamaEntityInvokerMixin",
     "PlayerEntityMixin"
   ],
   "client": [
