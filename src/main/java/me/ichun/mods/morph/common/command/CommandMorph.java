@@ -148,13 +148,13 @@ public class CommandMorph
                                         .executes(context -> demorphPlayer(context.getSource(), EntityArgument.getPlayer(context, "player")))
                                 )
                         )
-                        .then(Commands.literal("biomass")
-                                .then(Commands.literal("set")
-                                        .then(Commands.argument("value", DoubleArgumentType.doubleArg(0))
-                                                .executes(context -> setBiomass(context.getSource(), EntityArgument.getPlayer(context, "player"), DoubleArgumentType.getDouble(context, "value")))
-                                        )
-                                )
-                        )
+//                        .then(Commands.literal("biomass")
+//                                .then(Commands.literal("set")
+//                                        .then(Commands.argument("value", DoubleArgumentType.doubleArg(0))
+//                                                .executes(context -> setBiomass(context.getSource(), EntityArgument.getPlayer(context, "player"), DoubleArgumentType.getDouble(context, "value")))
+//                                        )
+//                                )
+//                        )
                 )
         );
     }
@@ -229,6 +229,10 @@ public class CommandMorph
     private static int createPlayerMorph(CommandSource source, ServerPlayerEntity player, String name, boolean isAcquire) throws CommandSyntaxException
     {
         GameProfile gameProfile = EntityHelper.getGameProfile(null, name);
+        if(gameProfile.getId() == null) //maybe lookup failed, UUID will be null.
+        {
+            throw isAcquire ? UNABLE_TO_ACQUIRE_MORPH.create() : UNABLE_TO_MORPH_TO.create();
+        }
         MorphVariant variant = MorphVariant.createPlayerMorph(gameProfile.getId(), true);
         if(createMorph(source, player, variant, isAcquire))
         {

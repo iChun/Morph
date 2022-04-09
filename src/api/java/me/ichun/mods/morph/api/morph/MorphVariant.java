@@ -588,7 +588,7 @@ public class MorphVariant implements Comparable<MorphVariant>
         return variant;
     }
 
-    public static MorphVariant createPlayerMorph(UUID owner, boolean isVariant) //creates the base morph + variant of the player.
+    public static MorphVariant createPlayerMorph(@Nonnull UUID owner, boolean isVariant) //creates the base morph + variant of the player.
     {
         MorphVariant variant = new MorphVariant(EntityType.PLAYER.getRegistryName());
         Variant var = new Variant();
