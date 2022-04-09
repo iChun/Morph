@@ -10,7 +10,7 @@
   "config.morph.prop.aggressiveSizeRecalculation.name": "Aggressive Size Recalculation",
   "config.morph.prop.aggressiveSizeRecalculation.desc": "Morph normally only recalculates size when it has to. This makes Morph recalculate the player size every tick whilst morphed.",
   "config.morph.prop.supportedAttributes.name": "Supported Attributes",
-  "config.morph.prop.supportedAttributes.desc": "Which attributes are supported by more, and how are values better. Format: <Resource Name of Attribute>;<more/less>. EG: \"minecraft:generic.max_health;more\".",
+  "config.morph.prop.supportedAttributes.desc": "Which attributes are supported by more, and how are values better. Format: <Resource Name of Attribute>;<more/less>;[cap]. EG: \"minecraft:generic.attack_damage;more\" or \"minecraft:generic.max_health;more;20\".",
   "config.morph.prop.disabledTraits.name": "Disabled Traits",
   "config.morph.prop.disabledTraits.desc": "ID of traits you want to disable.",
   "config.morph.prop.silentMorphs.name": "Silent Morphs",

@@ -55,7 +55,7 @@ public class MorphState implements Comparable<MorphState>
 
     public void tick(PlayerEntity player, boolean resetInventory)
     {
-        LivingEntity livingInstance = getEntityInstance(player.world, player.getGameProfile().getId());
+        LivingEntity livingInstance = getEntityInstance(player.world, player);
         livingInstance.captureDrops(entInstanceDropCapture); //We don't want our mob instance to drop items
         entInstanceDropCapture.clear(); //Have the items, GC.
 
@@ -87,11 +87,19 @@ public class MorphState implements Comparable<MorphState>
     }
 
     @Nonnull
+    @Deprecated
+    //remove in 1.18
     public LivingEntity getEntityInstance(World world, @Nullable UUID playerId)
+    {
+        return getEntityInstance(world, playerId != null ? world.getPlayerByUuid(playerId) : null);
+    }
+
+    @Nonnull
+    public LivingEntity getEntityInstance(World world, @Nullable PlayerEntity player)
     {
         if(entInstance == null || entInstance.world != world)
         {
-            entInstance = variant.createEntityInstance(world, playerId);
+            entInstance = variant.createEntityInstance(world, player);
 
             for(Trait<?> trait : traits)
             {

@@ -94,24 +94,24 @@ public abstract class MorphInfo
             float transitionProgress = getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                LivingEntity prevInstance = prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity prevInstance = prevState.getEntityInstance(player.world, player);
                 prevInstance.setPose(player.getPose());
                 prevInstance.recalculateSize();
                 return prevInstance.size;
             }
             else if(transitionProgress >= 1F)
             {
-                LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity nextInstance = nextState.getEntityInstance(player.world, player);
                 nextInstance.setPose(player.getPose());
                 nextInstance.recalculateSize();
                 return nextInstance.size;
             }
             else
             {
-                LivingEntity prevInstance = prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity prevInstance = prevState.getEntityInstance(player.world, player);
                 prevInstance.setPose(player.getPose());
                 prevInstance.recalculateSize();
-                LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity nextInstance = nextState.getEntityInstance(player.world, player);
                 nextInstance.setPose(player.getPose());
                 nextInstance.recalculateSize();
                 EntitySize prevSize = prevInstance.size;
@@ -121,7 +121,7 @@ public abstract class MorphInfo
         }
         else
         {
-            LivingEntity nextInstance = nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+            LivingEntity nextInstance = nextState.getEntityInstance(player.world, player);
             nextInstance.setPose(player.getPose());
             nextInstance.recalculateSize();
             return nextInstance.size;
@@ -136,22 +136,22 @@ public abstract class MorphInfo
             float transitionProgress = getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                return prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
+                return prevState.getEntityInstance(player.world, player).getEyeHeight();
             }
             else if(transitionProgress >= 1F)
             {
-                return nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
+                return nextState.getEntityInstance(player.world, player).getEyeHeight();
             }
             else
             {
-                float prevHeight = prevState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
-                float nextHeight = nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
+                float prevHeight = prevState.getEntityInstance(player.world, player).getEyeHeight();
+                float nextHeight = nextState.getEntityInstance(player.world, player).getEyeHeight();
                 return prevHeight + (nextHeight - prevHeight) * transitionProgress;
             }
         }
         else
         {
-            return nextState.getEntityInstance(player.world, player.getGameProfile().getId()).getEyeHeight();
+            return nextState.getEntityInstance(player.world, player).getEyeHeight();
         }
     }
 
@@ -287,11 +287,11 @@ public abstract class MorphInfo
     {
         if(getMorphProgress(1F) < 0.5F)
         {
-            return prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+            return prevState.getEntityInstance(player.world, player);
         }
         else if(nextState != null)
         {
-            return nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+            return nextState.getEntityInstance(player.world, player);
         }
         return null;
     }
@@ -314,17 +314,17 @@ public abstract class MorphInfo
             float transitionProg = getTransitionProgressLinear(partialTick);
             if(transitionProg <= 0F)
             {
-                return prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                return prevState.getEntityInstance(player.world, player);
             }
             else if(transitionProg >= 1F)
             {
-                return nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                return nextState.getEntityInstance(player.world, player);
             }
             return null; //mid transition, no active appearance.
         }
         else if(nextState != null) //is morphed
         {
-            return nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+            return nextState.getEntityInstance(player.world, player);
         }
         else
         {

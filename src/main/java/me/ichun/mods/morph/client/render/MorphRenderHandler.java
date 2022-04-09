@@ -64,7 +64,7 @@ public class MorphRenderHandler
             float transitionProgress = info.getTransitionProgressSine(partialTick);
             if(transitionProgress <= 0F)
             {
-                LivingEntity entInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity entInstance = info.prevState.getEntityInstance(player.world, player);
                 UUID morphUniqueId = entInstance.getUniqueID();
                 entInstance.setUniqueId(player.getUniqueID());
                 MorphState.syncEntityWithPlayer(entInstance, player);
@@ -74,7 +74,7 @@ public class MorphRenderHandler
             }
             else if(transitionProgress >= 1F)
             {
-                LivingEntity entInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity entInstance = info.nextState.getEntityInstance(player.world, player);
                 UUID morphUniqueId = entInstance.getUniqueID();
                 entInstance.setUniqueId(player.getUniqueID());
                 MorphState.syncEntityWithPlayer(entInstance, player);
@@ -88,7 +88,7 @@ public class MorphRenderHandler
         }
         else //has completed morph
         {
-            LivingEntity entInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+            LivingEntity entInstance = info.nextState.getEntityInstance(player.world, player);
             UUID morphUniqueId = entInstance.getUniqueID();
             entInstance.setUniqueId(player.getUniqueID());
             MorphState.syncEntityWithPlayer(entInstance, player);
@@ -240,7 +240,7 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                LivingEntity livingInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity livingInstance = info.prevState.getEntityInstance(player.world, player);
 
                 renderLiving(info.prevState, livingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
@@ -260,7 +260,7 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                LivingEntity livingInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity livingInstance = info.nextState.getEntityInstance(player.world, player);
 
                 renderLiving(info.nextState, livingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
@@ -281,7 +281,7 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                LivingEntity prevLivingInstance = info.prevState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity prevLivingInstance = info.prevState.getEntityInstance(player.world, player);
 
                 renderLiving(info.prevState, prevLivingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 
@@ -295,7 +295,7 @@ public class MorphRenderHandler
                     currentCapture.infos.clear();
                 }
 
-                LivingEntity nextLivingInstance = info.nextState.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity nextLivingInstance = info.nextState.getEntityInstance(player.world, player);
 
                 renderLiving(info.nextState, nextLivingInstance, stack, buffer, light, partialTick, Morph.configServer.biomassSkinWhilstInvisible);
 

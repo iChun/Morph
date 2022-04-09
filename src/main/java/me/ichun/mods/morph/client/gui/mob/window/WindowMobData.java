@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
@@ -146,7 +147,7 @@ public class WindowMobData extends Window<WorkspaceMobData>
                         rend.setSize(40, 40);
                         rend.setConstraint(Constraint.matchParent(rend, item, 4).bottom(null, Constraint.Property.Type.BOTTOM, 0));
                         rend.setTooltip(I18n.format(key));
-                        rend.setEntityToRender(renderVariant.createEntityInstance(Minecraft.getInstance().world, null));
+                        rend.setEntityToRender(renderVariant.createEntityInstance(Minecraft.getInstance().world, (PlayerEntity)null));
                         item.addElement(rend);
 
                         item.setSelectionHandler(theItem -> {

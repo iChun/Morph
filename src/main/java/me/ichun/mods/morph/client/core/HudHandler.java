@@ -692,57 +692,62 @@ public class HudHandler
                 for(int j = Math.max(0, indexHori - 1); j < morph.variants.size(); j++)
                 {
                     double indexHeightWidth = (j - indexHoriProg) * size;
+                    double morphBoxX = posX + indexHeightWidth;
                     MorphVariant.Variant theVariant = morph.variants.get(j);
                     MorphVariant variant = morph.getAsVariant(theVariant);
                     MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
                     state.variant.thisVariant.isFavourite = theVariant.isFavourite;
 
-                    LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+                    LivingEntity living = state.getEntityInstance(player.world, player);
 
-                    EntitySize livingSize = living.getSize(Pose.STANDING);
-                    float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
-
-                    if(j == indexHori) //if it is selected, prevent the downscale.
+                    if(morphBoxX < window.getScaledWidth() + size) //Only render the entity and the favourite star if it's at most just barely off screen
                     {
-                        if(showSelector)
+                        EntitySize livingSize = living.getSize(Pose.STANDING);
+                        float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
+
+                        if(j == indexHori) //if it is selected, prevent the downscale.
                         {
-                            entSize *= (1F - indexChangeTimeProg);
+                            if(showSelector)
+                            {
+                                entSize *= (1F - indexChangeTimeProg);
+                            }
+                            else if(j == Math.round(lastIndexHori) && indexChangeTimeProg < 1F || variant.equals(currentMorph))
+                            {
+                                entSize = 0F; //keep the morph big
+                            }
                         }
-                        else if(j == Math.round(lastIndexHori) && indexChangeTimeProg < 1F || variant.equals(currentMorph))
+
+                        float entScale = 0.5F * (1F / Math.max(1F, entSize));
+
+                        renderMorphEntity(living, (posX + (size / 2D) - 2) + indexHeightWidth, morphHeight, zLevel + (j == indexHori ? 100F : 50F), entScale);
+
+                        zLevel += 30F;
+
+                        if(j == 0 && morph.hasFavourite() || state.variant.thisVariant.isFavourite)
                         {
-                            entSize = 0F; //keep the morph big
+                            stack.push();
+                            stack.translate(0F, 0F, 300F);
+
+                            if(!state.variant.thisVariant.isFavourite)
+                            {
+                                RenderHelper.colour(0x00ffff); //set to green star
+                            }
+
+                            RenderHelper.drawTexture(stack, TEX_QS_FAVOURITE, posX + 1 + indexHeightWidth, favHeight, size * 0.15D, size * 0.15D, zLevel);
+                            RenderHelper.colour(0xffffff); //reset the colour
+
+                            stack.pop();
                         }
                     }
 
-                    float entScale = 0.5F * (1F / Math.max(1F, entSize));
-
-                    renderMorphEntity(living, (posX + (size / 2D) - 2) + indexHeightWidth, morphHeight, zLevel + (j == indexHori ? 100F : 50F), entScale);
-
-                    zLevel += 30F;
-
-                    if(j == 0 && morph.hasFavourite() || state.variant.thisVariant.isFavourite)
-                    {
-                        stack.push();
-                        stack.translate(0F, 0F, 300F);
-
-                        if(!state.variant.thisVariant.isFavourite)
-                        {
-                            RenderHelper.colour(0x00ffff);
-                        }
-
-                        RenderHelper.drawTexture(stack, TEX_QS_FAVOURITE, posX + 1 + indexHeightWidth, favHeight, size * 0.15D, size * 0.15D, zLevel);
-                        RenderHelper.colour(0xffffff); //reset the colour
-
-                        stack.pop();
-                    }
-
+                    //Render the name of the mob
                     if(j == morph.variants.size() - 1)
                     {
                         IFormattableTextComponent customName = null;
                         MorphVariant selectedVariant = morph.getAsVariant(morph.variants.get(indexHori));
                         MorphState selectedState = morphStates.computeIfAbsent(selectedVariant, v -> new MorphState(selectedVariant, player));
 
-                        LivingEntity selectedLiving = selectedState.getEntityInstance(player.world, player.getGameProfile().getId());
+                        LivingEntity selectedLiving = selectedState.getEntityInstance(player.world, player);
 
                         IFormattableTextComponent text;
 
@@ -795,7 +800,7 @@ public class HudHandler
                 MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
                 state.variant.thisVariant.isFavourite = theVariant.isFavourite;
 
-                LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity living = state.getEntityInstance(player.world, player);
 
                 EntitySize livingSize = living.getSize(Pose.STANDING);
                 float entSize = Math.max(livingSize.width, livingSize.height) / 1.95F; //1.95F = zombie height
@@ -930,7 +935,7 @@ public class HudHandler
                 MorphVariant variant = radialFavourites.get(i);
                 MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
 
-                LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity living = state.getEntityInstance(player.world, player);
 
                 boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == MouseHelper.getSelectedIndex(radialFavourites.size());
 
@@ -957,7 +962,7 @@ public class HudHandler
                 MorphVariant variant = radialFavourites.get(i);
                 MorphState state = morphStates.computeIfAbsent(variant, v -> new MorphState(variant, player));
 
-                LivingEntity living = state.getEntityInstance(player.world, player.getGameProfile().getId());
+                LivingEntity living = state.getEntityInstance(player.world, player);
 
                 boolean isSelectedIndex = isMouseOutsideRadialDeadZone(window) && i == MouseHelper.getSelectedIndex(radialFavourites.size());
 

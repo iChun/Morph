@@ -361,7 +361,15 @@ public class MorphVariant implements Comparable<MorphVariant>
     }
 
     @Nonnull
+    @Deprecated
+    //remove in 1.18
     public LivingEntity createEntityInstance(World world, @Nullable UUID playerId)
+    {
+        return createEntityInstance(world, playerId != null ? world.getPlayerByUuid(playerId) : null);
+    }
+
+    @Nonnull
+    public LivingEntity createEntityInstance(World world, @Nullable PlayerEntity player)
     {
         LivingEntity entInstance = null;
         EntityType<?> value = ForgeRegistries.ENTITIES.getValue(id);
@@ -372,6 +380,24 @@ public class MorphVariant implements Comparable<MorphVariant>
                 if(value.equals(EntityType.PLAYER))
                 {
                     entInstance = world.isRemote ? createPlayer(world, thisVariant.playerUUID) : new FakePlayer((ServerWorld)world, MorphApi.getApiImpl().getGameProfile(thisVariant.playerUUID, null));
+
+                    if(player != null)
+                    {
+                        entInstance.getPersistentData().tagMap.putAll(player.getPersistentData().tagMap);
+                    }
+
+                    //DO NOT Use NBT modifiers, they will strip everything anyway. We're copying the tags out for appearance. (I hope this doesn't bite me in the behind)
+
+                    //Allow NBT Modifiers to "clean" the persistent data we copied over
+                    //                    NbtModifier nbtModifier = NbtHandler.getModifierFor(entInstance);
+                    //                    nbtModifier.apply(entInstance.getPersistentData());
+                    //
+                    //                    NbtHandler.removeEmptyCompoundTags(entInstance.getPersistentData());
+
+                    for(BiConsumer<LivingEntity, CompoundNBT> consumer : MorphApi.getApiImpl().getVariantNbtTagReaders())
+                    {
+                        consumer.accept(entInstance, entInstance.getPersistentData());
+                    }
                 }
                 else
                 {
@@ -406,9 +432,9 @@ public class MorphVariant implements Comparable<MorphVariant>
 
         entInstance.setEntityId(MorphInfo.getNextEntId()); //to prevent ID collision
 
-        if(playerId != null)
+        if(player != null)
         {
-            entInstance.getPersistentData().putUniqueId(NBT_PLAYER_ID, playerId);
+            entInstance.getPersistentData().putUniqueId(NBT_PLAYER_ID, player.getGameProfile().getId());
         }
 
         return entInstance;

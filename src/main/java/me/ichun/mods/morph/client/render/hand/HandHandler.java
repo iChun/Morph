@@ -89,7 +89,7 @@ public final class HandHandler
                 {
                     if(transitionProg <= 0F)
                     {
-                        LivingEntity livingInstance = info.prevState.getEntityInstance(mc.player.world, mc.player.getGameProfile().getId());
+                        LivingEntity livingInstance = info.prevState.getEntityInstance(mc.player.world, mc.player);
                         EntityRenderer entRenderer = playerRenderer.getRenderManager().getRenderer(livingInstance);
                         if(entRenderer instanceof LivingRenderer)
                         {
@@ -120,10 +120,10 @@ public final class HandHandler
                         ModelRenderer[] nextHandParts = null;
                         MatrixStack[] nextStacks = null;
 
-                        LivingEntity prevInstance = info.prevState.getEntityInstance(mc.player.world, mc.player.getGameProfile().getId());
+                        LivingEntity prevInstance = info.prevState.getEntityInstance(mc.player.world, mc.player);
                         EntityRenderer prevRenderer = playerRenderer.getRenderManager().getRenderer(prevInstance);
 
-                        LivingEntity nextInstance = info.nextState.getEntityInstance(mc.player.world, mc.player.getGameProfile().getId());
+                        LivingEntity nextInstance = info.nextState.getEntityInstance(mc.player.world, mc.player);
                         EntityRenderer nextRenderer = playerRenderer.getRenderManager().getRenderer(nextInstance);
 
                         stack.push();
@@ -218,7 +218,7 @@ public final class HandHandler
                 }
                 else //morph completed, just use nextState's entity instance
                 {
-                    LivingEntity livingInstance = info.isMorphed() ? info.nextState.getEntityInstance(mc.player.world, mc.player.getGameProfile().getId()) : mc.player;
+                    LivingEntity livingInstance = info.isMorphed() ? info.nextState.getEntityInstance(mc.player.world, mc.player) : mc.player;
                     EntityRenderer entRenderer = playerRenderer.getRenderManager().getRenderer(livingInstance);
                     if(entRenderer instanceof LivingRenderer)
                     {

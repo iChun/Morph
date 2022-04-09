@@ -21,6 +21,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
@@ -471,7 +472,7 @@ public class WindowNbt extends Window<WorkspaceNbt>
 
             if(variant != null)
             {
-                return variant.createEntityInstance(Minecraft.getInstance().player.world, null);
+                return variant.createEntityInstance(Minecraft.getInstance().player.world, (PlayerEntity)null);
             }
             LivingEntity entInstance = EntityType.PIG.create(target.world);
             entInstance.setCustomName(new StringTextComponent("Invalid Morph Pig"));

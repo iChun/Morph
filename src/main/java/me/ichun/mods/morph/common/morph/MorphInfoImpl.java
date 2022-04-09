@@ -405,14 +405,14 @@ public class MorphInfoImpl extends MorphInfo
             {
                 float transitionProg = getTransitionProgressLinear(1F);
 
-                float prevVolume = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
-                float nextVolume = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
+                float prevVolume = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player)).callGetSoundVolume();
+                float nextVolume = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player)).callGetSoundVolume();
 
                 return prevVolume + (nextVolume - prevVolume) * transitionProg;
             }
             else
             {
-                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundVolume();
+                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player)).callGetSoundVolume();
             }
         }
 
@@ -428,14 +428,14 @@ public class MorphInfoImpl extends MorphInfo
             {
                 float transitionProg = getTransitionProgressLinear(1F);
 
-                float prevPitch = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
-                float nextPitch = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
+                float prevPitch = ((LivingEntityInvokerMixin)prevState.getEntityInstance(player.world, player)).callGetSoundPitch();
+                float nextPitch = ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player)).callGetSoundPitch();
 
                 return prevPitch + (nextPitch - prevPitch) * transitionProg;
             }
             else
             {
-                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player.getGameProfile().getId())).callGetSoundPitch();
+                return ((LivingEntityInvokerMixin)nextState.getEntityInstance(player.world, player)).callGetSoundPitch();
             }
         }
 

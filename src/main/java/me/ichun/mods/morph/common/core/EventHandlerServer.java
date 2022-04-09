@@ -44,6 +44,12 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onLivingAttacked(LivingAttackEvent event)
     {
+        //The entity attacking is a morph. Cancel the event.
+        if(event.getSource().getTrueSource() != null && event.getSource().getTrueSource().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID))
+        {
+            event.setCanceled(true);
+        }
+
         //The entity getting hurt is a morph. Cancel the event.
         if(event.getEntityLiving().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID))
         {
