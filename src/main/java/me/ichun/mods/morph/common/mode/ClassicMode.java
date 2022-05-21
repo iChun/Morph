@@ -88,12 +88,22 @@ public class ClassicMode implements MorphMode
 
         if(mobData != null && mobData.traits != null)
         {
+            ArrayList<String> upgradedTraits = new ArrayList<>();
             for(Trait<?> trait : mobData.traits)
             {
-                if(trait != null && !Morph.configServer.disabledTraits.contains(trait.type) && trait.upgradeFor == null) //no trait upgrades in classic
+                if(trait != null && !Morph.configServer.disabledTraits.contains(trait.type) && (trait.upgradeFor == null || Morph.configServer.classicUpgradeTraits))
                 {
                     traits.add(trait.copy());
+                    if(trait.upgradeFor != null)
+                    {
+                        upgradedTraits.add(trait.upgradeFor);
+                    }
                 }
+            }
+
+            for(String upgradedTrait : upgradedTraits)
+            {
+                traits.removeIf(trait -> trait.type.equals(upgradedTrait));
             }
 
             for(Trait<?> trait : traits)

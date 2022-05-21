@@ -61,6 +61,11 @@ public class ConfigServer extends ConfigBase
 
     public boolean biomassSkinWhilstInvisible = true;
 
+    @CategoryDivider(name = "morphMode")
+    public boolean commandAllowSelector = false;
+
+    public boolean classicUpgradeTraits = false;
+
     @CategoryDivider(name = "playerFilter")
     public FilterType biomassFilterType = FilterType.DENY;
 
