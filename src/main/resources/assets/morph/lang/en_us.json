@@ -81,9 +81,13 @@
   "command.morph.morph.error.notLivingEntity": "Entity supplied is not a LivingEntity type!",
   "command.morph.morph.error.failedToCreateEntity": "Entity could not be created!",
   "command.morph.morph.error.unableToAcquireMorph": "Could not acquire morph!",
+  "command.morph.morph.error.unableToUnacquireNoId": "Cannot find ID to unacquire!",
+  "command.morph.morph.error.unableToUnacquireSelf": "Cannot unacquire player's default state!",
+  "command.morph.morph.error.unableToUnacquireOOB": "Could not unacquire, index out of bounds!",
   "command.morph.morph.error.unableToMorphTo": "Could not morph into entity!",
   "command.morph.morph.error.unableToDemorph": "Unable to demorph player!",
   "command.morph.morph.success.morphAcquired": "Morph acquired for %s!",
+  "command.morph.morph.success.morphUnacquired": "Morph unacquired for %s!",
   "command.morph.morph.success.morphTo": "%s morphed!",
   "command.morph.morph.success.demorph": "%s demorphed!",
 

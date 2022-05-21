@@ -3,18 +3,22 @@ package me.ichun.mods.morph.common.command;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.morph.MorphVariant;
 import me.ichun.mods.morph.common.Morph;
 import me.ichun.mods.morph.common.morph.MorphHandler;
+import me.ichun.mods.morph.common.morph.save.PlayerMorphData;
 import me.ichun.mods.morph.common.packet.PacketOpenGenerator;
+import me.ichun.mods.morph.common.packet.PacketUpdateMorph;
 import me.ichun.mods.morph.common.resource.ResourceHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -29,6 +33,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.TreeSet;
 import java.util.UUID;
 
 public class CommandMorph
@@ -39,8 +45,27 @@ public class CommandMorph
     private static final SimpleCommandExceptionType NOT_LIVING_ENTITY = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.notLivingEntity"));
     private static final SimpleCommandExceptionType ENTITY_COULD_NOT_BE_CREATED = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.failedToCreateEntity"));
     private static final SimpleCommandExceptionType UNABLE_TO_ACQUIRE_MORPH = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.unableToAcquireMorph"));
+    private static final SimpleCommandExceptionType UNABLE_TO_UNACQUIRE_CANNOT_FIND_ID = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.unableToUnacquireNoId"));
+    private static final SimpleCommandExceptionType UNABLE_TO_UNACQUIRE_SELF_VARIANT = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.unableToUnacquireSelf"));
+    private static final SimpleCommandExceptionType UNABLE_TO_UNACQUIRE_OUT_OF_BOUNDS = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.unableToUnacquireOOB"));
     private static final SimpleCommandExceptionType UNABLE_TO_MORPH_TO = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.unableToMorphTo"));
     private static final SimpleCommandExceptionType UNABLE_TO_DEMORPH = new SimpleCommandExceptionType(new TranslationTextComponent("command.morph.morph.error.unableToDemorph"));
+
+    private static final SuggestionProvider<CommandSource> MORPH_VARIANT_IDS = (context, builder) -> {
+        ServerPlayerEntity player = EntityArgument.getPlayer(context, "player");
+
+        PlayerMorphData morphData = MorphHandler.INSTANCE.getPlayerMorphData(player);
+
+        TreeSet<ResourceLocation> variantIds = new TreeSet<>(Comparator.naturalOrder());
+
+        for(MorphVariant morph : morphData.morphs)
+        {
+            variantIds.add(morph.id);
+        }
+
+        return ISuggestionProvider.suggestIterable(variantIds, builder);
+    };
+
 
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
@@ -89,74 +114,145 @@ public class CommandMorph
                         )
                 )
                 .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.literal("morph")
-                                .then(Commands.literal("acquire")
-                                        .then(Commands.literal("entity")
-                                                .then(Commands.argument("target", EntityArgument.entity())
-                                                        .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntityArgument.getEntity(context, "target"), true))
-                                                )
-                                        )
-                                        .then(Commands.literal("type")
-                                                .then(Commands.argument("entity_type", EntitySummonArgument.entitySummon()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                                                        .then(Commands.argument("nbt", NBTCompoundTagArgument.nbt())
-                                                                .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), NBTCompoundTagArgument.getNbt(context, "nbt"), true))
-                                                        )
-                                                        .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), new CompoundNBT(), true))
-                                                )
-                                        )
-                                        .then(Commands.literal("player")
-                                                .then(Commands.literal("uuid")
-                                                        .then(Commands.argument("player_uuid", UUIDArgument.func_239194_a_())
-                                                                .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), UUIDArgument.func_239195_a_(context, "player_uuid"), true))
-                                                        )
-                                                )
-                                                .then(Commands.literal("name")
-                                                        .then(Commands.argument("player_name", StringArgumentType.word())
-                                                                .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), StringArgumentType.getString(context, "player_name"), true))
-                                                        )
-                                                )
-                                        )
-                                )
                                 .then(Commands.literal("morph")
-                                        .then(Commands.literal("entity")
-                                                .then(Commands.argument("target", EntityArgument.entity())
-                                                        .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntityArgument.getEntity(context, "target"), false))
+                                        .then(Commands.literal("acquire")
+                                                .then(Commands.literal("entity")
+                                                        .then(Commands.argument("target", EntityArgument.entity())
+                                                                .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntityArgument.getEntity(context, "target"), true))
+                                                        )
+                                                )
+                                                .then(Commands.literal("type")
+                                                        .then(Commands.argument("entity_type", EntitySummonArgument.entitySummon()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                                                                .then(Commands.argument("nbt", NBTCompoundTagArgument.nbt())
+                                                                        .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), NBTCompoundTagArgument.getNbt(context, "nbt"), true))
+                                                                )
+                                                                .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), new CompoundNBT(), true))
+                                                        )
+                                                )
+                                                .then(Commands.literal("player")
+                                                        .then(Commands.literal("uuid")
+                                                                .then(Commands.argument("player_uuid", UUIDArgument.func_239194_a_())
+                                                                        .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), UUIDArgument.func_239195_a_(context, "player_uuid"), true))
+                                                                )
+                                                        )
+                                                        .then(Commands.literal("name")
+                                                                .then(Commands.argument("player_name", StringArgumentType.word())
+                                                                        .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), StringArgumentType.getString(context, "player_name"), true))
+                                                                )
+                                                        )
                                                 )
                                         )
-                                        .then(Commands.literal("type")
-                                                .then(Commands.argument("entity_type", EntitySummonArgument.entitySummon()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                                                        .then(Commands.argument("nbt", NBTCompoundTagArgument.nbt())
-                                                                .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), NBTCompoundTagArgument.getNbt(context, "nbt"), false))
+                                        .then(Commands.literal("unacquire")
+                                                .then(Commands.argument("variant_id", ResourceLocationArgument.resourceLocation()).suggests(MORPH_VARIANT_IDS)
+                                                        .then(Commands.argument("variant_index", IntegerArgumentType.integer(0))
+                                                                .executes(context -> unacquire(context.getSource(), EntityArgument.getPlayer(context, "player"), ResourceLocationArgument.getResourceLocation(context, "variant_id"), IntegerArgumentType.getInteger(context, "variant_index")))
                                                         )
-                                                        .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), new CompoundNBT(), false))
+                                                        .then(Commands.literal("all")
+                                                                .executes(context -> unacquire(context.getSource(), EntityArgument.getPlayer(context, "player"), ResourceLocationArgument.getResourceLocation(context, "variant_id"), -1))
+                                                        )
                                                 )
                                         )
-                                        .then(Commands.literal("player")
-                                                .then(Commands.literal("uuid")
-                                                        .then(Commands.argument("player_uuid", UUIDArgument.func_239194_a_())
-                                                                .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), UUIDArgument.func_239195_a_(context, "player_uuid"), false))
+                                        .then(Commands.literal("morph")
+                                                .then(Commands.literal("entity")
+                                                        .then(Commands.argument("target", EntityArgument.entity())
+                                                                .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntityArgument.getEntity(context, "target"), false))
                                                         )
                                                 )
-                                                .then(Commands.literal("name")
-                                                        .then(Commands.argument("player_name", StringArgumentType.word())
-                                                                .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), StringArgumentType.getString(context, "player_name"), false))
+                                                .then(Commands.literal("type")
+                                                        .then(Commands.argument("entity_type", EntitySummonArgument.entitySummon()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                                                                .then(Commands.argument("nbt", NBTCompoundTagArgument.nbt())
+                                                                        .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), NBTCompoundTagArgument.getNbt(context, "nbt"), false))
+                                                                )
+                                                                .executes(context -> createMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), EntitySummonArgument.getEntityId(context, "entity_type"), new CompoundNBT(), false))
                                                         )
                                                 )
+                                                .then(Commands.literal("player")
+                                                        .then(Commands.literal("uuid")
+                                                                .then(Commands.argument("player_uuid", UUIDArgument.func_239194_a_())
+                                                                        .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), UUIDArgument.func_239195_a_(context, "player_uuid"), false))
+                                                                )
+                                                        )
+                                                        .then(Commands.literal("name")
+                                                                .then(Commands.argument("player_name", StringArgumentType.word())
+                                                                        .executes(context -> createPlayerMorph(context.getSource(), EntityArgument.getPlayer(context, "player"), StringArgumentType.getString(context, "player_name"), false))
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                        .then(Commands.literal("demorph")
+                                                .executes(context -> demorphPlayer(context.getSource(), EntityArgument.getPlayer(context, "player")))
                                         )
                                 )
-                                .then(Commands.literal("demorph")
-                                        .executes(context -> demorphPlayer(context.getSource(), EntityArgument.getPlayer(context, "player")))
-                                )
-                        )
-//                        .then(Commands.literal("biomass")
-//                                .then(Commands.literal("set")
-//                                        .then(Commands.argument("value", DoubleArgumentType.doubleArg(0))
-//                                                .executes(context -> setBiomass(context.getSource(), EntityArgument.getPlayer(context, "player"), DoubleArgumentType.getDouble(context, "value")))
-//                                        )
-//                                )
-//                        )
+                        //                        .then(Commands.literal("biomass")
+                        //                                .then(Commands.literal("set")
+                        //                                        .then(Commands.argument("value", DoubleArgumentType.doubleArg(0))
+                        //                                                .executes(context -> setBiomass(context.getSource(), EntityArgument.getPlayer(context, "player"), DoubleArgumentType.getDouble(context, "value")))
+                        //                                        )
+                        //                                )
+                        //                        )
                 )
         );
+    }
+
+    private static int unacquire(CommandSource source, ServerPlayerEntity player, ResourceLocation variant_id, int i) throws CommandSyntaxException
+    {
+        PlayerMorphData morphData = MorphHandler.INSTANCE.getPlayerMorphData(player);
+
+        for(MorphVariant morph : morphData.morphs)
+        {
+            if(variant_id.equals(morph.id))
+            {
+                boolean updatePlayer = false;
+                if(i >= 0)
+                {
+                    if(i >= morph.variants.size())
+                    {
+                        throw UNABLE_TO_UNACQUIRE_OUT_OF_BOUNDS.create();
+                    }
+
+                    MorphVariant.Variant variant = morph.variants.get(i);
+
+                    if(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE.equals(variant.identifier))
+                    {
+                        throw UNABLE_TO_UNACQUIRE_SELF_VARIANT.create();
+                    }
+
+                    if(morph.removeVariant(variant))
+                    {
+                        updatePlayer = true;
+                    }
+                }
+                else //remove ALL variants
+                {
+                    for(int i1 = morph.variants.size() - 1; i1 >= 0; i1--)
+                    {
+                        MorphVariant.Variant variant = morph.variants.get(i1);
+
+                        if(MorphVariant.IDENTIFIER_DEFAULT_PLAYER_STATE.equals(variant.identifier))
+                        {
+                            continue;
+                        }
+
+                        if(morph.removeVariant(variant))
+                        {
+                            updatePlayer = true;
+                        }
+                    }
+                }
+
+                if(updatePlayer)
+                {
+                    MorphHandler.INSTANCE.getSaveData().markDirty();
+
+                    Morph.channel.sendTo(new PacketUpdateMorph(morph.write(new CompoundNBT())), player);
+
+                    source.sendFeedback(new TranslationTextComponent("command.morph.morph.success.morphUnacquired", player.getDisplayName()), true);
+                }
+                return Command.SINGLE_SUCCESS;
+            }
+        }
+
+        throw UNABLE_TO_UNACQUIRE_CANNOT_FIND_ID.create();
     }
 
     private static int openMobDataGerator(CommandSource source) throws CommandSyntaxException
