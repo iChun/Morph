@@ -37,6 +37,11 @@ public class DisguiseMode implements MorphMode
     @Override
     public boolean canMorph(PlayerEntity player)
     {
+        if(!MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.morphFilterType, Morph.configServer.morphFilterNames))
+        {
+            return false;
+        }
+
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
         if(info.isMorphed())
         {

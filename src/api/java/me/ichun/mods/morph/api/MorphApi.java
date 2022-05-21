@@ -10,7 +10,7 @@ public final class MorphApi
 
     /**
      * Get the IApi implementation for Morph.
-     * @return returns the IApi implementation from morph. May be the ApiDummy if Morph has not loaded.
+     * @return returns the IApi implementation from morph. Will not be an anonymous class if Morph has loaded
      */
     public static IApi getApiImpl()
     {

@@ -73,12 +73,17 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean canShowMorphSelector(PlayerEntity player)
     {
-        return MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_MORPH_ABILITY) != null;
+        return MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_MORPH_ABILITY) != null && MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.selectorFilterType, Morph.configServer.selectorFilterNames);
     }
 
     @Override
     public boolean canMorph(PlayerEntity player)
     {
+        if(!MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.morphFilterType, Morph.configServer.morphFilterNames))
+        {
+            return false;
+        }
+
         if(MorphHandler.INSTANCE.getBiomassUpgrade(player, Upgrades.ID_MORPH_ABILITY) != null)
         {
             MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
@@ -93,7 +98,7 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean canAcquireMorph(PlayerEntity player, LivingEntity living, @Nullable MorphVariant variant)
     {
-        if(variant == null || MinecraftForge.EVENT_BUS.post(new MorphEvent.CanAcquire(player, variant)))
+        if(variant == null || MinecraftForge.EVENT_BUS.post(new MorphEvent.CanAcquire(player, variant)) || !MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.morphFilterType, Morph.configServer.morphFilterNames))
         {
             return false;
         }
@@ -126,13 +131,18 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean hasUnlockedBiomass(PlayerEntity player)
     {
-        return Morph.configServer.biomassBypassAdvancement || EntityHelper.hasCompletedAdvancement(Morph.Advancements.UNLOCK_BIOMASS, player);
+        return (Morph.configServer.biomassBypassAdvancement || EntityHelper.hasCompletedAdvancement(Morph.Advancements.UNLOCK_BIOMASS, player)) && MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.biomassFilterType, Morph.configServer.biomassFilterNames);
     }
 
     @Override
     public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
         if(Morph.configServer.disabledMobsRL.contains(living.getType().getRegistryName()))
+        {
+            return false;
+        }
+
+        if(!MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.biomassFilterType, Morph.configServer.biomassFilterNames))
         {
             return false;
         }

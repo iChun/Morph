@@ -2,6 +2,7 @@ package me.ichun.mods.morph.common.morph;
 
 import com.google.common.base.Splitter;
 import com.mojang.authlib.GameProfile;
+import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.morph.api.IApi;
 import me.ichun.mods.morph.api.biomass.BiomassUpgrade;
@@ -119,6 +120,7 @@ public final class MorphHandler implements IApi
         list.add((living, tag) -> {
             if(living instanceof LlamaEntity)
             {
+                //From LlamaEntity.func_230275_fc_
                 ((AbstractHorseEntityInvokerMixin)living).callSetHorseWatchableBoolean(4, !((AbstractHorseEntityInvokerMixin)living).getHorseChest().getStackInSlot(0).isEmpty());
                 //Taken from LlamaEntity.getCarpetColor
                 Block block = Block.getBlockFromItem(((AbstractHorseEntityInvokerMixin)living).getHorseChest().getStackInSlot(1).getItem());
@@ -530,4 +532,9 @@ public final class MorphHandler implements IApi
     }
 
     //TODO a use biomass function
+
+    public boolean isPlayerAllowed(@Nonnull PlayerEntity player, @Nonnull ConfigBase.FilterType type, @Nonnull List<String> names)
+    {
+        return (type == ConfigBase.FilterType.ALLOW) == names.contains(player.getGameProfile().getName());
+    }
 }

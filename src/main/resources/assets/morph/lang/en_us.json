@@ -5,6 +5,9 @@
   "config.morph.cat.biomass.name": "Biomass Ability",
   "config.morph.cat.biomass.desc": "Options for the biomass ability. These configs only have effect in DEFAULT mode, which has been disabled until said mode is finished.",
 
+  "config.morph.cat.playerFilter.name": "Player Gameplay Filters",
+  "config.morph.cat.playerFilter.desc": "Filters (allow/deny-lists) for various aspects of Morph's gameplay.",
+
   "config.morph.prop.morphTime.name": "Morph Time",
   "config.morph.prop.morphTime.desc": "Time (in ticks) for a morph to complete.",
   "config.morph.prop.aggressiveSizeRecalculation.name": "Aggressive Size Recalculation",
@@ -27,6 +30,19 @@
   "config.morph.prop.morphMode.desc": "The mode the mod runs in. Accepts CLASSIC, COMMAND_ONLY, COMMAND_ALLOW_SELECTION, DISGUISE.\n\nCLASSIC: Old Morph as we know and love: Kill a mob, acquire it.\nCOMMAND_ONLY: Players can only acquire morphs or morph when the /morph command is used by ops.\nCOMMAND_ALLOW_SELECTION: Players can only acquire morphs given by the /morph command but can morph through acquired morphs freely.\nDISGUISE: Killing a mob morphs you into the mob you just killed.\nDEFAULT: Disabled until it has been finished.",
   "config.morph.prop.biomassSkinWhilstInvisible.name": "Biomass Skin Whilst Invisible",
   "config.morph.prop.biomassSkinWhilstInvisible.desc": "The Biomass Skin is meant to show during invisibility. Turning this off disables that.",
+
+  "config.morph.prop.biomassFilterType.name": "Biomass - Filter Type",
+  "config.morph.prop.biomassFilterType.desc": "Toggle between an allow-list or deny-list for biomass.",
+  "config.morph.prop.biomassFilterNames.name": "Biomass - Filter Names",
+  "config.morph.prop.biomassFilterNames.desc": "Name of players in the filter list.",
+  "config.morph.prop.morphFilterType.name": "Morph - Filter Type",
+  "config.morph.prop.morphFilterType.desc": "Toggle between an allow-list or deny-list for morphing.",
+  "config.morph.prop.morphFilterNames.name": "Morph - Filter Names",
+  "config.morph.prop.morphFilterNames.desc": "Name of players in the filter list.",
+  "config.morph.prop.selectorFilterType.name": "Selector - Filter Type",
+  "config.morph.prop.selectorFilterType.desc": "Toggle between an allow-list or deny-list for the morph selector.",
+  "config.morph.prop.selectorFilterNames.name": "Selector - Filter Names",
+  "config.morph.prop.selectorFilterNames.desc": "Name of players in the filter list.",
 
   "config.morph.prop.selectorDistanceFromTop.name": "Selector - Distance From Top",
   "config.morph.prop.selectorDistanceFromTop.desc": "The number of (scaled) pixels that the quick selector's selected option appears from the top of the screen.",

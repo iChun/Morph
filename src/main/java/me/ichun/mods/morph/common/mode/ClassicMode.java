@@ -38,12 +38,17 @@ public class ClassicMode implements MorphMode
     @Override
     public boolean canShowMorphSelector(PlayerEntity player)
     {
-        return true;
+        return MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.selectorFilterType, Morph.configServer.selectorFilterNames);
     }
 
     @Override
     public boolean canMorph(PlayerEntity player)
     {
+        if(!MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.morphFilterType, Morph.configServer.morphFilterNames))
+        {
+            return false;
+        }
+
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
         if(info.isMorphed())
         {
@@ -58,7 +63,7 @@ public class ClassicMode implements MorphMode
     @Override
     public boolean canAcquireMorph(PlayerEntity player, LivingEntity living, @Nullable MorphVariant variant) //variant should be the MorphVariant of the EntityLiving we're trying to acquire
     {
-        if(variant == null || MinecraftForge.EVENT_BUS.post(new MorphEvent.CanAcquire(player, variant)))
+        if(variant == null || MinecraftForge.EVENT_BUS.post(new MorphEvent.CanAcquire(player, variant)) || !MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.morphFilterType, Morph.configServer.morphFilterNames))
         {
             return false;
         }

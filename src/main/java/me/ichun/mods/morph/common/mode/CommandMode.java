@@ -27,12 +27,17 @@ public class CommandMode implements MorphMode
     @Override
     public boolean canShowMorphSelector(PlayerEntity player)
     {
-        return allowSelection;
+        return allowSelection && MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.selectorFilterType, Morph.configServer.selectorFilterNames);
     }
 
     @Override
     public boolean canMorph(PlayerEntity player)
     {
+        if(!MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.morphFilterType, Morph.configServer.morphFilterNames))
+        {
+            return false;
+        }
+
         MorphInfo info = MorphHandler.INSTANCE.getMorphInfo(player);
         if(info.isMorphed())
         {

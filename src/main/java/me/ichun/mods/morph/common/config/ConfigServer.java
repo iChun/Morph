@@ -61,6 +61,19 @@ public class ConfigServer extends ConfigBase
 
     public boolean biomassSkinWhilstInvisible = true;
 
+    @CategoryDivider(name = "playerFilter")
+    public FilterType biomassFilterType = FilterType.DENY;
+
+    public List<String> biomassFilterNames = new ArrayList<>();
+
+    public FilterType morphFilterType = FilterType.DENY;
+
+    public List<String> morphFilterNames = new ArrayList<>();
+
+    public FilterType selectorFilterType = FilterType.DENY;
+
+    public List<String> selectorFilterNames = new ArrayList<>();
+
     //======================================================//
 
     public transient ArrayList<ResourceLocation> disabledMobsRL = new ArrayList<>();
