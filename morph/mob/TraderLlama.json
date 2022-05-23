@@ -2,8 +2,18 @@
   "forEntity": "minecraft:trader_llama",
   "traits": [
     {
+      "type": "traitIntimidate",
+      "classToIntimidate": "net.minecraft.entity.passive.WolfEntity",
+      "distance": 24.0,
+      "farRunSpeed": 1.5,
+      "nearRunSpeed": 1.5
+    },
+    {
       "type": "traitStepHeight",
       "amount": 1.0
+    },
+    {
+      "type": "abilityRideable"
     }
   ]
 }

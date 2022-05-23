@@ -2,6 +2,9 @@
   "forEntity": "minecraft:shulker",
   "traits": [
     {
+      "type": "traitHostile"
+    },
+    {
       "type": "traitImmunityFire"
     }
   ]
