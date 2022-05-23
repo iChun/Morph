@@ -19,6 +19,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DefaultMode implements MorphMode
 {
@@ -137,9 +139,13 @@ public class DefaultMode implements MorphMode
     @Override
     public boolean canAcquireBiomass(PlayerEntity player, LivingEntity living)
     {
-        if(Morph.configServer.disabledMobsRL.contains(living.getType().getRegistryName()))
+        for(Pattern p : Morph.configServer.disabledMobsID)
         {
-            return false;
+            Matcher m = p.matcher(living.getType().getRegistryName().toString());
+            if(m.matches())
+            {
+                return false;
+            }
         }
 
         if(!MorphHandler.INSTANCE.isPlayerAllowed(player, Morph.configServer.biomassFilterType, Morph.configServer.biomassFilterNames))

@@ -28,7 +28,7 @@
   "config.morph.prop.biomassBypassAdvancement.desc": "Enable the Biomass ability without requiring the advancement to unlock it?",
 
   "config.morph.prop.disabledMobs.name": "Disabled Mobs",
-  "config.morph.prop.disabledMobs.desc": "Resource Location name for Mob types you cannot acquire biomass or morphs from.",
+  "config.morph.prop.disabledMobs.desc": "Resource Location name for Mob types you cannot acquire biomass or morphs from. Uses Regex matching.",
   "config.morph.prop.morphMode.name": "Morph Game Mode",
   "config.morph.prop.morphMode.desc": "The mode the mod runs in. Accepts CLASSIC, COMMAND_ONLY, DISGUISE.\n\nCLASSIC: Old Morph as we know and love: Kill a mob, acquire it.\nCOMMAND_ONLY: Players can only acquire morphs or morph when the /morph command is used by ops.\nDISGUISE: Killing a mob morphs you into the mob you just killed.\nDEFAULT: Disabled until it has been finished.",
   "config.morph.prop.biomassSkinWhilstInvisible.name": "Biomass Skin Whilst Invisible",

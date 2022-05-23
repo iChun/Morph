@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ConfigServer extends ConfigBase
 {
@@ -81,7 +82,7 @@ public class ConfigServer extends ConfigBase
 
     //======================================================//
 
-    public transient ArrayList<ResourceLocation> disabledMobsRL = new ArrayList<>();
+    public transient ArrayList<Pattern> disabledMobsID = new ArrayList<>();
     public transient HashMap<ResourceLocation, AttributeConfig> supportedAttributesMap = new HashMap<>();
 
     @Override
@@ -106,11 +107,11 @@ public class ConfigServer extends ConfigBase
 
     private void parseDisabledMobs()
     {
-        disabledMobsRL.clear();
+        disabledMobsID.clear();
 
         for(String disabledMob : disabledMobs)
         {
-            disabledMobsRL.add(new ResourceLocation(disabledMob));
+            disabledMobsID.add(Pattern.compile(disabledMob));
         }
     }
 

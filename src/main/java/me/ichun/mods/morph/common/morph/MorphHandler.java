@@ -59,6 +59,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class MorphHandler implements IApi
 {
@@ -276,9 +278,10 @@ public final class MorphHandler implements IApi
             }
         }
 
-        for(ResourceLocation rl : Morph.configServer.disabledMobsRL)
+        for(Pattern p : Morph.configServer.disabledMobsID)
         {
-            if(rl.equals(living.getType().getRegistryName()))
+            Matcher m = p.matcher(living.getType().getRegistryName().toString());
+            if(m.matches())
             {
                 return null;
             }
@@ -347,7 +350,14 @@ public final class MorphHandler implements IApi
         PlayerMorphData playerMorphData = MorphHandler.INSTANCE.getPlayerMorphData(player);
         if(!playerMorphData.containsVariant(variant))
         {
-            if(Morph.configServer.disabledMobsRL.contains(variant.id)) return false;
+            for(Pattern p : Morph.configServer.disabledMobsID)
+            {
+                Matcher m = p.matcher(variant.id.toString());
+                if(m.matches())
+                {
+                    return false;
+                }
+            }
 
             if(MinecraftForge.EVENT_BUS.post(new MorphEvent.Acquire(player, variant))) return false;
 
