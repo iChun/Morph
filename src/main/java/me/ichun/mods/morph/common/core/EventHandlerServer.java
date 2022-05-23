@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
@@ -21,6 +22,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -42,6 +44,16 @@ public class EventHandlerServer
     }
 
     @SubscribeEvent
+    public void onEntityJoinWorld(EntityJoinWorldEvent event)
+    {
+        //We're trying to add a morph entity to the world, cancel this event
+        if(event.getEntity().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID))
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void onLivingAttacked(LivingAttackEvent event)
     {
         //The entity attacking is a morph. Cancel the event.
@@ -51,7 +63,7 @@ public class EventHandlerServer
         }
 
         //The entity getting hurt is a morph. Cancel the event.
-        if(event.getEntityLiving().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID))
+        if(event.getEntityLiving().getPersistentData().contains(MorphVariant.NBT_PLAYER_ID) && !(event.getSource() == DamageSource.OUT_OF_WORLD && event.getAmount() == Float.MAX_VALUE)) // Do not cancel if it's from a kill command
         {
             event.setCanceled(true);
         }
