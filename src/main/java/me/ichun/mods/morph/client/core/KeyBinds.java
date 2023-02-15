@@ -28,8 +28,9 @@ public final class KeyBinds
         keySelectorLeft = new KeyBind(new KeyBinding("morph.key.selectorLeft", KeyBind.ConflictContext.IN_GAME_MODIFIER_SENSITIVE, KeyModifier.SHIFT, InputMappings.Type.KEYSYM.getOrMakeInput(GLFW.GLFW_KEY_LEFT_BRACKET), "key.categories.morph"), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, false), null).setHoldable();
         keySelectorRight = new KeyBind(new KeyBinding("morph.key.selectorRight", KeyBind.ConflictContext.IN_GAME_MODIFIER_SENSITIVE, KeyModifier.SHIFT, InputMappings.Type.KEYSYM.getOrMakeInput(GLFW.GLFW_KEY_RIGHT_BRACKET), "key.categories.morph"), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, false), null).setHoldable();
         keyFavourite = new KeyBind(new KeyBinding("morph.key.favourite", KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM.getOrMakeInput(GLFW.GLFW_KEY_GRAVE_ACCENT), "key.categories.morph"), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, false), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, true));
-        keyAbility = new KeyBind(new KeyBinding("morph.key.ability", KeyBind.ConflictContext.IN_GAME_MODIFIER_SENSITIVE, InputMappings.Type.KEYSYM.getOrMakeInput(GLFW.GLFW_KEY_B), "key.categories.morph"), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, false), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, true));
-        keyBiomass = new KeyBind(new KeyBinding("morph.key.biomass", KeyBind.ConflictContext.IN_GAME_MODIFIER_SENSITIVE, KeyModifier.SHIFT, InputMappings.Type.KEYSYM.getOrMakeInput(GLFW.GLFW_KEY_B), "key.categories.morph"), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, false), null);
+        //Too many questions asking why it's "disabled"
+//        keyAbility = new KeyBind(new KeyBinding("morph.key.ability", KeyBind.ConflictContext.IN_GAME_MODIFIER_SENSITIVE, InputMappings.Type.KEYSYM.getOrMakeInput(GLFW.GLFW_KEY_B), "key.categories.morph"), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, false), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, true));
+//        keyBiomass = new KeyBind(new KeyBinding("morph.key.biomass", KeyBind.ConflictContext.IN_GAME_MODIFIER_SENSITIVE, KeyModifier.SHIFT, InputMappings.Type.KEYSYM.getOrMakeInput(GLFW.GLFW_KEY_B), "key.categories.morph"), keyBind -> Morph.eventHandlerClient.handleInput(keyBind, false), null);
     }
 
 }

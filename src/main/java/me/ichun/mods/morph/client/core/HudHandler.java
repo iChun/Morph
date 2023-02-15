@@ -142,17 +142,18 @@ public class HudHandler
         {
             handleMorphInput(keyBind, isReleased);
         }
-        else if(keyBind == KeyBinds.keyBiomass)
-        {
-            if(MorphHandler.INSTANCE.hasUnlockedBiomass(mc.player))
-            {
-                mc.displayGuiScreen(new WorkspaceMorph(mc.currentScreen));
-            }
-            else if(MorphHandler.INSTANCE.getMorphModeName().equals("default"))
-            {
-                barInsufficientFlash = 20;
-            }
-        }
+        //TODO disabled because too many people asking stupid questions
+//        else if(keyBind == KeyBinds.keyBiomass)
+//        {
+//            if(MorphHandler.INSTANCE.hasUnlockedBiomass(mc.player))
+//            {
+//                mc.displayGuiScreen(new WorkspaceMorph(mc.currentScreen));
+//            }
+//            else if(MorphHandler.INSTANCE.getMorphModeName().equals("default"))
+//            {
+//                barInsufficientFlash = 20;
+//            }
+//        }
     }
 
     private void handleMorphInput(KeyBind keyBind, boolean isReleased)

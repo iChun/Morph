@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerRenderer.class)
-public class PlayerRendererMixin
+public abstract class PlayerRendererMixin
 {
     //This is more the "render arm" method, not so much "render item"
     @Inject(method = "renderItem", at = @At("HEAD"), cancellable = true)

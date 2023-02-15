@@ -52,7 +52,7 @@ public class NbtHandler
                             return false;
                         }
                     }
-                    catch(IOException | JsonSyntaxException e)
+                    catch(IOException | JsonSyntaxException | IllegalStateException e)
                     {
                         Morph.LOGGER.error("Error reading NBT Modifier file: {}", file);
                         e.printStackTrace();
@@ -74,7 +74,7 @@ public class NbtHandler
         MinecraftForge.EVENT_BUS.post(new MorphLoadResourceEvent(MorphLoadResourceEvent.Type.NBT));
     }
 
-    private static boolean readNbtJson(String json) throws ClassNotFoundException, JsonSyntaxException
+    private static boolean readNbtJson(String json) throws ClassNotFoundException, JsonSyntaxException, IllegalStateException
     {
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(json).getAsJsonObject();

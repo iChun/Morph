@@ -1,6 +1,7 @@
 package me.ichun.mods.morph.client.render.hand;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.api.client.hand.HandInfo;
@@ -406,7 +407,7 @@ public final class HandHandler
                             return true;
                         }
                     }
-                    catch(IOException e)
+                    catch(IOException | JsonSyntaxException | IllegalStateException e)
                     {
                         Morph.LOGGER.error("Error reading file: {}", p);
                         e.printStackTrace();

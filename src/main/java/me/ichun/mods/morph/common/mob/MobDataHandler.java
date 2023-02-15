@@ -50,7 +50,7 @@ public class MobDataHandler
                             return false;
                         }
                     }
-                    catch(IOException | JsonSyntaxException e)
+                    catch(IOException | JsonSyntaxException | IllegalStateException e)
                     {
                         Morph.LOGGER.error("Error reading Mob Data file: {}", file);
                         e.printStackTrace();
@@ -71,7 +71,7 @@ public class MobDataHandler
         MinecraftForge.EVENT_BUS.post(new MorphLoadResourceEvent(MorphLoadResourceEvent.Type.MOB));
     }
 
-    private static boolean readMobDataJson(String json) throws JsonSyntaxException
+    private static boolean readMobDataJson(String json) throws JsonSyntaxException, IllegalStateException
     {
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(json).getAsJsonObject();

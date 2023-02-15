@@ -16,7 +16,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '10.2.0'
+version = '10.2.1'
 group = 'morph'
 archivesBaseName = 'Morph-1.16.5'
 

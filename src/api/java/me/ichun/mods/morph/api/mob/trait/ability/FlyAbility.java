@@ -19,14 +19,12 @@ public class FlyAbility extends Ability<FlyAbility>
     {
         if(strength == 1F)
         {
-            if(lastStrength != 1F)
+            //if ability is active but for some reason flight has been disabled, reenable it.
+            if(!player.abilities.allowFlying)
             {
-                if(!player.abilities.allowFlying)
-                {
-                    player.abilities.allowFlying = true;
+                player.abilities.allowFlying = true;
 
-                    player.sendPlayerAbilities();
-                }
+                player.sendPlayerAbilities();
             }
 
             if(slowdownInWater != null && slowdownInWater && player.abilities.isFlying && !player.abilities.isCreativeMode && player.areEyesInFluid(FluidTags.WATER))

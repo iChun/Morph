@@ -45,6 +45,8 @@ import net.minecraft.entity.passive.PandaEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
@@ -54,10 +56,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -310,8 +309,25 @@ public final class MorphHandler implements IApi
         {
             CompoundNBT tag = new CompoundNBT();//TODO glint effect for ability??
 
+            //Remove the item from the mob first as it affects their attributes
+            EnumMap<EquipmentSlotType, ItemStack> livingItems = new EnumMap<>(EquipmentSlotType.class);
+            for(EquipmentSlotType value : EquipmentSlotType.values())
+            {
+                ItemStack item = living.getItemStackFromSlot(value);
+                if(item != ItemStack.EMPTY)
+                {
+                    livingItems.put(value, item);
+                    living.setItemStackToSlot(value, ItemStack.EMPTY);
+                }
+            }
+            living.func_241354_r_();
+
             //Write the supported attributes to our Morph NBT
             variant.writeSupportedAttributes(living);
+
+            //Replace the mob's items
+            livingItems.forEach(living::setItemStackToSlot);
+            living.func_241354_r_();
 
             //write the default info
             MorphVariant.writeDefaults(living, tag);

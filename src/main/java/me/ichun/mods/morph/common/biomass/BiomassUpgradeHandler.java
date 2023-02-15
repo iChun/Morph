@@ -45,7 +45,7 @@ public class BiomassUpgradeHandler
                         }
                         return true;
                     }
-                    catch(IOException | JsonSyntaxException e)
+                    catch(IOException | JsonSyntaxException | IllegalStateException e)
                     {
                         Morph.LOGGER.error("Error reading Biomass Upgrade file: {}", file);
                         e.printStackTrace();
